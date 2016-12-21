@@ -23,6 +23,7 @@ description "This plugin provides a task to generate a HTML license report of yo
 ext {
   sourceCompatibilityVersion = JavaVersion.VERSION_1_7
   targetCompatibilityVersion = JavaVersion.VERSION_1_7
+  blah = 123
 }
 
 apply from: rootProject.file("gradle/scan.gradle")

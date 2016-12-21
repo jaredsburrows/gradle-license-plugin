@@ -19,7 +19,7 @@ final class LicenseReportTaskSpec extends Specification {
     project.apply plugin: "com.android.application"
     project.android {
       compileSdkVersion 25
-      buildToolsVersion "25.0.1"
+      buildToolsVersion "25.0.2"
 
       defaultConfig {
         applicationId "com.example"

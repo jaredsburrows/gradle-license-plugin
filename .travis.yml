@@ -1,8 +1,15 @@
-language: java
+language: android
 
-jdk: oraclejdk8
+jdk:
+  - oraclejdk8
 
-install: true
+install:
+  - echo y | android update sdk -u -a -t tools
+  - echo y | android update sdk -u -a -t platform-tools
+  - echo y | android update sdk -u -a -t build-tools-25.0.2
+  - echo y | android update sdk -u -a -t android-25
+  - echo y | android update sdk -u -a -t extra-google-m2repository
+  - echo y | android update sdk -u -a -t extra-android-m2repository
 
 script:
   - ./gradlew clean build jacocoTestReport coveralls -Dscan --stacktrace
@@ -13,10 +20,7 @@ branches:
 
 sudo: false
 
-before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
 cache:
   directories:
+    - $HOME/.m2
     - $HOME/.gradle
