@@ -13,7 +13,7 @@ file(`open_source_licenses.html`) and copy it to `<project>/src/main/assets/`.
 
 ## Usage
 
-This plugin is available from [Bintray's JCenter repository](http://jcenter.bintray.com). You can
+This plugin is available from [Bintray's JCenter repository](https://bintray.com/jaredsburrows/maven/gradle-license-plugin). You can
 add it to your build script using the following configuration:
 
 ### `buildscript` block:
@@ -28,7 +28,7 @@ buildscript {
   }
 }
 
-apply plugin: "com.jaredsburrows.licenses"
+apply plugin: "com.jaredsburrows.license"
 ```
 
 ## Tasks
