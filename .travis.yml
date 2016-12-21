@@ -1,0 +1,22 @@
+language: java
+
+jdk: oraclejdk8
+
+install: true
+
+script:
+  - ./gradlew clean build jacocoTestReport coveralls -Dscan --stacktrace
+
+branches:
+  except:
+    - gh-pages
+
+sudo: false
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle

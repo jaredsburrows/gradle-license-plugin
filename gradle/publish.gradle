@@ -1,0 +1,134 @@
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.bintray"
+
+def pomConfig = {
+  //noinspection UnnecessaryQualifiedReference
+  resolveStrategy = Closure.DELEGATE_FIRST
+  name project.name
+  description project.description
+  url "https://github.com/jaredsburrows/gradle-license-plugin"
+
+  issueManagement {
+    system "github"
+    url "https://github.com/jaredsburrows/gradle-license-plugin/issues"
+  }
+
+  scm {
+    url "https://github.com/jaredsburrows/gradle-license-plugin"
+    connection "scm:https://github.com/jaredsburrows/gradle-license-plugin"
+    developerConnection "scm:git@github.com:jaredsburrows/gradle-license-plugin.git"
+  }
+
+  licenses {
+    license {
+      name "The Apache Software License, Version 2.0"
+      url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      distribution "repo"
+    }
+  }
+
+  developers {
+    developer {
+      id "jaredsburrows"
+      name "Jared Burrows"
+      email "jaredsburrows@gmail.com"
+    }
+  }
+}
+
+/**
+ * Create jar of the sources of library.
+ */
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = "sources"
+  from sourceSets.main.allSource
+}
+
+/**
+ * Create javadoc jar of Java documentation.
+ */
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = "javadoc"
+  from javadoc.destinationDir
+}
+
+/**
+ * Create compiled jar of library.
+ */
+task mainJar(type: Jar) {
+  from sourceSets.main.output
+}
+
+/**
+ * Create jar of all tests.
+ */
+task testsJar(type: Jar) {
+  classifier = "tests"
+  from sourceSets.test.output
+}
+
+/**
+ * Create a zip of all reports.
+ */
+task reportsZip(type: Zip, dependsOn: check) {
+  classifier = "reports"
+  from reporting.baseDir
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      artifact mainJar
+      artifact sourcesJar
+      artifact javadocJar
+      artifact testsJar
+      artifact reportsZip
+
+      groupId project.group
+      artifactId project.name
+      version project.version
+
+      // Fix for "from components.java" - bug forces all dependencies to be "runtime"
+      pom {
+        withXml {
+          asNode().children().last() + pomConfig
+        }
+      }
+    }
+  }
+}
+publish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
+publish.dependsOn "generatePomFileForMavenPublication"
+
+bintray {
+  user = project.hasProperty("bintrayUsername") ? project.property("bintrayUsername") : ""
+  key = project.hasProperty("bintrayApiKey") ? project.property("bintrayApiKey") : ""
+  publications = ["maven"]
+  publish = true
+  pkg {
+    repo = "maven"
+    name = project.name
+    desc = project.description
+    websiteUrl = "https://github.com/jaredsburrows/gradle-license-plugin"
+    issueTrackerUrl = "https://github.com/jaredsburrows/gradle-license-plugin/issues"
+    vcsUrl = "https://github.com/jaredsburrows/gradle-license-plugin.git"
+    licenses = ["Apache-2.0"]
+    labels = ["gradle", "license", "plugin"]
+    githubRepo = "jaredsburrows/gradle-license-plugin"
+    githubReleaseNotesFile = "README.md"
+    version {
+      name = project.version
+      desc = project.description
+      released = new Date()
+      vcsTag = project.version
+      mavenCentralSync {
+        sync = false
+        user = project.hasProperty("sonatypeUsername") ? project.property("sonatypeUsername") : ""
+        password = project.hasProperty("sonatypeUsername") ? project.property("sonatypePassword") : ""
+        close = "1"
+      }
+    }
+  }
+}
+bintrayUpload.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
+bintrayUpload.dependsOn "generatePomFileForMavenPublication"
