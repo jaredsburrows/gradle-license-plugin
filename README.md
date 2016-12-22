@@ -1,7 +1,7 @@
 # License Gradle Plugin
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![TravisCI](https://img.shields.io/travis/jaredsburrows/gradle-license-plugin/master.svg?label=OSX%20Build)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
+[![TravisCI](https://img.shields.io/travis/jaredsburrows/gradle-license-plugin/master.svg)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
 [![Coveralls Code Coverage](https://img.shields.io/coveralls/jaredsburrows/gradle-license-plugin/master.svg?label=Code%20Coverage)](https://coveralls.io/github/jaredsburrows/gradle-license-plugin?branch=master)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
@@ -16,7 +16,6 @@ file(`open_source_licenses.html`) and copy it to `<project>/src/main/assets/`.
 This plugin is available from [Bintray's JCenter repository](https://bintray.com/jaredsburrows/maven/gradle-license-plugin). You can
 add it to your build script using the following configuration:
 
-### `buildscript` block:
 ```groovy
 buildscript {
   repositories {
