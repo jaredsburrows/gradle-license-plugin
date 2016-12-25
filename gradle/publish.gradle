@@ -89,7 +89,6 @@ publishing {
       artifactId project.name
       version project.version
 
-      // Fix for "from components.java" - bug forces all dependencies to be "runtime"
       pom {
         withXml {
           asNode().children().last() + pomConfig

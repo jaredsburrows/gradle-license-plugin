@@ -56,12 +56,12 @@ Example `build.gradle`:
 
 ```groovy
 dependencies {
-  compile deps.design
-  compile deps.cardviewv7
-  compile deps.supportv4
-  compile deps.butterknife
-  compile deps.okhttp
-  compile deps.androidGifDrawable
+  compile "com.android.support:design:25.1.0"
+  compile "com.jakewharton:butterknife:8.4.0"
+  compile "com.squareup.okhttp3:okhttp:3.5.0"
+  compile "pl.droidsonroids.gif:android-gif-drawable:1.2.1"
+
+  debugCompile "com.squareup.leakcanary:leakcanary-android:1.4"
 }
 ```
 
@@ -77,10 +77,8 @@ dependencies {
       <ul>
          <li><a href="#-989311426">Android GIF Drawable Library</a></li>
          <li><a href="#1288288048">Butterknife</a></li>
-         <li><a href="#1288288048">Cardview-v7</a></li>
          <li><a href="#1288288048">Design</a></li>
          <li><a href="#1288288048">LeakCanary for Android</a></li>
-         <li><a href="#1288288048">Support-v4</a></li>
       </ul>
       <h3><a name="-989311426"></a>The MIT License</h3>
       <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
