@@ -105,8 +105,8 @@ artifactory {
   publish {
     repository {
       repoKey = "oss-snapshot-local"
-      username = project.hasProperty("bintrayUsername") ? project.property("bintrayUsername") : ""
-      password = project.hasProperty("bintrayApiKey") ? project.property("bintrayApiKey") : ""
+      username = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : ""
+      password = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : ""
     }
     defaults {
       publications "maven"
@@ -122,8 +122,8 @@ artifactoryPublish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
 bintray {
-  user = project.hasProperty("bintrayUsername") ? project.property("bintrayUsername") : ""
-  key = project.hasProperty("bintrayApiKey") ? project.property("bintrayApiKey") : ""
+  user = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : ""
+  key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : ""
   publications = ["maven"]
   publish = true
   pkg {

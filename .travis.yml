@@ -12,7 +12,7 @@ install:
   - echo y | android update sdk -u -a -t extra-android-m2repository
 
 script:
-  - ./gradlew clean build jacocoTestReport coveralls -Dscan --parallel --stacktrace
+  - ./gradlew clean build jacocoTestReport coveralls -Dscan --parallel
 
 branches:
   except:
@@ -24,3 +24,8 @@ cache:
   directories:
     - $HOME/.m2
     - $HOME/.gradle
+
+env:
+  global:
+    - secure: "wCUn5Wr/GIEu9CVuTKGPT1nlGp+KD60D3vwu0SIQDj6nDcsf/P0Bq7jOV6pd4HrCiWVhRJoIk8oYIeVZAfwLC2O8lL9SRy5A1vZPJfXKsl0Gxr6ARwTsZDay2dOlUC58Scl2BkS6+D+VVG6vIM8WtFsLps/0QbtBKGyYVqKVLfucPBD86xHXU+BmP8SGLJFVSe/EANWlYgwXs220hPSE1o/WbgnFhK1FnqcIbeGVQIe6jqgSeAznU0eLy+sBOAbuawrLLE93g9QMJzsV3TocEZFQ10emNBBJwol91tw14UWgjTv1kIGUwVJYsfr84Ll8f1myLtxQt/9zv/oHgsh4SDCRWYniJ4BPTf+ZT7jkl45FmSSN5PbKirvTsK2/xwOzUfmAdN7zs6Df/YNhUfkBcRiSarmpRPuXcL2/gkoI1c0E+slp1h4z9MBPB0y7aGSWHsir8ecOXbf63y6WCQ3Vdvp7o6PULJ16qGuAQXppKQIIURAMY6M5LTJ3Mwd1DTGoUK2QXW78YrkFSeCZB0EtsGXsS+F5Vu/SLgJ05ULNonV9xk3uBTxNzQ//2FPO5v3rsueQ2tqxSJREmJodkGq1cZyPX9LG0VRGxk8+S04K3VqJKUSgqB4mH1HhofjEUo61tGidSOFsrf2Aj3dokTQ9BwInVAEp2samAkIKRq0/DDM="
+    - secure: "vxxvm2ldEsJBZkTdt4NJQUjfMcnIIJTH7Gac6fHQqk7Vo34WigvjhHX6duhKwmZXGxz1VK1kEs9R6Mt3BmD2xnqy2tkNlvdSpj8rkUrYLcJtRSrFeZrAV0m1UhBYolH5oHx/hws7lgTR21SDopeHQ+lhUvOX7sVm+YdxqbXuJ1IfiXOIEFyyuOWGwAsarlFfELpHQ+E3RiM4YvKkXH6RfZTGGBnBCjpKTZ5JFjiKonGT1DryddinziXitM2zj8axr5oNlNMnCW6yimfmHOxoZLRxkFXSwQy6h8S9WBRBtK9fjGu4IqFtg/lYa4m70ofriYydMf2wDYWg2NXephbcCk8ezUB6aN1nSwVkECPnFjfnIWKtJ6Jb0eD0hCUrDK+i0AHnFU64+gi2d+0G35+zfES8wGBiGbtEqP5FCx5R/NW/nhyXawdiPyYLenEXBBBdrXnpT3lp62rNzZZ5qq/JkPePle5kdKFTql8gvh1tPxvJMvemVgQ9ErQIwDBpJCdGUNRbR/GRtijPFhJ0kn27e1QAs5R1SmJHabORHbVhSoxVtsVCDcDMckTCxYgGbPDvCVjyGPQruJ4Xibu5/PjpoKQpW3+/qxu/XmcRafpPKlf6WCZvpYpTSDZbHuwZKhyXchTI8BYbfS3B+TSuSYZQMfEBkH/R0SMskQOw3jSq7+s="
