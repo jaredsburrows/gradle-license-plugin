@@ -1,8 +1,8 @@
-# License Gradle Plugin
+# Gradle License Plugin
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![TravisCI](https://img.shields.io/travis/jaredsburrows/gradle-license-plugin/master.svg)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
-[![Coveralls Code Coverage](https://img.shields.io/coveralls/jaredsburrows/gradle-license-plugin/master.svg?label=Code%20Coverage)](https://coveralls.io/github/jaredsburrows/gradle-license-plugin?branch=master)
+[![License](https://img.shields.io/badge/license-apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status](https://travis-ci.org/jaredsburrows/gradle-license-plugin.svg?branch=master)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
+[![Coverage Status](https://coveralls.io/repos/github/jaredsburrows/gradle-license-plugin/badge.svg?branch=master)](https://coveralls.io/github/jaredsburrows/gradle-license-plugin?branch=master)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
 This plugin provides a task to generate a HTML license report based on the 
