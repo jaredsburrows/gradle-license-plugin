@@ -1,4 +1,5 @@
 apply plugin: "maven-publish"
+apply plugin: "com.jfrog.artifactory"
 apply plugin: "com.jfrog.bintray"
 
 def pomConfig = {
@@ -99,6 +100,27 @@ publishing {
 }
 publish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 publish.dependsOn "generatePomFileForMavenPublication"
+
+artifactory {
+  contextUrl = "https://oss.jfrog.org"
+  publish {
+    repository {
+      repoKey = "oss-snapshot-local"
+      username = project.hasProperty("bintrayUsername") ? project.property("bintrayUsername") : ""
+      password = project.hasProperty("bintrayApiKey") ? project.property("bintrayApiKey") : ""
+    }
+    defaults {
+      publications "maven"
+    }
+  }
+  resolve {
+    repository {
+      repoKey = "libs-release"
+    }
+  }
+}
+artifactoryPublish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
+artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
 bintray {
   user = project.hasProperty("bintrayUsername") ? project.property("bintrayUsername") : ""
