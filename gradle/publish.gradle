@@ -105,8 +105,8 @@ artifactory {
   publish {
     repository {
       repoKey = "oss-snapshot-local"
-      username = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : ""
-      password = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : ""
+      username = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
+      password = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
     }
     defaults {
       publications "maven"
@@ -122,8 +122,8 @@ artifactoryPublish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
 bintray {
-  user = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : ""
-  key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : ""
+  user = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
+  key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
   publications = ["maven"]
   publish = true
   pkg {
@@ -144,8 +144,8 @@ bintray {
       vcsTag = project.version
       mavenCentralSync {
         sync = false
-        user = project.hasProperty("sonatypeUsername") ? project.property("sonatypeUsername") : ""
-        password = project.hasProperty("sonatypeUsername") ? project.property("sonatypePassword") : ""
+        user = project.hasProperty("SONATYPE_USERNAME") ? project.property("SONATYPE_USERNAME") : System.getenv("SONATYPE_USERNAME")
+        password = project.hasProperty("SONATYPE_PASSWORD") ? project.property("SONATYPE_PASSWORD") : System.getenv("SONATYPE_PASSWORD")
         close = "1"
       }
     }
