@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import groovy.json.JsonSlurper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -161,6 +162,23 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[2]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[2]
   }
 
   def "test licenseReleaseReport - default buildTypes"() {
@@ -199,6 +217,23 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[2]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[2]
   }
 
   def "test licenseDebugReport - default and debug buildTypes"() {
@@ -236,6 +271,23 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[2]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[2]
   }
 
   def "test licenseReleaseReport - default and debug buildTypes"() {
@@ -273,6 +325,23 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[2]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[2]
   }
 
   def "test licenseFlavor1DebugReport - default, debug buildTypes and productFlavors"() {
@@ -316,6 +385,29 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[3]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[2].project == "Support-v4"
+    !json[2].authors
+    !json[2].url
+    !json[2].year
+    json[2].license == "The Apache Software License"
+    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[3]
   }
 
   def "test licenseFlavor2ReleaseReport - default, debug buildTypes and productFlavors"() {
@@ -359,6 +451,29 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[3]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[2].project == "Support-v4"
+    !json[2].authors
+    !json[2].url
+    !json[2].year
+    json[2].license == "The Apache Software License"
+    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[3]
   }
 
   def "test licenseFlavor1Flavor3DebugReport - default, debug buildTypes and productFlavors dimensions"() {
@@ -408,6 +523,35 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[4]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[2].project == "Support-annotations"
+    !json[2].authors
+    !json[2].url
+    !json[2].year
+    json[2].license == "The Apache Software License"
+    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[3].project == "Support-v4"
+    !json[3].authors
+    !json[3].url
+    !json[3].year
+    json[3].license == "The Apache Software License"
+    json[3].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[4]
   }
 
   def "test licenseFlavor2Flavor4ReleaseReport - default, debug buildTypes and productFlavors dimensions"() {
@@ -457,5 +601,34 @@ final class LicenseReportTaskSpec extends Specification {
     // Nothing else
     !html.body.ul.li[4]
     !html.body.pre[1]
+
+    def json = new JsonSlurper().parse(task.jsonFile)
+    // Dependencies
+    json[0].project == "Appcompat-v7"
+    !json[0].authors
+    !json[0].url
+    !json[0].year
+    json[0].license == "The Apache Software License"
+    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[1].project == "Design"
+    !json[1].authors
+    !json[1].url
+    !json[1].year
+    json[1].license == "The Apache Software License"
+    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[2].project == "Support-annotations"
+    !json[2].authors
+    !json[2].url
+    !json[2].year
+    json[2].license == "The Apache Software License"
+    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    json[3].project == "Support-v4"
+    !json[3].authors
+    !json[3].url
+    !json[3].year
+    json[3].license == "The Apache Software License"
+    json[3].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    // Nothing else
+    !json[4]
   }
 }

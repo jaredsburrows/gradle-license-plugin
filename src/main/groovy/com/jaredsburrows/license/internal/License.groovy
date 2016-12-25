@@ -6,7 +6,7 @@ import groovy.transform.ToString
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-@EqualsAndHashCode(excludes = "name", includeFields = true)
+@EqualsAndHashCode(includes = "url", includeFields = true)
 @ToString(includeNames = true, includePackage = false)
 final class License {
   final def name

@@ -30,7 +30,8 @@ final class LicensePlugin implements Plugin<Project> {
       final def task = project.tasks.create("$taskName", LicenseReportTask)
       task.description = "Outputs licenses for ${variantName} variant."
       task.group = "Reporting"
-      task.htmlFile = project.file(path + ".html")
+      task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
+      task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
       task.assetDirs = project.android.sourceSets.main.assets.srcDirs
       task.buildType = variant.buildType.name
       task.variant = variant.name

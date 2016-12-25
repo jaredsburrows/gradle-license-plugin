@@ -57,15 +57,13 @@ Example `build.gradle`:
 ```groovy
 dependencies {
   compile "com.android.support:design:25.1.0"
-  compile "com.jakewharton:butterknife:8.4.0"
-  compile "com.squareup.okhttp3:okhttp:3.5.0"
   compile "pl.droidsonroids.gif:android-gif-drawable:1.2.1"
 
   debugCompile "com.squareup.leakcanary:leakcanary-android:1.4"
 }
 ```
 
-**HTML**:
+HTML:
 ```html
 <html>
    <head>
@@ -76,7 +74,6 @@ dependencies {
       <h3>Notice for libraries:</h3>
       <ul>
          <li><a href="#-989311426">Android GIF Drawable Library</a></li>
-         <li><a href="#1288288048">Butterknife</a></li>
          <li><a href="#1288288048">Design</a></li>
          <li><a href="#1288288048">LeakCanary for Android</a></li>
       </ul>
