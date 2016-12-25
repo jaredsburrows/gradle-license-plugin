@@ -161,9 +161,15 @@ class LicenseReportTask extends DefaultTask {
     // Copy HTML file to the assets directory
     assetDirs.each { directory ->
       final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES)
+
+      // Remove existing file
+      if (project.file(licenseFile).exists()) project.file(licenseFile).delete()
+
+      // Create new file
       licenseFile.parentFile.mkdirs()
       licenseFile.createNewFile()
 
+      // Write to a new file
       project.file(licenseFile) << project.file(htmlFile).text
     }
   }
