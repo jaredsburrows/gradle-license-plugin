@@ -19,11 +19,11 @@ final class LicenseReportTaskSpec extends Specification {
     // Common build.gradle
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
+      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId "com.example"
+        applicationId LicensePluginSpec.APPLICATION_ID
       }
     }
 

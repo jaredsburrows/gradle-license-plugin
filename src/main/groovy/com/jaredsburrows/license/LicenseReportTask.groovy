@@ -18,7 +18,6 @@ class LicenseReportTask extends DefaultTask {
   final static def APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
   final static def PLUGIN_REPOSITORY = "https://plugins.gradle.org/m2/"
   final static def ANDROID_REPOSITORY = "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
-  final static def ANDROID_REPOSITORY_URL = "https://android.googlesource.com/platform/frameworks/support/+/master/"
   final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
   final static def HTML_EXT = ".html"
   final static def JSON_EXT = ".json"

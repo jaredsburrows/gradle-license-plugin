@@ -7,6 +7,9 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePluginSpec extends Specification {
+  final static def COMPILE_SDK_VERSION = 25
+  final static def BUILD_TOOLS_VERSION = "25.0.2"
+  final static def APPLICATION_ID = "com.example"
   def project
 
   def "setup"() {
@@ -19,8 +22,8 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    IllegalStateException exception = thrown()
-    exception.message == "License report plugin can only be applied to android projects"
+    def ex = thrown(IllegalStateException)
+    ex.message == "License report plugin can only be applied to android projects."
   }
 
   def "test groovy project"() {
@@ -31,8 +34,8 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    IllegalStateException exception = thrown()
-    exception.message == "License report plugin can only be applied to android projects"
+    def ex = thrown(IllegalStateException)
+    ex.message == "License report plugin can only be applied to android projects."
   }
 
   def "test java project"() {
@@ -43,8 +46,8 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    IllegalStateException exception = thrown()
-    exception.message == "License report plugin can only be applied to android projects"
+    def ex = thrown(IllegalStateException)
+    ex.message == "License report plugin can only be applied to android projects."
   }
 
   def "test application project"() {
@@ -73,11 +76,11 @@ final class LicensePluginSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId "com.example"
+        applicationId APPLICATION_ID
       }
     }
 
@@ -93,11 +96,11 @@ final class LicensePluginSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId "com.example"
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -119,11 +122,11 @@ final class LicensePluginSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId "com.example"
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -152,11 +155,11 @@ final class LicensePluginSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId "com.example"
+        applicationId APPLICATION_ID
       }
 
       buildTypes {

@@ -1,7 +1,5 @@
 package com.jaredsburrows.license
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -9,14 +7,24 @@ import org.gradle.api.Project
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePlugin implements Plugin<Project> {
+  final static def ANDROID_APPLICATION_PLUGIN = "com.android.application"
+  final static def ANDROID_LIBRARY_PLUGIN = "com.android.library"
+  final static def ANDROID_TEST_PLUGIN = "com.android.test"
+
   @Override void apply(Project project) {
     // Only allow Android projects for now
-    if (!(project.plugins.hasPlugin(LibraryPlugin) || project.plugins.hasPlugin(AppPlugin))) {
-      throw new IllegalStateException("License report plugin can only be applied to android projects")
+    if ((project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
+      || project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
+      || project.plugins.hasPlugin(ANDROID_TEST_PLUGIN))) {
+      configureAndroidProject(project)
+    } else {
+      throw new IllegalStateException("License report plugin can only be applied to android projects.")
     }
+  }
 
+  static def configureAndroidProject(project) {
     // Get correct plugin
-    final def variants = (project.plugins.hasPlugin(AppPlugin)
+    final def variants = (project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
       ? project.android.applicationVariants
       : project.android.libraryVariants)
 
