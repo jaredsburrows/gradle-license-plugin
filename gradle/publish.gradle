@@ -37,42 +37,32 @@ def pomConfig = {
   }
 }
 
-/**
- * Create jar of the sources of library.
- */
 task sourcesJar(type: Jar, dependsOn: classes) {
   classifier = "sources"
+  description = "Create jar of the sources of library."
   from sourceSets.main.allSource
 }
 
-/**
- * Create javadoc jar of Java documentation.
- */
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = "javadoc"
+  description = "Create javadoc jar of Java documentation."
   from javadoc.destinationDir
 }
 
-/**
- * Create compiled jar of library.
- */
 task mainJar(type: Jar) {
+  description = "Create compiled jar of library."
   from sourceSets.main.output
 }
 
-/**
- * Create jar of all tests.
- */
 task testsJar(type: Jar) {
   classifier = "tests"
+  description = "Create jar of all tests."
   from sourceSets.test.output
 }
 
-/**
- * Create a zip of all reports.
- */
 task reportsZip(type: Zip, dependsOn: check) {
   classifier = "reports"
+  description = "Create a zip of all reports."
   from reporting.baseDir
 }
 

@@ -17,9 +17,9 @@ repositories {
   maven { url "https://plugins.gradle.org/m2/" }
 }
 
-group "com.jaredsburrows"
-version "0.3.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
-description "This plugin provides a task to generate a HTML license report of your project."
+group = "com.jaredsburrows"
+version = "0.3.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
+description = "This plugin provides a task to generate a HTML license report of your project."
 
 ext {
   sourceCompatibilityVersion = JavaVersion.VERSION_1_7

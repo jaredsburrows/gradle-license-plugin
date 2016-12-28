@@ -104,11 +104,12 @@ class LicenseReportTask extends DefaultTask {
 
       // For all "com.android.support" libraries, add Apache 2
       if (!licenseName || !licenseURL) {
+        logger.log(LogLevel.INFO, "Project, " + projectName + ", has no license in the POM file.")
+
         if (ANDROID_SUPPORT_GROUP_ID == text.groupId.text()) {
           licenseName = APACHE_LICENSE_NAME
           licenseURL = APACHE_LICENSE_URL
-        } else
-          return
+        } else return
       }
 
       // Update formatting
@@ -209,7 +210,7 @@ class LicenseReportTask extends DefaultTask {
       project.file(licenseFile) << project.file(htmlFile).text
     }
 
-    logger.log(LogLevel.INFO, "Wrote HTML report to " + htmlFile.absolutePath)
+    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to " + htmlFile.absolutePath + ".")
   }
 
   /**
@@ -231,16 +232,16 @@ class LicenseReportTask extends DefaultTask {
         def jsonObject = [:]
         jsonObject.put("project", pomInfo.name)
 
-        // url
+        // authors/developers
         if (pomInfo.authors) jsonObject.put("authors", pomInfo.authors)
 
-        // url
+        // project url
         if (pomInfo.url) jsonObject.put("url", pomInfo.url)
 
-        // year
+        // inception year
         if (pomInfo.year) jsonObject.put("year", pomInfo.year)
 
-        // license
+        // project license
         if (pomInfo.license.name) jsonObject.put("license", pomInfo.license.name)
         if (pomInfo.license.url) jsonObject.put("license_url", pomInfo.license.url)
 
@@ -250,6 +251,6 @@ class LicenseReportTask extends DefaultTask {
       printStream.println()
     }
 
-    logger.log(LogLevel.INFO, "Wrote JSON report to " + jsonFile.absolutePath)
+    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to " + jsonFile.absolutePath + ".")
   }
 }

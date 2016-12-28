@@ -44,7 +44,6 @@ test {
     showCauses true
     showExceptions true
     showStackTraces true
-    showStandardStreams true
     events "failed", "skipped"
   }
 }
