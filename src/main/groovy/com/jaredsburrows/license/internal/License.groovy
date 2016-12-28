@@ -25,6 +25,9 @@ final class License {
     new Builder(this)
   }
 
+  /**
+   * Build a new {@link License}.
+   */
   final static class Builder {
     def name
     def url
@@ -37,11 +40,17 @@ final class License {
       this.url = license.url
     }
 
+    /**
+     * Sets the name of the {@link License}.
+     */
     Builder name(name) {
       this.name = name
       this
     }
 
+    /**
+     * Sets the URL of the {@link License}.
+     */
     Builder url(url) {
       this.url = url
       this

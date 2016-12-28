@@ -6,10 +6,12 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
 This plugin provides a task to generate a HTML license report based on the 
-configuration variant. (eg. `licenseDebugReport` for all debug dependencies).
+configuration. (eg. `licenseDebugReport` for all debug dependencies in an Android project).
 
-Applying this to an Android App or Library project will generate a the license 
-file(`open_source_licenses.html`) and copy it to `<project>/src/main/assets/`.
+Applying this to an Android or Java project will generate a the license 
+file(`open_source_licenses.html`) in the `<project>/build/reports/licenses/`.
+
+Also, for Android projects the license HTML file will be copied to `<project>/src/main/assets/`.
 
 ## Download
 
@@ -48,9 +50,10 @@ apply plugin: "com.jaredsburrows.license"
 
 ## Tasks
 
-**`license${variant}Report`**
+- **`license${variant}Report`** for Android
+- **`licenseReport`** for Java
 
-Generates a HTML report of the all open source licenses. (eg. `licenseDebugReport` for all debug dependencies).
+Generates a HTML report of the all open source licenses. (eg. `licenseDebugReport` for all debug dependencies in an Android project).
 
 Example `build.gradle`:
 
@@ -83,6 +86,27 @@ HTML:
       <pre>The Apache Software License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
    </body>
 </html>
+```
+
+JSON:
+```json
+[
+   {
+      "project":"Android GIF Drawable Library",
+      "license":"The MIT License",
+      "license_url":"http://opensource.org/licenses/MIT"
+   },
+   {
+      "project":"Design",
+      "license":"The Apache Software License, Version 2.0",
+      "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+   },
+   {
+      "project":"LeakCanary for Android",
+      "license":"The Apache Software License, Version 2.0",
+      "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+   }
+]
 ```
 
 ## Developing

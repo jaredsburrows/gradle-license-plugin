@@ -31,6 +31,9 @@ final class Project {
     new Builder(this)
   }
 
+  /**
+   * Build a new {@link Project}.
+   */
   final static class Builder {
     def name
     def license
@@ -49,26 +52,41 @@ final class Project {
       this.year = project.year
     }
 
+    /**
+     * Sets the name of the {@link Project}.
+     */
     Builder name(name) {
       this.name = name
       this
     }
 
+    /**
+     * Sets the {@link License} of the {@link Project}.
+     */
     Builder license(license) {
       this.license = license
       this
     }
 
+    /**
+     * Sets the URL of the {@link Project}.
+     */
     Builder url(url) {
       this.url = url
       this
     }
 
+    /**
+     * Sets the developers/authors of the {@link Project}.
+     */
     Builder authors(authors) {
       this.authors = authors
       this
     }
 
+    /**
+     * Sets the inception year of the {@link Project}.
+     */
     Builder year(year) {
       this.year = year
       this

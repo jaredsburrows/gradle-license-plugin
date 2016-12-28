@@ -18,6 +18,7 @@ class LicenseReportTask extends DefaultTask {
   final static def APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
   final static def PLUGIN_REPOSITORY = "https://plugins.gradle.org/m2/"
   final static def ANDROID_REPOSITORY = "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
+  final static def GOOGLE_REPOSITORY = "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
   final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
   final static def HTML_EXT = ".html"
   final static def JSON_EXT = ".json"
@@ -41,6 +42,7 @@ class LicenseReportTask extends DefaultTask {
 
     // Add repositories for Android repositories
     project.repositories {
+      maven { url GOOGLE_REPOSITORY }   // Local dependencies downloaded from Android SDK manager
       maven { url ANDROID_REPOSITORY }  // Local dependencies downloaded from Android SDK manager
       maven { url PLUGIN_REPOSITORY }   // Plugin repository Should proxy jcenter()/mavenCentral()
       mavenCentral()                    // If not in plugin repository, try maven central next
@@ -49,12 +51,20 @@ class LicenseReportTask extends DefaultTask {
 
     // Add POM information to our POM configuration
     def configurations = new LinkedHashSet<>()
-    configurations << project.configurations.compile                    // Add default compile configuration
-    configurations << project.configurations."${buildType}Compile"      // Add buildType compile configuration
-    productFlavors.each { flavor ->                                     // Add productFlavors compile configuration
-      // Works for productFlavors and productFlavors with dimensions
-      if (variant.capitalize().contains(flavor.name.capitalize()))
-        configurations << project.configurations."${flavor.name}Compile"
+
+    // Add default compile configuration
+    configurations << project.configurations.compile
+
+    // If Android project, add extra configurations
+    if (variant) {
+      // Add buildType compile configuration
+      configurations << project.configurations."${buildType}Compile"
+      // Add productFlavors compile configuration
+      productFlavors.each { flavor ->
+        // Works for productFlavors and productFlavors with dimensions
+        if (variant.capitalize().contains(flavor.name.capitalize()))
+          configurations << project.configurations."${flavor.name}Compile"
+      }
     }
 
     // Iterate through all "compile" configurations's dependencies
@@ -180,6 +190,9 @@ class LicenseReportTask extends DefaultTask {
       printStream.print("</body></html>")
       printStream.println()
     }
+
+    // If Android project, copy to asset directory
+    if (!variant) return
 
     // Copy HTML file to the assets directory
     assetDirs.each { directory ->

@@ -10,23 +10,24 @@ final class LicensePlugin implements Plugin<Project> {
   final static def ANDROID_APPLICATION_PLUGIN = "com.android.application"
   final static def ANDROID_LIBRARY_PLUGIN = "com.android.library"
   final static def ANDROID_TEST_PLUGIN = "com.android.test"
+  final static def GROOVY_PLUGIN = "groovy"
+  final static def JAVA_PLUGIN = "java"
 
   @Override void apply(Project project) {
     // Only allow Android projects for now
-    if ((project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
-      || project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
-      || project.plugins.hasPlugin(ANDROID_TEST_PLUGIN))) {
-      configureAndroidProject(project)
-    } else {
-      throw new IllegalStateException("License report plugin can only be applied to android projects.")
-    }
+    if (isAndroidProject(project)) configureAndroidProject(project) else
+    if (isJavaProject(project)) configureJavaProject(project) else
+    throw new IllegalStateException("License report plugin can only be applied to android, groovy or java projects.")
   }
 
+  /**
+   * Configure project and all variants for Android.
+   */
   static def configureAndroidProject(project) {
-    // Get correct plugin
-    final def variants = (project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
-      ? project.android.applicationVariants
-      : project.android.libraryVariants)
+    // Get correct plugin - Check for android library, default to application variant for application/test plugin
+    final def variants = (project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
+      ? project.android.libraryVariants
+      : project.android.applicationVariants)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -36,7 +37,7 @@ final class LicensePlugin implements Plugin<Project> {
 
       // Create tasks based on variant
       final def task = project.tasks.create("$taskName", LicenseReportTask)
-      task.description = "Outputs licenses for ${variantName} variant."
+      task.description = "Outputs licenses report for ${variantName} variant."
       task.group = "Reporting"
       task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
       task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
@@ -49,5 +50,41 @@ final class LicensePlugin implements Plugin<Project> {
       // Run task
       variant.assemble.doLast { task.licenseReport() }
     }
+  }
+
+  /**
+   * Configure project for Groovy/Java.
+   */
+  static def configureJavaProject(project) {
+    final def taskName = "licenseReport"
+    final def path = "${project.buildDir}/reports/licenses/$taskName"
+
+    // Create tasks
+    final def task = project.tasks.create("$taskName", LicenseReportTask)
+    task.description = "Outputs licenses report."
+    task.group = "Reporting"
+    task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
+    task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
+    task.outputs.upToDateWhen { false } // Make sure to not to use cache license file, update each run
+
+    // Run task
+    project.assemble.doLast { task.licenseReport() }
+  }
+
+  /**
+   * Check if the project has Android plugins.
+   */
+  static def isAndroidProject(project) {
+    (project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
+      || project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
+      || project.plugins.hasPlugin(ANDROID_TEST_PLUGIN))
+  }
+
+  /**
+   * Check if project has Java plugins.
+   */
+  static def isJavaProject(project) {
+    (project.plugins.hasPlugin(GROOVY_PLUGIN)
+      || project.plugins.hasPlugin(JAVA_PLUGIN))
   }
 }
