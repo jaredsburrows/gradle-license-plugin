@@ -22,12 +22,10 @@ final class LicenseReportTaskSpec extends Specification {
     assertDir.parentFile.mkdirs()
     htmlFile = new File(assertDir, "test.html")
     jsonFile = new File(assertDir, "test.json")
-
-    println assertDir
   }
 
   def "cleanup"() {
-//    assertDir.deleteDir()
+    assertDir.deleteDir()
   }
 
   def "test java licenseReport - build.gradle with no dependencies"() {

@@ -208,6 +208,8 @@ class LicenseReportTask extends DefaultTask {
       // Write to a new file
       project.file(licenseFile) << project.file(htmlFile).text
     }
+
+    logger.log(LogLevel.INFO, "Wrote HTML report to " + htmlFile.absolutePath)
   }
 
   /**
@@ -247,5 +249,7 @@ class LicenseReportTask extends DefaultTask {
       printStream.println(JsonOutput.toJson(jsonArray))
       printStream.println()
     }
+
+    logger.log(LogLevel.INFO, "Wrote JSON report to " + jsonFile.absolutePath)
   }
 }
