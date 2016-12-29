@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.License
 import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.report.json.JsonReportObject
 import groovy.json.JsonOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
@@ -120,7 +121,7 @@ class LicenseReportTask extends DefaultTask {
         .name(licenseName)
         .url(licenseURL)
         .build()
-      final def info = new Project.Builder()
+      final def project = new Project.Builder()
         .name(projectName)
         .authors(projectAuthors)
         .license(license)
@@ -128,7 +129,7 @@ class LicenseReportTask extends DefaultTask {
         .year(projectYear)
         .build()
 
-      projects << info
+      projects << project
     }
 
     // Sort POM information by name
@@ -227,25 +228,19 @@ class LicenseReportTask extends DefaultTask {
 
       // Print libraries first
       def jsonArray = []
-      projects.each { pomInfo ->
-        // project name
-        def jsonObject = [:]
-        jsonObject.put("project", pomInfo.name)
+      projects.each { project ->
 
-        // authors/developers
-        if (pomInfo.authors) jsonObject.put("authors", pomInfo.authors)
+        // Create new license object
+        def jsonReportObject = new JsonReportObject.Builder()
+          .name(project.name)
+          .authors(project.authors)
+          .url(project.url)
+          .year(project.year)
+          .license(project.license)
+          .build()
+          .jsonObject()
 
-        // project url
-        if (pomInfo.url) jsonObject.put("url", pomInfo.url)
-
-        // inception year
-        if (pomInfo.year) jsonObject.put("year", pomInfo.year)
-
-        // project license
-        if (pomInfo.license.name) jsonObject.put("license", pomInfo.license.name)
-        if (pomInfo.license.url) jsonObject.put("license_url", pomInfo.license.url)
-
-        jsonArray.add(jsonObject)
+        jsonArray.add(jsonReportObject)
       }
       printStream.println(JsonOutput.toJson(jsonArray))
       printStream.println()

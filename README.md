@@ -124,10 +124,10 @@ public static class OpenSourceLicensesDialog extends DialogFragment {
     webView.loadUrl("file:///android_asset/open_source_licenses.html");
 
     return new AlertDialog.Builder(getActivity())
-      .setTitle(R.string.about_licenses)
+      .setTitle("Open Source Licenses")
       .setView(webView)
       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int whichButton) {
+        public void onClick(DialogInterface dialog, int which) {
           dialog.dismiss();
         }
       }
@@ -166,7 +166,6 @@ $ gradlew assemble
 The [Spock](http://spockframework.org/) tests run on the JVM.
 ```bash
 $ gradlew test
-    
 ```
 
 ### Reports

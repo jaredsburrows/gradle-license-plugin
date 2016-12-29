@@ -18,7 +18,7 @@ repositories {
 }
 
 group = "com.jaredsburrows"
-version = "0.3.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
+version = "0.3.0" + (rootProject.hasProperty("release") ? "" : "-SNAPSHOT")
 description = "This plugin provides a task to generate a HTML license report of your project."
 
 ext {
@@ -35,8 +35,8 @@ apply from: rootProject.file("gradle/provided.gradle")
 apply plugin: "net.ltgt.errorprone"
 apply plugin: "com.github.ben-manes.versions"
 
-sourceCompatibility = project.ext.sourceCompatibilityVersion
-targetCompatibility = project.ext.sourceCompatibilityVersion
+sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
+targetCompatibility = rootProject.ext.sourceCompatibilityVersion
 
 dependencies {
   compile gradleApi()
@@ -44,5 +44,5 @@ dependencies {
 
   provided "com.android.tools.build:gradle:2.2.3"
 
-  testCompile "org.spockframework:spock-core:1.0-groovy-2.4", { exclude module: "groovy-all" }    // Use localGroovy()
+  testCompile "org.spockframework:spock-core:1.0-groovy-2.4", { exclude module: "groovy-all" }  // Use localGroovy()
 }
