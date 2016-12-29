@@ -109,6 +109,51 @@ JSON:
 ]
 ```
 
+## Usage
+
+### Create an open source dialog
+```java
+public static class OpenSourceLicensesDialog extends DialogFragment {
+
+  public OpenSourceLicensesDialog() {
+  }
+
+  @Override
+  public Dialog onCreateDialog(Bundle savedInstanceState) {
+    final WebView webView = new WebView(getActivity());
+    webView.loadUrl("file:///android_asset/open_source_licenses.html");
+
+    return new AlertDialog.Builder(getActivity())
+      .setTitle(R.string.about_licenses)
+      .setView(webView)
+      .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+          dialog.dismiss();
+        }
+      }
+    )
+    .create();
+  }
+}
+```
+
+### How to use it
+```java
+public static void showOpenSourceLicenses(Activity activity) {
+  final FragmentManager fm = activity.getFragmentManager();
+  final FragmentTransaction ft = fm.beginTransaction();
+  final Fragment prev = fm.findFragmentByTag("dialog_licenses");
+  if (prev != null) {
+    ft.remove(prev);
+  }
+  ft.addToBackStack(null);
+
+  new OpenSourceLicensesDialog().show(ft, "dialog_licenses");
+}
+```
+
+Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
+
 ## Developing
 
 ### Building
