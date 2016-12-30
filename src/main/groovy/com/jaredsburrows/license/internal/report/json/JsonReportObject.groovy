@@ -42,19 +42,19 @@ final class JsonReportObject {
    * Convert object to a JsonObject.
    */
   def jsonObject() {
-    // project name
+    // Project name
     jsonObject.put(PROJECT, name)
 
-    // authors/developers
+    // Authors/developers
     if (authors) jsonObject.put(AUTHORS, authors)
 
-    // project url
+    // Project url
     if (url) jsonObject.put(URL, url)
 
-    // inception year
+    // Inception year
     if (year) jsonObject.put(YEAR, year)
 
-    // project license
+    // Project license
     if (license?.name) jsonObject.put(LICENSE, license.name)
     if (license?.url) jsonObject.put(LICENSE_URL, license.url)
 

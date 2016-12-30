@@ -27,10 +27,13 @@ class LicenseReportTask extends DefaultTask {
   def buildType
   def variant
   def productFlavors = []
+  def isJavaProject
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
   @TaskAction def licenseReport() {
+    isJavaProject = !variant
+
     generatePOMInfo()
     createHTMLFile()
     createJsonFile()
@@ -56,7 +59,7 @@ class LicenseReportTask extends DefaultTask {
     configurations << project.configurations.compile
 
     // If Android project, add extra configurations
-    if (variant) {
+    if (!isJavaProject) {
       // Add buildType compile configuration
       configurations << project.configurations."${buildType}Compile"
       // Add productFlavors compile configuration
@@ -194,9 +197,9 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // If Android project, copy to asset directory
-    if (!variant) return
+    if (isJavaProject) return
 
-    // Copy HTML file to the assets directory
+    // Iterate through all asset directories
     assetDirs.each { directory ->
       final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
@@ -207,7 +210,7 @@ class LicenseReportTask extends DefaultTask {
       licenseFile.parentFile.mkdirs()
       licenseFile.createNewFile()
 
-      // Write to a new file
+      // Copy HTML file to the assets directory
       project.file(licenseFile) << project.file(htmlFile).text
     }
 
@@ -229,9 +232,7 @@ class LicenseReportTask extends DefaultTask {
       final def printStream = new PrintStream(outputStream)
 
       projects.each { project ->
-        final def json = new JsonReport(projects).toJson()
-
-        printStream.println(json)
+        printStream.println(new JsonReport(projects).toJson())
         printStream.println() // Add new line to file
       }
 

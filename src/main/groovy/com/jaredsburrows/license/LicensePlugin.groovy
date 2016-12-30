@@ -14,7 +14,6 @@ final class LicensePlugin implements Plugin<Project> {
   final static def JAVA_PLUGIN = "java"
 
   @Override void apply(Project project) {
-    // Only allow Android projects for now
     if (isAndroidProject(project)) configureAndroidProject(project)
     else if (isJavaProject(project)) configureJavaProject(project)
     else throw new IllegalStateException("License report plugin can only be applied to android, groovy or java projects.")
@@ -25,9 +24,7 @@ final class LicensePlugin implements Plugin<Project> {
    */
   static def configureAndroidProject(project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    final def variants = (project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
-      ? project.android.libraryVariants
-      : project.android.applicationVariants)
+    final def variants = getAndroidVariants(project)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -69,6 +66,15 @@ final class LicensePlugin implements Plugin<Project> {
 
     // Run task
     project.assemble.doLast { task.licenseReport() }
+  }
+
+  /**
+   * Get correct plugin - Check for android library, default to application variant for application/test plugin.
+   */
+  static def getAndroidVariants(project) {
+    (project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
+      ? project.android.libraryVariants
+      : project.android.applicationVariants)
   }
 
   /**
