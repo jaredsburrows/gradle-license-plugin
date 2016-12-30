@@ -2,7 +2,7 @@ package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.License
 import com.jaredsburrows.license.internal.Project
-import com.jaredsburrows.license.internal.report.json.JsonReportObject
+import com.jaredsburrows.license.internal.report.json.JsonReport
 import groovy.json.JsonOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
@@ -105,7 +105,7 @@ class LicenseReportTask extends DefaultTask {
 
       // For all "com.android.support" libraries, add Apache 2
       if (!licenseName || !licenseURL) {
-        logger.log(LogLevel.INFO, "Project, " + projectName + ", has no license in the POM file.")
+        logger.log(LogLevel.INFO, String.format("Project, %s, has no license in the POM file.", projectName))
 
         if (ANDROID_SUPPORT_GROUP_ID == text.groupId.text()) {
           licenseName = APACHE_LICENSE_NAME
@@ -143,6 +143,7 @@ class LicenseReportTask extends DefaultTask {
     // Remove existing file
     if (project.file(htmlFile).exists()) project.file(htmlFile).delete()
 
+    // Create directories and write report for file
     htmlFile.parentFile.mkdirs()
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
@@ -152,7 +153,7 @@ class LicenseReportTask extends DefaultTask {
         "white-space:pre-wrap;}</style><title>Open source licenses</title></head><body>")
 
       if (projects.empty) {
-        logger.log(LogLevel.INFO, "No open source libraries")
+        logger.log(LogLevel.INFO, "No open source libraries.")
 
         printStream.print("<h3>No open source libraries</h3>")
         printStream.print("</body></html>")
@@ -190,7 +191,7 @@ class LicenseReportTask extends DefaultTask {
         printStream.print("</pre>")
       }
       printStream.print("</body></html>")
-      printStream.println()
+      printStream.println() // Add new line to file
     }
 
     // If Android project, copy to asset directory
@@ -211,7 +212,8 @@ class LicenseReportTask extends DefaultTask {
       project.file(licenseFile) << project.file(htmlFile).text
     }
 
-    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to " + htmlFile.absolutePath + ".")
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", htmlFile.absolutePath))
   }
 
   /**
@@ -221,31 +223,21 @@ class LicenseReportTask extends DefaultTask {
     // Remove existing file
     if (project.file(jsonFile).exists()) project.file(jsonFile).delete()
 
+    // Create directories and write report for file
     jsonFile.parentFile.mkdirs()
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
 
-      // Print libraries first
-      def jsonArray = []
       projects.each { project ->
+        final def jsonArray = new JsonReport(projects).jsonArray()
 
-        // Create new license object
-        def jsonReportObject = new JsonReportObject.Builder()
-          .name(project.name)
-          .authors(project.authors)
-          .url(project.url)
-          .year(project.year)
-          .license(project.license)
-          .build()
-          .jsonObject()
-
-        jsonArray.add(jsonReportObject)
+        printStream.println(JsonOutput.toJson(jsonArray))
+        printStream.println() // Add new line to file
       }
-      printStream.println(JsonOutput.toJson(jsonArray))
-      printStream.println()
-    }
 
-    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to " + jsonFile.absolutePath + ".")
+      // Log output directory for user
+      logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
+    }
   }
 }
