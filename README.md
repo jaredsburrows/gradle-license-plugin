@@ -69,43 +69,43 @@ dependencies {
 HTML:
 ```html
 <html>
-   <head>
-      <style>body{font-family:sans-serif;}pre{background-color:#eeeeee;padding:1em;white-space:pre-wrap;}</style>
-      <title>Open source licenses</title>
-   </head>
-   <body>
-      <h3>Notice for libraries:</h3>
-      <ul>
-         <li><a href="#-989311426">Android GIF Drawable Library</a></li>
-         <li><a href="#1288288048">Design</a></li>
-         <li><a href="#1288288048">LeakCanary for Android</a></li>
-      </ul>
-      <h3><a name="-989311426"></a>The MIT License</h3>
-      <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
-      <h3><a name="1288288048"></a>The Apache Software License, Version 2.0</h3>
-      <pre>The Apache Software License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-   </body>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eeeeee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li><a href="#-989311426">Android GIF Drawable Library</a></li>
+      <li><a href="#1288288048">Design</a></li>
+      <li><a href="#1288288048">LeakCanary for Android</a></li>
+    </ul>
+    <h3><a name="-989311426"></a>The MIT License</h3>
+    <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
+    <h3><a name="1288288048"></a>The Apache Software License, Version 2.0</h3>
+    <pre>The Apache Software License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
 </html>
 ```
 
 JSON:
 ```json
 [
-   {
-      "project":"Android GIF Drawable Library",
-      "license":"The MIT License",
-      "license_url":"http://opensource.org/licenses/MIT"
-   },
-   {
-      "project":"Design",
-      "license":"The Apache Software License, Version 2.0",
-      "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
-   },
-   {
-      "project":"LeakCanary for Android",
-      "license":"The Apache Software License, Version 2.0",
-      "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
-   }
+  {
+    "project": "Android GIF Drawable Library",
+    "license": "The MIT License",
+    "license_url": "http://opensource.org/licenses/MIT"
+  },
+  {
+    "project": "Design",
+    "license": "The Apache Software License, Version 2.0",
+    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+  },
+  {
+    "project": "LeakCanary for Android",
+    "license": "The Apache Software License, Version 2.0",
+    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+  }
 ]
 ```
 
@@ -153,6 +153,10 @@ public static void showOpenSourceLicenses(Activity activity) {
 ```
 
 Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
+
+<img src="https://www.bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" />
+
+Source: https://www.bignerdranch.com/blog/open-source-licenses-and-android/
 
 ## Developing
 
