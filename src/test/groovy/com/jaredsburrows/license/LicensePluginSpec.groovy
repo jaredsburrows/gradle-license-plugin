@@ -7,9 +7,9 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePluginSpec extends Specification {
-  final static def COMPILE_SDK_VERSION = 25
-  final static def BUILD_TOOLS_VERSION = "25.0.2"
-  final static def APPLICATION_ID = "com.example"
+  final static def COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
+  final static def BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
+  final static def APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
   def project
 
   def "setup"() {

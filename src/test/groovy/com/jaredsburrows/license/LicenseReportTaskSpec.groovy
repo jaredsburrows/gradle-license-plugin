@@ -8,9 +8,19 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseReportTaskSpec extends Specification {
-  final static def COMPILE_SDK_VERSION = LicensePluginSpec.COMPILE_SDK_VERSION
-  final static def BUILD_TOOLS_VERSION = LicensePluginSpec.BUILD_TOOLS_VERSION
-  final static def APPLICATION_ID = LicensePluginSpec.APPLICATION_ID
+  final static def COMPILE_SDK_VERSION = 25
+  final static def BUILD_TOOLS_VERSION = "25.0.2"
+  final static def APPLICATION_ID = "com.example"
+  final static def SUPPORT_VERSION = "25.1.0"
+  // Maven repo - "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
+  final static def APPCOMPAT_V7 = "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
+  final static def DESIGN = "com.android.support:design:${SUPPORT_VERSION}"
+  final static def SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:${SUPPORT_VERSION}"
+  final static def SUPPORT_V4 = "com.android.support:support-v4:${SUPPORT_VERSION}"
+  // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
+  final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
+  // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
+  final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   def project
   def assertDir
   def htmlFile
@@ -19,6 +29,9 @@ final class LicenseReportTaskSpec extends Specification {
   def "setup"() {
     // Common project
     project = ProjectBuilder.builder().build()
+    project.repositories {
+      maven { url TEST_MAVEN_REPOSITORY }
+    }
 
     // Override output directories
     assertDir = File.createTempDir()
@@ -123,7 +136,7 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "java"
     project.dependencies {
-      delegate.compile("com.google.firebase:firebase-core:10.0.1")
+      delegate.compile(FIREBASE_CORE)
     }
 
     when:
@@ -157,7 +170,7 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.google.firebase:firebase-core:10.0.1")
+      delegate.compile(FIREBASE_CORE)
     }
 
     when:
@@ -192,7 +205,7 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.google.firebase:firebase-core:10.0.1")
+      delegate.compile(FIREBASE_CORE)
     }
 
     when:
@@ -220,9 +233,9 @@ final class LicenseReportTaskSpec extends Specification {
     project.apply plugin: "java"
     project.dependencies {
       // Handles duplicates
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:design:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(DESIGN)
     }
 
     when:
@@ -284,9 +297,9 @@ final class LicenseReportTaskSpec extends Specification {
     }
     project.dependencies {
       // Handles duplicates
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:design:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(DESIGN)
     }
 
     when:
@@ -349,9 +362,9 @@ final class LicenseReportTaskSpec extends Specification {
     }
     project.dependencies {
       // Handles duplicates
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.compile("com.android.support:design:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(APPCOMPAT_V7)
+      delegate.compile(DESIGN)
     }
 
     when:
@@ -413,9 +426,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.debugCompile("com.android.support:design:25.0.1")
-      delegate.releaseCompile("com.android.support:support-annotations:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.debugCompile(DESIGN)
+      delegate.releaseCompile(SUPPORT_ANNOTATIONS)
     }
 
     when:
@@ -477,9 +490,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.debugCompile("com.android.support:support-annotations:25.0.1")
-      delegate.releaseCompile("com.android.support:design:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.debugCompile(SUPPORT_ANNOTATIONS)
+      delegate.releaseCompile(DESIGN)
     }
 
     when:
@@ -546,9 +559,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.debugCompile("com.android.support:design:25.0.1")
-      delegate.flavor1Compile("com.android.support:support-v4:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.debugCompile(DESIGN)
+      delegate.flavor1Compile(SUPPORT_V4)
     }
 
     when:
@@ -622,9 +635,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.releaseCompile("com.android.support:design:25.0.1")
-      delegate.flavor2Compile("com.android.support:support-v4:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.releaseCompile(DESIGN)
+      delegate.flavor2Compile(SUPPORT_V4)
     }
 
     when:
@@ -702,10 +715,10 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.debugCompile("com.android.support:design:25.0.1")
-      delegate.flavor1Compile("com.android.support:support-v4:25.0.1")
-      delegate.flavor3Compile("com.android.support:support-annotations:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.debugCompile(DESIGN)
+      delegate.flavor1Compile(SUPPORT_V4)
+      delegate.flavor3Compile(SUPPORT_ANNOTATIONS)
     }
 
     when:
@@ -790,10 +803,10 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile("com.android.support:appcompat-v7:25.0.1")
-      delegate.releaseCompile("com.android.support:design:25.0.1")
-      delegate.flavor2Compile("com.android.support:support-v4:25.0.1")
-      delegate.flavor4Compile("com.android.support:support-annotations:25.0.1")
+      delegate.compile(APPCOMPAT_V7)
+      delegate.releaseCompile(DESIGN)
+      delegate.flavor2Compile(SUPPORT_V4)
+      delegate.flavor4Compile(SUPPORT_ANNOTATIONS)
     }
 
     when:
