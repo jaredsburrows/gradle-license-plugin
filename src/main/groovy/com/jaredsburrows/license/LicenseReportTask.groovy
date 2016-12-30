@@ -3,7 +3,6 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.License
 import com.jaredsburrows.license.internal.Project
 import com.jaredsburrows.license.internal.report.json.JsonReport
-import groovy.json.JsonOutput
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.OutputFile
@@ -230,9 +229,9 @@ class LicenseReportTask extends DefaultTask {
       final def printStream = new PrintStream(outputStream)
 
       projects.each { project ->
-        final def jsonArray = new JsonReport(projects).jsonArray()
+        final def json = new JsonReport(projects).toJson()
 
-        printStream.println(JsonOutput.toJson(jsonArray))
+        printStream.println(json)
         printStream.println() // Add new line to file
       }
 

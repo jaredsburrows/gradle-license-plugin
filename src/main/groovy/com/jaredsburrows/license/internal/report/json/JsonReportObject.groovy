@@ -39,8 +39,7 @@ final class JsonReportObject {
   }
 
   /**
-   * Convert object to {@link J}.
-   * @return
+   * Convert object to a JsonObject.
    */
   def jsonObject() {
     // project name

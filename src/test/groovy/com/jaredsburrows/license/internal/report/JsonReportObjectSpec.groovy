@@ -7,7 +7,7 @@ import spock.lang.Specification
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-class JsonReportObjectSpec extends Specification {
+final class JsonReportObjectSpec extends Specification {
   def license = new License.Builder().name("name").url("url").build()
   def sut = new JsonReportObject.Builder().name("name").authors("authors").url("url").year("year").license(license).build()
 
