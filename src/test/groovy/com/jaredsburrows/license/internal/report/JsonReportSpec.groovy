@@ -11,8 +11,8 @@ import spock.lang.Specification
  */
 final class JsonReportSpec extends Specification {
   def projects = []
-  def license = new License.Builder().name("name").url("url").build()
-  def project = new Project.Builder().name("name").license(license).url("url").authors("authors").year("year").build()
+  def license = License.builder().name("name").url("url").build()
+  def project = Project.builder().name("name").license(license).url("url").authors("authors").year("year").build()
   def sut = new JsonReport(projects)
 
   def "setup"() {

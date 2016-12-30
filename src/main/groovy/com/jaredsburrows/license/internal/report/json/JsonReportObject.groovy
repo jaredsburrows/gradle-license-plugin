@@ -2,11 +2,13 @@ package com.jaredsburrows.license.internal.report.json
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import groovy.transform.builder.Builder
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-@EqualsAndHashCode(includeFields = true)
+@Builder(excludes = "jsonObject")
+@EqualsAndHashCode(includeFields = true, useCanEqual = false)
 @ToString(includeNames = true, includePackage = false)
 final class JsonReportObject {
   final static def PROJECT = "project"
@@ -21,22 +23,6 @@ final class JsonReportObject {
   def url
   def year
   def license
-
-  JsonReportObject() {
-    this(new Builder())
-  }
-
-  JsonReportObject(builder) {
-    this.name = builder.name
-    this.authors = builder.authors
-    this.url = builder.url
-    this.year = builder.year
-    this.license = builder.license
-  }
-
-  Builder newBuilder() {
-    new Builder(this)
-  }
 
   /**
    * Convert object to a JsonObject.
@@ -59,71 +45,5 @@ final class JsonReportObject {
     if (license?.url) jsonObject.put(LICENSE_URL, license.url)
 
     jsonObject
-  }
-
-  /**
-   * Build a new {@link JsonReportObject}.
-   */
-  final static class Builder {
-    def name
-    def authors
-    def url
-    def year
-    def license
-
-    Builder() {
-    }
-
-    Builder(object) {
-      this.name = object.name
-      this.authors = object.authors
-      this.url = object.url
-      this.year = object.year
-      this.license = object.license
-    }
-
-    /**
-     * Sets the project name of the {@link JsonReportObject}.
-     */
-    Builder name(name) {
-      this.name = name
-      this
-    }
-
-    /**
-     * Sets the project authors of the {@link JsonReportObject}.
-     */
-    Builder authors(authors) {
-      this.authors = authors
-      this
-    }
-
-    /**
-     * Sets the project url of the {@link JsonReportObject}.
-     */
-    Builder url(url) {
-      this.url = url
-      this
-    }
-
-    /**
-     * Sets the project inception year of the {@link JsonReportObject}.
-     */
-    Builder year(year) {
-      this.year = year
-      this
-    }
-
-    /**
-     * Sets the project license of the {@link JsonReportObject}.
-     */
-    Builder license(license) {
-      this.license = license
-      this
-    }
-
-    JsonReportObject build() {
-      new JsonReportObject(this)
-    }
   }
 }

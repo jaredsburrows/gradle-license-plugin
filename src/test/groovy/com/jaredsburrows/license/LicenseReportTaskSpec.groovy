@@ -8,24 +8,25 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseReportTaskSpec extends Specification {
+  final static def COMPILE_SDK_VERSION = LicensePluginSpec.COMPILE_SDK_VERSION
+  final static def BUILD_TOOLS_VERSION = LicensePluginSpec.BUILD_TOOLS_VERSION
+  final static def APPLICATION_ID = LicensePluginSpec.APPLICATION_ID
   def project
   def assertDir
   def htmlFile
   def jsonFile
 
   def "setup"() {
-    given:
+    // Common project
     project = ProjectBuilder.builder().build()
 
-    // Save to known output for viewing
-    assertDir = project.file("./src/test/resources")
-    assertDir.parentFile.mkdirs()
-    htmlFile = new File(assertDir, "test.html")
-    jsonFile = new File(assertDir, "test.json")
-  }
-
-  def "cleanup"() {
-    assertDir.deleteDir()
+    // Override output directories
+    assertDir = File.createTempDir()
+    assertDir.deleteOnExit()
+    htmlFile = File.createTempFile(assertDir.path, "test.html")
+    htmlFile.deleteOnExit()
+    jsonFile = File.createTempFile(assertDir.path, "test.json")
+    jsonFile.deleteOnExit()
   }
 
   def "test java licenseReport - build.gradle with no dependencies"() {
@@ -56,11 +57,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
     }
     project.dependencies {}
@@ -89,11 +90,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
     }
     project.dependencies {}
@@ -148,11 +149,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
     }
     project.dependencies {
@@ -183,11 +184,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
     }
     project.dependencies {
@@ -269,11 +270,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -334,11 +335,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -399,11 +400,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -463,11 +464,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -527,11 +528,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -603,11 +604,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -679,11 +680,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {
@@ -767,11 +768,11 @@ final class LicenseReportTaskSpec extends Specification {
     given:
     project.apply plugin: "com.android.application"
     project.android {
-      compileSdkVersion LicensePluginSpec.COMPILE_SDK_VERSION
-      buildToolsVersion LicensePluginSpec.BUILD_TOOLS_VERSION
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
-        applicationId LicensePluginSpec.APPLICATION_ID
+        applicationId APPLICATION_ID
       }
 
       buildTypes {

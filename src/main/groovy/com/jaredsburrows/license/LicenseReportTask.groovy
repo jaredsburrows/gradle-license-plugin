@@ -53,7 +53,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Add POM information to our POM configuration
-    def configurations = new LinkedHashSet<>()
+    final def configurations = new LinkedHashSet<>()
 
     // Add default compile configuration
     configurations << project.configurations.compile
@@ -119,11 +119,11 @@ class LicenseReportTask extends DefaultTask {
       projectName = projectName.capitalize()
       licenseName = licenseName.capitalize()
 
-      final def license = new License.Builder()
+      final def license = License.builder()
         .name(licenseName)
         .url(licenseURL)
         .build()
-      final def project = new Project.Builder()
+      final def project = Project.builder()
         .name(projectName)
         .authors(projectAuthors)
         .license(license)
@@ -157,8 +157,7 @@ class LicenseReportTask extends DefaultTask {
       if (projects.empty) {
         logger.log(LogLevel.INFO, "No open source libraries.")
 
-        printStream.print("<h3>No open source libraries</h3>")
-        printStream.print("</body></html>")
+        printStream.print("<h3>No open source libraries</h3></body></html>")
         printStream.println()
         return
       }
@@ -170,27 +169,17 @@ class LicenseReportTask extends DefaultTask {
       projects.each { pomInfo ->
         licenses << pomInfo.license
 
-        printStream.print("<li><a href=\"#")
-        printStream.print(pomInfo.license.hashCode())
-        printStream.print("\">")
-        printStream.print(pomInfo.name)
-        printStream.print("</a></li>")
+        printStream.print(String.format("<li><a href=\"#%s\">%s</a></li>", pomInfo.license.hashCode(), pomInfo.name))
       }
-      printStream.println("</ul>")
+      printStream.print("</ul>")
 
       // Print licenses second
       licenses.each { license ->
         final def licenseName = license.name
         final def licenseUrl = license.url
-        final def licenseNameUrl = licenseName + ", " + licenseUrl
+        final def licenseNameUrl = String.format("%s, %s", licenseName, licenseUrl)
 
-        printStream.print("<h3><a name=\"")
-        printStream.print(license.hashCode())
-        printStream.print("\"></a>")
-        printStream.print(licenseName)
-        printStream.print("</h3><pre>")
-        printStream.print(licenseNameUrl)
-        printStream.print("</pre>")
+        printStream.print(String.format("<h3><a name=\"%s\"></a>%s</h3><pre>%s</pre>", license.hashCode(), licenseName, licenseNameUrl))
       }
       printStream.print("</body></html>")
       printStream.println() // Add new line to file
@@ -231,10 +220,8 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
 
-      projects.each { project ->
-        printStream.println(new JsonReport(projects).toJson())
-        printStream.println() // Add new line to file
-      }
+      printStream.println(new JsonReport(projects).toJson())
+      printStream.println() // Add new line to file
 
       // Log output directory for user
       logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))

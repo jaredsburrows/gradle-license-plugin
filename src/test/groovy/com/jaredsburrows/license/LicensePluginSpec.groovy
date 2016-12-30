@@ -13,7 +13,6 @@ final class LicensePluginSpec extends Specification {
   def project
 
   def "setup"() {
-    given:
     project = ProjectBuilder.builder().build()
   }
 
@@ -22,8 +21,8 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    def ex = thrown(IllegalStateException)
-    ex.message == "License report plugin can only be applied to android, groovy or java projects."
+    def e = thrown(IllegalStateException)
+    e.message == "License report plugin can only be applied to android, groovy or java projects."
   }
 
   def "test groovy project"() {
@@ -34,7 +33,7 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    noExceptionThrown()
+    notThrown(IllegalStateException)
   }
 
   def "test java project"() {
@@ -45,7 +44,7 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    noExceptionThrown()
+    notThrown(IllegalStateException)
   }
 
   def "test android application project"() {
@@ -56,7 +55,7 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    noExceptionThrown()
+    notThrown(IllegalStateException)
   }
 
   def "test android library project"() {
@@ -67,7 +66,7 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    noExceptionThrown()
+    notThrown(IllegalStateException)
   }
 
   def "test android test project"() {
@@ -78,10 +77,10 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project)
 
     then:
-    noExceptionThrown()
+    notThrown(IllegalStateException)
   }
 
-  def "test groovy/java default all tasks created"() {
+  def "test java default all tasks created"() {
     given:
     project.apply plugin: "java"
 

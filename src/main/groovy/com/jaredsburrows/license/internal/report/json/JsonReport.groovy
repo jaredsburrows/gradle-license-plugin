@@ -16,7 +16,7 @@ final class JsonReport {
   def jsonArray() {
     // Create new license object for each project
     projects.each { project ->
-      final def jsonReportObject = new JsonReportObject.Builder()
+      final def jsonReportObject = JsonReportObject.builder()
         .name(project.name)
         .authors(project.authors)
         .url(project.url)
