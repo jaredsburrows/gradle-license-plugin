@@ -37,6 +37,12 @@ def pomConfig = {
   }
 }
 
+task mainJar(type: Jar) {
+  group = "Publications"
+  description = "Create compiled jar of plugin."
+  from sourceSets.main.output
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
   group = "Publications"
   description = "Create jar of the sources of plugin."
@@ -51,16 +57,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
   from javadoc.destinationDir
 }
 
-task mainJar(type: Jar) {
-  group = "Publications"
-  description = "Create compiled jar of plugin."
-  classifier = "tests"
-  from sourceSets.main.output
-}
-
 task testsJar(type: Jar) {
   group = "Publications"
   description = "Create jar of all tests."
+  classifier = "tests"
   from sourceSets.test.output
 }
 
@@ -71,7 +71,12 @@ task reportsZip(type: Zip, dependsOn: check) {
   from reporting.baseDir
 }
 
+// Local published to ~/.m2 - mavenLocal()
 publishing {
+  repositories {
+    mavenLocal()
+  }
+
   publications {
     maven(MavenPublication) {
       artifact mainJar
@@ -95,6 +100,7 @@ publishing {
 publish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 publish.dependsOn "generatePomFileForMavenPublication"
 
+// Snapshots published to JFrog Artifactory repository
 artifactory {
   contextUrl = "https://oss.jfrog.org"
   publish {
@@ -116,6 +122,7 @@ artifactory {
 artifactoryPublish.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
+// Releases published to JFrog Bintray's JCenter repository
 bintray {
   user = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
   key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
