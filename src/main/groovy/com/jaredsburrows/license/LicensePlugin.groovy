@@ -33,7 +33,7 @@ final class LicensePlugin implements Plugin<Project> {
       final def path = "${project.buildDir}/reports/licenses/$taskName"
 
       // Create tasks based on variant
-      final def task = project.tasks.create("$taskName", LicenseReportTask)
+      final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
       task.description = "Outputs licenses report for ${variantName} variant."
       task.group = "Reporting"
       task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
@@ -57,7 +57,7 @@ final class LicensePlugin implements Plugin<Project> {
     final def path = "${project.buildDir}/reports/licenses/$taskName"
 
     // Create tasks
-    final def task = project.tasks.create("$taskName", LicenseReportTask)
+    final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
     task.description = "Outputs licenses report."
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)

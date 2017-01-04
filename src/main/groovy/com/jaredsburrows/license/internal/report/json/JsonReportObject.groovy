@@ -1,5 +1,6 @@
 package com.jaredsburrows.license.internal.report.json
 
+import com.jaredsburrows.license.internal.License
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
@@ -12,17 +13,17 @@ import groovy.transform.builder.Builder
 @ToString(includeNames = true, includePackage = false)
 final class JsonReportObject {
   final static def PROJECT = "project"
-  final static def AUTHORS = "authors"
+  final static def DEVELOPERS = "developers"
   final static def URL = "url"
   final static def YEAR = "year"
   final static def LICENSE = "license"
   final static def LICENSE_URL = "license_url"
-  def jsonObject = [:]
-  def name
-  def authors
-  def url
-  def year
-  def license
+  final def jsonObject = [:]
+  String name
+  String developers
+  String url
+  String year
+  License license
 
   /**
    * Convert object to a JsonObject.
@@ -32,7 +33,7 @@ final class JsonReportObject {
     jsonObject.put(PROJECT, name)
 
     // Authors/developers
-    if (authors) jsonObject.put(AUTHORS, authors)
+    if (developers) jsonObject.put(DEVELOPERS, developers)
 
     // Project url
     if (url) jsonObject.put(URL, url)

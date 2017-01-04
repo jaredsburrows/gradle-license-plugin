@@ -21,6 +21,7 @@ final class LicenseReportTaskSpec extends Specification {
   final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
+  final LicensePlugin plugin = new LicensePlugin()
   def project
   def assertDir
   def htmlFile
@@ -36,13 +37,11 @@ final class LicenseReportTaskSpec extends Specification {
     // Override output directories
     assertDir = File.createTempDir()
     assertDir.deleteOnExit()
-    htmlFile = File.createTempFile(assertDir.path, "test.html")
-    htmlFile.deleteOnExit()
-    jsonFile = File.createTempFile(assertDir.path, "test.json")
-    jsonFile.deleteOnExit()
+    htmlFile = new File(assertDir.path, "test.html")
+    jsonFile = new File(assertDir.path, "test.json")
   }
 
-  def "test java licenseReport - build.gradle with no dependencies"() {
+  def "test java licenseReport - no dependencies"() {
     given:
     project.apply plugin: "java"
     project.dependencies {}
@@ -52,7 +51,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
     task.execute()
@@ -66,7 +65,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test android licenseDebugReport - build.gradle with no dependencies"() {
+  def "test android licenseDebugReport - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -84,7 +83,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -99,7 +98,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test android licenseReleaseReport - build.gradle with no dependencies"() {
+  def "test android licenseReleaseReport - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -117,7 +116,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -132,7 +131,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test java licenseReport - build.gradle with no open source dependencies"() {
+  def "test java licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: "java"
     project.dependencies {
@@ -144,7 +143,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
     task.execute()
@@ -158,7 +157,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test android licenseDebugReport - build.gradle with no open source dependencies"() {
+  def "test android licenseDebugReport - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -178,7 +177,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -193,7 +192,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test android licenseReleaseReport - build.gradle with no open source dependencies"() {
+  def "test android licenseReleaseReport - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -213,7 +212,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -228,7 +227,7 @@ final class LicenseReportTaskSpec extends Specification {
     !html.text().contains("Notice for libraries:")
   }
 
-  def "test java licenseReport - default"() {
+  def "test java licenseReport"() {
     given:
     project.apply plugin: "java"
     project.dependencies {
@@ -243,7 +242,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
     task.execute()
@@ -289,11 +288,6 @@ final class LicenseReportTaskSpec extends Specification {
       defaultConfig {
         applicationId APPLICATION_ID
       }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
     }
     project.dependencies {
       // Handles duplicates
@@ -307,7 +301,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -354,11 +348,6 @@ final class LicenseReportTaskSpec extends Specification {
       defaultConfig {
         applicationId APPLICATION_ID
       }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
     }
     project.dependencies {
       // Handles duplicates
@@ -372,7 +361,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -409,7 +398,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[2]
   }
 
-  def "test android licenseDebugReport - default and debug buildTypes"() {
+  def "test android licenseDebugReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -436,7 +425,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -473,7 +462,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[2]
   }
 
-  def "test android licenseReleaseReport - default and debug buildTypes"() {
+  def "test android licenseReleaseReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -500,7 +489,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -537,7 +526,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[2]
   }
 
-  def "test android licenseFlavor1DebugReport - default, debug buildTypes and productFlavors"() {
+  def "test android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -569,7 +558,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseFlavor1DebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseFlavor1DebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -613,7 +602,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[3]
   }
 
-  def "test android licenseFlavor2ReleaseReport - default, debug buildTypes and productFlavors"() {
+  def "test android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -645,7 +634,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseFlavor2ReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseFlavor2ReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -689,7 +678,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[3]
   }
 
-  def "test android licenseFlavor1Flavor3DebugReport - default, debug buildTypes and productFlavors dimensions"() {
+  def "test android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -726,7 +715,7 @@ final class LicenseReportTaskSpec extends Specification {
     new LicensePlugin().apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -777,7 +766,7 @@ final class LicenseReportTaskSpec extends Specification {
     !json[4]
   }
 
-  def "test android licenseFlavor2Flavor4ReleaseReport - default, debug buildTypes and productFlavors dimensions"() {
+  def "test android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -811,10 +800,10 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
-    def task = project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
+    final LicenseReportTask task = project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile

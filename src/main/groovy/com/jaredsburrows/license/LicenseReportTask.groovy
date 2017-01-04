@@ -19,12 +19,12 @@ class LicenseReportTask extends DefaultTask {
   final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
   final static def HTML_EXT = ".html"
   final static def JSON_EXT = ".json"
-  def projects = []
-  def assetDirs = []
+  final List<Project> projects = []
+  File[] assetDirs = []
   def buildType
   def variant
   def productFlavors = []
-  def isJavaProject
+  boolean isJavaProject
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
@@ -32,8 +32,8 @@ class LicenseReportTask extends DefaultTask {
     isJavaProject = !variant
 
     generatePOMInfo()
-    createHTMLFile()
-    createJsonFile()
+    createHTMLReport()
+    createJsonReport()
   }
 
   def generatePOMInfo() {
@@ -113,7 +113,7 @@ class LicenseReportTask extends DefaultTask {
         .build()
       final def project = Project.builder()
         .name(projectName)
-        .authors(projectAuthors)
+        .developers(projectAuthors)
         .license(license)
         .url(projectURL)
         .year(projectYear)
@@ -123,13 +123,13 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Sort POM information by name
-    projects = projects.sort { project -> project.name }
+    projects.sort { project -> project.name }
   }
 
   /**
-   * Generated HTML license file.
+   * Generated HTML report.
    */
-  def createHTMLFile() {
+  def createHTMLReport() {
     // Remove existing file
     if (project.file(htmlFile).exists()) project.file(htmlFile).delete()
 
@@ -174,21 +174,21 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // If Android project, copy to asset directory
-    if (isJavaProject) return
+    if (!isJavaProject) {
+      // Iterate through all asset directories
+      assetDirs.each { directory ->
+        final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
-    // Iterate through all asset directories
-    assetDirs.each { directory ->
-      final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+        // Remove existing file
+        if (project.file(licenseFile).exists()) project.file(licenseFile).delete()
 
-      // Remove existing file
-      if (project.file(licenseFile).exists()) project.file(licenseFile).delete()
+        // Create new file
+        licenseFile.parentFile.mkdirs()
+        licenseFile.createNewFile()
 
-      // Create new file
-      licenseFile.parentFile.mkdirs()
-      licenseFile.createNewFile()
-
-      // Copy HTML file to the assets directory
-      project.file(licenseFile) << project.file(htmlFile).text
+        // Copy HTML file to the assets directory
+        project.file(licenseFile) << project.file(htmlFile).text
+      }
     }
 
     // Log output directory for user
@@ -196,9 +196,9 @@ class LicenseReportTask extends DefaultTask {
   }
 
   /**
-   * Generated JSON license file.
+   * Generated JSON report.
    */
-  def createJsonFile() {
+  def createJsonReport() {
     // Remove existing file
     if (project.file(jsonFile).exists()) project.file(jsonFile).delete()
 

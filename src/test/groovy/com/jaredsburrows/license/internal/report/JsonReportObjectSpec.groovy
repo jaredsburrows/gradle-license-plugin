@@ -8,8 +8,17 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class JsonReportObjectSpec extends Specification {
-  def license = License.builder().name("name").url("url").build()
-  def sut = JsonReportObject.builder().name("name").authors("authors").url("url").year("year").license(license).build()
+  def license = License.builder()
+    .name("name")
+    .url("url")
+    .build()
+  def sut = JsonReportObject.builder()
+    .name("name")
+    .developers("developers")
+    .url("url")
+    .year("year")
+    .license(license)
+    .build()
 
   def "test get name"() {
     expect:
@@ -17,55 +26,84 @@ final class JsonReportObjectSpec extends Specification {
     sut.getName() == "name"
   }
 
-  def "test authors"() {
+  def "test get authors"() {
     expect:
-    sut.authors == "authors"
-    sut.getAuthors() == "authors"
+    sut.developers == "developers"
+    sut.getDevelopers() == "developers"
   }
 
-  def "test url"() {
+  def "test get url"() {
     expect:
     sut.url == "url"
     sut.getUrl() == "url"
   }
 
-  def "test year"() {
+  def "test get year"() {
     expect:
     sut.year == "year"
     sut.getYear() == "year"
   }
 
-  def "test license"() {
+  def "test get license"() {
     expect:
     sut.license == license
     sut.getLicense() == license
   }
 
-  def "test to json"() {
+  def "test to json - all values"() {
     given:
     def json = sut.jsonObject()
 
     expect:
-    json.toString() == "[project:name, authors:authors, url:url, year:year, license:name, license_url:url]"
+    json.project == "name"
+    json.developers == "developers"
+    json.url == "url"
+    json.year == "year"
+    json.license == "name"
+    json.license_url == "url"
   }
 
-  def "test to json with missing values"() {
+  def "test to json - with missing values"() {
     given:
-    def json = JsonReportObject.builder().name("name").authors(null).url(null).year(null).license(null).build().jsonObject()
+    def json = JsonReportObject.builder()
+      .name("name")
+      .developers(null)
+      .url(null)
+      .year(null)
+      .license(null)
+      .build()
+      .jsonObject()
 
     expect:
-    json.toString() == "[project:name]"
+    json.project == "name"
+    !json.developers
+    !json.url
+    !json.year
+    !json.license
+    !json.license_url
   }
 
   def "test equals/hashcode"() {
     given:
-    def one = JsonReportObject.builder().name("name").authors("authors").url("url").year("year").license(license).build()
-    def two = JsonReportObject.builder().name("name").authors("authors").url("url").year("year").license(license).build()
+    def one = JsonReportObject.builder()
+      .name("name")
+      .developers("developers")
+      .url("url")
+      .year("year")
+      .license(license)
+      .build()
+    def two = JsonReportObject.builder()
+      .name("name")
+      .developers("developers")
+      .url("url")
+      .year("year")
+      .license(license)
+      .build()
 
     expect:
     // Values
     one.name == two.name
-    one.authors == two.authors
+    one.developers == two.developers
     one.url == two.url
     one.year == two.year
     one.license == two.license

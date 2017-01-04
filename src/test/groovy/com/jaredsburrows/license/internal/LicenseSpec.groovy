@@ -6,7 +6,10 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseSpec extends Specification {
-  def sut = License.builder().name("name").url("url").build()
+  def sut = License.builder()
+    .name("name")
+    .url("url")
+    .build()
 
   def "test get name"() {
     expect:
@@ -22,8 +25,14 @@ final class LicenseSpec extends Specification {
 
   def "test equals/hashcode"() {
     given:
-    def one = License.builder().name("name").url("url").build()
-    def two = License.builder().name("name").url("url").build()
+    def one = License.builder()
+      .name("name")
+      .url("url")
+      .build()
+    def two = License.builder()
+      .name("name")
+      .url("url")
+      .build()
 
     expect:
     // Values

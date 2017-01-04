@@ -6,8 +6,16 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class ProjectSpec extends Specification {
-  def license = License.builder().name("name").url("url").build()
-  def sut = Project.builder().name("name").license(license).url("url").authors("authors").year("year").build()
+  def license = License.builder()
+    .name("name")
+    .url("url")
+    .build()
+  def sut = Project.builder().name("name")
+    .license(license)
+    .url("url")
+    .developers("developers")
+    .year("year")
+    .build()
 
   def "test name"() {
     expect:
@@ -29,8 +37,8 @@ final class ProjectSpec extends Specification {
 
   def "test authors"() {
     expect:
-    sut.authors == "authors"
-    sut.getAuthors() == "authors"
+    sut.developers == "developers"
+    sut.getDevelopers() == "developers"
   }
 
   def "test year"() {
@@ -41,8 +49,8 @@ final class ProjectSpec extends Specification {
 
   def "test equals/hashcode"() {
     given:
-    def one = Project.builder().name("name").license(license).url("url").authors("authors").year("year").build()
-    def two = Project.builder().name("name").license(license).url("url").authors("authors").year("year").build()
+    def one = Project.builder().name("name").license(license).url("url").developers("developers").year("year").build()
+    def two = Project.builder().name("name").license(license).url("url").developers("developers").year("year").build()
 
     expect:
     // Values

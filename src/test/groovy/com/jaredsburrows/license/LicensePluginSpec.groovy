@@ -10,6 +10,7 @@ final class LicensePluginSpec extends Specification {
   final static def COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
   final static def BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
   final static def APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
+  final LicensePlugin plugin = new LicensePlugin()
   def project
 
   def "setup"() {
@@ -18,7 +19,7 @@ final class LicensePluginSpec extends Specification {
 
   def "test unsupported project project"() {
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     def e = thrown(IllegalStateException)
@@ -30,7 +31,7 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "groovy"
 
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
@@ -41,7 +42,7 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "java"
 
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
@@ -52,7 +53,7 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "com.android.application"
 
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
@@ -63,7 +64,7 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "com.android.library"
 
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
@@ -74,25 +75,25 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "com.android.test"
 
     when:
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
   }
 
-  def "test java default all tasks created"() {
+  def "test java - all tasks created"() {
     given:
     project.apply plugin: "java"
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     project.tasks.getByName("licenseReport")
   }
 
-  def "test android default all tasks created"() {
+  def "test android - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -106,13 +107,13 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     project.tasks.getByName("licenseDebugReport")
   }
 
-  def "test android buildTypes all tasks created"() {
+  def "test android [buildTypes] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -131,14 +132,14 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     project.tasks.getByName("licenseDebugReport")
     project.tasks.getByName("licenseReleaseReport")
   }
 
-  def "test android buildTypes productFlavors all tasks created"() {
+  def "test android [buildTypes + productFlavors] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -162,7 +163,7 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     project.tasks.getByName("licenseFlavor1DebugReport")
@@ -171,7 +172,7 @@ final class LicensePluginSpec extends Specification {
     project.tasks.getByName("licenseFlavor2ReleaseReport")
   }
 
-  def "test android buildTypes productFlavors flavorDimensions all tasks created"() {
+  def "test android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -199,7 +200,7 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     then:
     project.tasks.getByName("licenseFlavor1Flavor3DebugReport")

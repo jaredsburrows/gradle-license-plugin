@@ -11,6 +11,6 @@ import groovy.transform.builder.Builder
 @EqualsAndHashCode(includes = "url", includeFields = true, useCanEqual = false)
 @ToString(includeNames = true, includePackage = false)
 final class License {
-  def name
-  def url
+  String name
+  String url
 }
