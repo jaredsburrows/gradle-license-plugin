@@ -88,26 +88,26 @@ class LicenseReportTask extends DefaultTask {
       // If the POM is missing a name, do not record it
       if (!projectName) return
 
-      if (projectName) projectName = projectName.trim()
-      if (projectDevelopers) projectDevelopers = projectDevelopers.trim()
-      if (projectURL) projectURL = projectURL.trim()
-      if (projectYear) projectYear = projectYear.trim()
-      if (licenseName) licenseName = licenseName.trim()
-      if (licenseURL) licenseURL = licenseURL.trim()
+      projectName = projectName?.trim()
+      projectDevelopers = projectDevelopers?.trim()
+      projectURL = projectURL?.trim()
+      projectYear = projectYear?.trim()
+      licenseName = licenseName?.trim()
+      licenseURL = licenseURL?.trim()
 
       // For all "com.android.support" libraries, add Apache 2
       if (!licenseName || !licenseURL) {
         logger.log(LogLevel.INFO, String.format("Project, %s, has no license in the POM file.", projectName))
 
-        if (ANDROID_SUPPORT_GROUP_ID == text.groupId.text()) {
+        if (ANDROID_SUPPORT_GROUP_ID == text.groupId?.text()) {
           licenseName = APACHE_LICENSE_NAME
           licenseURL = APACHE_LICENSE_URL
         } else return
       }
 
       // Update formatting
-      projectName = projectName.capitalize()
-      licenseName = licenseName.capitalize()
+      projectName = projectName?.capitalize()
+      licenseName = licenseName?.capitalize()
 
       final def license = new License(name: licenseName,
         url: licenseURL)
@@ -129,7 +129,7 @@ class LicenseReportTask extends DefaultTask {
    */
   def createHTMLReport() {
     // Remove existing file
-    if (project.file(htmlFile).exists()) project.file(htmlFile).delete()
+    project.file(htmlFile).delete()
 
     // Create directories and write report for file
     htmlFile.parentFile.mkdirs()
@@ -148,7 +148,7 @@ class LicenseReportTask extends DefaultTask {
         final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
         // Remove existing file
-        if (project.file(licenseFile).exists()) project.file(licenseFile).delete()
+        project.file(licenseFile).delete()
 
         // Create new file
         licenseFile.parentFile.mkdirs()
@@ -168,7 +168,7 @@ class LicenseReportTask extends DefaultTask {
    */
   def createJsonReport() {
     // Remove existing file
-    if (project.file(jsonFile).exists()) project.file(jsonFile).delete()
+    project.file(jsonFile).delete()
 
     // Create directories and write report for file
     jsonFile.parentFile.mkdirs()

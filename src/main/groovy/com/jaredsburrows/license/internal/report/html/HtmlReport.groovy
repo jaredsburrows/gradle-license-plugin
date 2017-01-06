@@ -12,8 +12,6 @@ final class HtmlReport {
   final static def OPEN_SOURCE_LIBRARIES = "Open source licenses"
   final static def NO_OPEN_SOURCE_LIBRARIES = "No open source libraries"
   final static def NOTICE_LIBRARIES = "Notice for libraries:"
-  final def writer = new StringWriter()
-  final def markup = new MarkupBuilder(writer)
   final List<Project> projects
 
   HtmlReport(projects) {
@@ -23,7 +21,9 @@ final class HtmlReport {
   /**
    * Html report when there are no open source licenses.
    */
-  def noOpenSourceHtml() {
+  static def noOpenSourceHtml() {
+    final def writer = new StringWriter()
+    final def markup = new MarkupBuilder(writer)
     markup.html {
       head {
         style(CSS)
@@ -41,6 +41,8 @@ final class HtmlReport {
    * Html report when there are open source licenses.
    */
   def openSourceHtml() {
+    final def writer = new StringWriter()
+    final def markup = new MarkupBuilder(writer)
     final Set<License> licenses = new HashSet<>()
     markup.html {
       head {
