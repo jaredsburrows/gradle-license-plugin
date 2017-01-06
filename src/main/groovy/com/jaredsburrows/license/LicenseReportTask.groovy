@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.License
 import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.report.html.HtmlReport
 import com.jaredsburrows.license.internal.report.json.JsonReport
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
@@ -139,37 +140,7 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
 
-      printStream.print("<html><head><style>body{font-family:sans-serif;}pre{background-color:#eeeeee;padding:1em;" +
-        "white-space:pre-wrap;}</style><title>Open source licenses</title></head><body>")
-
-      if (projects.empty) {
-        logger.log(LogLevel.INFO, "No open source libraries.")
-
-        printStream.print("<h3>No open source libraries</h3></body></html>")
-        printStream.println()
-        return
-      }
-
-      printStream.print("<h3>Notice for libraries:</h3><ul>")
-
-      // Print libraries first
-      final def licenses = new HashSet<>()
-      projects.each { pomInfo ->
-        licenses << pomInfo.license
-
-        printStream.print(String.format("<li><a href=\"#%s\">%s</a></li>", pomInfo.license.hashCode(), pomInfo.name))
-      }
-      printStream.print("</ul>")
-
-      // Print licenses second
-      licenses.each { license ->
-        final def licenseName = license.name
-        final def licenseUrl = license.url
-        final def licenseNameUrl = String.format("%s, %s", licenseName, licenseUrl)
-
-        printStream.print(String.format("<h3><a name=\"%s\"></a>%s</h3><pre>%s</pre>", license.hashCode(), licenseName, licenseNameUrl))
-      }
-      printStream.print("</body></html>")
+      printStream.print(new HtmlReport(projects).string())
       printStream.println() // Add new line to file
     }
 
@@ -208,11 +179,11 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
 
-      printStream.println(new JsonReport(projects).toJson())
+      printStream.println(new JsonReport(projects).string())
       printStream.println() // Add new line to file
-
-      // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
     }
+
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
   }
 }

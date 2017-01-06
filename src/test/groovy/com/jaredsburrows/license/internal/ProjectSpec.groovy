@@ -46,19 +46,4 @@ final class ProjectSpec extends Specification {
     sut.year == "year"
     sut.getYear() == "year"
   }
-
-  def "test equals/hashcode"() {
-    given:
-    def one = Project.builder().name("name").license(license).url("url").developers("developers").year("year").build()
-    def two = Project.builder().name("name").license(license).url("url").developers("developers").year("year").build()
-
-    expect:
-    // Values
-    one.name == two.name
-    one.url == two.url
-    // Auto generated
-    one.hashCode() == two.hashCode()
-    // one == two
-    one.toString() == two.toString()
-  }
 }

@@ -1,38 +1,44 @@
 package com.jaredsburrows.license.internal.report.json
 
 import com.jaredsburrows.license.internal.Project
+import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class JsonReport {
+  final static def PROJECT = "project"
+  final static def DEVELOPERS = "developers"
+  final static def URL = "url"
+  final static def YEAR = "year"
+  final static def LICENSE = "license"
+  final static def LICENSE_URL = "license_url"
   final List<Project> projects
-  final def jsonArray = []
 
   JsonReport(projects) {
     this.projects = projects
   }
 
+  /**
+   * Json report when there are open source licenses.
+   */
   def jsonArray() {
-    // Create new license object for each project
-    projects.each { project ->
-      final def jsonReportObject = JsonReportObject.builder()
-        .name(project.name)
-        .developers(project.developers)
-        .url(project.url)
-        .year(project.year)
-        .license(project.license)
-        .build()
-        .jsonObject()
-
-      jsonArray.add(jsonReportObject)
-    }
-
-    jsonArray
+    new JsonBuilder(
+      projects.collect { project ->
+        [
+          "$PROJECT"    : project.name,
+          "$DEVELOPERS" : project.developers,
+          "$URL"        : project.url,
+          "$YEAR"       : project.year,
+          "$LICENSE"    : project.license?.name,
+          "$LICENSE_URL": project.license?.url
+        ]
+      }
+    )
   }
 
-  def toJson() {
-    JsonOutput.toJson(jsonArray())
+  def string() {
+    projects.empty ? "[]" : jsonArray().toPrettyString()
   }
 }
