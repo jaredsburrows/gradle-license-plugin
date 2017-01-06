@@ -28,12 +28,12 @@ final class JsonReport {
     new JsonBuilder(
       projects.collect { project ->
         [
-          "$PROJECT"    : project.name,
-          "$DEVELOPERS" : project.developers,
-          "$URL"        : project.url,
-          "$YEAR"       : project.year,
-          "$LICENSE"    : project.license?.name,
-          "$LICENSE_URL": project.license?.url
+          "$PROJECT"    : project.name ? project.name : null,
+          "$DEVELOPERS" : project.developers ? project.developers : null,
+          "$URL"        : project.url ? project.url : null,
+          "$YEAR"       : project.year ? project.year : null,
+          "$LICENSE"    : project.license?.name ? project.license?.name : null,
+          "$LICENSE_URL": project.license?.url ? project.license?.url : null
         ]
       }
     )

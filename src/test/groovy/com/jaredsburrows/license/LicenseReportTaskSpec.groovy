@@ -366,17 +366,17 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -447,17 +447,17 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -528,17 +528,17 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -613,17 +613,17 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -698,17 +698,17 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -791,25 +791,25 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-v4",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -892,25 +892,25 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-v4",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -1001,33 +1001,33 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-annotations",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-v4",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -1118,33 +1118,33 @@ final class LicenseReportTaskSpec extends Specification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Design",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-annotations",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     },
     {
         "project": "Support-v4",
-        "developers": "",
-        "url": "",
-        "year": "",
+        "developers": null,
+        "url": null,
+        "year": null,
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }

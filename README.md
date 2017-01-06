@@ -93,16 +93,25 @@ JSON:
 [
   {
     "project": "Android GIF Drawable Library",
+    "developers": null,
+    "url": null,
+    "year": null,
     "license": "The MIT License",
     "license_url": "http://opensource.org/licenses/MIT"
   },
   {
     "project": "Design",
+    "developers": null,
+    "url": null,
+    "year": null,
     "license": "The Apache Software License, Version 2.0",
     "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
   },
   {
     "project": "LeakCanary for Android",
+    "developers": null,
+    "url": null,
+    "year": null,
     "license": "The Apache Software License, Version 2.0",
     "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
   }
