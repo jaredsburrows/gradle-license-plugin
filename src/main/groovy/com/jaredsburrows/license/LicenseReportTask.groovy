@@ -79,7 +79,7 @@ class LicenseReportTask extends DefaultTask {
       final def text = new XmlParser().parse(pom)
 
       def projectName = text.name?.text() ? text.name?.text() : text.artifactId?.text()
-      def projectDevelopers = text.developers?.text()?.join(",")
+      def projectDevelopers = text.developers?.developer?.collect { developer -> developer?.name?.text() }?.join(", ")
       def projectURL = text.scm?.url?.text()
       def projectYear = text.inceptionYear?.text()
       def licenseName = text.licenses?.license?.name?.text()

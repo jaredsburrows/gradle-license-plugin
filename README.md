@@ -96,7 +96,7 @@ JSON:
 [
     {
         "project": "Android GIF Drawable Library",
-        "developers": null,
+        "developers": "Karol Wr\u00c3\u00b3tniak",
         "url": "https://github.com/koral--/android-gif-drawable.git",
         "year": null,
         "license": "The MIT License",
