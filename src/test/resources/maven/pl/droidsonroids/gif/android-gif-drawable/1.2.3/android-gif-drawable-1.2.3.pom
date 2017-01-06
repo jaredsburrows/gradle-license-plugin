@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>pl.droidsonroids.gif</groupId>
+  <artifactId>android-gif-drawable</artifactId>
+  <version>1.2.3</version>
+  <packaging>aar</packaging>
+  <name>Android GIF Drawable Library</name>
+  <description>Views and Drawable for displaying animated GIFs for Android</description>
+  <url>https://github.com/koral--/android-gif-drawable</url>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>koral</id>
+      <name>Karol WrÃ³tniak</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:koral--/android-gif-drawable.git</connection>
+    <developerConnection>scm:git@github.com:koral--/android-gif-drawable.git</developerConnection>
+    <url>https://github.com/koral--/android-gif-drawable.git</url>
+  </scm>
+</project>

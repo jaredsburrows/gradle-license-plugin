@@ -60,9 +60,7 @@ Example `build.gradle`:
 ```groovy
 dependencies {
   compile "com.android.support:design:25.1.0"
-  compile "pl.droidsonroids.gif:android-gif-drawable:1.2.1"
-
-  debugCompile "com.squareup.leakcanary:leakcanary-android:1.4"
+  compile "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
 }
 ```
 
@@ -70,20 +68,25 @@ HTML:
 ```html
 <html>
   <head>
-    <style>body{font-family:sans-serif;}pre{background-color:#eeeeee;padding:1em;white-space:pre-wrap;}</style>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
     <title>Open source licenses</title>
   </head>
   <body>
     <h3>Notice for libraries:</h3>
     <ul>
-      <li><a href="#-989311426">Android GIF Drawable Library</a></li>
-      <li><a href="#1288288048">Design</a></li>
-      <li><a href="#1288288048">LeakCanary for Android</a></li>
+      <li>
+        <a href='#-989311426'>Android GIF Drawable Library</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
     </ul>
-    <h3><a name="-989311426"></a>The MIT License</h3>
+    <a name='-989311426' />
+    <h3>The MIT License</h3>
     <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
-    <h3><a name="1288288048"></a>The Apache Software License, Version 2.0</h3>
-    <pre>The Apache Software License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 ```
@@ -91,30 +94,22 @@ HTML:
 JSON:
 ```json
 [
-  {
-    "project": "Android GIF Drawable Library",
-    "developers": null,
-    "url": null,
-    "year": null,
-    "license": "The MIT License",
-    "license_url": "http://opensource.org/licenses/MIT"
-  },
-  {
-    "project": "Design",
-    "developers": null,
-    "url": null,
-    "year": null,
-    "license": "The Apache Software License, Version 2.0",
-    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  },
-  {
-    "project": "LeakCanary for Android",
-    "developers": null,
-    "url": null,
-    "year": null,
-    "license": "The Apache Software License, Version 2.0",
-    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  }
+    {
+        "project": "Android GIF Drawable Library",
+        "developers": null,
+        "url": "https://github.com/koral--/android-gif-drawable.git",
+        "year": null,
+        "license": "The MIT License",
+        "license_url": "http://opensource.org/licenses/MIT"
+    },
+    {
+        "project": "Design",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
 ]
 ```
 

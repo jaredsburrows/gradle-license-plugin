@@ -18,6 +18,8 @@ final class LicenseReportTaskSpec extends Specification {
   final static def SUPPORT_V4 = "com.android.support:support-v4:${SUPPORT_VERSION}"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
   final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
+  // Others
+  final static def ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   final LicensePlugin plugin = new LicensePlugin()
@@ -228,7 +230,7 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(FIREBASE_CORE)
+      delegate.compile FIREBASE_CORE
     }
 
     when:
@@ -278,7 +280,7 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(FIREBASE_CORE)
+      delegate.compile FIREBASE_CORE
     }
 
     when:
@@ -321,9 +323,9 @@ final class LicenseReportTaskSpec extends Specification {
     project.apply plugin: "java"
     project.dependencies {
       // Handles duplicates
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(DESIGN)
+      delegate.compile APPCOMPAT_V7
+      delegate.compile APPCOMPAT_V7
+      delegate.compile DESIGN
     }
 
     when:
@@ -401,9 +403,9 @@ final class LicenseReportTaskSpec extends Specification {
     }
     project.dependencies {
       // Handles duplicates
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(DESIGN)
+      delegate.compile APPCOMPAT_V7
+      delegate.compile APPCOMPAT_V7
+      delegate.compile DESIGN
     }
 
     when:
@@ -482,9 +484,9 @@ final class LicenseReportTaskSpec extends Specification {
     }
     project.dependencies {
       // Handles duplicates
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(APPCOMPAT_V7)
-      delegate.compile(DESIGN)
+      delegate.compile APPCOMPAT_V7
+      delegate.compile APPCOMPAT_V7
+      delegate.compile DESIGN
     }
 
     when:
@@ -567,9 +569,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.debugCompile(DESIGN)
-      delegate.releaseCompile(SUPPORT_ANNOTATIONS)
+      delegate.compile APPCOMPAT_V7
+      delegate.debugCompile DESIGN
+      delegate.releaseCompile SUPPORT_ANNOTATIONS
     }
 
     when:
@@ -652,9 +654,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.debugCompile(SUPPORT_ANNOTATIONS)
-      delegate.releaseCompile(DESIGN)
+      delegate.compile APPCOMPAT_V7
+      delegate.debugCompile SUPPORT_ANNOTATIONS
+      delegate.releaseCompile DESIGN
     }
 
     when:
@@ -742,9 +744,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.debugCompile(DESIGN)
-      delegate.flavor1Compile(SUPPORT_V4)
+      delegate.compile APPCOMPAT_V7
+      delegate.debugCompile DESIGN
+      delegate.flavor1Compile SUPPORT_V4
     }
 
     when:
@@ -843,9 +845,9 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.releaseCompile(DESIGN)
-      delegate.flavor2Compile(SUPPORT_V4)
+      delegate.compile APPCOMPAT_V7
+      delegate.releaseCompile DESIGN
+      delegate.flavor2Compile SUPPORT_V4
     }
 
     when:
@@ -948,10 +950,10 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.debugCompile(DESIGN)
-      delegate.flavor1Compile(SUPPORT_V4)
-      delegate.flavor3Compile(SUPPORT_ANNOTATIONS)
+      delegate.compile APPCOMPAT_V7
+      delegate.debugCompile DESIGN
+      delegate.flavor1Compile SUPPORT_V4
+      delegate.flavor3Compile SUPPORT_ANNOTATIONS
     }
 
     when:
@@ -1065,10 +1067,10 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile(APPCOMPAT_V7)
-      delegate.releaseCompile(DESIGN)
-      delegate.flavor2Compile(SUPPORT_V4)
-      delegate.flavor4Compile(SUPPORT_ANNOTATIONS)
+      delegate.compile APPCOMPAT_V7
+      delegate.releaseCompile DESIGN
+      delegate.flavor2Compile SUPPORT_V4
+      delegate.flavor4Compile SUPPORT_ANNOTATIONS
     }
 
     when:
@@ -1142,6 +1144,88 @@ final class LicenseReportTaskSpec extends Specification {
     },
     {
         "project": "Support-v4",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def "test readme example"() {
+    given:
+    project.apply plugin: "com.android.application"
+    project.android {
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
+
+      defaultConfig {
+        applicationId APPLICATION_ID
+      }
+    }
+    project.dependencies {
+      delegate.compile DESIGN
+      delegate.compile ANDROID_GIF_DRAWABLE
+    }
+
+    when:
+    project.evaluate()
+    plugin.apply(project)
+
+    // Change output directory for testing
+    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    task.assetDirs = [assertDir]
+    task.htmlFile = htmlFile
+    task.jsonFile = jsonFile
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#-989311426'>Android GIF Drawable Library</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='-989311426' />
+    <h3>The MIT License</h3>
+    <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Android GIF Drawable Library",
+        "developers": null,
+        "url": "https://github.com/koral--/android-gif-drawable.git",
+        "year": null,
+        "license": "The MIT License",
+        "license_url": "http://opensource.org/licenses/MIT"
+    },
+    {
+        "project": "Design",
         "developers": null,
         "url": null,
         "year": null,

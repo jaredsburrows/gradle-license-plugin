@@ -43,9 +43,6 @@ final class LicensePlugin implements Plugin<Project> {
       task.variant = variant.name
       task.productFlavors = variant.productFlavors
       task.outputs.upToDateWhen { false } // Make sure to not to use cache license file, update each run
-
-      // Run task
-      variant.assemble.doLast { task.licenseReport() }
     }
   }
 
@@ -63,9 +60,6 @@ final class LicensePlugin implements Plugin<Project> {
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
     task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
     task.outputs.upToDateWhen { false } // Make sure to not to use cache license file, update each run
-
-    // Run task
-    project.assemble.doLast { task.licenseReport() }
   }
 
   /**
