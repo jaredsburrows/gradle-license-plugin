@@ -5,6 +5,7 @@ import com.jaredsburrows.license.internal.Project
 import com.jaredsburrows.license.internal.report.html.HtmlReport
 import com.jaredsburrows.license.internal.report.json.JsonReport
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -42,7 +43,7 @@ class LicenseReportTask extends DefaultTask {
     project.configurations.create(POM_CONFIGURATION)
 
     // Add POM information to our POM configuration
-    final def configurations = new LinkedHashSet<>()
+    final Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add default compile configuration
     configurations << project.configurations.compile
@@ -78,7 +79,7 @@ class LicenseReportTask extends DefaultTask {
       final def text = new XmlParser().parse(pom)
 
       def projectName = text.name?.text() ? text.name?.text() : text.artifactId?.text()
-      def projectAuthors = text.developers?.text()?.join(",")
+      def projectDevelopers = text.developers?.text()?.join(",")
       def projectURL = text.scm?.url?.text()
       def projectYear = text.inceptionYear?.text()
       def licenseName = text.licenses?.license?.name?.text()
@@ -88,7 +89,7 @@ class LicenseReportTask extends DefaultTask {
       if (!projectName) return
 
       if (projectName) projectName = projectName.trim()
-      if (projectAuthors) projectAuthors = projectAuthors.trim()
+      if (projectDevelopers) projectDevelopers = projectDevelopers.trim()
       if (projectURL) projectURL = projectURL.trim()
       if (projectYear) projectYear = projectYear.trim()
       if (licenseName) licenseName = licenseName.trim()
@@ -108,17 +109,13 @@ class LicenseReportTask extends DefaultTask {
       projectName = projectName.capitalize()
       licenseName = licenseName.capitalize()
 
-      final def license = License.builder()
-        .name(licenseName)
-        .url(licenseURL)
-        .build()
-      final def project = Project.builder()
-        .name(projectName)
-        .developers(projectAuthors)
-        .license(license)
-        .url(projectURL)
-        .year(projectYear)
-        .build()
+      final def license = new License(name: licenseName,
+        url: licenseURL)
+      final def project = new Project(name: projectName,
+        developers: projectDevelopers,
+        license: license,
+        url: projectURL,
+        year: projectYear)
 
       projects << project
     }

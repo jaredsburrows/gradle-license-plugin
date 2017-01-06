@@ -6,16 +6,8 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class ProjectSpec extends Specification {
-  def license = License.builder()
-    .name("name")
-    .url("url")
-    .build()
-  def sut = Project.builder().name("name")
-    .license(license)
-    .url("url")
-    .developers("developers")
-    .year("year")
-    .build()
+  def license = new License(name: "name", url: "url")
+  def sut = new Project(name: "name", license: license, url: "url", developers: "developers", year: "year")
 
   def "test name"() {
     expect:
@@ -35,7 +27,7 @@ final class ProjectSpec extends Specification {
     sut.getUrl() == "url"
   }
 
-  def "test authors"() {
+  def "test developers"() {
     expect:
     sut.developers == "developers"
     sut.getDevelopers() == "developers"

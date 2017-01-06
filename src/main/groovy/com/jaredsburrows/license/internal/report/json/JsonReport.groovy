@@ -3,6 +3,7 @@ package com.jaredsburrows.license.internal.report.json
 import com.jaredsburrows.license.internal.Project
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
+import org.gradle.internal.impldep.org.mortbay.util.ajax.JSON
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
@@ -38,6 +39,9 @@ final class JsonReport {
     )
   }
 
+  /**
+   * Return Json as a String.
+   */
   def string() {
     projects.empty ? "[]" : jsonArray().toPrettyString()
   }

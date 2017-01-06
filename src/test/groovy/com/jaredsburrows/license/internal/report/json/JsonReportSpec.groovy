@@ -26,17 +26,8 @@ final class JsonReportSpec extends Specification {
 
   def "test openSourceJson"() {
     given:
-    def license = License.builder()
-      .name("name")
-      .url("url")
-      .build()
-    def project = Project.builder()
-      .name("name")
-      .license(license)
-      .url("url")
-      .developers("developers")
-      .year("year")
-      .build()
+    def license = new License(name: "name", url: "url")
+    def project = new Project(name: "name", license: license, url: "url", developers: "developers", year: "year")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 

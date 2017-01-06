@@ -1,6 +1,5 @@
 package com.jaredsburrows.license
 
-import groovy.json.JsonSlurper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -48,7 +47,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReport")
@@ -56,13 +55,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseDebugReport - no dependencies"() {
@@ -80,7 +94,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
@@ -89,13 +103,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseReleaseReport - no dependencies"() {
@@ -113,7 +142,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
@@ -122,13 +151,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test java licenseReport - no open source dependencies"() {
@@ -140,7 +184,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReport")
@@ -148,13 +192,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseDebugReport - no open source dependencies"() {
@@ -174,7 +233,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
@@ -183,13 +242,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseReleaseReport - no open source dependencies"() {
@@ -209,7 +283,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
@@ -218,13 +292,28 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
     then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "No open source libraries"
-    // Nothing else
-    !html.text().contains("Notice for libraries:")
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test java licenseReport"() {
@@ -239,7 +328,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReport")
@@ -247,35 +336,56 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[2]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[2]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseDebugReport - default buildTypes"() {
@@ -298,7 +408,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
@@ -307,35 +417,56 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[2]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[2]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseReleaseReport - default buildTypes"() {
@@ -358,7 +489,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
@@ -367,35 +498,56 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[2]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[2]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseDebugReport - buildTypes"() {
@@ -422,7 +574,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
@@ -431,35 +583,56 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[2]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[2]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseReleaseReport - buildTypes"() {
@@ -486,7 +659,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
@@ -495,35 +668,56 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[2]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[2]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
@@ -555,7 +749,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseFlavor1DebugReport")
@@ -564,42 +758,67 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.ul.li[2].text() == "Support-v4"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[3]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-v4</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-v4",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[2].project == "Support-v4"
-    !json[2].authors
-    !json[2].url
-    !json[2].year
-    json[2].license == "The Apache Software License"
-    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[3]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
@@ -631,7 +850,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseFlavor2ReleaseReport")
@@ -640,42 +859,67 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.ul.li[2].text() == "Support-v4"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[3]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-v4</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-v4",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[2].project == "Support-v4"
-    !json[2].authors
-    !json[2].url
-    !json[2].year
-    json[2].license == "The Apache Software License"
-    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[3]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
@@ -712,7 +956,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    new LicensePlugin().apply(project)
+    plugin.apply(project)
 
     // Change output directory for testing
     final LicenseReportTask task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
@@ -721,49 +965,78 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.ul.li[2].text() == "Support-annotations"
-    html.body.ul.li[3].text() == "Support-v4"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[4]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-annotations</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-v4</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-annotations",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-v4",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[2].project == "Support-annotations"
-    !json[2].authors
-    !json[2].url
-    !json[2].year
-    json[2].license == "The Apache Software License"
-    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[3].project == "Support-v4"
-    !json[3].authors
-    !json[3].url
-    !json[3].year
-    json[3].license == "The Apache Software License"
-    json[3].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[4]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   def "test android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
@@ -809,48 +1082,77 @@ final class LicenseReportTaskSpec extends Specification {
     task.jsonFile = jsonFile
     task.execute()
 
-    then:
-    def html = new XmlParser().parse(task.htmlFile)
-    // Title
-    html.head.title.text() == "Open source licenses"
-    html.body.h3[0].text() == "Notice for libraries:"
-    // Dependencies
-    html.body.ul.li[0].text() == "Appcompat-v7"
-    html.body.ul.li[1].text() == "Design"
-    html.body.ul.li[2].text() == "Support-annotations"
-    html.body.ul.li[3].text() == "Support-v4"
-    html.body.pre[0].text() == "The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !html.body.ul.li[4]
-    !html.body.pre[1]
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-annotations</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Support-v4</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-annotations",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Support-v4",
+        "developers": "",
+        "url": "",
+        "year": "",
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
 
-    def json = new JsonSlurper().parse(task.jsonFile)
-    // Dependencies
-    json[0].project == "Appcompat-v7"
-    !json[0].authors
-    !json[0].url
-    !json[0].year
-    json[0].license == "The Apache Software License"
-    json[0].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[1].project == "Design"
-    !json[1].authors
-    !json[1].url
-    !json[1].year
-    json[1].license == "The Apache Software License"
-    json[1].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[2].project == "Support-annotations"
-    !json[2].authors
-    !json[2].url
-    !json[2].year
-    json[2].license == "The Apache Software License"
-    json[2].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    json[3].project == "Support-v4"
-    !json[3].authors
-    !json[3].url
-    !json[3].year
-    json[3].license == "The Apache Software License"
-    json[3].license_url == "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    // Nothing else
-    !json[4]
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 }

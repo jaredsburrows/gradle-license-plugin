@@ -69,6 +69,9 @@ final class HtmlReport {
     writer.toString()
   }
 
+  /**
+   * Return Html as a String.
+   */
   def string() {
     projects.empty ? noOpenSourceHtml() : openSourceHtml()
   }
