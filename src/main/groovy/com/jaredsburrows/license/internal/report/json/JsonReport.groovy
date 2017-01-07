@@ -1,9 +1,7 @@
 package com.jaredsburrows.license.internal.report.json
 
-import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.pom.Project
 import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
-import org.gradle.internal.impldep.org.mortbay.util.ajax.JSON
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
@@ -29,7 +27,7 @@ final class JsonReport {
       projects.collect { project ->
         [
           "$PROJECT"    : project.name ? project.name : null,
-          "$DEVELOPERS" : project.developers ? project.developers : null,
+          "$DEVELOPERS" : project.developers ? project.developers.collect { developer -> developer?.name }?.join(", ") : null,
           "$URL"        : project.url ? project.url : null,
           "$YEAR"       : project.year ? project.year : null,
           "$LICENSE"    : project.license?.name ? project.license?.name : null,

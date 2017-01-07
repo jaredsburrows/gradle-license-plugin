@@ -1,4 +1,4 @@
-package com.jaredsburrows.license.internal
+package com.jaredsburrows.license.internal.pom
 
 import spock.lang.Specification
 
@@ -6,8 +6,10 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class ProjectSpec extends Specification {
+  def developer = new Developer(name: "name")
+  def developers = [developer, developer]
   def license = new License(name: "name", url: "url")
-  def sut = new Project(name: "name", license: license, url: "url", developers: "developers", year: "year")
+  def sut = new Project(name: "name", license: license, url: "url", developers: developers, year: "year")
 
   def "test name"() {
     expect:
@@ -29,8 +31,8 @@ final class ProjectSpec extends Specification {
 
   def "test developers"() {
     expect:
-    sut.developers == "developers"
-    sut.getDevelopers() == "developers"
+    sut.developers == developers
+    sut.getDevelopers() == developers
   }
 
   def "test year"() {

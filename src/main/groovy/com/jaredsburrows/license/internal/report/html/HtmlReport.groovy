@@ -1,7 +1,7 @@
 package com.jaredsburrows.license.internal.report.html
 
-import com.jaredsburrows.license.internal.License
-import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.pom.License
+import com.jaredsburrows.license.internal.pom.Project
 import groovy.xml.MarkupBuilder
 
 /**

@@ -1,7 +1,8 @@
 package com.jaredsburrows.license.internal.report.html
 
-import com.jaredsburrows.license.internal.License
-import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.pom.Developer
+import com.jaredsburrows.license.internal.pom.License
+import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 /**
@@ -34,9 +35,11 @@ final class HtmlReportSpec extends Specification {
 
   def "test openSourceHtml"() {
     given:
+    def developer = new Developer(name: "name")
+    def developers = [developer, developer]
     def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", license: license, url: "url", developers: "developers", year: "year")
-    def projects = [project]
+    def project = new Project(name: "name", license: license, url: "url", developers: developers, year: "year")
+    def projects = [project, project]
     def sut = new HtmlReport(projects)
 
     when:
@@ -51,6 +54,9 @@ final class HtmlReportSpec extends Specification {
   <body>
     <h3>Notice for libraries:</h3>
     <ul>
+      <li>
+        <a href='#120016'>name</a>
+      </li>
       <li>
         <a href='#120016'>name</a>
       </li>

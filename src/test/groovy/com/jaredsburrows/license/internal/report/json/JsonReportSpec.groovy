@@ -1,7 +1,8 @@
 package com.jaredsburrows.license.internal.report.json
 
-import com.jaredsburrows.license.internal.License
-import com.jaredsburrows.license.internal.Project
+import com.jaredsburrows.license.internal.pom.Developer
+import com.jaredsburrows.license.internal.pom.License
+import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 /**
@@ -61,8 +62,10 @@ final class JsonReportSpec extends Specification {
 
   def "test openSourceJson - all values"() {
     given:
+    def developer = new Developer(name: "name")
+    def developers = [developer, developer]
     def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", license: license, url: "url", developers: "developers", year: "year")
+    def project = new Project(name: "name", license: license, url: "url", developers: developers, year: "year")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -73,7 +76,7 @@ final class JsonReportSpec extends Specification {
 [
     {
         "project": "name",
-        "developers": "developers",
+        "developers": "name, name",
         "url": "url",
         "year": "year",
         "license": "name",
@@ -81,7 +84,7 @@ final class JsonReportSpec extends Specification {
     },
     {
         "project": "name",
-        "developers": "developers",
+        "developers": "name, name",
         "url": "url",
         "year": "year",
         "license": "name",

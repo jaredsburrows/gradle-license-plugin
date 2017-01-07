@@ -1,4 +1,4 @@
-package com.jaredsburrows.license.internal
+package com.jaredsburrows.license.internal.pom
 
 import groovy.transform.EqualsAndHashCode
 
