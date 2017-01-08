@@ -1,0 +1,8 @@
+gradlePlugin {
+  plugins {
+    simplePlugin {
+      id = "com.jaredsburrows.license"
+      implementationClass = "com.jaredsburrows.license.LicensePlugin"
+    }
+  }
+}

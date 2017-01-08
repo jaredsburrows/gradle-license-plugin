@@ -1,4 +1,3 @@
-// Turn on all warnings and errors
 compileJava {
   sourceCompatibility = project.ext.sourceCompatibilityVersion
   targetCompatibility = project.ext.targetCompatibilityVersion
@@ -15,7 +14,6 @@ compileJava {
   }
 }
 
-// Turn on all warnings and errors
 compileGroovy {
   sourceCompatibility = project.ext.sourceCompatibilityVersion
   targetCompatibility = project.ext.targetCompatibilityVersion
@@ -37,8 +35,8 @@ compileGroovy {
   }
 }
 
-// Turn on logging for all tests, filter to show failures/skips only
 test {
+  // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
     exceptionFormat "full"
     showCauses true

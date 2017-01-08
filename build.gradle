@@ -5,6 +5,10 @@ plugins {
   id "com.jfrog.artifactory" version "4.4.12"
   id "com.jfrog.bintray" version "1.7.3"
   id "com.github.ben-manes.versions" version "0.13.0"
+  id "java-gradle-plugin"
+  id "groovy"
+  id "maven-publish"
+  id "jacoco"
 }
 
 repositories {
@@ -21,19 +25,16 @@ ext {
 }
 
 apply from: "gradle/scan.gradle"
-apply plugin: "groovy"
+apply from: "gradle/plugin.gradle"
 apply from: "gradle/compile.gradle"
 apply from: "gradle/quality.gradle"
 apply from: "gradle/publish.gradle"
 apply from: "gradle/provided.gradle"
-apply plugin: "net.ltgt.errorprone"
-apply plugin: "com.github.ben-manes.versions"
 
 sourceCompatibility = ext.sourceCompatibilityVersion
 targetCompatibility = ext.sourceCompatibilityVersion
 
 dependencies {
-  compile gradleApi()
   compile localGroovy()
 
   provided "com.android.tools.build:gradle:2.2.3"

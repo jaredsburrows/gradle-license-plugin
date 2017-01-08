@@ -1,7 +1,3 @@
-apply plugin: "maven-publish"
-apply plugin: "com.jfrog.artifactory"
-apply plugin: "com.jfrog.bintray"
-
 def pomConfig = {
   //noinspection UnnecessaryQualifiedReference
   resolveStrategy = Closure.DELEGATE_FIRST
