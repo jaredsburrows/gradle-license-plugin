@@ -12,7 +12,7 @@ repositories {
 }
 
 group = "com.jaredsburrows"
-version = "0.3.0" + (rootProject.hasProperty("release") ? "" : "-SNAPSHOT")
+version = "0.3.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
 description = "This plugin provides a task to generate a HTML license report of your project."
 
 ext {
@@ -20,17 +20,17 @@ ext {
   targetCompatibilityVersion = JavaVersion.VERSION_1_7
 }
 
-apply from: rootProject.file("gradle/scan.gradle")
+apply from: "gradle/scan.gradle"
 apply plugin: "groovy"
-apply from: rootProject.file("gradle/compile.gradle")
-apply from: rootProject.file("gradle/quality.gradle")
-apply from: rootProject.file("gradle/publish.gradle")
-apply from: rootProject.file("gradle/provided.gradle")
+apply from: "gradle/compile.gradle"
+apply from: "gradle/quality.gradle"
+apply from: "gradle/publish.gradle"
+apply from: "gradle/provided.gradle"
 apply plugin: "net.ltgt.errorprone"
 apply plugin: "com.github.ben-manes.versions"
 
-sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
-targetCompatibility = rootProject.ext.sourceCompatibilityVersion
+sourceCompatibility = ext.sourceCompatibilityVersion
+targetCompatibility = ext.sourceCompatibilityVersion
 
 dependencies {
   compile gradleApi()

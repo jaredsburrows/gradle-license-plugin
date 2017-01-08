@@ -1,7 +1,7 @@
 // Turn on all warnings and errors
 compileJava {
-  sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
-  targetCompatibility = rootProject.ext.targetCompatibilityVersion
+  sourceCompatibility = project.ext.sourceCompatibilityVersion
+  targetCompatibility = project.ext.targetCompatibilityVersion
 
   // Show all warnings except boot classpath
   configure(options) {
@@ -17,8 +17,8 @@ compileJava {
 
 // Turn on all warnings and errors
 compileGroovy {
-  sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
-  targetCompatibility = rootProject.ext.targetCompatibilityVersion
+  sourceCompatibility = project.ext.sourceCompatibilityVersion
+  targetCompatibility = project.ext.targetCompatibilityVersion
 
   // Show all warnings except boot classpath
   configure(options) {
