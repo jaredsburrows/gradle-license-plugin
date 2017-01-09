@@ -16,7 +16,7 @@ final class LicensePlugin implements Plugin<Project> {
   @Override void apply(Project project) {
     if (isAndroidProject(project)) configureAndroidProject(project)
     else if (isJavaProject(project)) configureJavaProject(project)
-    else throw new IllegalStateException("License report plugin can only be applied to android, groovy or java projects.")
+    else throw new IllegalStateException("License report plugin can only be applied to android or java projects.")
   }
 
   /**

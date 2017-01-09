@@ -24,7 +24,7 @@ final class LicensePluginSpec extends Specification {
 
     then:
     def e = thrown(IllegalStateException)
-    e.message == "License report plugin can only be applied to android, groovy or java projects."
+    e.message == "License report plugin can only be applied to android or java projects."
   }
 
   @Unroll def "test #projectPlugin project"() {

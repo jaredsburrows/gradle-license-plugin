@@ -1,4 +1,4 @@
-package com.jaredsburrows.license.internal.report.json
+package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License

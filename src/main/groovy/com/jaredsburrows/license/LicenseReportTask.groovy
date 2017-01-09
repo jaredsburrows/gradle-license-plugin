@@ -3,8 +3,8 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import com.jaredsburrows.license.internal.report.html.HtmlReport
-import com.jaredsburrows.license.internal.report.json.JsonReport
+import com.jaredsburrows.license.internal.report.HtmlReport
+import com.jaredsburrows.license.internal.report.JsonReport
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
@@ -136,7 +136,6 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
-
       printStream.print(new HtmlReport(projects).string())
       printStream.println() // Add new line to file
     }
@@ -175,7 +174,6 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
-
       printStream.println(new JsonReport(projects).string())
       printStream.println() // Add new line to file
     }

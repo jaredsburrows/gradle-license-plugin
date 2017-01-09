@@ -1,4 +1,4 @@
-package com.jaredsburrows.license.internal.report.html
+package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
