@@ -99,16 +99,19 @@ publish.dependsOn "generatePomFileForMavenPublication"
 // Snapshots published to JFrog Artifactory repository
 artifactory {
   contextUrl = "https://oss.jfrog.org"
+
   publish {
     repository {
       repoKey = "oss-snapshot-local"
       username = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
       password = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
     }
+
     defaults {
       publications "maven"
     }
   }
+
   resolve {
     repository {
       repoKey = "libs-release"
@@ -124,6 +127,7 @@ bintray {
   key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
   publications = ["maven"]
   publish = true
+
   pkg {
     repo = "maven"
     name = project.name
@@ -135,11 +139,13 @@ bintray {
     labels = ["gradle", "license", "plugin"]
     githubRepo = "jaredsburrows/gradle-license-plugin"
     githubReleaseNotesFile = "README.md"
+
     version {
       name = project.version
       desc = project.description
       released = new Date()
       vcsTag = project.version
+
       mavenCentralSync {
         sync = false
         user = project.hasProperty("SONATYPE_USERNAME") ? project.property("SONATYPE_USERNAME") : System.getenv("SONATYPE_USERNAME")
@@ -151,3 +157,20 @@ bintray {
 }
 bintrayUpload.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
 bintrayUpload.dependsOn "generatePomFileForMavenPublication"
+
+// Releases published to JFrog Bintray's JCenter repository
+pluginBundle {
+  website = "https://github.com/jaredsburrows/gradle-license-plugin"
+  vcsUrl = "https://github.com/jaredsburrows/gradle-license-plugin"
+  description = project.description
+  tags = bintray.pkg.labels
+
+  plugins {
+    licensePlugin {
+      id = "com.jaredsburrows.license"
+      displayName = "Gradle License Plugin"
+    }
+  }
+}
+publishPlugins.dependsOn jar, sourcesJar, javadocJar, testsJar, reportsZip
+publishPlugins.dependsOn "generatePomFileForMavenPublication"

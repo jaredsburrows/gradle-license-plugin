@@ -15,7 +15,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ## Download
 
-This plugin's latest release is available from [JFrog Bintray's JCenter repository](https://bintray.com/jaredsburrows/maven/gradle-license-plugin). You can
+This plugin's latest release is available from [JFrog Bintray's JCenter repository](https://bintray.com/jaredsburrows/maven/gradle-license-plugin) and [Gradle Plugins Repo](https://plugins.gradle.org/plugin/com.jaredsburrows.license). You can
 add it to your build script using the following configuration:
 
 ```groovy
@@ -25,14 +25,21 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.2.0"
+    classpath "com.jaredsburrows:gradle-license-plugin:0.4.0"
   }
 }
 
 apply plugin: "com.jaredsburrows.license"
 ```
+or
 
-Snapshots of the development version are available in [JFrog Artifactory repository](https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin).
+```groovy
+plugins {
+  id "com.jaredsburrows.license" version "0.4.0"
+}
+```
+
+Snapshots of the development version are available in [JFrog Artifactory repository](https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin) and [Gradle Plugins Repo](https://plugins.gradle.org/plugin/com.jaredsburrows.license).
 
 ```groovy
 buildscript {
@@ -41,11 +48,18 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.3.0-SNAPSHOT"
+    classpath "com.jaredsburrows:gradle-license-plugin:0.5.0-SNAPSHOT"
   }
 }
 
 apply plugin: "com.jaredsburrows.license"
+```
+or
+
+```groovy
+plugins {
+  id "com.jaredsburrows.license" version "0.5.0-SNAPSHOT"
+}
 ```
 
 ## Tasks

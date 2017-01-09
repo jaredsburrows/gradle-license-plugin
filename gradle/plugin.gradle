@@ -1,6 +1,6 @@
 gradlePlugin {
   plugins {
-    simplePlugin {
+    licensePlugin {
       id = "com.jaredsburrows.license"
       implementationClass = "com.jaredsburrows.license.LicensePlugin"
     }
