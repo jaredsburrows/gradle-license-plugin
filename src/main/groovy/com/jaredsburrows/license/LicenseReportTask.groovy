@@ -8,6 +8,9 @@ import com.jaredsburrows.license.internal.report.json.JsonReport
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
@@ -22,18 +25,15 @@ class LicenseReportTask extends DefaultTask {
   final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
   final static def HTML_EXT = ".html"
   final static def JSON_EXT = ".json"
-  final List<Project> projects = []
-  File[] assetDirs = []
-  def buildType
-  def variant
-  def productFlavors = []
-  boolean isJavaProject
+  @Internal final List<Project> projects = []
+  @Optional @Input File[] assetDirs = []
+  @Optional @Input def buildType
+  @Optional @Input def variant
+  @Optional @Internal def productFlavors = [] // Should be @Input
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
   @TaskAction def licenseReport() {
-    isJavaProject = !variant
-
     generatePOMInfo()
     createHTMLReport()
     createJsonReport()
@@ -50,7 +50,7 @@ class LicenseReportTask extends DefaultTask {
     configurations << project.configurations.compile
 
     // If Android project, add extra configurations
-    if (!isJavaProject) {
+    if (variant) {
       // Add buildType compile configuration
       configurations << project.configurations."${buildType}Compile"
       // Add productFlavors compile configuration
@@ -142,7 +142,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // If Android project, copy to asset directory
-    if (!isJavaProject) {
+    if (variant) {
       // Iterate through all asset directories
       assetDirs.each { directory ->
         final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
