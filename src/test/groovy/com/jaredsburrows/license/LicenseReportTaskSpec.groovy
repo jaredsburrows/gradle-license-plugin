@@ -25,9 +25,6 @@ final class LicenseReportTaskSpec extends Specification {
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   final LicensePlugin plugin = new LicensePlugin()
   def project
-  def assertDir
-  def htmlFile
-  def jsonFile
 
   def "setup"() {
     // Common project
@@ -35,12 +32,6 @@ final class LicenseReportTaskSpec extends Specification {
     project.repositories {
       maven { url TEST_MAVEN_REPOSITORY }
     }
-
-    // Override output directories
-    assertDir = File.createTempDir()
-    assertDir.deleteOnExit()
-    htmlFile = new File(assertDir.path, "test.html")
-    jsonFile = new File(assertDir.path, "test.json")
   }
 
   @Unroll def "test #projectPlugin licenseReport - no dependencies"() {
@@ -50,12 +41,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReport")
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -100,13 +87,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName(taskName)
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -145,12 +127,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReport")
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -197,13 +175,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName(taskName)
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -245,12 +218,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReport")
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -328,13 +297,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName(taskName)
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -417,13 +381,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -502,13 +461,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -592,13 +546,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseFlavor1DebugReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseFlavor1DebugReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -693,13 +642,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseFlavor2ReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseFlavor2ReleaseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -799,13 +743,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -916,13 +855,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -1017,13 +951,8 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
+    plugin.apply project
+    LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()

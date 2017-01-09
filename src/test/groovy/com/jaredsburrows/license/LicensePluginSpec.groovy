@@ -20,7 +20,7 @@ final class LicensePluginSpec extends Specification {
 
   def "test unsupported project project"() {
     when:
-    plugin.apply(project)
+    plugin.apply project
 
     then:
     def e = thrown(IllegalStateException)
@@ -32,7 +32,7 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: projectPlugin
 
     when:
-    plugin.apply(project)
+    plugin.apply project
 
     then:
     notThrown(IllegalStateException)
@@ -47,10 +47,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
+    plugin.apply project
 
     then:
-    project.tasks.getByName("licenseReport")
+    project.tasks.getByName "licenseReport"
 
     where:
     projectPlugin << ["groovy", "java"]
@@ -70,10 +70,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
+    plugin.apply project
 
     then:
-    project.tasks.getByName("licenseDebugReport")
+    project.tasks.getByName "licenseDebugReport"
   }
 
   def "test android [buildTypes] - all tasks created"() {
@@ -95,11 +95,11 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
+    plugin.apply project
 
     then:
-    project.tasks.getByName("licenseDebugReport")
-    project.tasks.getByName("licenseReleaseReport")
+    project.tasks.getByName "licenseDebugReport"
+    project.tasks.getByName "licenseReleaseReport"
   }
 
   def "test android [buildTypes + productFlavors] - all tasks created"() {
@@ -126,13 +126,13 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
+    plugin.apply project
 
     then:
-    project.tasks.getByName("licenseFlavor1DebugReport")
-    project.tasks.getByName("licenseFlavor1ReleaseReport")
-    project.tasks.getByName("licenseFlavor2DebugReport")
-    project.tasks.getByName("licenseFlavor2ReleaseReport")
+    project.tasks.getByName "licenseFlavor1DebugReport"
+    project.tasks.getByName "licenseFlavor1ReleaseReport"
+    project.tasks.getByName "licenseFlavor2DebugReport"
+    project.tasks.getByName "licenseFlavor2ReleaseReport"
   }
 
   def "test android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
@@ -163,12 +163,12 @@ final class LicensePluginSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply(project)
+    plugin.apply project
 
     then:
-    project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
-    project.tasks.getByName("licenseFlavor1Flavor3ReleaseReport")
-    project.tasks.getByName("licenseFlavor2Flavor4DebugReport")
-    project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
+    project.tasks.getByName "licenseFlavor1Flavor3DebugReport"
+    project.tasks.getByName "licenseFlavor1Flavor3ReleaseReport"
+    project.tasks.getByName "licenseFlavor2Flavor4DebugReport"
+    project.tasks.getByName "licenseFlavor2Flavor4ReleaseReport"
   }
 }
