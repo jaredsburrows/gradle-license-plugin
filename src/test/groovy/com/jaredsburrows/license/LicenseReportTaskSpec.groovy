@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
@@ -42,9 +43,9 @@ final class LicenseReportTaskSpec extends Specification {
     jsonFile = new File(assertDir.path, "test.json")
   }
 
-  def "test java licenseReport - no dependencies"() {
+  @Unroll def "test #projectPlugin licenseReport - no dependencies"() {
     given:
-    project.apply plugin: "java"
+    project.apply plugin: projectPlugin
     project.dependencies {}
 
     when:
@@ -79,9 +80,12 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    projectPlugin << ["groovy", "java"]
   }
 
-  def "test android licenseDebugReport - no dependencies"() {
+  @Unroll def "test android #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -99,7 +103,7 @@ final class LicenseReportTaskSpec extends Specification {
     plugin.apply(project)
 
     // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName(taskName)
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -127,59 +131,14 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  def "test android licenseReleaseReport - no dependencies"() {
+  @Unroll def "test #projectPlugin licenseReport - no open source dependencies"() {
     given:
-    project.apply plugin: "com.android.application"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-    }
-    project.dependencies {}
-
-    when:
-    project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>No open source libraries</h3>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
-
-  def "test java licenseReport - no open source dependencies"() {
-    given:
-    project.apply plugin: "java"
+    project.apply plugin: projectPlugin
     project.dependencies {
       delegate.compile(FIREBASE_CORE)
     }
@@ -216,9 +175,12 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    projectPlugin << ["groovy", "java"]
   }
 
-  def "test android licenseDebugReport - no open source dependencies"() {
+  @Unroll def "test android #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -238,7 +200,7 @@ final class LicenseReportTaskSpec extends Specification {
     plugin.apply(project)
 
     // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName(taskName)
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -266,61 +228,14 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  def "test android licenseReleaseReport - no open source dependencies"() {
+  @Unroll def "test #projectPlugin licenseReport"() {
     given:
-    project.apply plugin: "com.android.application"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-    }
-    project.dependencies {
-      delegate.compile FIREBASE_CORE
-    }
-
-    when:
-    project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>No open source libraries</h3>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
-
-  def "test java licenseReport"() {
-    given:
-    project.apply plugin: "java"
+    project.apply plugin: projectPlugin
     project.dependencies {
       // Handles duplicates
       delegate.compile APPCOMPAT_V7
@@ -388,9 +303,12 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    projectPlugin << ["groovy", "java"]
   }
 
-  def "test android licenseDebugReport - default buildTypes"() {
+  @Unroll def "test android #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.android {
@@ -413,7 +331,7 @@ final class LicenseReportTaskSpec extends Specification {
     plugin.apply(project)
 
     // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    final LicenseReportTask task = project.tasks.getByName(taskName)
     task.assetDirs = [assertDir]
     task.htmlFile = htmlFile
     task.jsonFile = jsonFile
@@ -469,88 +387,11 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  def "test android licenseReleaseReport - default buildTypes"() {
-    given:
-    project.apply plugin: "com.android.application"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-    }
-    project.dependencies {
-      // Handles duplicates
-      delegate.compile APPCOMPAT_V7
-      delegate.compile APPCOMPAT_V7
-      delegate.compile DESIGN
-    }
-
-    when:
-    project.evaluate()
-    plugin.apply(project)
-
-    // Change output directory for testing
-    final LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
-    task.assetDirs = [assertDir]
-    task.htmlFile = htmlFile
-    task.jsonFile = jsonFile
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for libraries:</h3>
-    <ul>
-      <li>
-        <a href='#1288288048'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Design</a>
-      </li>
-    </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
 
   def "test android licenseDebugReport - buildTypes"() {
     given:

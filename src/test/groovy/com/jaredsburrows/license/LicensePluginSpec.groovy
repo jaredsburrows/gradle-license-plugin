@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
@@ -26,64 +27,23 @@ final class LicensePluginSpec extends Specification {
     e.message == "License report plugin can only be applied to android, groovy or java projects."
   }
 
-  def "test groovy project"() {
+  @Unroll def "test #projectPlugin project"() {
     given:
-    project.apply plugin: "groovy"
+    project.apply plugin: projectPlugin
 
     when:
     plugin.apply(project)
 
     then:
     notThrown(IllegalStateException)
+
+    where:
+    projectPlugin << ["groovy", "java", "com.android.application", "com.android.library", "com.android.test"]
   }
 
-  def "test java project"() {
+  @Unroll def "test #projectPlugin - all tasks created"() {
     given:
-    project.apply plugin: "java"
-
-    when:
-    plugin.apply(project)
-
-    then:
-    notThrown(IllegalStateException)
-  }
-
-  def "test android application project"() {
-    given:
-    project.apply plugin: "com.android.application"
-
-    when:
-    plugin.apply(project)
-
-    then:
-    notThrown(IllegalStateException)
-  }
-
-  def "test android library project"() {
-    given:
-    project.apply plugin: "com.android.library"
-
-    when:
-    plugin.apply(project)
-
-    then:
-    notThrown(IllegalStateException)
-  }
-
-  def "test android test project"() {
-    given:
-    project.apply plugin: "com.android.test"
-
-    when:
-    plugin.apply(project)
-
-    then:
-    notThrown(IllegalStateException)
-  }
-
-  def "test java - all tasks created"() {
-    given:
-    project.apply plugin: "java"
+    project.apply plugin: projectPlugin
 
     when:
     project.evaluate()
@@ -91,6 +51,9 @@ final class LicensePluginSpec extends Specification {
 
     then:
     project.tasks.getByName("licenseReport")
+
+    where:
+    projectPlugin << ["groovy", "java"]
   }
 
   def "test android - all tasks created"() {
