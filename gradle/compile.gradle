@@ -46,7 +46,7 @@ test {
   }
 }
 
-tasks.withType(Javadoc) {
+javadoc {
   title = "${project.name} ${project.version}"
   configure(options) {
     header = project.name
@@ -55,11 +55,20 @@ tasks.withType(Javadoc) {
     charSet "UTF-8"
     linkSource true
     author = true
-    links(["http://docs.oracle.com/javase/8/docs/api/",
-           "http://docs.oracle.com/javaee/7/api/"] as String[])
+    links("http://docs.oracle.com/javase/8/docs/api/",
+            "http://docs.oracle.com/javaee/7/api/")
     exclude "**/*Test.java"
     if (JavaVersion.current().isJava8Compatible()) addStringOption("Xdoclint:none", "-quiet")
   }
+}
+
+groovydoc {
+  docTitle = "${project.name} ${project.version}"
+  header = project.name
+  link("http://docs.oracle.com/javase/8/docs/api/",
+          "http://docs.oracle.com/javaee/7/api/",
+          "http://groovy.codehaus.org/gapi/")
+  exclude "**/*Spec.java"
 }
 
 // Prevent forked processes from stealing focus (on MacOS at least)
