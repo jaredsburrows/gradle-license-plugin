@@ -111,8 +111,8 @@ artifactory {
   publish {
     repository {
       repoKey = "oss-snapshot-local"
-      username = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
-      password = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
+      username = project.properties["BINTRAY_USERNAME"] ?: System.getenv("BINTRAY_USERNAME")
+      password = project.properties["BINTRAY_API_KEY"] ?: System.getenv("BINTRAY_API_KEY")
     }
 
     defaults {
@@ -131,8 +131,8 @@ artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
 // Releases published to JFrog Bintray's JCenter repository
 bintray {
-  user = project.hasProperty("BINTRAY_USERNAME") ? project.property("BINTRAY_USERNAME") : System.getenv("BINTRAY_USERNAME")
-  key = project.hasProperty("BINTRAY_API_KEY") ? project.property("BINTRAY_API_KEY") : System.getenv("BINTRAY_API_KEY")
+  user = project.properties["BINTRAY_USERNAME"] ?: System.getenv("BINTRAY_USERNAME")
+  key = project.properties["BINTRAY_API_KEY"] ?: System.getenv("BINTRAY_API_KEY")
   publications = ["maven"]
   publish = true
 
@@ -156,8 +156,8 @@ bintray {
 
       mavenCentralSync {
         sync = false
-        user = project.hasProperty("SONATYPE_USERNAME") ? project.property("SONATYPE_USERNAME") : System.getenv("SONATYPE_USERNAME")
-        password = project.hasProperty("SONATYPE_PASSWORD") ? project.property("SONATYPE_PASSWORD") : System.getenv("SONATYPE_PASSWORD")
+        user = project.properties["SONATYPE_USERNAME"] ?: System.getenv("SONATYPE_USERNAME")
+        password = project.properties["SONATYPE_PASSWORD"] ?: System.getenv("SONATYPE_PASSWORD")
         close = "1"
       }
     }
