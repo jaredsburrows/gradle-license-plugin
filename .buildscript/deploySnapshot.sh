@@ -13,6 +13,6 @@ elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
   echo "Skipping snapshot deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."
-  ./gradlew artifactoryPublish publishPlugins -Dgradle.publish.key=$GRADLE_KEY -Dgradle.publish.secret=$GRADLE_SECRET
+  ./gradlew artifactoryPublish
   echo "Snapshot deployed!"
 fi
