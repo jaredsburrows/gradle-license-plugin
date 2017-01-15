@@ -22,6 +22,8 @@ final class LicenseReportTaskSpec extends Specification {
   final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
   final static def ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+  final static def FAKE_DEPENDENCY = "group:name:1.0.0"
+  final static def FAKE_DEPENDENCY2 = "group:name2:1.0.0"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   // Test fixture that emulates a local android sdk
@@ -36,7 +38,7 @@ final class LicenseReportTaskSpec extends Specification {
     }
 
     // Set mock test sdk, we only need to test the plugins tasks
-    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
+    SdkHandler.sTestSdkFolder = project.file TEST_ANDROID_SDK
   }
 
   @Unroll def "#projectPlugin licenseReport - no dependencies"() {
@@ -666,6 +668,114 @@ final class LicenseReportTaskSpec extends Specification {
     where:
     taskName << ["licenseFlavor1Flavor3DebugReport", "licenseFlavor1Flavor3ReleaseReport",
                  "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport"]
+  }
+
+  def "dependency with full pom - project name, developers, url, year, licenses"() {
+    given:
+    project.apply plugin: "java"
+    project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      compile FAKE_DEPENDENCY
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#755502249'>Fake dependency name</a>
+      </li>
+    </ul>
+    <a name='755502249' />
+    <h3>Some license</h3>
+    <pre>Some license, http://website.tld/</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Fake dependency name",
+        "developers": "name",
+        "url": "https://github.com/user/repo.git",
+        "year": "2017",
+        "license": "Some license",
+        "license_url": "http://website.tld/"
+    }
+]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def "dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
+    given:
+    project.apply plugin: "java"
+    project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      compile FAKE_DEPENDENCY2
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#-754894239'>Fake dependency name</a>
+      </li>
+    </ul>
+    <a name='-754894239' />
+    <h3>Some licenseSome license</h3>
+    <pre>Some licenseSome license, http://website.tld/http://website.tld/</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Fake dependency name",
+        "developers": "name",
+        "url": "https://github.com/user/repo.git",
+        "year": "2017",
+        "license": "Some licenseSome license",
+        "license_url": "http://website.tld/http://website.tld/"
+    }
+]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
   }
 
   @Unroll def "readme example - #taskName"() {
