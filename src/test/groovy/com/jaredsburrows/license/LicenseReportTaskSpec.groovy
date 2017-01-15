@@ -120,7 +120,7 @@ final class LicenseReportTaskSpec extends Specification {
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
-      delegate.compile(FIREBASE_CORE)
+      compile FIREBASE_CORE
     }
 
     when:
@@ -168,7 +168,7 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile FIREBASE_CORE
+      compile FIREBASE_CORE
     }
 
     when:
@@ -209,9 +209,9 @@ final class LicenseReportTaskSpec extends Specification {
     project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       // Handles duplicates
-      delegate.compile APPCOMPAT_V7
-      delegate.compile APPCOMPAT_V7
-      delegate.compile DESIGN
+      compile APPCOMPAT_V7
+      compile APPCOMPAT_V7
+      compile DESIGN
     }
 
     when:
@@ -288,9 +288,9 @@ final class LicenseReportTaskSpec extends Specification {
     }
     project.dependencies {
       // Handles duplicates
-      delegate.compile APPCOMPAT_V7
-      delegate.compile APPCOMPAT_V7
-      delegate.compile DESIGN
+      compile APPCOMPAT_V7
+      compile APPCOMPAT_V7
+      compile DESIGN
     }
 
     when:
@@ -353,8 +353,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-
-  def "android licenseDebugReport - buildTypes"() {
+  @Unroll def "android #taskName - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -372,14 +371,15 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.debugCompile DESIGN
-      delegate.releaseCompile SUPPORT_ANNOTATIONS
+      compile APPCOMPAT_V7
+
+      debugCompile DESIGN
+      releaseCompile DESIGN
     }
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseDebugReport"
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -432,89 +432,12 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  def "android licenseReleaseReport - buildTypes"() {
-    given:
-    project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
-    }
-    project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.debugCompile SUPPORT_ANNOTATIONS
-      delegate.releaseCompile DESIGN
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReleaseReport"
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for libraries:</h3>
-    <ul>
-      <li>
-        <a href='#1288288048'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Design</a>
-      </li>
-    </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
-
-  def "android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
+  @Unroll def "android #taskName - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -537,14 +460,18 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.debugCompile DESIGN
-      delegate.flavor1Compile SUPPORT_V4
+      compile APPCOMPAT_V7
+
+      debugCompile DESIGN
+      releaseCompile DESIGN
+
+      flavor1Compile SUPPORT_V4
+      flavor2Compile SUPPORT_V4
     }
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseFlavor1DebugReport"
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -608,105 +535,13 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseFlavor1DebugReport", "licenseFlavor2DebugReport",
+                 "licenseFlavor1ReleaseReport", "licenseFlavor2ReleaseReport"]
   }
 
-  def "android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
-    given:
-    project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
-
-      productFlavors {
-        flavor1 {}
-        flavor2 {}
-      }
-    }
-    project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.releaseCompile DESIGN
-      delegate.flavor2Compile SUPPORT_V4
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseFlavor2ReleaseReport"
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for libraries:</h3>
-    <ul>
-      <li>
-        <a href='#1288288048'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Design</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Support-v4</a>
-      </li>
-    </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Support-v4",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
-
-  def "android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
+  @Unroll def "android #taskName - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -733,15 +568,20 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.debugCompile DESIGN
-      delegate.flavor1Compile SUPPORT_V4
-      delegate.flavor3Compile SUPPORT_ANNOTATIONS
+      compile APPCOMPAT_V7
+
+      debugCompile DESIGN
+      releaseCompile DESIGN
+
+      flavor1Compile SUPPORT_V4
+      flavor2Compile SUPPORT_V4
+      flavor3Compile SUPPORT_ANNOTATIONS
+      flavor4Compile SUPPORT_ANNOTATIONS
     }
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseFlavor1Flavor3DebugReport"
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -816,121 +656,13 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseFlavor1Flavor3DebugReport", "licenseFlavor1Flavor3ReleaseReport",
+                 "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport"]
   }
 
-  def "android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
-    given:
-    project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
-
-      flavorDimensions "a", "b"
-
-      productFlavors {
-        flavor1 { dimension "a" }
-        flavor2 { dimension "a" }
-        flavor3 { dimension "b" }
-        flavor4 { dimension "b" }
-      }
-    }
-    project.dependencies {
-      delegate.compile APPCOMPAT_V7
-      delegate.releaseCompile DESIGN
-      delegate.flavor2Compile SUPPORT_V4
-      delegate.flavor4Compile SUPPORT_ANNOTATIONS
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseFlavor2Flavor4ReleaseReport"
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for libraries:</h3>
-    <ul>
-      <li>
-        <a href='#1288288048'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Design</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Support-annotations</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Support-v4</a>
-      </li>
-    </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Support-annotations",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Support-v4",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-  }
-
-  def "readme example"() {
+  @Unroll def "readme example - #taskName"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -943,13 +675,15 @@ final class LicenseReportTaskSpec extends Specification {
       }
     }
     project.dependencies {
-      delegate.compile DESIGN
-      delegate.compile ANDROID_GIF_DRAWABLE
+      debugCompile DESIGN
+      debugCompile ANDROID_GIF_DRAWABLE
+      releaseCompile DESIGN
+      releaseCompile ANDROID_GIF_DRAWABLE
     }
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseDebugReport"
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -1005,5 +739,8 @@ final class LicenseReportTaskSpec extends Specification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 }
