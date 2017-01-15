@@ -5,4 +5,5 @@
   <groupId>com.android.support</groupId>
   <artifactId>support-annotations</artifactId>
   <version>25.1.0</version>
+  <packaging>aar</packaging>
 </project>
