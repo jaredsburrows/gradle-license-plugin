@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import com.android.build.gradle.internal.SdkHandler
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -11,10 +12,14 @@ final class LicensePluginSpec extends Specification {
   final static def COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
   final static def BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
   final static def APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
+  final static def TEST_ANDROID_SDK = LicenseReportTaskSpec.TEST_ANDROID_SDK
   def project
 
   def "setup"() {
     project = ProjectBuilder.builder().build()
+
+    // Set mock test sdk, we only need to test the plugins tasks
+    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
   }
 
   def "unsupported project project"() {

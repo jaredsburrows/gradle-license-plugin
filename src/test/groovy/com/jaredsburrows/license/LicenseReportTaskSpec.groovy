@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import com.android.build.gradle.internal.SdkHandler
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -23,6 +24,8 @@ final class LicenseReportTaskSpec extends Specification {
   final static def ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
+  // Test fixture that emulates a local android sdk
+  final static def TEST_ANDROID_SDK = getClass().getResource("/android-sdk/").toURI()
   def project
 
   def "setup"() {
@@ -31,6 +34,9 @@ final class LicenseReportTaskSpec extends Specification {
     project.repositories {
       maven { url TEST_MAVEN_REPOSITORY }
     }
+
+    // Set mock test sdk, we only need to test the plugins tasks
+    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
   }
 
   @Unroll def "#projectPlugin licenseReport - no dependencies"() {

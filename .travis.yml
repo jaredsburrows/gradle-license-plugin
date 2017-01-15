@@ -1,16 +1,9 @@
-language: android
+language: java
 
 jdk:
   - oraclejdk8
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-25.0.2
-    - android-25
-    - extra-google-m2repository
-    - extra-android-m2repository
+install: true
 
 script:
   - ./gradlew clean build jacocoTestReport coveralls -Dscan --parallel
