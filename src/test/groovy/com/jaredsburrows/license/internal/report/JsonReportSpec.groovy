@@ -9,7 +9,7 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class JsonReportSpec extends Specification {
-  def "test noOpenSourceJson"() {
+  def "no open source json"() {
     given:
     def projects = []
     def sut = new JsonReport(projects)
@@ -25,7 +25,7 @@ final class JsonReportSpec extends Specification {
     actual == expected
   }
 
-  def "test openSourceJson - missing values"() {
+  def "open source json - missing values"() {
     given:
     def license = new License(name: "name", url: "url")
     def project = new Project(name: "name", license: license)
@@ -60,7 +60,7 @@ final class JsonReportSpec extends Specification {
     actual == expected
   }
 
-  def "test openSourceJson - all values"() {
+  def "open source json - all values"() {
     given:
     def developer = new Developer(name: "name")
     def developers = [developer, developer]

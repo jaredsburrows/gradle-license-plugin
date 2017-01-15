@@ -33,7 +33,7 @@ final class LicenseReportTaskSpec extends Specification {
     }
   }
 
-  @Unroll def "test #projectPlugin licenseReport - no dependencies"() {
+  @Unroll def "#projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -70,7 +70,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "test android #taskName - no dependencies"() {
+  @Unroll def "android #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -115,7 +115,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "test #projectPlugin licenseReport - no open source dependencies"() {
+  @Unroll def "#projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -155,7 +155,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "test android #taskName - no open source dependencies"() {
+  @Unroll def "android #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -203,7 +203,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "test #projectPlugin licenseReport"() {
+  @Unroll def "#projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -274,7 +274,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "test android #taskName - default buildTypes"() {
+  @Unroll def "android #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -354,7 +354,7 @@ final class LicenseReportTaskSpec extends Specification {
   }
 
 
-  def "test android licenseDebugReport - buildTypes"() {
+  def "android licenseDebugReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -434,7 +434,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test android licenseReleaseReport - buildTypes"() {
+  def "android licenseReleaseReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -514,7 +514,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
+  def "android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -610,7 +610,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
+  def "android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -706,7 +706,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
+  def "android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -818,7 +818,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
+  def "android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -930,7 +930,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  def "test readme example"() {
+  def "readme example"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"

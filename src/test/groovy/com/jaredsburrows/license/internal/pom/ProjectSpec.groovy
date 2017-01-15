@@ -11,31 +11,31 @@ final class ProjectSpec extends Specification {
   def license = new License(name: "name", url: "url")
   def sut = new Project(name: "name", license: license, url: "url", developers: developers, year: "year")
 
-  def "test name"() {
+  def "name"() {
     expect:
     sut.name == "name"
     sut.getName() == "name"
   }
 
-  def "test license"() {
+  def "license"() {
     expect:
     sut.license == license
     sut.getLicense() == license
   }
 
-  def "test url"() {
+  def "url"() {
     expect:
     sut.url == "url"
     sut.getUrl() == "url"
   }
 
-  def "test developers"() {
+  def "developers"() {
     expect:
     sut.developers == developers
     sut.getDevelopers() == developers
   }
 
-  def "test year"() {
+  def "year"() {
     expect:
     sut.year == "year"
     sut.getYear() == "year"

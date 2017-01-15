@@ -9,7 +9,7 @@ import spock.lang.Specification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class HtmlReportSpec extends Specification {
-  def "test noOpenSourceHtml"() {
+  def "no open source html"() {
     given:
     def projects = []
     def sut = new HtmlReport(projects)
@@ -33,7 +33,7 @@ final class HtmlReportSpec extends Specification {
     actual == expected
   }
 
-  def "test openSourceHtml"() {
+  def "open source html"() {
     given:
     def developer = new Developer(name: "name")
     def developers = [developer, developer]

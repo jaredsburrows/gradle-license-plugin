@@ -41,7 +41,7 @@ class LicenseReportTask extends DefaultTask {
 
   def generatePOMInfo() {
     // Create temporary configuration in order to store POM information
-    project.configurations.create(POM_CONFIGURATION)
+    project.configurations.create POM_CONFIGURATION
 
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
@@ -53,6 +53,7 @@ class LicenseReportTask extends DefaultTask {
     if (variant) {
       // Add buildType compile configuration
       configurations << project.configurations."${buildType}Compile"
+
       // Add productFlavors compile configuration
       productFlavors.each { flavor ->
         // Works for productFlavors and productFlavors with dimensions
@@ -77,7 +78,7 @@ class LicenseReportTask extends DefaultTask {
 
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations.poms.each { pom ->
-      final def text = new XmlParser().parse(pom)
+      final def text = new XmlParser().parse pom
 
       def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
       def developers = text.developers?.developer?.collect { developer -> new Developer(name: developer?.name?.text()?.trim()) }
@@ -97,7 +98,7 @@ class LicenseReportTask extends DefaultTask {
 
       // For all "com.android.support" libraries, add Apache 2
       if (!licenseName || !licenseURL) {
-        logger.log(LogLevel.INFO, String.format("Project, %s, has no license in the POM file.", name))
+        logger.log LogLevel.INFO, String.format("Project, %s, has no license in the POM file.", name)
 
         if (ANDROID_SUPPORT_GROUP_ID == text.groupId?.text()) {
           licenseName = APACHE_LICENSE_NAME
@@ -136,7 +137,7 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
-      printStream.print(new HtmlReport(projects).string())
+      printStream.print new HtmlReport(projects).string()
       printStream.println() // Add new line to file
     }
 
@@ -154,12 +155,12 @@ class LicenseReportTask extends DefaultTask {
         licenseFile.createNewFile()
 
         // Copy HTML file to the assets directory
-        project.file(licenseFile) << project.file(htmlFile).text
+        project.file licenseFile << project.file(htmlFile).text
       }
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", htmlFile.absolutePath))
+    logger.log LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", htmlFile.absolutePath)
   }
 
   /**
@@ -174,11 +175,11 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
       final def printStream = new PrintStream(outputStream)
-      printStream.println(new JsonReport(projects).string())
+      printStream.println new JsonReport(projects).string()
       printStream.println() // Add new line to file
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
+    logger.log LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath)
   }
 }

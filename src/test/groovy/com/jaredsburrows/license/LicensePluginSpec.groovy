@@ -17,7 +17,7 @@ final class LicensePluginSpec extends Specification {
     project = ProjectBuilder.builder().build()
   }
 
-  def "test unsupported project project"() {
+  def "unsupported project project"() {
     when:
     new LicensePlugin().apply project // project.apply plugin: "com.jaredsburrows.license"
 
@@ -26,7 +26,7 @@ final class LicensePluginSpec extends Specification {
     e.message == "License report plugin can only be applied to android or java projects."
   }
 
-  @Unroll def "test #projectPlugin project"() {
+  @Unroll def "#projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 
@@ -34,13 +34,13 @@ final class LicensePluginSpec extends Specification {
     project.apply plugin: "com.jaredsburrows.license"
 
     then:
-    notThrown IllegalStateException
+    noExceptionThrown()
 
     where:
     projectPlugin << ["groovy", "java", "com.android.application", "com.android.library", "com.android.test"]
   }
 
-  @Unroll def "test #projectPlugin - all tasks created"() {
+  @Unroll def "#projectPlugin - all tasks created"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -55,7 +55,7 @@ final class LicensePluginSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  def "test android - all tasks created"() {
+  def "android - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -75,7 +75,7 @@ final class LicensePluginSpec extends Specification {
     project.tasks.getByName "licenseDebugReport"
   }
 
-  def "test android [buildTypes] - all tasks created"() {
+  def "android [buildTypes] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -101,7 +101,7 @@ final class LicensePluginSpec extends Specification {
     project.tasks.getByName "licenseReleaseReport"
   }
 
-  def "test android [buildTypes + productFlavors] - all tasks created"() {
+  def "android [buildTypes + productFlavors] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -134,7 +134,7 @@ final class LicensePluginSpec extends Specification {
     project.tasks.getByName "licenseFlavor2ReleaseReport"
   }
 
-  def "test android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
+  def "android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"

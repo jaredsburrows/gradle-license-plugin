@@ -8,19 +8,19 @@ import spock.lang.Specification
 final class LicenseSpec extends Specification {
   def sut = new License(name: "name", url: "url")
 
-  def "test get name"() {
+  def "get name"() {
     expect:
     sut.name == "name"
     sut.getName() == "name"
   }
 
-  def "test url"() {
+  def "url"() {
     expect:
     sut.url == "url"
     sut.getUrl() == "url"
   }
 
-  def "test equals/hashcode"() {
+  def "equals and hashcode"() {
     given:
     def one = new License(name: "name", url: "url")
     def two = new License(name: "name", url: "url")

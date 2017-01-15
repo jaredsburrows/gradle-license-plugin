@@ -8,7 +8,7 @@ import spock.lang.Specification
 final class DeveloperSpec extends Specification {
   def sut = new Developer(name: "name")
 
-  def "test name"() {
+  def "name"() {
     expect:
     sut.name == "name"
     sut.getName() == "name"
