@@ -13,17 +13,16 @@ final class LicenseReportTaskSpec extends Specification {
   final static def APPLICATION_ID = "com.example"
   final static def SUPPORT_VERSION = "25.1.0"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
-  final static def APPCOMPAT_V7 = "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-  final static def DESIGN = "com.android.support:design:${SUPPORT_VERSION}"
-  final static def SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:${SUPPORT_VERSION}"
-  final static def SUPPORT_V4 = "com.android.support:support-v4:${SUPPORT_VERSION}"
+  final static def APPCOMPAT_V7 = "com.android.support:appcompat-v7:$SUPPORT_VERSION"
+  final static def DESIGN = "com.android.support:design:$SUPPORT_VERSION"
+  final static def SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:$SUPPORT_VERSION"
+  final static def SUPPORT_V4 = "com.android.support:support-v4:$SUPPORT_VERSION"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
   final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
   final static def ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
-  final LicensePlugin plugin = new LicensePlugin()
   def project
 
   def "setup"() {
@@ -37,12 +36,11 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test #projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
-    project.dependencies {}
+    project.apply plugin: "com.jaredsburrows.license"
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -75,6 +73,7 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test android #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -83,12 +82,10 @@ final class LicenseReportTaskSpec extends Specification {
         applicationId APPLICATION_ID
       }
     }
-    project.dependencies {}
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName(taskName)
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -121,14 +118,14 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test #projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
+    project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       delegate.compile(FIREBASE_CORE)
     }
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -161,6 +158,7 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test android #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -175,8 +173,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName(taskName)
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -209,6 +206,7 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test #projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
+    project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       // Handles duplicates
       delegate.compile APPCOMPAT_V7
@@ -218,8 +216,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -280,6 +277,7 @@ final class LicenseReportTaskSpec extends Specification {
   @Unroll def "test android #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -297,8 +295,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName(taskName)
+    LicenseReportTask task = project.tasks.getByName taskName
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -360,6 +357,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseDebugReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -381,8 +379,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    LicenseReportTask task = project.tasks.getByName "licenseDebugReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -440,6 +437,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseReleaseReport - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -461,8 +459,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseReleaseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseReleaseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -520,6 +517,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseFlavor1DebugReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -546,8 +544,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseFlavor1DebugReport")
+    LicenseReportTask task = project.tasks.getByName "licenseFlavor1DebugReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -616,6 +613,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseFlavor2ReleaseReport - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -642,8 +640,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseFlavor2ReleaseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseFlavor2ReleaseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -712,6 +709,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseFlavor1Flavor3DebugReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -743,8 +741,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
+    LicenseReportTask task = project.tasks.getByName "licenseFlavor1Flavor3DebugReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -824,6 +821,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test android licenseFlavor2Flavor4ReleaseReport - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -855,8 +853,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
+    LicenseReportTask task = project.tasks.getByName "licenseFlavor2Flavor4ReleaseReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -936,6 +933,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "test readme example"() {
     given:
     project.apply plugin: "com.android.application"
+    project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -951,8 +949,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    plugin.apply project
-    LicenseReportTask task = project.tasks.getByName("licenseDebugReport")
+    LicenseReportTask task = project.tasks.getByName "licenseDebugReport"
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
