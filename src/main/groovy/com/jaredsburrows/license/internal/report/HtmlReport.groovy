@@ -8,7 +8,9 @@ import groovy.xml.MarkupBuilder
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class HtmlReport {
-  final static def CSS = "body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}"
+  final static def BODY_CSS = "body{font-family: sans-serif} "
+  final static def PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"
+  final static def CSS_STYLE = BODY_CSS + PRE_CSS
   final static def OPEN_SOURCE_LIBRARIES = "Open source licenses"
   final static def NO_OPEN_SOURCE_LIBRARIES = "No open source libraries"
   final static def NOTICE_LIBRARIES = "Notice for libraries:"
@@ -26,7 +28,7 @@ final class HtmlReport {
     final def markup = new MarkupBuilder(writer)
     markup.html {
       head {
-        style CSS
+        style CSS_STYLE
         title OPEN_SOURCE_LIBRARIES
       }
 
@@ -46,17 +48,17 @@ final class HtmlReport {
     final Set<License> licenses = new HashSet<>()
     markup.html {
       head {
-        style CSS
+        style CSS_STYLE
         title OPEN_SOURCE_LIBRARIES
       }
 
       body {
         h3 NOTICE_LIBRARIES
         ul {
-          projects.each { pomInfo ->
-            licenses << pomInfo.license
+          projects.each { project ->
+            licenses << project.license
             li {
-              a href: String.format("%s%s", "#", pomInfo.license.hashCode()), pomInfo.name
+              a href: String.format("%s%s", "#", project.license.hashCode()), project.name
             }
           }
         }

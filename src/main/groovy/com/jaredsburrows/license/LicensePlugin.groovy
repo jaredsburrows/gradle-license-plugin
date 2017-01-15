@@ -65,8 +65,7 @@ final class LicensePlugin implements Plugin<Project> {
   }
 
   /**
-   * Get correct plugin - Check for the android library plugin, default to application variants for applications and
-   * test plugin.
+   * Check for the android library plugin, default to application variants for applications and test plugin.
    */
   static def getAndroidVariants(project) {
     (project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
