@@ -7,13 +7,13 @@ import groovy.json.JsonBuilder
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class JsonReport {
-  final static def PROJECT = "project"
-  final static def DEVELOPERS = "developers"
-  final static def URL = "url"
-  final static def YEAR = "year"
-  final static def LICENSE = "license"
-  final static def LICENSE_URL = "license_url"
-  final static def EMPTY_JSON_ARRAY = "[]"
+  final static PROJECT = "project"
+  final static DEVELOPERS = "developers"
+  final static URL = "url"
+  final static YEAR = "year"
+  final static LICENSE = "license"
+  final static LICENSE_URL = "license_url"
+  final static EMPTY_JSON_ARRAY = "[]"
   final List<Project> projects
 
   JsonReport(projects) {

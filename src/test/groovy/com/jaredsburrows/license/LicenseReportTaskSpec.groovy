@@ -9,25 +9,25 @@ import spock.lang.Unroll
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseReportTaskSpec extends Specification {
-  final static def COMPILE_SDK_VERSION = 25
-  final static def BUILD_TOOLS_VERSION = "25.0.2"
-  final static def APPLICATION_ID = "com.example"
-  final static def SUPPORT_VERSION = "25.1.0"
+  final static COMPILE_SDK_VERSION = 25
+  final static BUILD_TOOLS_VERSION = "25.0.2"
+  final static APPLICATION_ID = "com.example"
+  final static SUPPORT_VERSION = "25.1.0"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
-  final static def APPCOMPAT_V7 = "com.android.support:appcompat-v7:$SUPPORT_VERSION"
-  final static def DESIGN = "com.android.support:design:$SUPPORT_VERSION"
-  final static def SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:$SUPPORT_VERSION"
-  final static def SUPPORT_V4 = "com.android.support:support-v4:$SUPPORT_VERSION"
+  final static APPCOMPAT_V7 = "com.android.support:appcompat-v7:$SUPPORT_VERSION"
+  final static DESIGN = "com.android.support:design:$SUPPORT_VERSION"
+  final static SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:$SUPPORT_VERSION"
+  final static SUPPORT_V4 = "com.android.support:support-v4:$SUPPORT_VERSION"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
-  final static def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
+  final static FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
-  final static def ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-  final static def FAKE_DEPENDENCY = "group:name:1.0.0"
-  final static def FAKE_DEPENDENCY2 = "group:name2:1.0.0"
+  final static ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+  final static FAKE_DEPENDENCY = "group:name:1.0.0"
+  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
-  final static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
+  final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   // Test fixture that emulates a local android sdk
-  final static def TEST_ANDROID_SDK = getClass().getResource("/android-sdk/").toURI()
+  final static TEST_ANDROID_SDK = getClass().getResource("/android-sdk/").toURI()
   def project
 
   def "setup"() {
@@ -41,7 +41,7 @@ final class LicenseReportTaskSpec extends Specification {
     SdkHandler.sTestSdkFolder = project.file TEST_ANDROID_SDK
   }
 
-  @Unroll def "#projectPlugin licenseReport - no dependencies"() {
+  @Unroll "#projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -78,7 +78,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "android #taskName - no dependencies"() {
+  @Unroll "android #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -123,7 +123,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "#projectPlugin licenseReport - no open source dependencies"() {
+  @Unroll "#projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -163,7 +163,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "android #taskName - no open source dependencies"() {
+  @Unroll "android #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -211,7 +211,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "#projectPlugin licenseReport"() {
+  @Unroll "#projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -282,7 +282,7 @@ final class LicenseReportTaskSpec extends Specification {
     projectPlugin << ["groovy", "java"]
   }
 
-  @Unroll def "android #taskName - default buildTypes"() {
+  @Unroll "android #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -361,7 +361,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android #taskName - buildTypes"() {
+  @Unroll "android #taskName - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -445,7 +445,7 @@ final class LicenseReportTaskSpec extends Specification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android #taskName - buildTypes + productFlavors"() {
+  @Unroll "android #taskName - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -549,7 +549,7 @@ final class LicenseReportTaskSpec extends Specification {
                  "licenseFlavor1ReleaseReport", "licenseFlavor2ReleaseReport"]
   }
 
-  @Unroll def "android #taskName - buildTypes + productFlavors + flavorDimensions"() {
+  @Unroll "android #taskName - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -778,7 +778,7 @@ final class LicenseReportTaskSpec extends Specification {
     actualJson == expectedJson
   }
 
-  @Unroll def "readme example - #taskName"() {
+  @Unroll "readme example - #taskName"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"

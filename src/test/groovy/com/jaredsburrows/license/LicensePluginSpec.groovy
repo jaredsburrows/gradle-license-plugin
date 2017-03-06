@@ -9,10 +9,10 @@ import spock.lang.Unroll
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePluginSpec extends Specification {
-  final static def COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
-  final static def BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
-  final static def APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
-  final static def TEST_ANDROID_SDK = LicenseReportTaskSpec.TEST_ANDROID_SDK
+  final static COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
+  final static BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
+  final static APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
+  final static TEST_ANDROID_SDK = LicenseReportTaskSpec.TEST_ANDROID_SDK
   def project
 
   def "setup"() {
@@ -31,7 +31,7 @@ final class LicensePluginSpec extends Specification {
     e.message == "License report plugin can only be applied to android or java projects."
   }
 
-  @Unroll def "#projectPlugin project"() {
+  @Unroll "#projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 
@@ -45,7 +45,7 @@ final class LicensePluginSpec extends Specification {
     projectPlugin << ["groovy", "java", "com.android.application", "com.android.library", "com.android.test"]
   }
 
-  @Unroll def "#projectPlugin - all tasks created"() {
+  @Unroll "#projectPlugin - all tasks created"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"

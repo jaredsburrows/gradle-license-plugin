@@ -18,22 +18,22 @@ import org.gradle.api.tasks.TaskAction
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 class LicenseReportTask extends DefaultTask {
-  final static def POM_CONFIGURATION = "poms"
-  final static def ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-  final static def APACHE_LICENSE_NAME = "The Apache Software License"
-  final static def APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
-  final static def HTML_EXT = ".html"
-  final static def JSON_EXT = ".json"
+  final static POM_CONFIGURATION = "poms"
+  final static ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+  final static APACHE_LICENSE_NAME = "The Apache Software License"
+  final static APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+  final static OPEN_SOURCE_LICENSES = "open_source_licenses"
+  final static HTML_EXT = ".html"
+  final static JSON_EXT = ".json"
   @Internal final List<Project> projects = []
   @Optional @Input File[] assetDirs = []
-  @Optional @Input def buildType
-  @Optional @Input def variant
-  @Optional @Internal def productFlavors = [] // Should be @Input
+  @Optional @Input buildType
+  @Optional @Input variant
+  @Optional @Internal productFlavors = []
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
-  @TaskAction def licenseReport() {
+  @TaskAction licenseReport() {
     generatePOMInfo()
     createHTMLReport()
     createJsonReport()
@@ -57,8 +57,9 @@ class LicenseReportTask extends DefaultTask {
       // Add productFlavors compile configuration
       productFlavors.each { flavor ->
         // Works for productFlavors and productFlavors with dimensions
-        if (variant.capitalize().contains(flavor.name.capitalize()))
+        if (variant.capitalize().contains(flavor.name.capitalize())) {
           configurations << project.configurations."${flavor.name}Compile"
+        }
       }
     }
 
@@ -78,10 +79,12 @@ class LicenseReportTask extends DefaultTask {
 
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations.poms.each { pom ->
-      final def text = new XmlParser().parse pom
+      final text = new XmlParser().parse pom
 
       def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
-      def developers = text.developers?.developer?.collect { developer -> new Developer(name: developer?.name?.text()?.trim()) }
+      def developers = text.developers?.developer?.collect {
+        developer -> new Developer(name: developer?.name?.text()?.trim())
+      }
       def url = text.scm?.url?.text()
       def year = text.inceptionYear?.text()
       def licenseName = text.licenses?.license?.name?.text()
@@ -98,21 +101,24 @@ class LicenseReportTask extends DefaultTask {
 
       // For all "com.android.support" libraries, add Apache 2
       if (!licenseName || !licenseURL) {
-        logger.log LogLevel.INFO, String.format("Project, %s, has no license in the POM file.", name)
+        logger.log LogLevel.INFO,
+          String.format("Project, %s, has no license in the POM file.", name)
 
         if (ANDROID_SUPPORT_GROUP_ID == text.groupId?.text()) {
           licenseName = APACHE_LICENSE_NAME
           licenseURL = APACHE_LICENSE_URL
-        } else return
+        } else {
+          return
+        }
       }
 
       // Update formatting
       name = name?.capitalize()
       licenseName = licenseName?.capitalize()
 
-      final def license = new License(name: licenseName,
+      final license = new License(name: licenseName,
         url: licenseURL)
-      final def project = new Project(name: name,
+      final project = new Project(name: name,
         developers: developers,
         license: license,
         url: url,
@@ -136,7 +142,7 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.parentFile.mkdirs()
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
-      final def printStream = new PrintStream(outputStream)
+      final printStream = new PrintStream(outputStream)
       printStream.print new HtmlReport(projects).string()
       printStream.println() // Add new line to file
     }
@@ -145,7 +151,7 @@ class LicenseReportTask extends DefaultTask {
     if (variant) {
       // Iterate through all asset directories
       assetDirs.each { directory ->
-        final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+        final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
         // Remove existing file
         project.file(licenseFile).delete()
@@ -174,7 +180,7 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.parentFile.mkdirs()
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
-      final def printStream = new PrintStream(outputStream)
+      final printStream = new PrintStream(outputStream)
       printStream.println new JsonReport(projects).string()
       printStream.println() // Add new line to file
     }

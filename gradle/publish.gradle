@@ -35,13 +35,13 @@ def pomConfig = {
 
 task mainJar(type: Jar, dependsOn: jar) {
   group = "Publications"
-  description = "Create compiled jar of plugin."
+  description = "Create compiled jar."
   from sourceSets.main.output
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
   group = "Publications"
-  description = "Create jar of the sources of plugin."
+  description = "Create jar of the sources."
   classifier = "sources"
   from sourceSets.main.allSource
 }
