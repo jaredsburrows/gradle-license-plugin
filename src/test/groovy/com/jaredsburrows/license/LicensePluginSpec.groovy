@@ -24,7 +24,7 @@ final class LicensePluginSpec extends Specification {
 
   def "unsupported project project"() {
     when:
-    new LicensePlugin().apply project // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
 
     then:
     def e = thrown IllegalStateException
@@ -54,7 +54,7 @@ final class LicensePluginSpec extends Specification {
     project.evaluate()
 
     then:
-    project.tasks.getByName "licenseReport"
+    project.tasks.getByName("licenseReport")
 
     where:
     projectPlugin << ["groovy", "java"]
@@ -77,7 +77,7 @@ final class LicensePluginSpec extends Specification {
     project.evaluate()
 
     then:
-    project.tasks.getByName "licenseDebugReport"
+    project.tasks.getByName("licenseDebugReport")
   }
 
   def "android [buildTypes] - all tasks created"() {
@@ -102,8 +102,8 @@ final class LicensePluginSpec extends Specification {
     project.evaluate()
 
     then:
-    project.tasks.getByName "licenseDebugReport"
-    project.tasks.getByName "licenseReleaseReport"
+    project.tasks.getByName("licenseDebugReport")
+    project.tasks.getByName("licenseReleaseReport")
   }
 
   def "android [buildTypes + productFlavors] - all tasks created"() {
@@ -133,10 +133,10 @@ final class LicensePluginSpec extends Specification {
     project.evaluate()
 
     then:
-    project.tasks.getByName "licenseFlavor1DebugReport"
-    project.tasks.getByName "licenseFlavor1ReleaseReport"
-    project.tasks.getByName "licenseFlavor2DebugReport"
-    project.tasks.getByName "licenseFlavor2ReleaseReport"
+    project.tasks.getByName("licenseFlavor1DebugReport")
+    project.tasks.getByName("licenseFlavor1ReleaseReport")
+    project.tasks.getByName("licenseFlavor2DebugReport")
+    project.tasks.getByName("licenseFlavor2ReleaseReport")
   }
 
   def "android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
@@ -170,9 +170,9 @@ final class LicensePluginSpec extends Specification {
     project.evaluate()
 
     then:
-    project.tasks.getByName "licenseFlavor1Flavor3DebugReport"
-    project.tasks.getByName "licenseFlavor1Flavor3ReleaseReport"
-    project.tasks.getByName "licenseFlavor2Flavor4DebugReport"
-    project.tasks.getByName "licenseFlavor2Flavor4ReleaseReport"
+    project.tasks.getByName("licenseFlavor1Flavor3DebugReport")
+    project.tasks.getByName("licenseFlavor1Flavor3ReleaseReport")
+    project.tasks.getByName("licenseFlavor2Flavor4DebugReport")
+    project.tasks.getByName("licenseFlavor2Flavor4ReleaseReport")
   }
 }

@@ -17,9 +17,9 @@ final class LicensePlugin implements Plugin<Project> {
     project.evaluationDependsOnChildren()
 
     if (isAndroidProject(project)) {
-      configureAndroidProject project
+      configureAndroidProject(project)
     } else if (isJavaProject(project)) {
-      configureJavaProject project
+      configureJavaProject(project)
     } else {
       throw new IllegalStateException(
         "License report plugin can only be applied to android or java projects.")
@@ -31,7 +31,7 @@ final class LicensePlugin implements Plugin<Project> {
    */
   static configureAndroidProject(project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    final variants = getAndroidVariants project
+    final variants = getAndroidVariants(project)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -40,11 +40,11 @@ final class LicensePlugin implements Plugin<Project> {
       final path = "${project.buildDir}/reports/licenses/$taskName"
 
       // Create tasks based on variant
-      final LicenseReportTask task = project.tasks.create "$taskName", LicenseReportTask
+      final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
       task.description = "Outputs licenses report for ${variantName} variant."
       task.group = "Reporting"
-      task.htmlFile = project.file path + LicenseReportTask.HTML_EXT
-      task.jsonFile = project.file path + LicenseReportTask.JSON_EXT
+      task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
+      task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
       task.assetDirs = project.android.sourceSets.main.assets.srcDirs
       task.buildType = variant.buildType.name
       task.variant = variant.name
@@ -62,11 +62,11 @@ final class LicensePlugin implements Plugin<Project> {
     final path = "${project.buildDir}/reports/licenses/$taskName"
 
     // Create tasks
-    final LicenseReportTask task = project.tasks.create "$taskName", LicenseReportTask
+    final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
     task.description = "Outputs licenses report."
     task.group = "Reporting"
-    task.htmlFile = project.file path + LicenseReportTask.HTML_EXT
-    task.jsonFile = project.file path + LicenseReportTask.JSON_EXT
+    task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
+    task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
     task.outputs.upToDateWhen { false }
     // Make sure to not to use cache license file, update each run
   }

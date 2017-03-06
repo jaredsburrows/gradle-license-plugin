@@ -15,52 +15,16 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ## Download
 
-This plugin's latest release is available from [JFrog Bintray's JCenter repository](https://bintray.com/jaredsburrows/maven/gradle-license-plugin) and [Gradle Plugins Repo](https://plugins.gradle.org/plugin/com.jaredsburrows.license). You can
-add it to your build script using the following configuration:
-
+Gradle:
 ```groovy
-buildscript {
-  repositories {
-    jcenter()
-  }
-
-  dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.4.0"
-  }
+repositories {
+  jcenter()
 }
-
-apply plugin: "com.jaredsburrows.license"
-```
-or
-
-```groovy
-plugins {
-  id "com.jaredsburrows.license" version "0.4.0"
-}
+  
+compile "com.jaredsburrows:gradle-license-plugin:0.4.0"
 ```
 
-Snapshots of the development version are available in [JFrog Artifactory repository](https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin) and [Gradle Plugins Repo](https://plugins.gradle.org/plugin/com.jaredsburrows.license).
-
-```groovy
-buildscript {
-  repositories {
-    maven { url "https://oss.jfrog.org/oss-snapshot-local" }
-  }
-
-  dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.5.0-SNAPSHOT"
-  }
-}
-
-apply plugin: "com.jaredsburrows.license"
-```
-or
-
-```groovy
-plugins {
-  id "com.jaredsburrows.license" version "0.5.0-SNAPSHOT"
-}
-```
+Snapshot versions are available in the JFrog Artifactory repository: https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin
 
 ## Tasks
 
@@ -175,24 +139,3 @@ Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be
 <img src="https://www.bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" />
 
 Source: https://www.bignerdranch.com/blog/open-source-licenses-and-android/
-
-## Developing
-
-### Building
-```bash
-$ gradlew assemble
-```
-
-### Testing
-
-The [Spock](http://spockframework.org/) tests run on the JVM.
-```bash
-$ gradlew test
-```
-
-### Reports
-
-The [Jacoco](http://www.eclemma.org/jacoco/) plugin generates coverage reports based off the unit tests.
-```bash
-$ gradlew jacocoTestReport
-```

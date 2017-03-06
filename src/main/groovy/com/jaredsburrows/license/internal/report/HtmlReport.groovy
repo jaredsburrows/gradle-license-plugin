@@ -58,13 +58,13 @@ final class HtmlReport {
           projects.each { project ->
             licenses << project.license
             li {
-              a href: String.format("%s%s", "#", project.license.hashCode()), project.name
+              a(href: String.format("%s%s", "#", project.license.hashCode()), project.name)
             }
           }
         }
 
         licenses.each { license ->
-          a name: license.hashCode()
+          a(name: license.hashCode())
           h3 license.name
           pre String.format("%s, %s", license.name, license.url)
         }
