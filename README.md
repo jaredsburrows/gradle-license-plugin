@@ -17,11 +17,18 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 Gradle:
 ```groovy
-repositories {
-  jcenter()
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath "com.jaredsburrows:gradle-license-plugin:0.4.0"
+  }
 }
-  
-compile "com.jaredsburrows:gradle-license-plugin:0.4.0"
+
+apply plugin: "com.android.application" // or com.android.library
+apply plugin: "com.jaredsburrows.license"
 ```
 
 Snapshot versions are available in the JFrog Artifactory repository: https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin
@@ -72,22 +79,22 @@ HTML:
 JSON:
 ```json
 [
-    {
-        "project": "Android GIF Drawable Library",
-        "developers": "Karol Wr\u00c3\u00b3tniak",
-        "url": "https://github.com/koral--/android-gif-drawable.git",
-        "year": null,
-        "license": "The MIT License",
-        "license_url": "http://opensource.org/licenses/MIT"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
+  {
+    "project": "Android GIF Drawable Library",
+    "developers": "Karol WrÃ³tniak",
+    "url": "https://github.com/koral--/android-gif-drawable.git",
+    "year": null,
+    "license": "The MIT License",
+    "license_url": "http://opensource.org/licenses/MIT"
+  },
+  {
+    "project": "Design",
+    "developers": null,
+    "url": null,
+    "year": null,
+    "license": "The Apache Software License",
+    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+  }
 ]
 ```
 
