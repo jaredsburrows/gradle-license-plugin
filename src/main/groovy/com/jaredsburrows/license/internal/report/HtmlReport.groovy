@@ -28,12 +28,12 @@ final class HtmlReport {
     final markup = new MarkupBuilder(writer)
     markup.html {
       head {
-        style CSS_STYLE
-        title OPEN_SOURCE_LIBRARIES
+        style(CSS_STYLE)
+        title(OPEN_SOURCE_LIBRARIES)
       }
 
       body {
-        h3 NO_OPEN_SOURCE_LIBRARIES
+        h3(NO_OPEN_SOURCE_LIBRARIES)
       }
     }
     writer.toString()
@@ -48,12 +48,12 @@ final class HtmlReport {
     final Set<License> licenses = new HashSet<>()
     markup.html {
       head {
-        style CSS_STYLE
-        title OPEN_SOURCE_LIBRARIES
+        style(CSS_STYLE)
+        title(OPEN_SOURCE_LIBRARIES)
       }
 
       body {
-        h3 NOTICE_LIBRARIES
+        h3(NOTICE_LIBRARIES)
         ul {
           projects.each { project ->
             licenses << project.license
@@ -65,8 +65,8 @@ final class HtmlReport {
 
         licenses.each { license ->
           a(name: license.hashCode())
-          h3 license.name
-          pre String.format("%s, %s", license.name, license.url)
+          h3(license.name)
+          pre(String.format("%s, %s", license.name, license.url))
         }
       }
     }

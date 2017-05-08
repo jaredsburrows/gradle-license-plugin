@@ -41,7 +41,7 @@ class LicenseReportTask extends DefaultTask {
 
   def generatePOMInfo() {
     // Create temporary configuration in order to store POM information
-    project.configurations.create POM_CONFIGURATION
+    project.configurations.create(POM_CONFIGURATION)
 
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
@@ -65,21 +65,18 @@ class LicenseReportTask extends DefaultTask {
 
     // Iterate through all "compile" configurations's dependencies
     configurations.each { configuration ->
-      configuration.dependencies.each { dependency ->
-        project.dependencies {
-          poms(
-            group: dependency.group,
-            name: dependency.name,
-            version: dependency.version,
-            ext: "pom"
-          )
-        }
+      configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
+        "$id.group:$id.name:$id.version@pom"
+      }.each { pom ->
+        project.configurations."$POM_CONFIGURATION".dependencies.add(
+          project.dependencies.add("$POM_CONFIGURATION", pom)
+        )
       }
     }
 
     // Iterate through all POMs in order from our custom POM configuration
-    project.configurations.poms.each { pom ->
-      final text = new XmlParser().parse pom
+    project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
+      final text = new XmlParser().parse(pom.file)
 
       def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
       def developers = text.developers?.developer?.collect {

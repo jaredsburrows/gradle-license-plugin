@@ -28,12 +28,23 @@ final class LicenseReportTaskSpec extends Specification {
   final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   // Test fixture that emulates a local android sdk
   final static TEST_ANDROID_SDK = getClass().getResource("/android-sdk/").toURI()
+  // Projects
   def project
+  def subproject
 
   def "setup"() {
-    // Common project
-    project = ProjectBuilder.builder().build()
+    // Configure test projects
+    project = ProjectBuilder.builder()
+      .withName("project")
+      .build()
     project.repositories {
+      maven { url TEST_MAVEN_REPOSITORY }
+    }
+    subproject = ProjectBuilder.builder()
+      .withParent(project)
+      .withName("subproject")
+      .build()
+    subproject.repositories {
       maven { url TEST_MAVEN_REPOSITORY }
     }
 
@@ -68,6 +79,80 @@ final class LicenseReportTaskSpec extends Specification {
     def expectedJson =
       """
 []
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    projectPlugin << ["groovy", "java"]
+  }
+
+  @Unroll "#projectPlugin licenseReport - project dependencies"() {
+    given:
+    project.apply plugin: projectPlugin
+    project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      compile APPCOMPAT_V7
+      compile project.project(":subproject")
+    }
+
+    subproject.apply plugin: "java"
+    subproject.dependencies {
+      compile DESIGN
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
 """.trim()
 
     then:

@@ -27,7 +27,7 @@ buildscript {
   }
 }
 
-apply plugin: "com.android.application" // or com.android.library
+apply plugin: "com.android.application" // or "java"
 apply plugin: "com.jaredsburrows.license"
 ```
 
