@@ -17,7 +17,7 @@ repositories {
 }
 
 group = "com.jaredsburrows"
-version = "0.5.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
+version = "0.6.0" + (hasProperty("release") ? "" : "-SNAPSHOT")
 description = "This plugin provides a task to generate a HTML license report of your project."
 
 ext {
