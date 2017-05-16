@@ -8,9 +8,9 @@ import groovy.xml.MarkupBuilder
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class HtmlReport {
-  final static BODY_CSS = "body{font-family: sans-serif} "
+  final static BODY_CSS = "body{font-family: sans-serif}"
   final static PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"
-  final static CSS_STYLE = BODY_CSS + PRE_CSS
+  final static CSS_STYLE = BODY_CSS + " " + PRE_CSS
   final static OPEN_SOURCE_LIBRARIES = "Open source licenses"
   final static NO_OPEN_SOURCE_LIBRARIES = "No open source libraries"
   final static NOTICE_LIBRARIES = "Notice for libraries:"

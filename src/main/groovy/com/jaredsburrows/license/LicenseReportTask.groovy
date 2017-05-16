@@ -78,28 +78,26 @@ class LicenseReportTask extends DefaultTask {
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
       final text = new XmlParser().parse(pom.file)
 
+      // Parse POM file
       def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
-      def developers = text.developers?.developer?.collect {
-        developer -> new Developer(name: developer?.name?.text()?.trim())
+      def developers = text.developers?.developer?.collect { developer ->
+        new Developer(name: developer?.name?.text()?.trim())
       }
       def url = text.scm?.url?.text()
       def year = text.inceptionYear?.text()
-      def licenseName = text.licenses?.license?.name?.text()
-      def licenseURL = text.licenses?.license?.url?.text()
+      def licenseName = text.licenses?.license[0]?.name?.text()
+      def licenseURL = text.licenses?.license[0]?.url?.text()
 
-      // If the POM is missing a name, do not record it
-      if (!name) return
-
+      // Clean up
       name = name?.trim()
       url = url?.trim()
       year = year?.trim()
       licenseName = licenseName?.trim()
       licenseURL = licenseURL?.trim()
 
-      // For all "com.android.support" libraries, add Apache 2
+      // For all "com.android.support" libraries, use Apache 2
       if (!licenseName || !licenseURL) {
-        logger.log(LogLevel.INFO,
-          String.format("Project, %s, has no license in the POM file.", name))
+        logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
 
         if (ANDROID_SUPPORT_GROUP_ID == text.groupId?.text()) {
           licenseName = APACHE_LICENSE_NAME
@@ -109,10 +107,21 @@ class LicenseReportTask extends DefaultTask {
         }
       }
 
+      // If the POM is missing a name, do not record it
+      if (!name) return
+
+      // If the POM is missing a license, do not record it
+      try {
+        new URL(licenseURL)
+      } catch (Exception ignore) {
+        return
+      }
+
       // Update formatting
       name = name?.capitalize()
       licenseName = licenseName?.capitalize()
 
+      // Store the information that we need
       final license = new License(name: licenseName,
         url: licenseURL)
       final project = new Project(name: name,

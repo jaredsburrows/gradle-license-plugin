@@ -19,7 +19,7 @@ final class LicensePluginSpec extends Specification {
     project = ProjectBuilder.builder().build()
 
     // Set mock test sdk, we only need to test the plugins tasks
-    SdkHandler.sTestSdkFolder = project.file TEST_ANDROID_SDK
+    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
   }
 
   def "unsupported project project"() {

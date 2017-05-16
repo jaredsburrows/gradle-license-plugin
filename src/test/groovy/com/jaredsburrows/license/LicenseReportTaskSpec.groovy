@@ -22,8 +22,9 @@ final class LicenseReportTaskSpec extends Specification {
   final static FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
   final static ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-  final static FAKE_DEPENDENCY = "group:name:1.0.0"
-  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0"
+  final static FAKE_DEPENDENCY = "group:name:1.0.0" // Single license
+  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0" // Multiple license
+  final static FAKE_DEPENDENCY3 = "group:name3:1.0.0" // Bad license
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
   // Test fixture that emulates a local android sdk
@@ -59,7 +60,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -105,7 +106,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -178,7 +179,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -218,7 +219,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -266,7 +267,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -309,7 +310,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -388,7 +389,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -472,7 +473,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -564,7 +565,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -674,7 +675,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -755,7 +756,44 @@ final class LicenseReportTaskSpec extends Specification {
                  "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport"]
   }
 
-  def "dependency with full pom - project name, developers, url, year, licenses"() {
+  def "dependency with full pom - project name, developers, url, year, bad license"() {
+    given:
+    project.apply plugin: "java"
+    project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      compile FAKE_DEPENDENCY3
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>No open source libraries</h3>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def "dependency with full pom - project name, developers, url, year, single license"() {
     given:
     project.apply plugin: "java"
     project.apply plugin: "com.jaredsburrows.license"
@@ -765,7 +803,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -819,7 +857,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName "licenseReport"
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -834,12 +872,12 @@ final class LicenseReportTaskSpec extends Specification {
     <h3>Notice for libraries:</h3>
     <ul>
       <li>
-        <a href='#-754894239'>Fake dependency name</a>
+        <a href='#755502249'>Fake dependency name</a>
       </li>
     </ul>
-    <a name='-754894239' />
-    <h3>Some licenseSome license</h3>
-    <pre>Some licenseSome license, http://website.tld/http://website.tld/</pre>
+    <a name='755502249' />
+    <h3>Some license</h3>
+    <pre>Some license, http://website.tld/</pre>
   </body>
 </html>
 """.trim()
@@ -852,8 +890,8 @@ final class LicenseReportTaskSpec extends Specification {
         "developers": "name",
         "url": "https://github.com/user/repo.git",
         "year": "2017",
-        "license": "Some licenseSome license",
-        "license_url": "http://website.tld/http://website.tld/"
+        "license": "Some license",
+        "license_url": "http://website.tld/"
     }
 ]
 """.trim()
@@ -884,7 +922,7 @@ final class LicenseReportTaskSpec extends Specification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName taskName
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()

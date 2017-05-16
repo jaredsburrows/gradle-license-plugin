@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - https://maven.apache.org/pom.html#Quick_Overview -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!-- The Basics -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>group</groupId>
+  <artifactId>name2</artifactId>
+  <version>1.0.0</version>
+  <packaging>aar</packaging>
+
+  <!-- More Project Information -->
+  <name>Fake dependency name</name>
+  <description>Fake dependency description</description>
+  <url>https://github.com/user/repo</url>
+  <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>N/A</name>
+      <url>N/A</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>id</id>
+      <name>name</name>
+    </developer>
+  </developers>
+
+  <!-- Environment Settings -->
+  <scm>
+    <connection>scm:git@github.com:user/repo.git</connection>
+    <developerConnection>scm:git@github.com:user/repo.git</developerConnection>
+    <url>https://github.com/user/repo.git</url>
+  </scm>
+</project>
