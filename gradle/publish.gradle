@@ -1,7 +1,7 @@
 def pomConfig = {
   //noinspection UnnecessaryQualifiedReference
   resolveStrategy = Closure.DELEGATE_FIRST
-  name POM_NAME
+  name POM_ARTIFACT_ID
   description POM_DESCRIPTION
   url POM_URL
 
@@ -138,7 +138,7 @@ bintray {
 
   pkg {
     repo = "maven"
-    name = POM_NAME
+    name = POM_ARTIFACT_ID
     desc = POM_DESCRIPTION
     websiteUrl = POM_URL
     issueTrackerUrl = POM_ISSUE_URL

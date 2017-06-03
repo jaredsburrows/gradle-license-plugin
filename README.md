@@ -23,7 +23,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.5.0"
+    classpath "com.jaredsburrows:gradle-license-plugin:0.6.0"
   }
 }
 
