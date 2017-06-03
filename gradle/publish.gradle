@@ -95,6 +95,12 @@ publishing {
 
       pom {
         withXml {
+          // All dependencies should use the default scope "compile" not "runtime"
+          asNode().dependencies.dependency.each { dep ->
+            if (dep.scope.text() == "runtime") dep.remove(dep.scope)
+          }
+
+          // Add parent POM information
           asNode().children().last() + pomConfig
         }
       }
@@ -143,8 +149,6 @@ bintray {
     websiteUrl = POM_URL
     issueTrackerUrl = POM_ISSUE_URL
     vcsUrl = POM_URL
-    licenses = ["Apache-2.0"]
-    labels = ["gradle", "checker framework", "plugin"]
     githubRepo = BINTRAY_GITHUB_REPO
     githubReleaseNotesFile = "README.md"
 
