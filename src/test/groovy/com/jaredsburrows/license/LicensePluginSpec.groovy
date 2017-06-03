@@ -27,7 +27,7 @@ final class LicensePluginSpec extends Specification {
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
 
     then:
-    def e = thrown IllegalStateException
+    def e = thrown(IllegalStateException)
     e.message == "License report plugin can only be applied to android or java projects."
   }
 
@@ -42,7 +42,7 @@ final class LicensePluginSpec extends Specification {
     noExceptionThrown()
 
     where:
-    projectPlugin << ["groovy", "java", "com.android.application", "com.android.library", "com.android.test"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS + LicensePlugin.ANDROID_PLUGINS
   }
 
   @Unroll "#projectPlugin - all tasks created"() {
@@ -57,7 +57,7 @@ final class LicensePluginSpec extends Specification {
     project.tasks.getByName("licenseReport")
 
     where:
-    projectPlugin << ["groovy", "java"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
   def "android - all tasks created"() {

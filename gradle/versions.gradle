@@ -1,0 +1,12 @@
+// Variables for entire project
+ext {
+  sourceCompatibilityVersion = JavaVersion.VERSION_1_7
+  targetCompatibilityVersion = JavaVersion.VERSION_1_7
+}
+
+// Dependencies
+ext.deps = [
+        "gradle"            : "com.android.tools.build:gradle:2.3.2",
+        "kotlinGradlePlugin": "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-4",
+        "spockCore"         : "org.spockframework:spock-core:1.1-groovy-2.4"
+]

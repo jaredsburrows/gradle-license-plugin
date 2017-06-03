@@ -1,34 +1,34 @@
 def pomConfig = {
   //noinspection UnnecessaryQualifiedReference
   resolveStrategy = Closure.DELEGATE_FIRST
-  name project.name
-  description project.description
-  url "https://github.com/jaredsburrows/gradle-license-plugin"
+  name POM_NAME
+  description POM_DESCRIPTION
+  url POM_URL
 
   issueManagement {
-    system "github"
-    url "https://github.com/jaredsburrows/gradle-license-plugin/issues"
+    system POM_ISSUE_SYSTEM
+    url POM_ISSUE_URL
   }
 
   scm {
-    url "https://github.com/jaredsburrows/gradle-license-plugin"
-    connection "scm:https://github.com/jaredsburrows/gradle-license-plugin"
-    developerConnection "scm:git@github.com:jaredsburrows/gradle-license-plugin.git"
+    url POM_SCM_URL
+    connection POM_SCM_CONNECTION
+    developerConnection POM_SCM_DEV_CONNECTION
   }
 
   licenses {
     license {
-      name "The Apache Software License, Version 2.0"
-      url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-      distribution "repo"
+      name POM_LICENCE_NAME
+      url POM_LICENCE_URL
+      distribution POM_LICENCE_DIST
     }
   }
 
   developers {
     developer {
-      id "jaredsburrows"
-      name "Jared Burrows"
-      email "jaredsburrows@gmail.com"
+      id POM_DEVELOPER_ID
+      name POM_DEVELOPER_NAME
+      email POM_DEVELOPER_EMAIL
     }
   }
 }
@@ -89,9 +89,9 @@ publishing {
       artifact testsJar
       artifact reportsZip
 
-      groupId project.group
-      artifactId project.name
-      version project.version
+      groupId GROUP
+      artifactId POM_ARTIFACT_ID
+      version VERSION_NAME
 
       pom {
         withXml {
@@ -138,21 +138,21 @@ bintray {
 
   pkg {
     repo = "maven"
-    name = project.name
-    desc = project.description
-    websiteUrl = "https://github.com/jaredsburrows/gradle-license-plugin"
-    issueTrackerUrl = "https://github.com/jaredsburrows/gradle-license-plugin/issues"
-    vcsUrl = "https://github.com/jaredsburrows/gradle-license-plugin.git"
+    name = POM_NAME
+    desc = POM_DESCRIPTION
+    websiteUrl = POM_URL
+    issueTrackerUrl = POM_ISSUE_URL
+    vcsUrl = POM_URL
     licenses = ["Apache-2.0"]
-    labels = ["gradle", "license", "plugin"]
-    githubRepo = "jaredsburrows/gradle-license-plugin"
+    labels = ["gradle", "checker framework", "plugin"]
+    githubRepo = BINTRAY_GITHUB_REPO
     githubReleaseNotesFile = "README.md"
 
     version {
-      name = project.version
-      desc = project.description
+      name = VERSION_NAME
+      desc = POM_DESCRIPTION
       released = new Date()
-      vcsTag = project.version
+      vcsTag = VERSION_NAME
 
       mavenCentralSync {
         sync = false
@@ -168,15 +168,15 @@ bintrayUpload.dependsOn "generatePomFileForMavenPublication"
 
 // Releases published to JFrog Bintray's JCenter repository
 pluginBundle {
-  website = "https://github.com/jaredsburrows/gradle-license-plugin"
-  vcsUrl = "https://github.com/jaredsburrows/gradle-license-plugin"
-  description = project.description
+  website = POM_URL
+  vcsUrl = POM_URL
+  description = POM_DESCRIPTION
   tags = bintray.pkg.labels
 
   plugins {
     licensePlugin {
       id = "com.jaredsburrows.license"
-      displayName = "Gradle License Plugin"
+      displayName = POM_NAME
     }
   }
 }

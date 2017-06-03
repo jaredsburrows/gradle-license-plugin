@@ -7,11 +7,8 @@ import org.gradle.api.Project
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePlugin implements Plugin<Project> {
-  final static ANDROID_APPLICATION_PLUGIN = "com.android.application"
-  final static ANDROID_LIBRARY_PLUGIN = "com.android.library"
-  final static ANDROID_TEST_PLUGIN = "com.android.test"
-  final static GROOVY_PLUGIN = "groovy"
-  final static JAVA_PLUGIN = "java"
+  final static ANDROID_PLUGINS = ["com.android.application", "com.android.library", "com.android.test"]
+  final static JVM_PLUGINS = ["kotlin", "groovy", "java"]
 
   @Override void apply(Project project) {
     project.evaluationDependsOnChildren()
@@ -49,8 +46,8 @@ final class LicensePlugin implements Plugin<Project> {
       task.buildType = variant.buildType.name
       task.variant = variant.name
       task.productFlavors = variant.productFlavors
+      // Make sure update on each run
       task.outputs.upToDateWhen { false }
-      // Make sure to not to use cache license file, update each run
     }
   }
 
@@ -67,15 +64,15 @@ final class LicensePlugin implements Plugin<Project> {
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
     task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
+    // Make sure update on each run
     task.outputs.upToDateWhen { false }
-    // Make sure to not to use cache license file, update each run
   }
 
   /**
    * Check for the android library plugin, default to application variants for applications and test plugin.
    */
   static getAndroidVariants(project) {
-    (project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
+    (project.android.hasProperty("libraryVariants")
       ? project.android.libraryVariants
       : project.android.applicationVariants)
   }
@@ -84,16 +81,13 @@ final class LicensePlugin implements Plugin<Project> {
    * Check if the project has Android plugins.
    */
   static isAndroidProject(project) {
-    (project.plugins.hasPlugin(ANDROID_APPLICATION_PLUGIN)
-      || project.plugins.hasPlugin(ANDROID_LIBRARY_PLUGIN)
-      || project.plugins.hasPlugin(ANDROID_TEST_PLUGIN))
+    ANDROID_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 
   /**
    * Check if project has Java plugins.
    */
   static isJavaProject(project) {
-    (project.plugins.hasPlugin(GROOVY_PLUGIN)
-      || project.plugins.hasPlugin(JAVA_PLUGIN))
+    JVM_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 }
