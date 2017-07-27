@@ -16,7 +16,10 @@ final class LicensePluginSpec extends Specification {
   def project
 
   def "setup"() {
-    project = ProjectBuilder.builder().build()
+    project = ProjectBuilder.builder()
+      .withProjectDir(new File("src/test/resources/project"))
+      .withName("project")
+      .build()
 
     // Set mock test sdk, we only need to test the plugins tasks
     SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)

@@ -26,9 +26,9 @@ final class LicenseReportTaskSpec extends Specification {
   final static FAKE_DEPENDENCY2 = "group:name2:1.0.0" // Multiple license
   final static FAKE_DEPENDENCY3 = "group:name3:1.0.0" // Bad license
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
-  final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven/").toURI()
+  final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
   // Test fixture that emulates a local android sdk
-  final static TEST_ANDROID_SDK = getClass().getResource("/android-sdk/").toURI()
+  final static TEST_ANDROID_SDK = getClass().getResource("/android-sdk").toURI()
   // Projects
   def project
   def subproject
@@ -36,6 +36,7 @@ final class LicenseReportTaskSpec extends Specification {
   def "setup"() {
     // Configure test projects
     project = ProjectBuilder.builder()
+      .withProjectDir(new File("src/test/resources/project"))
       .withName("project")
       .build()
     project.repositories {
