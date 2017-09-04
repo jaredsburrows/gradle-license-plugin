@@ -6,7 +6,7 @@ jdk:
 install: true
 
 script:
-  - ./gradlew clean build jacocoTestReport coveralls --scan --parallel --stacktrace
+  - ./gradlew clean build jacocoTestReport coveralls --scan --stacktrace
 
 after_success:
   - .buildscript/deploySnapshot.sh
@@ -17,9 +17,14 @@ branches:
 
 sudo: false
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
-    - $HOME/.gradle
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 env:
   global:
