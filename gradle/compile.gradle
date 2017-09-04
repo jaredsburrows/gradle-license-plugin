@@ -1,6 +1,6 @@
 compileJava {
-  sourceCompatibility = project.ext.sourceCompatibilityVersion
-  targetCompatibility = project.ext.targetCompatibilityVersion
+  sourceCompatibility = rootProject.ext.javaVersion
+  targetCompatibility = rootProject.ext.javaVersion
 
   // Show all warnings except boot classpath
   configure(options) {
@@ -15,8 +15,8 @@ compileJava {
 }
 
 compileGroovy {
-  sourceCompatibility = project.ext.sourceCompatibilityVersion
-  targetCompatibility = project.ext.targetCompatibilityVersion
+  sourceCompatibility = rootProject.ext.javaVersion
+  targetCompatibility = rootProject.ext.javaVersion
 
   // Show all warnings except boot classpath
   configure(options) {
@@ -44,6 +44,9 @@ test {
     showStackTraces true
     events "failed", "skipped"
   }
+
+  def maxWorkerCount = gradle.startParameter.maxWorkerCount
+  maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
 }
 
 javadoc {

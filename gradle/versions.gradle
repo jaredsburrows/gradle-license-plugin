@@ -1,7 +1,6 @@
 // Variables for entire project
 ext {
-  sourceCompatibilityVersion = JavaVersion.VERSION_1_7
-  targetCompatibilityVersion = JavaVersion.VERSION_1_7
+  javaVersion = JavaVersion.VERSION_1_7
 }
 
 // Dependencies

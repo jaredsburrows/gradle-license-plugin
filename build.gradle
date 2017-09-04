@@ -22,8 +22,8 @@ group = GROUP
 version = VERSION_NAME
 description = POM_DESCRIPTION
 
-sourceCompatibility = ext.sourceCompatibilityVersion
-targetCompatibility = ext.sourceCompatibilityVersion
+sourceCompatibility = rootProject.ext.javaVersion
+targetCompatibility = rootProject.ext.javaVersion
 
 dependencies {
   implementation localGroovy()
