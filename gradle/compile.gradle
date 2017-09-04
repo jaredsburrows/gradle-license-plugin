@@ -1,6 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 compileJava {
-  sourceCompatibility = project.ext.sourceCompatibilityVersion
-  targetCompatibility = project.ext.targetCompatibilityVersion
+  sourceCompatibility = rootProject.ext.javaVersion
+  targetCompatibility = rootProject.ext.javaVersion
 
   // Show all warnings except boot classpath
   configure(options) {
@@ -10,13 +12,13 @@ compileJava {
     compilerArgs << "-Xdiags:verbose"       // Turn on verbose errors
     encoding = "utf-8"
     incremental = true
-    fork = true
+    if (!rootProject.ext.ci) fork = true
   }
 }
 
 compileGroovy {
-  sourceCompatibility = project.ext.sourceCompatibilityVersion
-  targetCompatibility = project.ext.targetCompatibilityVersion
+  sourceCompatibility = rootProject.ext.javaVersion
+  targetCompatibility = rootProject.ext.javaVersion
 
   // Show all warnings except boot classpath
   configure(options) {
@@ -26,24 +28,27 @@ compileGroovy {
     compilerArgs << "-Xdiags:verbose"       // Turn on verbose errors
     encoding = "utf-8"
     incremental = true
-    fork = true
+    if (!rootProject.ext.ci) fork = true
   }
 
   configure(groovyOptions) {
     encoding = "utf-8"
-    fork = true
+    if (!rootProject.ext.ci) fork = true
   }
 }
 
 test {
   // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
-    exceptionFormat "full"
+    exceptionFormat TestExceptionFormat.FULL
     showCauses true
     showExceptions true
     showStackTraces true
     events "failed", "skipped"
   }
+
+  def maxWorkerCount = gradle.startParameter.maxWorkerCount
+  if (!rootProject.ext.ci) maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
 }
 
 javadoc {
