@@ -46,7 +46,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     SdkHandler.sTestSdkFolder = project.file TEST_ANDROID_SDK
   }
 
-  @Unroll "#projectPlugin licenseReport - no dependencies"() {
+  @Unroll "jvm - #projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -80,10 +80,10 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     actualJson == expectedJson
 
     where:
-    projectPlugin << ["groovy", "java"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "#projectPlugin licenseReport - project dependencies"() {
+  @Unroll "jvm - #projectPlugin licenseReport - project dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -154,10 +154,10 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     actualJson == expectedJson
 
     where:
-    projectPlugin << ["groovy", "java"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "android #taskName - no dependencies"() {
+  @Unroll "android - #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -202,7 +202,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "#projectPlugin licenseReport - no open source dependencies"() {
+  @Unroll "jvm - #projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -239,10 +239,10 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     actualJson == expectedJson
 
     where:
-    projectPlugin << ["groovy", "java"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "android #taskName - no open source dependencies"() {
+  @Unroll "android - #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -290,7 +290,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "#projectPlugin licenseReport"() {
+  @Unroll "jvm - #projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -358,10 +358,10 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     actualJson == expectedJson
 
     where:
-    projectPlugin << ["groovy", "java"]
+    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "android #taskName - default buildTypes"() {
+  @Unroll "android - #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -440,7 +440,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android #taskName - buildTypes"() {
+  @Unroll "android - #taskName - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -524,7 +524,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android #taskName - buildTypes + productFlavors"() {
+  @Unroll "android - #taskName - buildTypes + productFlavors"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -628,7 +628,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
                  "licenseFlavor1ReleaseReport", "licenseFlavor2ReleaseReport"]
   }
 
-  @Unroll "android #taskName - buildTypes + productFlavors + flavorDimensions"() {
+  @Unroll "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -974,5 +974,79 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
     where:
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
+  }
+
+  def "jvm - #projectPlugin licenseReport - test new configurations, remove when AGP 3 is out"() {
+    given:
+    project.apply plugin: projectPlugin
+    project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      api APPCOMPAT_V7
+      implementation project.project(":subproject")
+    }
+
+    subproject.apply plugin: "java"
+    subproject.dependencies {
+      implementation DESIGN
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#1288288048'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288288048'>Design</a>
+      </li>
+    </ul>
+    <a name='1288288048' />
+    <h3>The Apache Software License</h3>
+    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+        "project": "Design",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    projectPlugin << ["java-library"]
   }
 }

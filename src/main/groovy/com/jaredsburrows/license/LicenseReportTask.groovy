@@ -43,29 +43,44 @@ class LicenseReportTask extends DefaultTask {
     // Create temporary configuration in order to store POM information
     project.configurations.create(POM_CONFIGURATION)
 
+    project.configurations.every {
+      try {
+        it.canBeResolved = true
+      } catch (Exception e) { }
+    }
+
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
 
-    // Add default compile configuration
-    configurations << project.configurations.compile
+    // Add 'compile' configuration older java and android gradle plugins
+    if (project.configurations.find { it.name == "compile" }) configurations << project.configurations."compile"
+
+    // Add 'api' and 'implementation' configurations for newer java-library and android gradle plugins
+    if (project.configurations.find { it.name == "api" }) configurations << project.configurations."api"
+    if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."implementation"
 
     // If Android project, add extra configurations
     if (variant) {
-      // Add buildType compile configuration
-      configurations << project.configurations."${buildType}Compile"
+      // Add buildType configurations
+      if (project.configurations.find { it.name == "compile" }) configurations << project.configurations."${buildType}Compile"
+      if (project.configurations.find { it.name == "api" }) configurations << project.configurations."${buildType}Api"
+      if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."${buildType}Implementation"
 
-      // Add productFlavors compile configuration
+      // Add productFlavors configurations
       productFlavors.each { flavor ->
         // Works for productFlavors and productFlavors with dimensions
         if (variant.capitalize().contains(flavor.name.capitalize())) {
-          configurations << project.configurations."${flavor.name}Compile"
+          if (project.configurations.find { it.name == "compile" }) configurations << project.configurations."${flavor.name}Compile"
+          if (project.configurations.find { it.name == "api" }) configurations << project.configurations."${flavor.name}Api"
+          if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."${flavor.name}Implementation"
         }
       }
     }
 
-    // Iterate through all "compile" configurations's dependencies
+    // Iterate through all the configurations's dependencies
     configurations.each { configuration ->
-      configuration.canBeResolved && configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
+      configuration.canBeResolved &&
+        configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
         "$id.group:$id.name:$id.version@pom"
       }.each { pom ->
         project.configurations."$POM_CONFIGURATION".dependencies.add(

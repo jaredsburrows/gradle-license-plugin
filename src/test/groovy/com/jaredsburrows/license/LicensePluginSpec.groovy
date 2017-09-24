@@ -30,7 +30,7 @@ final class LicensePluginSpec extends BaseSpecification {
     e.message == "License report plugin can only be applied to android or java projects."
   }
 
-  @Unroll "#projectPlugin project"() {
+  @Unroll "all - #projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 
@@ -44,7 +44,7 @@ final class LicensePluginSpec extends BaseSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS + LicensePlugin.ANDROID_PLUGINS
   }
 
-  @Unroll "#projectPlugin - all tasks created"() {
+  @Unroll "jvm - #projectPlugin - all tasks created"() {
     given:
     project.apply plugin: projectPlugin
     project.apply plugin: "com.jaredsburrows.license"
@@ -79,7 +79,7 @@ final class LicensePluginSpec extends BaseSpecification {
     project.tasks.getByName("licenseDebugReport")
   }
 
-  def "android [buildTypes] - all tasks created"() {
+  def "android - [buildTypes] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -105,7 +105,7 @@ final class LicensePluginSpec extends BaseSpecification {
     project.tasks.getByName("licenseReleaseReport")
   }
 
-  def "android [buildTypes + productFlavors] - all tasks created"() {
+  def "android - [buildTypes + productFlavors] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
@@ -138,7 +138,7 @@ final class LicensePluginSpec extends BaseSpecification {
     project.tasks.getByName("licenseFlavor2ReleaseReport")
   }
 
-  def "android [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
+  def "android - [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
     project.apply plugin: "com.jaredsburrows.license"
