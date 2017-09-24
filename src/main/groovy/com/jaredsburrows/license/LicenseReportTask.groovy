@@ -65,7 +65,7 @@ class LicenseReportTask extends DefaultTask {
 
     // Iterate through all "compile" configurations's dependencies
     configurations.each { configuration ->
-      configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
+      configuration.canBeResolved && configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
         "$id.group:$id.name:$id.version@pom"
       }.each { pom ->
         project.configurations."$POM_CONFIGURATION".dependencies.add(
