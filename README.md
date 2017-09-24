@@ -44,7 +44,7 @@ Example `build.gradle`:
 
 ```groovy
 dependencies {
-  compile "com.android.support:design:25.1.0"
+  compile "com.android.support:design:26.1.0"
   compile "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
 }
 ```

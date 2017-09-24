@@ -2,17 +2,13 @@ package com.jaredsburrows.license
 
 import com.android.build.gradle.internal.SdkHandler
 import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
 import spock.lang.Unroll
+import test.BaseSpecification
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-final class LicensePluginSpec extends Specification {
-  final static COMPILE_SDK_VERSION = LicenseReportTaskSpec.COMPILE_SDK_VERSION
-  final static BUILD_TOOLS_VERSION = LicenseReportTaskSpec.BUILD_TOOLS_VERSION
-  final static APPLICATION_ID = LicenseReportTaskSpec.APPLICATION_ID
-  final static TEST_ANDROID_SDK = LicenseReportTaskSpec.TEST_ANDROID_SDK
+final class LicensePluginSpec extends BaseSpecification {
   def project
 
   def "setup"() {

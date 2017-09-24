@@ -2,17 +2,13 @@ package com.jaredsburrows.license
 
 import com.android.build.gradle.internal.SdkHandler
 import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
 import spock.lang.Unroll
+import test.BaseSpecification
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-final class LicenseReportTaskSpec extends Specification {
-  final static COMPILE_SDK_VERSION = 25
-  final static BUILD_TOOLS_VERSION = "25.0.2"
-  final static APPLICATION_ID = "com.example"
-  final static SUPPORT_VERSION = "25.1.0"
+final class LicenseReportTaskSpec extends BaseSpecification {
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
   final static APPCOMPAT_V7 = "com.android.support:appcompat-v7:$SUPPORT_VERSION"
   final static DESIGN = "com.android.support:design:$SUPPORT_VERSION"
@@ -25,10 +21,6 @@ final class LicenseReportTaskSpec extends Specification {
   final static FAKE_DEPENDENCY = "group:name:1.0.0" // Single license
   final static FAKE_DEPENDENCY2 = "group:name2:1.0.0" // Multiple license
   final static FAKE_DEPENDENCY3 = "group:name3:1.0.0" // Bad license
-  // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
-  final static TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
-  // Test fixture that emulates a local android sdk
-  final static TEST_ANDROID_SDK = getClass().getResource("/android-sdk").toURI()
   // Projects
   def project
   def subproject

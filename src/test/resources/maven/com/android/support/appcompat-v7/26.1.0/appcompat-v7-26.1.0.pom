@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.android.support</groupId>
-  <artifactId>design</artifactId>
-  <version>25.1.0</version>
+  <artifactId>appcompat-v7</artifactId>
+  <version>26.1.0</version>
   <packaging>aar</packaging>
 </project>
