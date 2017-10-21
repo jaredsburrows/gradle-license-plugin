@@ -1,6 +1,6 @@
 // Variables for entire project
 ext {
-  javaVersion = "1.7"
+  javaVersion = "1.8"
 }
 
 // Dependencies
