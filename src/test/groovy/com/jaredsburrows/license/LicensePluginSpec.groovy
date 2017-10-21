@@ -35,7 +35,7 @@ final class LicensePluginSpec extends BaseSpecification {
     project.apply plugin: projectPlugin
 
     when:
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
 
     then:
     noExceptionThrown()
@@ -47,7 +47,7 @@ final class LicensePluginSpec extends BaseSpecification {
   @Unroll "jvm - #projectPlugin - all tasks created"() {
     given:
     project.apply plugin: projectPlugin
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
 
     when:
     project.evaluate()
@@ -62,7 +62,7 @@ final class LicensePluginSpec extends BaseSpecification {
   def "android - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -82,7 +82,7 @@ final class LicensePluginSpec extends BaseSpecification {
   def "android - [buildTypes] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -108,7 +108,7 @@ final class LicensePluginSpec extends BaseSpecification {
   def "android - [buildTypes + productFlavors] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -141,7 +141,7 @@ final class LicensePluginSpec extends BaseSpecification {
   def "android - [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {
     given:
     project.apply plugin: "com.android.application"
-    project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
