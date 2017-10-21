@@ -135,7 +135,7 @@ artifactory {
 artifactoryPublish.dependsOn mainJar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
 artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
 
-// Releases published to JFrog Bintray's JCenter repository
+// Publishes to JFrog Bintray's JCenter repository
 bintray {
   user = project.properties["BINTRAY_USERNAME"] ?: System.getenv("BINTRAY_USERNAME")
   key = project.properties["BINTRAY_API_KEY"] ?: System.getenv("BINTRAY_API_KEY")
@@ -151,6 +151,7 @@ bintray {
     vcsUrl = POM_URL
     githubRepo = BINTRAY_GITHUB_REPO
     githubReleaseNotesFile = "README.md"
+    labels = ["gradle", "plugin", "license"]
 
     version {
       name = VERSION_NAME
@@ -170,7 +171,7 @@ bintray {
 bintrayUpload.dependsOn mainJar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
 bintrayUpload.dependsOn "generatePomFileForMavenPublication"
 
-// Releases published to JFrog Bintray's JCenter repository
+// Publishes to JFrog Bintray's JCenter repository
 pluginBundle {
   website = POM_URL
   vcsUrl = POM_URL
@@ -187,6 +188,7 @@ pluginBundle {
 publishPlugins.dependsOn mainJar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
 publishPlugins.dependsOn "generatePomFileForMavenPublication"
 
+// Publish to both Bintray and Gradle repositories
 task release(dependsOn: [bintrayUpload, publishPlugins]) {
   group = "Publishing"
   description = "Publish to JFrog Jcenter's Brintray and Gradle Plugins Repositories."
