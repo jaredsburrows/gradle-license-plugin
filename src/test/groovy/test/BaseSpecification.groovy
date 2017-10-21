@@ -7,7 +7,7 @@ import spock.lang.Specification
  */
 class BaseSpecification extends Specification {
   static def COMPILE_SDK_VERSION = 26
-  static def BUILD_TOOLS_VERSION = "26.0.1"
+  static def BUILD_TOOLS_VERSION = "26.0.2"
   static def APPLICATION_ID = "com.example"
   static def SUPPORT_VERSION = "26.1.0"
   // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
