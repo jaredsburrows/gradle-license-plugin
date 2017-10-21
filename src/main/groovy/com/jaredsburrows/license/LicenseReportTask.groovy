@@ -8,17 +8,14 @@ import com.jaredsburrows.license.internal.report.JsonReport
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 class LicenseReportTask extends DefaultTask {
   final static POM_CONFIGURATION = "poms"
+  final static TEMP_POM_CONFIGURATION = "tempPoms"
   final static ANDROID_SUPPORT_GROUP_ID = "com.android.support"
   final static APACHE_LICENSE_NAME = "The Apache Software License"
   final static APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -81,28 +78,35 @@ class LicenseReportTask extends DefaultTask {
     configurations.each { configuration ->
       configuration.canBeResolved &&
         configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
-        "$id.group:$id.name:$id.version@pom"
-      }.each { pom ->
-        project.configurations."$POM_CONFIGURATION".dependencies.add(
-          project.dependencies.add("$POM_CONFIGURATION", pom)
-        )
-      }
+          "$id.group:$id.name:$id.version@pom"
+        }.each { pom ->
+          project.configurations."$POM_CONFIGURATION".dependencies.add(
+            project.dependencies.add("$POM_CONFIGURATION", pom)
+          )
+        }
     }
 
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
       final pomFile = pom.file
-      final text = new XmlParser().parse(pomFile)
+      final pomText = new XmlParser().parse(pomFile)
 
-      // Parse POM file
-      def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
-      def developers = text.developers?.developer?.collect { developer ->
+      // POM file information
+      def hasParent = pomText.parent != null
+
+      // License information
+      def name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
+      def developers = pomText.developers?.developer?.collect { developer ->
         new Developer(name: developer?.name?.text()?.trim())
       }
-      def url = text.scm?.url?.text()
-      def year = text.inceptionYear?.text()
-      def licenseName = text.licenses?.license[0]?.name?.text()
-      def licenseURL = text.licenses?.license[0]?.url?.text()
+      def url = pomText.scm?.url?.text()
+      def year = pomText.inceptionYear?.text()
+      def licenseName
+      def licenseURL
+      if (pomText?.licenses?.license) {
+        licenseName = pomText.licenses?.license[0]?.name?.text()
+        licenseURL = pomText.licenses?.license[0]?.url?.text()
+      }
 
       // Clean up
       name = name?.trim()
@@ -121,12 +125,31 @@ class LicenseReportTask extends DefaultTask {
       if (!licenseName || !licenseURL) {
         logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
 
-        if (ANDROID_SUPPORT_GROUP_ID == text.groupId?.text()) {
+        if (ANDROID_SUPPORT_GROUP_ID == pomText.groupId?.text()) {
           licenseName = APACHE_LICENSE_NAME
           licenseURL = APACHE_LICENSE_URL
         } else {
-          logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
-          return
+          if (hasParent && pomText) {
+            def parentPomText = getParentPom(pomText)
+
+            // License information
+            if (parentPomText?.licenses?.license) {
+              licenseName = parentPomText?.licenses?.license[0]?.name?.text()
+              licenseURL = parentPomText?.licenses?.license[0]?.url?.text()
+            }
+
+            // Clean up
+            licenseName = licenseName?.trim()
+            licenseURL = licenseURL?.trim()
+
+            if (!licenseName || !licenseURL) {
+              logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
+              return
+            }
+          } else {
+            logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
+            return
+          }
         }
       }
 
@@ -156,6 +179,30 @@ class LicenseReportTask extends DefaultTask {
 
     // Sort POM information by name
     projects.sort { project -> project.name }
+  }
+
+  /**
+   * Use Parent POM information when individual dependency license information is missing.
+   */
+  def getParentPom(def pomText) {
+    // Get parent POM information
+    def groupId = pomText?.parent?.groupId?.text()
+    def artifactId = pomText?.parent?.artifactId?.text()
+    def version = pomText?.parent?.version?.text()
+    def dependency = "$groupId:$artifactId:$version@pom"
+
+    // Add dependency to temporary configuration
+    project.configurations.create(TEMP_POM_CONFIGURATION)
+    project.configurations."$TEMP_POM_CONFIGURATION".dependencies.add(
+      project.dependencies.add(TEMP_POM_CONFIGURATION, dependency)
+    )
+
+    def parentPomFile = project.configurations."$TEMP_POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts?.file
+
+    // Reset dependencies in temporary configuration
+    project.configurations.remove(project.configurations."$TEMP_POM_CONFIGURATION")
+
+    return parentPomFile ? new XmlParser().parse(parentPomFile) : null
   }
 
   /**
