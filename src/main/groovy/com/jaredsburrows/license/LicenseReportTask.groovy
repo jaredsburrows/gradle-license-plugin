@@ -91,7 +91,8 @@ class LicenseReportTask extends DefaultTask {
 
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
-      final text = new XmlParser().parse(pom.file)
+      final pomFile = pom.file
+      final text = new XmlParser().parse(pomFile)
 
       // Parse POM file
       def name = text.name?.text() ? text.name?.text() : text.artifactId?.text()
@@ -110,6 +111,12 @@ class LicenseReportTask extends DefaultTask {
       licenseName = licenseName?.trim()
       licenseURL = licenseURL?.trim()
 
+      // If the POM is missing a name, do not record it
+      if (!name) {
+        logger.log(LogLevel.WARN, String.format("POM file is missing a name: %s", pomFile))
+        return
+      }
+
       // For all "com.android.support" libraries, use Apache 2
       if (!licenseName || !licenseURL) {
         logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
@@ -118,17 +125,16 @@ class LicenseReportTask extends DefaultTask {
           licenseName = APACHE_LICENSE_NAME
           licenseURL = APACHE_LICENSE_URL
         } else {
+          logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
           return
         }
       }
-
-      // If the POM is missing a name, do not record it
-      if (!name) return
 
       // If the POM is missing a license, do not record it
       try {
         new URL(licenseURL)
       } catch (Exception ignore) {
+        logger.log(LogLevel.WARN, String.format("%s dependency does not have a valid license URL.", name))
         return
       }
 
