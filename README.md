@@ -15,7 +15,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ## Download
 
-Gradle:
+**Release:**
 ```groovy
 buildscript {
   repositories {
@@ -27,10 +27,26 @@ buildscript {
   }
 }
 
-apply plugin: "com.android.application" // or "java"
+apply plugin: "com.android.application" // or "java-library"
 apply plugin: "com.jaredsburrows.license"
 ```
+Release versions are available in the JFrog Bintray repository: https://bintray.com/jaredsburrows/maven/gradle-license-plugin
 
+**Snapshot:**
+```groovy
+buildscript {
+  repositories {
+    maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local/" }
+  }
+
+  dependencies {
+    classpath "com.jaredsburrows:gradle-license-plugin:0.7.0-SNAPSHOT"
+  }
+}
+
+apply plugin: "com.android.application" // or "java-library"
+apply plugin: "com.jaredsburrows.license"
+```
 Snapshot versions are available in the JFrog Artifactory repository: https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin
 
 ## Tasks
@@ -49,7 +65,7 @@ dependencies {
 }
 ```
 
-HTML:
+**HTML:**
 ```html
 <html>
   <head>
@@ -76,7 +92,7 @@ HTML:
 </html>
 ```
 
-JSON:
+**JSON:**
 ```json
 [
   {
