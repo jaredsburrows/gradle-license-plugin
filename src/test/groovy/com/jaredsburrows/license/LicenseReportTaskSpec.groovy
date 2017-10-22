@@ -18,9 +18,10 @@ final class LicenseReportTaskSpec extends BaseSpecification {
   final static FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
   final static ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-  final static FAKE_DEPENDENCY = "group:name:1.0.0" // Single license
-  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0" // Multiple license
-  final static FAKE_DEPENDENCY3 = "group:name3:1.0.0" // Bad license
+  final static FAKE_DEPENDENCY = "group:name:1.0.0"       // Single license
+  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0"     // Multiple license
+  final static FAKE_DEPENDENCY3 = "group:name3:1.0.0"     // Bad license
+  final static CHILD_DEPENDENCY = "group:child:1.0.0"     // Child license -> Parent license
   // Projects
   def project
   def subproject
@@ -840,12 +841,66 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     actualJson == expectedJson
   }
 
-  def "dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
+  def "jvm - dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
     given:
     project.apply plugin: "java"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile FAKE_DEPENDENCY2
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for libraries:</h3>
+    <ul>
+      <li>
+        <a href='#755502249'>Fake dependency name</a>
+      </li>
+    </ul>
+    <a name='755502249' />
+    <h3>Some license</h3>
+    <pre>Some license, http://website.tld/</pre>
+  </body>
+</html>
+""".trim()
+    def actualJson = task.jsonFile.text.trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Fake dependency name",
+        "developers": "name",
+        "url": "https://github.com/user/repo.git",
+        "year": "2017",
+        "license": "Some license",
+        "license_url": "http://website.tld/"
+    }
+]
+""".trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def "jvm - dependency without license information - check it's parent"() {
+    given:
+    project.apply plugin: "java"
+    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    project.dependencies {
+      compile CHILD_DEPENDENCY
     }
 
     when:
@@ -976,6 +1031,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
+  // TODO
   def "jvm - #projectPlugin licenseReport - test new configurations, remove when AGP 3 is out"() {
     given:
     project.apply plugin: projectPlugin
