@@ -9,6 +9,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.*
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
@@ -30,22 +32,32 @@ class LicenseReportTask extends DefaultTask {
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
-  @TaskAction licenseReport() {
+  @SuppressWarnings("GroovyUnusedDeclaration") @TaskAction licenseReport() {
+    setupEnvironment()
+    collectDependencies()
     generatePOMInfo()
     createHTMLReport()
     createJsonReport()
   }
 
-  def generatePOMInfo() {
+  /**
+   * Setup configurations to collect dependencies.
+   */
+  def setupEnvironment() {
     // Create temporary configuration in order to store POM information
     project.configurations.create(POM_CONFIGURATION)
 
     project.configurations.every {
       try {
         it.canBeResolved = true
-      } catch (Exception e) { }
+      } catch (Exception ignore) { }
     }
+  }
 
+  /**
+   * Iterate through all configurations and collect dependencies.
+   */
+  def collectDependencies() {
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
 
@@ -85,7 +97,12 @@ class LicenseReportTask extends DefaultTask {
           )
         }
     }
+  }
 
+  /**
+   * Get POM information from the dependency artifacts.
+   */
+  def generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
       final pomFile = pom.file
@@ -101,8 +118,8 @@ class LicenseReportTask extends DefaultTask {
       }
       def url = pomText.scm?.url?.text()
       def year = pomText.inceptionYear?.text()
-      def licenseName
-      def licenseURL
+      def licenseName = null
+      def licenseURL = null
       if (pomText?.licenses?.license) {
         licenseName = pomText.licenses?.license[0]?.name?.text()
         licenseURL = pomText.licenses?.license[0]?.url?.text()
@@ -197,12 +214,12 @@ class LicenseReportTask extends DefaultTask {
       project.dependencies.add(TEMP_POM_CONFIGURATION, dependency)
     )
 
-    def parentPomFile = project.configurations."$TEMP_POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts?.file
+    def pomFile = project.configurations."$TEMP_POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts?.file
 
     // Reset dependencies in temporary configuration
     project.configurations.remove(project.configurations."$TEMP_POM_CONFIGURATION")
 
-    return parentPomFile ? new XmlParser().parse(parentPomFile) : null
+    return pomFile ? new XmlParser().parse(pomFile) : null
   }
 
   /**

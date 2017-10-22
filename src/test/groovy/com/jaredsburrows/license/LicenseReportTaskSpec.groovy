@@ -94,7 +94,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
       compile project.project(":subproject")
     }
 
-    subproject.apply plugin: "java"
+    subproject.apply plugin: "java-library"
     subproject.dependencies {
       compile DESIGN
     }
@@ -753,7 +753,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
   def "dependency with full pom - project name, developers, url, year, bad license"() {
     given:
-    project.apply plugin: "java"
+    project.apply plugin: "java-library"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile FAKE_DEPENDENCY3
@@ -790,7 +790,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
   def "dependency with full pom - project name, developers, url, year, single license"() {
     given:
-    project.apply plugin: "java"
+    project.apply plugin: "java-library"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile FAKE_DEPENDENCY
@@ -844,7 +844,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
   def "jvm - dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
     given:
-    project.apply plugin: "java"
+    project.apply plugin: "java-library"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile FAKE_DEPENDENCY2
@@ -898,7 +898,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
   def "jvm - dependency without license information - check it's parent"() {
     given:
-    project.apply plugin: "java"
+    project.apply plugin: "java-library"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile CHILD_DEPENDENCY
@@ -1057,7 +1057,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
       implementation project.project(":subproject")
     }
 
-    subproject.apply plugin: "java"
+    subproject.apply plugin: "java-library"
     subproject.dependencies {
       implementation DESIGN
     }

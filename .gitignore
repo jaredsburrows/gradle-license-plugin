@@ -93,3 +93,4 @@ hs_err_pid*
 
 project/src/main/assets
 userHome/
+src/test/resources/project/src/main/assets/open_source_licenses.html
