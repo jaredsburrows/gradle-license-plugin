@@ -18,10 +18,11 @@ final class LicenseReportTaskSpec extends BaseSpecification {
   final static FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Others
   final static ANDROID_GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-  final static FAKE_DEPENDENCY = "group:name:1.0.0"       // Single license
-  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0"     // Multiple license
-  final static FAKE_DEPENDENCY3 = "group:name3:1.0.0"     // Bad license
-  final static CHILD_DEPENDENCY = "group:child:1.0.0"     // Child license -> Parent license
+  final static FAKE_DEPENDENCY = "group:name:1.0.0"                               // Single license
+  final static FAKE_DEPENDENCY2 = "group:name2:1.0.0"                             // Multiple license
+  final static FAKE_DEPENDENCY3 = "group:name3:1.0.0"                             // Bad license
+  final static CHILD_DEPENDENCY = "group:child:1.0.0"                             // Child license -> Parent license
+  final static RETROFIT_DEPENDENCY = "com.squareup.retrofit2:retrofit:2.3.0"      // Child license -> Parent license
   // Projects
   def project
   def subproject
@@ -901,6 +902,7 @@ final class LicenseReportTaskSpec extends BaseSpecification {
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
     project.dependencies {
       compile CHILD_DEPENDENCY
+      compile RETROFIT_DEPENDENCY
     }
 
     when:
@@ -922,10 +924,16 @@ final class LicenseReportTaskSpec extends BaseSpecification {
       <li>
         <a href='#755502249'>Fake dependency name</a>
       </li>
+      <li>
+        <a href='#1288288048'>Retrofit</a>
+      </li>
     </ul>
     <a name='755502249' />
     <h3>Some license</h3>
     <pre>Some license, http://website.tld/</pre>
+    <a name='1288288048' />
+    <h3>Apache 2.0</h3>
+    <pre>Apache 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.trim()
@@ -940,6 +948,14 @@ final class LicenseReportTaskSpec extends BaseSpecification {
         "year": "2017",
         "license": "Some license",
         "license_url": "http://website.tld/"
+    },
+    {
+        "project": "Retrofit",
+        "developers": null,
+        "url": null,
+        "year": null,
+        "license": "Apache 2.0",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
 ]
 """.trim()

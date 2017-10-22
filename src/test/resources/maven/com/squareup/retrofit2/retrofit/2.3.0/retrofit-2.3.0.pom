@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Source: https://repo1.maven.org/maven2/com/squareup/retrofit2/retrofit/2.3.0/retrofit-2.3.0.pom -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.squareup.retrofit2</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.3.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>retrofit</artifactId>
+  <name>Retrofit</name>
+</project>

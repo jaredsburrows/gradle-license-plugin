@@ -10,8 +10,8 @@ class BaseSpecification extends Specification {
   static def BUILD_TOOLS_VERSION = "26.0.2"
   static def APPLICATION_ID = "com.example"
   static def SUPPORT_VERSION = "26.1.0"
-  // Test fixture that emulates a mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
-  static def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
+  // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
+  static def TEST_MAVEN_REPOSITORY = this.getResource("/maven").toURI()
   // Test fixture that emulates a local android sdk
-  static def TEST_ANDROID_SDK = getClass().getResource("/android-sdk").toURI()
+  static def TEST_ANDROID_SDK = this.getResource("/android-sdk").toURI()
 }
