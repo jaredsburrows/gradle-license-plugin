@@ -90,7 +90,3 @@ gradle-app.setting
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
-project/src/main/assets
-userHome/
-src/test/resources/project/src/main/assets/open_source_licenses.html

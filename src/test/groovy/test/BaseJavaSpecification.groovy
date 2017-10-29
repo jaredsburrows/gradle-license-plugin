@@ -2,12 +2,15 @@ package test
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 class BaseJavaSpecification extends Specification {
+  @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
   // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   static def TEST_MAVEN_REPOSITORY = this.getResource("/maven").toURI()
   static def PROJECT_SOURCE_DIR = "src/test/resources/project"
@@ -34,7 +37,7 @@ class BaseJavaSpecification extends Specification {
   def "setup"() {
     // Setup project
     project = ProjectBuilder.builder()
-      .withProjectDir(new File(PROJECT_SOURCE_DIR))
+      .withProjectDir(testProjectDir.root)
       .withName("project")
       .build()
     project.repositories {
