@@ -1,40 +1,13 @@
 package com.jaredsburrows.license
 
-import com.android.build.gradle.internal.SdkHandler
-import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Unroll
-import test.BaseSpecification
+import test.BaseAndroidSpecification
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
-final class LicensePluginSpec extends BaseSpecification {
-  def project
-
-  def "setup"() {
-    // Setup project
-    project = ProjectBuilder.builder()
-      .withProjectDir(new File(PROJECT_SOURCE_DIR))
-      .withName("project")
-      .build()
-
-    // Make sure Android projects have a manifest
-    project.file(MANIFEST_FILE_PATH).text = MANIFEST
-
-    // Set mock test sdk, we only need to test the plugins tasks
-    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
-  }
-
-  def "unsupported project project"() {
-    when:
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
-
-    then:
-    def e = thrown(IllegalStateException)
-    e.message == "License report plugin can only be applied to android or java projects."
-  }
-
-  @Unroll "all - #projectPlugin project"() {
+final class LicensePluginAndroidSpec extends BaseAndroidSpecification {
+  @Unroll "android - #projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 
@@ -45,22 +18,7 @@ final class LicensePluginSpec extends BaseSpecification {
     noExceptionThrown()
 
     where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS + LicensePlugin.ANDROID_PLUGINS
-  }
-
-  @Unroll "jvm - #projectPlugin - all tasks created"() {
-    given:
-    project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
-
-    when:
-    project.evaluate()
-
-    then:
-    project.tasks.getByName("licenseReport")
-
-    where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS
+    projectPlugin << LicensePlugin.ANDROID_PLUGINS
   }
 
   def "android - all tasks created"() {
