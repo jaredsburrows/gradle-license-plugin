@@ -14,4 +14,7 @@ class BaseSpecification extends Specification {
   static def TEST_MAVEN_REPOSITORY = this.getResource("/maven").toURI()
   // Test fixture that emulates a local android sdk
   static def TEST_ANDROID_SDK = this.getResource("/android-sdk").toURI()
+  static def PROJECT_SOURCE_DIR = "src/test/resources/project"
+  static def MANIFEST_FILE_PATH = "src/main/AndroidManifest.xml"
+  static def MANIFEST = "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" package=\"$APPLICATION_ID\"/>"
 }

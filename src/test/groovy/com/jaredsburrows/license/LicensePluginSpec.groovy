@@ -12,10 +12,14 @@ final class LicensePluginSpec extends BaseSpecification {
   def project
 
   def "setup"() {
+    // Setup project
     project = ProjectBuilder.builder()
-      .withProjectDir(new File("src/test/resources/project"))
+      .withProjectDir(new File(PROJECT_SOURCE_DIR))
       .withName("project")
       .build()
+
+    // Make sure Android projects have a manifest
+    project.file(MANIFEST_FILE_PATH).text = MANIFEST
 
     // Set mock test sdk, we only need to test the plugins tasks
     SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
@@ -103,39 +107,6 @@ final class LicensePluginSpec extends BaseSpecification {
     then:
     project.tasks.getByName("licenseDebugReport")
     project.tasks.getByName("licenseReleaseReport")
-  }
-
-  def "android - [buildTypes + productFlavors] - all tasks created"() {
-    given:
-    project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
-
-      productFlavors {
-        flavor1 {}
-        flavor2 {}
-      }
-    }
-
-    when:
-    project.evaluate()
-
-    then:
-    project.tasks.getByName("licenseFlavor1DebugReport")
-    project.tasks.getByName("licenseFlavor1ReleaseReport")
-    project.tasks.getByName("licenseFlavor2DebugReport")
-    project.tasks.getByName("licenseFlavor2ReleaseReport")
   }
 
   def "android - [buildTypes + productFlavors + flavorDimensions] - all tasks created"() {

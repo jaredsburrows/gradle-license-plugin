@@ -28,14 +28,18 @@ final class LicenseReportTaskSpec extends BaseSpecification {
   def subproject
 
   def "setup"() {
-    // Configure test projects
+    // Setup project
     project = ProjectBuilder.builder()
-      .withProjectDir(new File("src/test/resources/project"))
+      .withProjectDir(new File(PROJECT_SOURCE_DIR))
       .withName("project")
       .build()
+    // Make sure Android projects have a manifest
+    project.file(MANIFEST_FILE_PATH).text = MANIFEST
     project.repositories {
       maven { url TEST_MAVEN_REPOSITORY }
     }
+
+    // Setup subproject
     subproject = ProjectBuilder.builder()
       .withParent(project)
       .withName("subproject")
@@ -524,110 +528,6 @@ final class LicenseReportTaskSpec extends BaseSpecification {
 
     where:
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
-  }
-
-  @Unroll "android - #taskName - buildTypes + productFlavors"() {
-    given:
-    project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
-
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-
-      buildTypes {
-        debug {}
-        release {}
-      }
-
-      productFlavors {
-        flavor1 {}
-        flavor2 {}
-      }
-    }
-    project.dependencies {
-      compile APPCOMPAT_V7
-
-      debugCompile DESIGN
-      releaseCompile DESIGN
-
-      flavor1Compile SUPPORT_V4
-      flavor2Compile SUPPORT_V4
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for libraries:</h3>
-    <ul>
-      <li>
-        <a href='#1288288048'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Design</a>
-      </li>
-      <li>
-        <a href='#1288288048'>Support-v4</a>
-      </li>
-    </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
-  </body>
-</html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Design",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    },
-    {
-        "project": "Support-v4",
-        "developers": null,
-        "url": null,
-        "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-]
-""".trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-
-    where:
-    taskName << ["licenseFlavor1DebugReport", "licenseFlavor2DebugReport",
-                 "licenseFlavor1ReleaseReport", "licenseFlavor2ReleaseReport"]
   }
 
   @Unroll "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
