@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 compileJava {
   sourceCompatibility = rootProject.ext.javaVersion
   targetCompatibility = rootProject.ext.javaVersion
@@ -5,9 +8,7 @@ compileJava {
   // Show all warnings except boot classpath
   configure(options) {
     compilerArgs << "-Xlint:all"            // Turn on all warnings
-    compilerArgs << "-Xlint:-options"       // Turn off "missing" bootclasspath warning
     compilerArgs << "-Werror"               // Turn warnings into errors
-    compilerArgs << "-Xdiags:verbose"       // Turn on verbose errors
     encoding = "utf-8"
     incremental = true
     fork = true
@@ -21,9 +22,7 @@ compileGroovy {
   // Show all warnings except boot classpath
   configure(options) {
     compilerArgs << "-Xlint:all"            // Turn on all warnings
-    compilerArgs << "-Xlint:-options"       // Turn off "missing" bootclasspath warning
     compilerArgs << "-Werror"               // Turn warnings into errors
-    compilerArgs << "-Xdiags:verbose"       // Turn on verbose errors
     encoding = "utf-8"
     incremental = true
     fork = true
@@ -38,15 +37,14 @@ compileGroovy {
 test {
   // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
-    exceptionFormat "full"
+    exceptionFormat TestExceptionFormat.FULL
     showCauses true
     showExceptions true
     showStackTraces true
-    events "failed", "skipped"
+    events = [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
   }
 
-  def maxWorkerCount = gradle.startParameter.maxWorkerCount
-  maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+  maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
 
 javadoc {

@@ -1,8 +1,8 @@
 plugins {
-  id "com.gradle.build-scan" version "1.10.1"
+  id "com.gradle.build-scan" version "1.10.3"
   id "com.github.kt3k.coveralls" version "2.8.2"
   id "com.jfrog.artifactory" version "4.4.18"
-  id "com.jfrog.bintray" version "1.7.3"
+  id "com.jfrog.bintray" version "1.8.0"
   id "com.github.ben-manes.versions" version "0.17.0"
   id "com.gradle.plugin-publish" version "0.9.9"
   id "java-gradle-plugin"
@@ -16,7 +16,7 @@ repositories {
   google()
 }
 
-apply from: file("gradle/dependencies.gradle")
+apply from: "gradle/dependencies.gradle"
 
 group = GROUP
 version = VERSION_NAME
@@ -36,10 +36,9 @@ dependencies {
 }
 
 // Ordering matters
-apply from: file("gradle/scan.gradle")
-apply from: file("gradle/compile.gradle")
-apply from: file("gradle/plugin.gradle")
-apply from: file("gradle/publish.gradle")
-apply from: file("gradle/quality.gradle")
-apply from: file("gradle/wrapper.gradle")
-
+apply from: "gradle/scan.gradle"
+apply from: "gradle/compile.gradle"
+apply from: "gradle/plugin.gradle"
+apply from: "gradle/publish.gradle"
+apply from: "gradle/quality.gradle"
+apply from: "gradle/wrapper.gradle"
