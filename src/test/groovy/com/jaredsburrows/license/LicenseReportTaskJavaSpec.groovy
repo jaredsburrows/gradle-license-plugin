@@ -14,7 +14,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -60,7 +60,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -128,7 +128,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -171,7 +171,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -239,7 +239,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -276,7 +276,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -330,7 +330,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()
@@ -385,7 +385,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    LicenseReportTask task = project.tasks.getByName("licenseReport")
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
     def actualHtml = task.htmlFile.text.trim()

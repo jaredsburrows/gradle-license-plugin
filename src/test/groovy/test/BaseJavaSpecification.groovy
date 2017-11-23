@@ -13,7 +13,6 @@ class BaseJavaSpecification extends Specification {
   @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
   // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   static def TEST_MAVEN_REPOSITORY = this.getResource("/maven").toURI()
-  static def PROJECT_SOURCE_DIR = "src/test/resources/project"
   static def SUPPORT_VERSION = "26.1.0"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
   static FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
