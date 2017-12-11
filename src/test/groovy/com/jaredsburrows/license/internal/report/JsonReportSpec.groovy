@@ -28,7 +28,7 @@ final class JsonReportSpec extends Specification {
   def "open source json - missing values"() {
     given:
     def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", license: license)
+    def project = new Project(name: "name", licenses: [license], developers: [])
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -39,19 +39,35 @@ final class JsonReportSpec extends Specification {
 [
     {
         "project": "name",
-        "developers": null,
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "name",
-        "license_url": "url"
+        "licenses": [
+            {
+                "license": "name",
+                "license_url": "url"
+            }
+        ]
     },
     {
         "project": "name",
-        "developers": null,
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "name",
-        "license_url": "url"
+        "licenses": [
+            {
+                "license": "name",
+                "license_url": "url"
+            }
+        ]
     }
 ]
 """.trim()
@@ -65,7 +81,7 @@ final class JsonReportSpec extends Specification {
     def developer = new Developer(name: "name")
     def developers = [developer, developer]
     def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", license: license, url: "url", developers: developers,
+    def project = new Project(name: "name", description: "description", version: "1.0.0", licenses: [license], url: "url", developers: developers,
       year: "year")
     def projects = [project, project]
     def sut = new JsonReport(projects)
@@ -77,19 +93,37 @@ final class JsonReportSpec extends Specification {
 [
     {
         "project": "name",
-        "developers": "name, name",
+        "description": "description",
+        "version": "1.0.0",
+        "developers": [
+            "name",
+            "name"
+        ],
         "url": "url",
         "year": "year",
-        "license": "name",
-        "license_url": "url"
+        "licenses": [
+            {
+                "license": "name",
+                "license_url": "url"
+            }
+        ]
     },
     {
         "project": "name",
-        "developers": "name, name",
+        "description": "description",
+        "version": "1.0.0",
+        "developers": [
+            "name",
+            "name"
+        ],
         "url": "url",
         "year": "year",
-        "license": "name",
-        "license_url": "url"
+        "licenses": [
+            {
+                "license": "name",
+                "license_url": "url"
+            }
+        ]
     }
 ]
 """.trim()
