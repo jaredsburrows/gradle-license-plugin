@@ -1,6 +1,7 @@
 package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.pom.Project
+import com.jaredsburrows.license.internal.pom.License
 import groovy.json.JsonBuilder
 
 /**
@@ -8,12 +9,16 @@ import groovy.json.JsonBuilder
  */
 final class JsonReport {
   final static PROJECT = "project"
+  final static DESCRIPTION = "description"
+  final static VERSION = "version"
   final static DEVELOPERS = "developers"
   final static URL = "url"
   final static YEAR = "year"
+  final static LICENSES = "licenses"
   final static LICENSE = "license"
   final static LICENSE_URL = "license_url"
   final static EMPTY_JSON_ARRAY = "[]"
+  final List<License> licenses
   final List<Project> projects
 
   JsonReport(projects) {
@@ -25,13 +30,18 @@ final class JsonReport {
    */
   def jsonArray() {
     new JsonBuilder(projects.collect { project ->
+      def licensesJson = []
+      project.licenses.each { license -> 
+        licensesJson << [ "$LICENSE": license.name, "$LICENSE_URL": license.url]
+      }
       [
         "$PROJECT"    : project.name ? project.name : null,
-        "$DEVELOPERS" : project.developers ? project.developers.collect { developer -> developer?.name }?.join(", ") : null,
+        "$DESCRIPTION": project.description ? project.description : null,
+        "$VERSION"    : project.version ? project.version : null,
+        "$DEVELOPERS" : project.developers*.name,
         "$URL"        : project.url ? project.url : null,
         "$YEAR"       : project.year ? project.year : null,
-        "$LICENSE"    : project.license?.name ? project.license?.name : null,
-        "$LICENSE_URL": project.license?.url ? project.license?.url : null
+        "$LICENSES"   : licensesJson
       ]
     })
   }

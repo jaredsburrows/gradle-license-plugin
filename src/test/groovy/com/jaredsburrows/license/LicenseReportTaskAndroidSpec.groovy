@@ -154,19 +154,35 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
@@ -238,19 +254,35 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
@@ -342,35 +374,67 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Support-annotations",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Support-v4",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
@@ -441,19 +505,35 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 [
     {
         "project": "Android GIF Drawable Library",
-        "developers": "Karol Wr\\u00c3\\u00b3tniak",
-        "url": "https://github.com/koral--/android-gif-drawable.git",
+        "description": "Views and Drawable for displaying animated GIFs for Android",
+        "version": "1.2.3",
+        "developers": [
+            "Karol Wr\\u00c3\\u00b3tniak"
+        ],
+        "url": "https://github.com/koral--/android-gif-drawable",
         "year": null,
-        "license": "The MIT License",
-        "license_url": "http://opensource.org/licenses/MIT"
+        "licenses": [
+            {
+                "license": "The MIT License",
+                "license_url": "http://opensource.org/licenses/MIT"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
@@ -516,19 +596,35 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()

@@ -110,47 +110,42 @@ class LicenseReportTask extends DefaultTask {
 
       // License information
       def name = getName(pomText)
-      def developers = pomText.developers?.developer?.collect { developer ->
-        new Developer(name: developer?.name?.text()?.trim())
+      def version = pomText.version?.text()
+      def description = pomText.description?.text()
+      def developers = []
+      if (pomText.developers) {
+        developers = pomText.developers.developer?.collect { developer ->
+          new Developer(name: developer?.name?.text()?.trim())
+        }
       }
-      def url = pomText.scm?.url?.text()
+
+      def url = pomText.url?.text()
       def year = pomText.inceptionYear?.text()
 
-      // Clean up
+
+      // Clean up and format
+      name = name?.capitalize()
+      version = version?.trim()
+      description = description?.trim()
       url = url?.trim()
       year = year?.trim()
 
-      def licenseName = null
-      def licenseURL = null
-      def licenseInfo = findLicense(pomFile)
-      if (licenseInfo) {
-        (licenseName, licenseURL) = (licenseInfo)
-      }
-      if (!licenseName || !licenseURL) {
+      def licenses = findLicenses(pomFile)
+      if (!licenses) {
         logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
         return
       }
 
-      // If the POM is missing a license, do not record it
-      try {
-        new URL(licenseURL)
-      } catch (Exception ignore) {
-        logger.log(LogLevel.WARN, String.format("%s dependency does not have a valid license URL.", name))
-        return
-      }
-
-      // Update formatting
-      name = name?.capitalize()
-      licenseName = licenseName?.capitalize()
-
       // Store the information that we need
-      final license = new License(name: licenseName,
-        url: licenseURL)
-      final project = new Project(name: name,
+      final project = new Project(
+        name: name,
+        description: description,
+        version: version,
         developers: developers,
-        license: license,
+        licenses: licenses,
         url: url,
-        year: year)
+        year: year
+      )
 
       projects << project
     }
@@ -162,9 +157,9 @@ class LicenseReportTask extends DefaultTask {
   def getName(def pomText) {
     def name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
-  } 
+  }
 
-  def findLicense(File pomFile) {
+  def findLicenses(File pomFile) {
     if (!pomFile) {
       return null
     }
@@ -178,27 +173,32 @@ class LicenseReportTask extends DefaultTask {
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == pomText.groupId?.text()) {
-      return [APACHE_LICENSE_NAME, APACHE_LICENSE_URL]
+      return [ new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL) ]
     }
 
-    // License information
-    if (pomText?.licenses?.license) {
-      def licenseName = pomText?.licenses?.license[0]?.name?.text()
-      def licenseURL = pomText?.licenses?.license[0]?.url?.text()
-
-      // Clean up
-      licenseName = licenseName?.trim()
-      licenseURL = licenseURL?.trim()
-      if (licenseName || licenseURL) {
-        return [licenseName, licenseURL]
+    // License information found
+    if (pomText.licenses) {
+      def licenses = []
+      pomText.licenses[0].license.each { license ->
+        def licenseName = license.name?.text()
+        def licenseUrl = license.url?.text()
+        try {
+          new URL(licenseUrl)
+            licenseName = licenseName?.trim().capitalize()
+            licenseUrl = licenseUrl?.trim()
+            licenses << new License(name: licenseName, url: licenseUrl)
+        } catch (Exception ignore) {
+          logger.log(LogLevel.WARN, String.format("%s dependency has an invalid license URL; skipping license", name))
+        }
       }
+      return licenses
     }
     logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
 
     final hasParent = pomText.parent != null
     if (hasParent) {
       final parentPomFile = getParentPomFile(pomText)
-      return findLicense(parentPomFile)
+      return findLicenses(parentPomFile)
     }
     return null
   }

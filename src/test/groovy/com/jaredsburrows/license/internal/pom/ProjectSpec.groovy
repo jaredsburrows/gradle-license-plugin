@@ -8,8 +8,8 @@ import spock.lang.Specification
 final class ProjectSpec extends Specification {
   def developer = new Developer(name: "name")
   def developers = [developer, developer]
-  def license = new License(name: "name", url: "url")
-  def sut = new Project(name: "name", license: license, url: "url", developers: developers,
+  def licenses = [new License(name: "name", url: "url")]
+  def sut = new Project(name: "name", licenses: licenses, url: "url", developers: developers,
     year: "year")
 
   def "name"() {
@@ -18,10 +18,10 @@ final class ProjectSpec extends Specification {
     sut.getName() == "name"
   }
 
-  def "license"() {
+  def "licenses"() {
     expect:
-    sut.license == license
-    sut.getLicense() == license
+    sut.licenses == licenses
+    sut.getLicenses() == licenses
   }
 
   def "url"() {

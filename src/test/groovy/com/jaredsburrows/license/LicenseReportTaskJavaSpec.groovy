@@ -93,19 +93,35 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
@@ -204,21 +220,38 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 [
     {
         "project": "Appcompat-v7",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     },
     {
         "project": "Design",
-        "developers": null,
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
+
 """.trim()
 
     then:
@@ -306,11 +339,19 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 [
     {
         "project": "Fake dependency name",
-        "developers": "name",
-        "url": "https://github.com/user/repo.git",
+        "description": "Fake dependency description",
+        "version": "1.0.0",
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
         "year": "2017",
-        "license": "Some license",
-        "license_url": "http://website.tld/"
+        "licenses": [
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            }
+        ]
     }
 ]
 """.trim()
@@ -360,11 +401,23 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 [
     {
         "project": "Fake dependency name",
-        "developers": "name",
-        "url": "https://github.com/user/repo.git",
+        "description": "Fake dependency description",
+        "version": "1.0.0",
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
         "year": "2017",
-        "license": "Some license",
-        "license_url": "http://website.tld/"
+        "licenses": [
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            },
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            }
+        ]
     }
 ]
 """.trim()
@@ -421,19 +474,35 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 [
     {
         "project": "Fake dependency name",
-        "developers": "name",
-        "url": "https://github.com/user/repo.git",
+        "description": "Fake dependency description",
+        "version": null,
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
         "year": "2017",
-        "license": "Some license",
-        "license_url": "http://website.tld/"
+        "licenses": [
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            }
+        ]
     },
     {
         "project": "Retrofit",
-        "developers": null,
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
         "url": null,
         "year": null,
-        "license": "Apache 2.0",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "licenses": [
+            {
+                "license": "Apache 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
     }
 ]
 """.trim()
