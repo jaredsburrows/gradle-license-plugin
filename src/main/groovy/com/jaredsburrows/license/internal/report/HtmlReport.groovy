@@ -45,7 +45,7 @@ final class HtmlReport {
   def openSourceHtml() {
     final writer = new StringWriter()
     final markup = new MarkupBuilder(writer)
-    final Set<License> licenses = new HashSet<>()
+    final Set<License> licenses = new LinkedHashSet<>()
     markup.html {
       head {
         style(CSS_STYLE)
@@ -56,9 +56,9 @@ final class HtmlReport {
         h3(NOTICE_LIBRARIES)
         ul {
           projects.each { project ->
-            licenses << project.license
+            licenses << project.licenses[0]
             li {
-              a(href: String.format("%s%s", "#", project.license.hashCode()), project.name)
+              a(href: String.format("%s%s", "#", project.licenses[0].hashCode()), project.name)
             }
           }
         }
