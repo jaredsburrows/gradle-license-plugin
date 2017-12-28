@@ -10,7 +10,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   @Unroll def "java - #projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
 
     when:
     project.evaluate()
@@ -47,7 +47,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   @Unroll def "java - #projectPlugin licenseReport - project dependencies"() {
     given:
     project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile APPCOMPAT_V7
       compile project.project(":subproject")
@@ -121,7 +121,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   @Unroll def "java - #projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile FIREBASE_CORE
     }
@@ -161,7 +161,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   @Unroll def "java - #projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       // Handles duplicates
       compile APPCOMPAT_V7
@@ -232,7 +232,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   def "java - dependency with full pom - project name, developers, url, year, bad license"() {
     given:
     project.apply plugin: "java-library"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY3
     }
@@ -269,7 +269,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   def "java - dependency with full pom - project name, developers, url, year, single license"() {
     given:
     project.apply plugin: "java-library"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY
     }
@@ -323,7 +323,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   def "java - dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
     given:
     project.apply plugin: "java-library"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY2
     }
@@ -377,7 +377,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
   def "java - dependency without license information - check it's parent"() {
     given:
     project.apply plugin: "java-library"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       compile CHILD_DEPENDENCY
       compile RETROFIT_DEPENDENCY

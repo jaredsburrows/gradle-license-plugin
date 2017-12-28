@@ -10,7 +10,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -55,7 +55,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -103,7 +103,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -182,7 +182,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -266,7 +266,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -387,7 +387,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "readme example - #taskName"() {
     given:
     project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
       buildToolsVersion BUILD_TOOLS_VERSION
@@ -469,7 +469,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "jvm - #projectPlugin licenseReport - use api and implementation configurations"() {
     given:
     project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
+    new LicensePlugin().apply(project)
     project.dependencies {
       api APPCOMPAT_V7
       implementation project.project(":subproject")
