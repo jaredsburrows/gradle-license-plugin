@@ -7,6 +7,6 @@ ext {
 // Dependencies
 ext.deps = [
         "gradle"            : "com.android.tools.build:gradle:$agpVersion",
-        "kotlinGradlePlugin": "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.60",
+        "kotlinGradlePlugin": "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10",
         "spockCore"         : "org.spockframework:spock-core:1.1-groovy-2.4"
 ]
