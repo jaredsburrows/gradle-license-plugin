@@ -8,9 +8,11 @@ import com.jaredsburrows.license.internal.report.JsonReport
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.*
-import org.gradle.maven.MavenModule
-import org.gradle.maven.MavenPomArtifact
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 
 /**
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>

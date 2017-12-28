@@ -7,7 +7,7 @@ import test.BaseAndroidSpecification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
-  @Unroll "android - #taskName - no dependencies"() {
+  @Unroll def "android - #taskName - no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -52,7 +52,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android - #taskName - no open source dependencies"() {
+  @Unroll def "android - #taskName - no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -100,7 +100,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android - #taskName - default buildTypes"() {
+  @Unroll def "android - #taskName - default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -179,7 +179,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android - #taskName - buildTypes"() {
+  @Unroll def "android - #taskName - buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -263,7 +263,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
+  @Unroll def "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -384,7 +384,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                  "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport"]
   }
 
-  @Unroll "readme example - #taskName"() {
+  @Unroll def "readme example - #taskName"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -466,8 +466,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  // TODO
-  def "jvm - #projectPlugin licenseReport - test new configurations, remove when AGP 3 is out"() {
+  @Unroll def "jvm - #projectPlugin licenseReport - use api and implementation configurations"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"

@@ -7,7 +7,7 @@ import test.BaseJavaSpecification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
-  @Unroll "java - #projectPlugin licenseReport - no dependencies"() {
+  @Unroll def "java - #projectPlugin licenseReport - no dependencies"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -44,7 +44,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "java - #projectPlugin licenseReport - project dependencies"() {
+  @Unroll def "java - #projectPlugin licenseReport - project dependencies"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -118,7 +118,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "java - #projectPlugin licenseReport - no open source dependencies"() {
+  @Unroll def "java - #projectPlugin licenseReport - no open source dependencies"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
@@ -158,7 +158,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "java - #projectPlugin licenseReport"() {
+  @Unroll def "java - #projectPlugin licenseReport"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"

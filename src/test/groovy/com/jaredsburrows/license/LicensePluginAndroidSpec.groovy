@@ -7,7 +7,7 @@ import test.BaseAndroidSpecification
  * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
  */
 final class LicensePluginAndroidSpec extends BaseAndroidSpecification {
-  @Unroll "android - #projectPlugin project"() {
+  @Unroll def "android - #projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 

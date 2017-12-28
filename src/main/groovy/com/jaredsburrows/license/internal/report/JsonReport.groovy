@@ -23,6 +23,7 @@ final class JsonReport {
   /**
    * Json report when there are open source licenses.
    */
+  @SuppressWarnings("GroovyGStringKey")
   def jsonArray() {
     new JsonBuilder(projects.collect { project ->
       [

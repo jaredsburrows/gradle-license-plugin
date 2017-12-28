@@ -16,7 +16,7 @@ final class LicensePluginJavaSpec extends BaseJavaSpecification {
     e.message == "License report plugin can only be applied to android or java projects."
   }
 
-  @Unroll "java - #projectPlugin project"() {
+  @Unroll def "java - #projectPlugin project"() {
     given:
     project.apply plugin: projectPlugin
 
@@ -30,7 +30,7 @@ final class LicensePluginJavaSpec extends BaseJavaSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll "java - #projectPlugin - all tasks created"() {
+  @Unroll def "java - #projectPlugin - all tasks created"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project) // project.apply plugin: "com.jaredsburrows.license"
