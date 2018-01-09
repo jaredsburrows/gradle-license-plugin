@@ -4,20 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <modules>
-    <module>child</module>
+    <module>parent</module>
   </modules>
-
-  <!-- Parent Information -->
-  <parent>
-    <groupId>group</groupId>
-    <artifactId>grandparent</artifactId>
-    <version>1.0.0</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
 
   <!-- The Basics -->
   <groupId>group</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>grandparent</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
@@ -26,6 +18,13 @@
   <description>Fake dependency description</description>
   <url>https://github.com/user/repo</url>
   <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>Some license</name>
+      <url>http://website.tld/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <developers>
     <developer>
       <id>id</id>
