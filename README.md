@@ -96,19 +96,35 @@ dependencies {
 [
   {
     "project": "Android GIF Drawable Library",
-    "developers": "Karol WrÃ³tniak",
-    "url": "https://github.com/koral--/android-gif-drawable.git",
+    "description": "Views and Drawable for displaying animated GIFs for Android",
+    "version": "1.2.10",
+    "developers": [
+      "Karol Wrótniak"
+    ],
+    "url": "https://github.com/koral--/android-gif-drawable",
     "year": null,
-    "license": "The MIT License",
-    "license_url": "http://opensource.org/licenses/MIT"
+    "licenses": [
+      {
+        "license": "The MIT License",
+        "license_url": "http://opensource.org/licenses/MIT"
+      }
+    ]
   },
   {
     "project": "Design",
-    "developers": null,
+    "description": null,
+    "version": "27.0.2",
+    "developers": [
+    
+    ],
     "url": null,
     "year": null,
-    "license": "The Apache Software License",
-    "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ]
   }
 ]
 ```
