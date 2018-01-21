@@ -511,4 +511,44 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     actualHtml == expectedHtml
     actualJson == expectedJson
   }
+
+  @Unroll def "android - #taskName - reports enabled: #reportsEnabled"() {
+    given:
+    project.apply plugin: "java-library"
+    new LicensePlugin().apply(project)
+    project.dependencies {
+      compile FAKE_DEPENDENCY
+    }
+
+    project.licenseReport {
+      generateHtmlReport = reportsEnabled
+      generateJsonReport = reportsEnabled
+
+      // Included to confirm that these options have no effect on java projects
+      copyHtmlReportToAssets = true
+      copyJsonReportToAssets = true
+    }
+
+    when:
+    project.evaluate()
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    task.execute()
+
+    def actualHtmlFileExists = task.htmlFile.exists()
+    def expectedHtmlFileExists = reportsEnabled
+
+    def actualJsonFileExists = task.jsonFile.exists()
+    def expectedJsonFileExists = reportsEnabled
+
+    then:
+    actualHtmlFileExists == expectedHtmlFileExists
+    actualJsonFileExists == expectedJsonFileExists
+
+    then:
+    actualHtmlFileExists == expectedHtmlFileExists
+    actualJsonFileExists == expectedJsonFileExists
+
+    where:
+    reportsEnabled << [true, false]
+  }
 }
