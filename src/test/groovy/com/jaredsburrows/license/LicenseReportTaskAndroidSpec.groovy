@@ -655,10 +655,12 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       compile DESIGN
     }
 
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateHtmlReport = true})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateJsonReport = true})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyHtmlReportToAssets = copyEnabled})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyJsonReportToAssets = copyEnabled})
+    project.licenseReport {
+      generateHtmlReport = true
+      generateJsonReport = true
+      copyHtmlReportToAssets = copyEnabled
+      copyJsonReportToAssets = copyEnabled
+    }
 
     when:
     project.evaluate()
@@ -704,10 +706,12 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       compile DESIGN
     }
 
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateHtmlReport = false})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateJsonReport = false})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyHtmlReportToAssets = copyEnabled})
-    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyJsonReportToAssets = copyEnabled})
+    project.licenseReport {
+      generateHtmlReport = false
+      generateJsonReport = false
+      copyHtmlReportToAssets = copyEnabled
+      copyJsonReportToAssets = copyEnabled
+    }
 
     when:
     project.evaluate()
