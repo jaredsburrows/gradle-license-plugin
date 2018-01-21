@@ -635,4 +635,102 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     where:
     projectPlugin << ["java-library"]
   }
+
+  @Unroll def "android - #taskName - reports enabled - copy enabled #copyEnabled"() {
+    given:
+    project.apply plugin: "com.android.application"
+    new LicensePlugin().apply(project)
+    project.android {
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
+
+      defaultConfig {
+        applicationId APPLICATION_ID
+      }
+    }
+    project.dependencies {
+      // Handles duplicates
+      compile APPCOMPAT_V7
+      compile APPCOMPAT_V7
+      compile DESIGN
+    }
+
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateHtmlReport = true})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateJsonReport = true})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyHtmlReportToAssets = copyEnabled})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyJsonReportToAssets = copyEnabled})
+
+    when:
+    project.evaluate()
+    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    task.execute()
+
+    def actualHtmlFileExists = task.htmlFile.exists()
+    def expectedHtmlFileExists = true
+
+    def actualJsonFileExists = task.jsonFile.exists()
+    def expectedJsonFileExists = true
+
+    def assetsFiles = task.assetDirs[0].listFiles()
+    def actualAssetsDirectoryContainsFiles = assetsFiles == null ? false : assetsFiles.length != 0
+    def expectedAssetsDirectoryContainsFiles = copyEnabled
+
+    then:
+    actualHtmlFileExists == expectedHtmlFileExists
+    actualJsonFileExists == expectedJsonFileExists
+    actualAssetsDirectoryContainsFiles == expectedAssetsDirectoryContainsFiles
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
+    copyEnabled << [true, false]
+  }
+
+  @Unroll def "android - #taskName - reports disabled - copy enabled #copyEnabled"() {
+    given:
+    project.apply plugin: "com.android.application"
+    new LicensePlugin().apply(project)
+    project.android {
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
+
+      defaultConfig {
+        applicationId APPLICATION_ID
+      }
+    }
+    project.dependencies {
+      // Handles duplicates
+      compile APPCOMPAT_V7
+      compile APPCOMPAT_V7
+      compile DESIGN
+    }
+
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateHtmlReport = false})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.generateJsonReport = false})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyHtmlReportToAssets = copyEnabled})
+    project.extensions.configure(AndroidLicenseReportOptions, {options -> options.copyJsonReportToAssets = copyEnabled})
+
+    when:
+    project.evaluate()
+    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    task.execute()
+
+    def actualHtmlFileExists = task.htmlFile.exists()
+    def expectedHtmlFileExists = false
+
+    def actualJsonFileExists = task.jsonFile.exists()
+    def expectedJsonFileExists = false
+
+    def assetsFiles = task.assetDirs[0].listFiles()
+    def actualAssetsDirectoryContainsFiles = assetsFiles == null ? false : assetsFiles.length != 0
+    def expectedAssetsDirectoryContainsFiles = false
+
+    then:
+    actualHtmlFileExists == expectedHtmlFileExists
+    actualJsonFileExists == expectedJsonFileExists
+    actualAssetsDirectoryContainsFiles == expectedAssetsDirectoryContainsFiles
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
+    copyEnabled << [true, false]
+  }
 }
