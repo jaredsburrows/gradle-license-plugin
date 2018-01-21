@@ -70,6 +70,10 @@ final class LicensePlugin implements Plugin<Project> {
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
     task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
+    task.generateHtmlReport = true
+    task.generateJsonReport = true
+    task.copyHtmlReportToAssets = false
+    task.copyJsonReportToAssets = false
     // Make sure update on each run
     task.outputs.upToDateWhen { false }
   }
