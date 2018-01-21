@@ -30,7 +30,7 @@ final class LicensePlugin implements Plugin<Project> {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final variants = getAndroidVariants(project)
 
-    final configurationExtension = project.extensions.create("options", AndroidLicenseReportOptions)
+    final configurationExtension = project.extensions.create("licenseReport", AndroidLicenseReportOptions)
 
     // Configure tasks for all variants
     variants.all { variant ->
