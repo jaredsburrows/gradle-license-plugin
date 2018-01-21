@@ -42,8 +42,24 @@ class LicenseReportTask extends DefaultTask {
     setupEnvironment()
     collectDependencies()
     generatePOMInfo()
-    createHTMLReport()
-    createJsonReport()
+
+    if (generateHtmlReport) {
+      createHtmlReport()
+
+        // If Android project and copy enabled, copy to asset directory
+        if (variant && copyHtmlReportToAssets) {
+          copyHtmlReport()
+        }
+      }
+
+    if (generateJsonReport) {
+      createJsonReport()
+
+      // If Android project and copy enabled, copy to asset directory
+      if (variant && copyJsonReportToAssets) {
+        copyJsonReport()
+      }
+    }
   }
 
   /**
@@ -236,7 +252,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Generated HTML report.
    */
-  def createHTMLReport() {
+  def createHtmlReport() {
     // Remove existing file
     project.file(htmlFile).delete()
 
@@ -247,24 +263,6 @@ class LicenseReportTask extends DefaultTask {
       final printStream = new PrintStream(outputStream)
       printStream.print(new HtmlReport(projects).string())
       printStream.println() // Add new line to file
-    }
-
-    // If Android project, copy to asset directory
-    if (variant) {
-      // Iterate through all asset directories
-      assetDirs.each { directory ->
-        final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
-
-        // Remove existing file
-        project.file(licenseFile).delete()
-
-        // Create new file
-        licenseFile.parentFile.mkdirs()
-        licenseFile.createNewFile()
-
-        // Copy HTML file to the assets directory
-        project.file(licenseFile << project.file(htmlFile).text)
-      }
     }
 
     // Log output directory for user
@@ -289,5 +287,39 @@ class LicenseReportTask extends DefaultTask {
 
     // Log output directory for user
     logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
+  }
+
+  def copyHtmlReport() {
+   // Iterate through all asset directories
+    assetDirs.each { directory ->
+      final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+
+      // Remove existing file
+      project.file(licenseFile).delete()
+
+      // Create new file
+      licenseFile.parentFile.mkdirs()
+      licenseFile.createNewFile()
+
+      // Copy HTML file to the assets directory
+      project.file(licenseFile << project.file(htmlFile).text)
+    }
+  }
+
+  def copyJsonReport() {
+    // Iterate through all asset directories
+    assetDirs.each { directory ->
+      final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
+
+      // Remove existing file
+      project.file(licenseFile).delete()
+
+      // Create new file
+      licenseFile.parentFile.mkdirs()
+      licenseFile.createNewFile()
+
+      // Copy JSON file to the assets directory
+      project.file(licenseFile << project.file(jsonFile).text)
+    }
   }
 }
