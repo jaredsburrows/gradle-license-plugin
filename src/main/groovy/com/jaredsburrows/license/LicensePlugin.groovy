@@ -64,14 +64,16 @@ final class LicensePlugin implements Plugin<Project> {
     final taskName = "licenseReport"
     final path = "${project.buildDir}/reports/licenses/$taskName"
 
+    final configuration = project.extensions.create("licenseReport", AndroidLicenseReportOptions)
+
     // Create tasks
     final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
     task.description = "Outputs licenses report."
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
     task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
-    task.generateHtmlReport = true
-    task.generateJsonReport = true
+    task.generateHtmlReport = configuration.generateHtmlReport
+    task.generateJsonReport = configuration.generateJsonReport
     task.copyHtmlReportToAssets = false
     task.copyJsonReportToAssets = false
     // Make sure update on each run
