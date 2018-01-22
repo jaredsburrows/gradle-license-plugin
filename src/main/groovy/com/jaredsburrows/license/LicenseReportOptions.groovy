@@ -5,7 +5,7 @@ package com.jaredsburrows.license
  *
  * @author <a href="mailto:matthew.tamlin@icloud.com">Matthew Tamlin</a>
  */
-class AndroidLicenseReportOptions {
+class LicenseReportOptions {
   /**
    * Whether or not the HTML report should be generated.
    */
