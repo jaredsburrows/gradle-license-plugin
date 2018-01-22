@@ -30,7 +30,7 @@ final class LicensePlugin implements Plugin<Project> {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final variants = getAndroidVariants(project)
 
-    final configurationExtension = project.extensions.create("licenseReport", AndroidLicenseReportOptions)
+    final configuration = project.extensions.create("licenseReport", AndroidLicenseReportOptions)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -44,10 +44,10 @@ final class LicensePlugin implements Plugin<Project> {
       task.group = "Reporting"
       task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
       task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
-      task.generateHtmlReport = configurationExtension.generateHtmlReport
-      task.generateJsonReport = configurationExtension.generateJsonReport
-      task.copyHtmlReportToAssets = configurationExtension.copyHtmlReportToAssets
-      task.copyJsonReportToAssets = configurationExtension.copyJsonReportToAssets
+      task.generateHtmlReport = configuration.generateHtmlReport
+      task.generateJsonReport = configuration.generateJsonReport
+      task.copyHtmlReportToAssets = configuration.copyHtmlReportToAssets
+      task.copyJsonReportToAssets = configuration.copyJsonReportToAssets
       task.assetDirs = project.android.sourceSets.main.assets.srcDirs
       task.buildType = variant.buildType.name
       task.variant = variant.name
