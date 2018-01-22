@@ -130,7 +130,7 @@ dependencies {
 ```
 
 ## Configuration
-The plugin can be configured to generate particular reports and for Android projects, automatically copy the reports to the assets directory. The default behaviours are: 
+The plugin can be configured to generate specific reports and automatically copy the reports to the assets directory (Android projects only). The default behaviours are: 
 - Java projects: Generate both the HTML report and the JSON report.
 - Android projects: Generate both the HTML report and the JSON report, and copy the HTML report to the assets directory.
 
