@@ -129,6 +129,28 @@ dependencies {
 ]
 ```
 
+## Configuration
+The plugin can be configured to generate particular reports and for Android projects, automatically copy the reports to the assets directory. The default behaviours are: 
+- Java projects: Generate both the HTML report and the JSON report.
+- Android projects: Generate both the HTML report and the JSON report, and copy the HTML report to the assets directory.
+
+To override the defaults, add the `licenseReport` configuration closure to the build script.
+
+```groovy
+apply plugin: "com.jaredsburrows.license"
+
+reportLicense {
+    generateHtmlReport = false
+    generateJsonReport = true
+    
+    // These options are ignored for Java projects
+    copyHtmlReportToAssets = true
+    copyJsonReportToAssets = false
+}
+```
+
+The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
+
 ## Usage
 
 ### Create an open source dialog
