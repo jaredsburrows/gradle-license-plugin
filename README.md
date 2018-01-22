@@ -139,7 +139,7 @@ To override the defaults, add the `licenseReport` configuration closure to the b
 ```groovy
 apply plugin: "com.jaredsburrows.license"
 
-reportLicense {
+licenseReport {
     generateHtmlReport = false
     generateJsonReport = true
     
