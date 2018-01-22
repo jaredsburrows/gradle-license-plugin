@@ -30,6 +30,8 @@ final class LicensePlugin implements Plugin<Project> {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final variants = getAndroidVariants(project)
 
+    final configuration = project.extensions.create("licenseReport", LicenseReportOptions)
+
     // Configure tasks for all variants
     variants.all { variant ->
       final variantName = variant.name.capitalize()
@@ -42,6 +44,10 @@ final class LicensePlugin implements Plugin<Project> {
       task.group = "Reporting"
       task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
       task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
+      task.generateHtmlReport = configuration.generateHtmlReport
+      task.generateJsonReport = configuration.generateJsonReport
+      task.copyHtmlReportToAssets = configuration.copyHtmlReportToAssets
+      task.copyJsonReportToAssets = configuration.copyJsonReportToAssets
       task.assetDirs = project.android.sourceSets.main.assets.srcDirs
       task.buildType = variant.buildType.name
       task.variant = variant.name
@@ -58,12 +64,18 @@ final class LicensePlugin implements Plugin<Project> {
     final taskName = "licenseReport"
     final path = "${project.buildDir}/reports/licenses/$taskName"
 
+    final configuration = project.extensions.create("licenseReport", LicenseReportOptions)
+
     // Create tasks
     final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
     task.description = "Outputs licenses report."
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
     task.jsonFile = project.file(path + LicenseReportTask.JSON_EXT)
+    task.generateHtmlReport = configuration.generateHtmlReport
+    task.generateJsonReport = configuration.generateJsonReport
+    task.copyHtmlReportToAssets = false
+    task.copyJsonReportToAssets = false
     // Make sure update on each run
     task.outputs.upToDateWhen { false }
   }
