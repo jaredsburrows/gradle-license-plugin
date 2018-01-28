@@ -3,9 +3,6 @@ package com.jaredsburrows.license
 import spock.lang.Unroll
 import test.BaseJavaSpecification
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class LicensePluginJavaSpec extends BaseJavaSpecification {
   def "unsupported project project"() {
     when:

@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 compileJava {
   sourceCompatibility = rootProject.ext.javaVersion
   targetCompatibility = rootProject.ext.javaVersion
@@ -37,11 +34,11 @@ compileGroovy {
 test {
   // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
-    exceptionFormat TestExceptionFormat.FULL
+    exceptionFormat "full"
     showCauses true
     showExceptions true
     showStackTraces true
-    events = [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
+    events "failed", "skipped"
   }
 
   maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1

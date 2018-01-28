@@ -14,9 +14,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 class LicenseReportTask extends DefaultTask {
   final static POM_CONFIGURATION = "poms"
   final static TEMP_POM_CONFIGURATION = "tempPoms"

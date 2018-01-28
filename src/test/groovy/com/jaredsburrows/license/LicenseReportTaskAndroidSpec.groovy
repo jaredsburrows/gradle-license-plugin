@@ -3,9 +3,6 @@ package com.jaredsburrows.license
 import spock.lang.Unroll
 import test.BaseAndroidSpecification
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #taskName - no dependencies"() {
     given:

@@ -3,9 +3,6 @@ package com.jaredsburrows.license
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class LicensePlugin implements Plugin<Project> {
   final static ANDROID_PLUGINS = ["com.android.application", "com.android.library", "com.android.test"]
   final static JVM_PLUGINS = ["kotlin", "groovy", "java", "java-library"]
@@ -30,7 +27,7 @@ final class LicensePlugin implements Plugin<Project> {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final variants = getAndroidVariants(project)
 
-    final configuration = project.extensions.create("licenseReport", LicenseReportOptions)
+    final configuration = project.extensions.create("licenseReport", LicenseReportOptionsExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -64,7 +61,7 @@ final class LicensePlugin implements Plugin<Project> {
     final taskName = "licenseReport"
     final path = "${project.buildDir}/reports/licenses/$taskName"
 
-    final configuration = project.extensions.create("licenseReport", LicenseReportOptions)
+    final configuration = project.extensions.create("licenseReport", LicenseReportOptionsExtension)
 
     // Create tasks
     final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
