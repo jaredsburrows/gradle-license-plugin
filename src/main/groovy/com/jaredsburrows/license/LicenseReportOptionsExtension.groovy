@@ -2,10 +2,8 @@ package com.jaredsburrows.license
 
 /**
  * Configuration options for the gradle license plugin.
- *
- * @author <a href="mailto:matthew.tamlin@icloud.com">Matthew Tamlin</a>
  */
-class LicenseReportOptions {
+class LicenseReportOptionsExtension {
   /**
    * Whether or not the HTML report should be generated.
    */

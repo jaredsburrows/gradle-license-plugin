@@ -2,9 +2,6 @@ package com.jaredsburrows.license.internal.pom
 
 import spock.lang.Specification
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class LicenseSpec extends Specification {
   def sut = new License(name: "name", url: "url")
 

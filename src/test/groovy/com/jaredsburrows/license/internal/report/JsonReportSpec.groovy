@@ -5,9 +5,6 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class JsonReportSpec extends Specification {
   def "no open source json"() {
     given:

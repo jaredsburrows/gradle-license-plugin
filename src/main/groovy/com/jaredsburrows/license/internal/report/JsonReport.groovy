@@ -4,9 +4,6 @@ import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.pom.License
 import groovy.json.JsonBuilder
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class JsonReport {
   final static PROJECT = "project"
   final static DESCRIPTION = "description"
@@ -32,7 +29,7 @@ final class JsonReport {
   def jsonArray() {
     new JsonBuilder(projects.collect { project ->
       def licensesJson = []
-      project.licenses.each { license -> 
+      project.licenses.each { license ->
         licensesJson << [ "$LICENSE": license.name, "$LICENSE_URL": license.url]
       }
       [

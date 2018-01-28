@@ -4,9 +4,6 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import groovy.xml.MarkupBuilder
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class HtmlReport {
   final static BODY_CSS = "body{font-family: sans-serif}"
   final static PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"

@@ -3,9 +3,6 @@ package com.jaredsburrows.license
 import spock.lang.Unroll
 import test.BaseAndroidSpecification
 
-/**
- * @author <a href="mailto:jaredsburrows@gmail.com">Jared Burrows</a>
- */
 final class LicensePluginAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android - #projectPlugin project"() {
     given:
