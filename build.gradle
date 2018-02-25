@@ -24,11 +24,37 @@ description = POM_DESCRIPTION
 sourceCompatibility = ext.javaVersion
 targetCompatibility = ext.javaVersion
 
+jar {
+  manifest {
+    attributes = ["Implementation-Title"  : POM_NAME,
+                  "Implementation-Version": version,
+                  "Built-By"              : System.getProperty("user.name"),
+                  "Built-Date"            : new Date(),
+                  "Built-JDK"             : System.getProperty("java.version"),
+                  "Built-Gradle"          : gradle.gradleVersion]
+  }
+}
+
+task createClasspathManifest() {
+  def outputDir = file("$buildDir/$name")
+
+  inputs.files sourceSets.main.runtimeClasspath
+  outputs.dir outputDir
+
+  doLast {
+    outputDir.mkdirs()
+    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+  }
+}
+
 dependencies {
   implementation localGroovy()
 
   compileOnly deps.gradle
 
+  testRuntime files(createClasspathManifest)
+
+  testImplementation gradleTestKit()
   testImplementation deps.gradle
   testImplementation deps.kotlinGradlePlugin
   testImplementation deps.spockCore, { exclude module: "groovy-all" } // Use localGroovy()
