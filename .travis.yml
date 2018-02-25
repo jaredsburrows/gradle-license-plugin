@@ -6,7 +6,7 @@ jdk:
 install: true
 
 script:
-  - ./gradlew clean build --scan -s
+  - ./gradlew clean build -s
 
 after_success:
   - .buildscript/deploySnapshot.sh

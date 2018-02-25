@@ -1,12 +1,12 @@
 // Variables for entire project
 ext {
   javaVersion = "1.8"
-  agpVersion = rootProject.hasProperty("agpVersion") ? rootProject.property("agpVersion") : "3.0.0"
+  agpVersion = rootProject.hasProperty("agpVersion") ? rootProject.property("agpVersion") : "3.0.1"
 }
 
 // Dependencies
 ext.deps = [
         "gradle"            : "com.android.tools.build:gradle:$agpVersion",
-        "kotlinGradlePlugin": "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10",
+        "kotlinGradlePlugin": "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.21",
         "spockCore"         : "org.spockframework:spock-core:1.1-groovy-2.4"
 ]
