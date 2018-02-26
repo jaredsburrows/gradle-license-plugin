@@ -1,5 +1,5 @@
 plugins {
-  id "com.github.kt3k.coveralls" version "2.8.2"
+  id "com.gradle.build-scan" version "1.12.1"
   id "com.jfrog.artifactory" version "4.4.18"
   id "com.jfrog.bintray" version "1.8.0"
   id "com.github.ben-manes.versions" version "0.17.0"
@@ -7,7 +7,6 @@ plugins {
   id "java-gradle-plugin"
   id "groovy"
   id "maven-publish"
-  id "jacoco"
 }
 
 repositories {
@@ -35,6 +34,7 @@ dependencies {
 }
 
 // Ordering matters
+apply from: "gradle/scan.gradle"
 apply from: "gradle/compile.gradle"
 apply from: "gradle/plugin.gradle"
 apply from: "gradle/publish.gradle"
