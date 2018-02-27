@@ -5,7 +5,7 @@ import org.gradle.api.Project
 
 final class LicensePlugin implements Plugin<Project> {
   final static ANDROID_PLUGINS = ["com.android.application", "com.android.library", "com.android.test"]
-  final static JVM_PLUGINS = ["kotlin", "groovy", "java", "java-library"]
+  final static JVM_PLUGINS = ["groovy", "java", "java-library"]
 
   @Override void apply(Project project) {
     project.evaluationDependsOnChildren()
