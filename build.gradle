@@ -23,6 +23,18 @@ description = POM_DESCRIPTION
 sourceCompatibility = ext.javaVersion
 targetCompatibility = ext.javaVersion
 
+jar {
+  manifest {
+    attributes(
+      "Implementation-Title": POM_NAME,
+      "Implementation-Version": version,
+      "Built-By": System.getProperty("user.name"),
+      "Built-Date": new Date(),
+      "Built-JDK": System.getProperty("java.version"),
+      "Built-Gradle": gradle.gradleVersion)
+  }
+}
+
 dependencies {
   implementation localGroovy()
 
