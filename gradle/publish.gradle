@@ -149,9 +149,9 @@ bintray {
     websiteUrl = POM_URL
     issueTrackerUrl = POM_ISSUE_URL
     vcsUrl = POM_URL
+    labels = ["gradle", "plugin", "license"]
     githubRepo = BINTRAY_GITHUB_REPO
     githubReleaseNotesFile = "README.md"
-    labels = ["gradle", "plugin", "license"]
 
     version {
       name = VERSION_NAME

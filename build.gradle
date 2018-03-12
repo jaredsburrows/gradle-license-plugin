@@ -45,7 +45,6 @@ dependencies {
   testImplementation deps.spockCore, { exclude module: "groovy-all" } // Use localGroovy()
 }
 
-// Ordering matters
 apply from: "gradle/scan.gradle"
 apply from: "gradle/compile.gradle"
 apply from: "gradle/plugin.gradle"

@@ -41,6 +41,7 @@ test {
     events "failed", "skipped"
   }
 
+  failFast = true
   maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
 

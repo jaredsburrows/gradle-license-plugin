@@ -1,8 +1,8 @@
 gradlePlugin {
   plugins {
     licensePlugin {
-      id = "com.jaredsburrows.license"
-      implementationClass = "com.jaredsburrows.license.LicensePlugin"
+      id = PLUGIN_NAME
+      implementationClass = PLUGIN_NAME_CLASS
     }
   }
 }
