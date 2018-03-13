@@ -14,7 +14,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -26,12 +26,12 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <h3>No open source libraries</h3>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 []
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -60,7 +60,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -83,8 +83,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -121,7 +121,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         ]
     }
 ]
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -144,7 +144,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -156,12 +156,12 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <h3>No open source libraries</h3>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 []
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -187,7 +187,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -210,8 +210,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -249,7 +249,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     }
 ]
 
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -272,7 +272,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -284,12 +284,12 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <h3>No open source libraries</h3>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 []
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -309,7 +309,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -329,8 +329,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <pre>Some license, http://website.tld/</pre>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -351,7 +351,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         ]
     }
 ]
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -371,7 +371,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -391,8 +391,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <pre>Some license, http://website.tld/</pre>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -417,7 +417,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         ]
     }
 ]
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml
@@ -438,7 +438,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     def task = project.tasks.getByName("licenseReport") as LicenseReportTask
     task.execute()
 
-    def actualHtml = task.htmlFile.text.trim()
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -464,8 +464,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <pre>Apache 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
-""".trim()
-    def actualJson = task.jsonFile.text.trim()
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -502,7 +502,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         ]
     }
 ]
-""".trim()
+""".stripIndent().trim()
 
     then:
     actualHtml == expectedHtml

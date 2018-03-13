@@ -12,7 +12,7 @@ final class HtmlReportSpec extends Specification {
     def sut = new HtmlReport(projects)
 
     when:
-    def actual = sut.string().trim()
+    def actual = sut.string().stripIndent().trim()
     def expected =
       """
 <html>
@@ -24,7 +24,7 @@ final class HtmlReportSpec extends Specification {
     <h3>No open source libraries</h3>
   </body>
 </html>
-""".trim()
+""".stripIndent().trim()
 
     then:
     actual == expected
@@ -41,7 +41,7 @@ final class HtmlReportSpec extends Specification {
     def sut = new HtmlReport(projects)
 
     when:
-    def actual = sut.string().trim()
+    def actual = sut.string().stripIndent().trim()
     def expected =
       """
 <html>
@@ -64,7 +64,7 @@ final class HtmlReportSpec extends Specification {
     <pre>name, url</pre>
   </body>
 </html>
-""".trim()
+""".stripIndent().trim()
 
     then:
     actual == expected

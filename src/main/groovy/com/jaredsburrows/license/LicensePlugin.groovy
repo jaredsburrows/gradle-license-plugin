@@ -27,7 +27,7 @@ final class LicensePlugin implements Plugin<Project> {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final variants = getAndroidVariants(project)
 
-    final configuration = project.extensions.create("licenseReport", LicenseReportOptionsExtension)
+    final configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -61,7 +61,7 @@ final class LicensePlugin implements Plugin<Project> {
     final taskName = "licenseReport"
     final path = "${project.buildDir}/reports/licenses/$taskName"
 
-    final configuration = project.extensions.create("licenseReport", LicenseReportOptionsExtension)
+    final configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Create tasks
     final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)

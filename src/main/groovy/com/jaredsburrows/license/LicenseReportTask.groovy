@@ -80,10 +80,10 @@ class LicenseReportTask extends DefaultTask {
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
 
-    // Add 'compile' configuration older java and android gradle plugins
+    // Add "compile" configuration older java and android gradle plugins
     if (project.configurations.find { it.name == "compile" }) configurations << project.configurations."compile"
 
-    // Add 'api' and 'implementation' configurations for newer java-library and android gradle plugins
+    // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
     if (project.configurations.find { it.name == "api" }) configurations << project.configurations."api"
     if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."implementation"
 

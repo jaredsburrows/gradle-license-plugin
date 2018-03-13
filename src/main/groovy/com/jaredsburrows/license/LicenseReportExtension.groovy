@@ -3,7 +3,7 @@ package com.jaredsburrows.license
 /**
  * Configuration options for the gradle license plugin.
  */
-class LicenseReportOptionsExtension {
+class LicenseReportExtension {
   /**
    * Whether or not the HTML report should be generated.
    */
