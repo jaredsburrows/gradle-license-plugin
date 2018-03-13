@@ -21,7 +21,7 @@ final class HtmlReportSpec extends Specification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -50,18 +50,17 @@ final class HtmlReportSpec extends Specification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#120016'>name</a>
+        <a href='#116079'>name</a>
       </li>
       <li>
-        <a href='#120016'>name</a>
+        <a href='#116079'>name</a>
       </li>
+      <pre>name
+url</pre>
     </ul>
-    <a name='120016' />
-    <h3>name</h3>
-    <pre>name, url</pre>
   </body>
 </html>
 """.stripIndent().trim()

@@ -23,7 +23,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -69,18 +69,17 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -153,7 +152,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -196,18 +195,17 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -248,7 +246,6 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         ]
     }
 ]
-
 """.stripIndent().trim()
 
     then:
@@ -281,7 +278,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -318,15 +315,14 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#755502249'>Fake dependency name</a>
+        <a href='#755498312'>Fake dependency name</a>
       </li>
+      <pre>Some license
+http://website.tld/</pre>
     </ul>
-    <a name='755502249' />
-    <h3>Some license</h3>
-    <pre>Some license, http://website.tld/</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -380,15 +376,14 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#755502249'>Fake dependency name</a>
+        <a href='#755498312'>Fake dependency name</a>
       </li>
+      <pre>Some license
+http://website.tld/</pre>
     </ul>
-    <a name='755502249' />
-    <h3>Some license</h3>
-    <pre>Some license, http://website.tld/</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -447,21 +442,19 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#755502249'>Fake dependency name</a>
+        <a href='#755498312'>Fake dependency name</a>
       </li>
+      <pre>Some license
+http://website.tld/</pre>
       <li>
-        <a href='#1288288048'>Retrofit</a>
+        <a href='#1288284111'>Retrofit</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='755502249' />
-    <h3>Some license</h3>
-    <pre>Some license, http://website.tld/</pre>
-    <a name='1288288048' />
-    <h3>Apache 2.0</h3>
-    <pre>Apache 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()

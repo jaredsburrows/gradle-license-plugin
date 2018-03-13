@@ -49,4 +49,8 @@ class BaseJavaSpecification extends Specification {
       maven { url TEST_MAVEN_REPOSITORY }
     }
   }
+
+  def getLicenseText(fileName) {
+    getClass().getResource("/license/${fileName}").text
+  }
 }
