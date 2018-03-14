@@ -3,6 +3,9 @@ package com.jaredsburrows.license
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Unroll
 import test.BaseJavaSpecification
+
+import java.util.regex.Pattern
+
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 final class LicensePluginJavaSpec extends BaseJavaSpecification {
@@ -44,6 +47,8 @@ final class LicensePluginJavaSpec extends BaseJavaSpecification {
 
     then:
     result.task(":licenseReport").outcome == SUCCESS
+    Pattern.compile("Wrote HTML report to file:///.*/build/reports/licenses/licenseReport.html.").matcher(result.output).find()
+    Pattern.compile("Wrote JSON report to file:///.*/build/reports/licenses/licenseReport.json.").matcher(result.output).find()
 
     where:
     projectPlugin << LicensePlugin.JVM_PLUGINS

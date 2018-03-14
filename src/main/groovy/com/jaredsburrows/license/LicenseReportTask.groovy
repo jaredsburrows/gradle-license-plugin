@@ -263,7 +263,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", htmlFile.absolutePath))
+    logger.log(LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", getClickableFileUrl(htmlFile)))
   }
 
   /**
@@ -283,7 +283,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", jsonFile.absolutePath))
+    logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", getClickableFileUrl(jsonFile)))
   }
 
   def copyHtmlReport() {
@@ -318,5 +318,9 @@ class LicenseReportTask extends DefaultTask {
       // Copy JSON file to the assets directory
       project.file(licenseFile << project.file(jsonFile).text)
     }
+  }
+
+  private static def getClickableFileUrl(path) {
+    new URI("file", "", path.toURI().getPath(), null, null).toString()
   }
 }
