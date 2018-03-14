@@ -8,6 +8,7 @@ import spock.lang.Specification
 
 class BaseJavaSpecification extends Specification {
   @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
+  def  buildFile
   // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
   def SUPPORT_VERSION = "26.1.0"
@@ -31,6 +32,8 @@ class BaseJavaSpecification extends Specification {
   Project subproject
 
   def "setup"() {
+    buildFile = testProjectDir.newFile("build.gradle")
+
     // Setup project
     project = ProjectBuilder.builder()
       .withProjectDir(testProjectDir.root)

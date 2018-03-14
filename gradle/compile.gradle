@@ -57,7 +57,7 @@ javadoc {
     links("http://docs.oracle.com/javase/8/docs/api/",
             "http://docs.oracle.com/javaee/7/api/")
     exclude "**/*Test.java"
-    if (JavaVersion.current().isJava8Compatible()) addStringOption("Xdoclint:none", "-quiet")
+    if (JavaVersion.current().java8Compatible) addStringOption("Xdoclint:none", "-quiet")
   }
 }
 

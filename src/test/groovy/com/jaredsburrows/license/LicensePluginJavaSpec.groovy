@@ -1,28 +1,49 @@
 package com.jaredsburrows.license
 
+import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Unroll
 import test.BaseJavaSpecification
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 final class LicensePluginJavaSpec extends BaseJavaSpecification {
-  def "unsupported project project"() {
+  def "unsupported project"() {
+    given:
+    buildFile <<
+      """
+        plugins {
+            id "com.jaredsburrows.license"
+        }
+      """.stripIndent().trim()
+
     when:
-    new LicensePlugin().apply(project)
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withPluginClasspath()
+      .buildAndFail()
 
     then:
-    def e = thrown(IllegalStateException)
-    e.message == "License report plugin can only be applied to android or java projects."
+    result.output.contains("License report plugin can only be applied to android or java projects.")
   }
 
   @Unroll def "java - #projectPlugin - all tasks created"() {
     given:
-    project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project)
+    buildFile <<
+      """
+        plugins {
+            id "${projectPlugin}"
+            id "com.jaredsburrows.license"
+        }
+      """.stripIndent().trim()
 
     when:
-    project.evaluate()
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments("licenseReport")
+      .withPluginClasspath()
+      .build()
 
     then:
-    project.tasks.getByName("licenseReport")
+    result.task(":licenseReport").outcome == SUCCESS
 
     where:
     projectPlugin << LicensePlugin.JVM_PLUGINS
