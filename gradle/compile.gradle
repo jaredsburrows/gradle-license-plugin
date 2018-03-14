@@ -1,4 +1,4 @@
-compileJava {
+tasks.withType(JavaCompile) {
   sourceCompatibility = rootProject.ext.javaVersion
   targetCompatibility = rootProject.ext.javaVersion
 
@@ -12,7 +12,7 @@ compileJava {
   }
 }
 
-compileGroovy {
+tasks.withType(GroovyCompile) {
   sourceCompatibility = rootProject.ext.javaVersion
   targetCompatibility = rootProject.ext.javaVersion
 
@@ -31,7 +31,7 @@ compileGroovy {
   }
 }
 
-test {
+tasks.withType(Test) {
   // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
     exceptionFormat "full"
@@ -45,7 +45,7 @@ test {
   maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
 
-javadoc {
+tasks.withType(Javadoc) {
   title = "${project.name} ${project.version}"
   configure(options) {
     header = project.name
@@ -61,7 +61,7 @@ javadoc {
   }
 }
 
-groovydoc {
+tasks.withType(Groovydoc) {
   docTitle = "${project.name} ${project.version}"
   header = project.name
   link("http://docs.oracle.com/javase/8/docs/api/",
