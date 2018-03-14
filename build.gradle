@@ -40,7 +40,6 @@ dependencies {
 
   compileOnly deps.gradle
 
-  testImplementation gradleTestKit()
   testImplementation deps.gradle
   testImplementation deps.spockCore, { exclude module: "groovy-all" } // Use localGroovy()
 }
