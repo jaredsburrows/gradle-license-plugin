@@ -68,25 +68,23 @@ dependencies {
 ```html
 <html>
   <head>
-    <style>body{font-family:sans-serif;}pre{background-color:#eee;padding:1em;white-space:pre-wrap;}</style>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#-989311426'>Android GIF Drawable Library</a>
+        <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
+      <a name='-989315363' />
+      <pre>mit.txt here</pre>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>apache-2.0.txt here</pre>
     </ul>
-    <a name='-989311426' />
-    <h3>The MIT License</h3>
-    <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 ```
@@ -97,7 +95,7 @@ dependencies {
   {
     "project": "Android GIF Drawable Library",
     "description": "Views and Drawable for displaying animated GIFs for Android",
-    "version": "1.2.10",
+    "version": "1.2.3",
     "developers": [
       "Karol Wrótniak"
     ],
@@ -113,9 +111,9 @@ dependencies {
   {
     "project": "Design",
     "description": null,
-    "version": "27.0.2",
+    "version": "26.1.0",
     "developers": [
-    
+        
     ],
     "url": null,
     "year": null,

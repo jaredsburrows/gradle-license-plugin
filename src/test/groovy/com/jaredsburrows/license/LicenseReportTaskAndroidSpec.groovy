@@ -31,7 +31,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -79,7 +79,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>No open source libraries</h3>
+    <h3>None</h3>
   </body>
 </html>
 """.stripIndent().trim()
@@ -130,18 +130,17 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -230,18 +229,17 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -344,24 +342,23 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
       <li>
-        <a href='#1288288048'>Support-annotations</a>
+        <a href='#1288284111'>Support-annotations</a>
       </li>
       <li>
-        <a href='#1288288048'>Support-v4</a>
+        <a href='#1288284111'>Support-v4</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -478,21 +475,19 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#-989311426'>Android GIF Drawable Library</a>
+        <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
+      <a name='-989315363' />
+      <pre>${getLicenseText("mit.txt")}</pre>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='-989311426' />
-    <h3>The MIT License</h3>
-    <pre>The MIT License, http://opensource.org/licenses/MIT</pre>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -571,18 +566,17 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>Notice for libraries:</h3>
+    <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288288048'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288288048'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
-    <a name='1288288048' />
-    <h3>The Apache Software License</h3>
-    <pre>The Apache Software License, http://www.apache.org/licenses/LICENSE-2.0.txt</pre>
   </body>
 </html>
 """.stripIndent().trim()
@@ -651,7 +645,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       compile APPCOMPAT_V7
       compile DESIGN
     }
-
     project.licenseReport {
       generateHtmlReport = true
       generateJsonReport = true
@@ -702,7 +695,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       compile APPCOMPAT_V7
       compile DESIGN
     }
-
     project.licenseReport {
       generateHtmlReport = false
       generateJsonReport = false
