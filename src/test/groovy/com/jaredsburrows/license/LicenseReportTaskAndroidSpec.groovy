@@ -19,7 +19,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -67,7 +67,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -118,7 +118,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -217,7 +217,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -330,7 +330,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -463,7 +463,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -565,7 +565,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtmlFileExists = task.htmlFile.exists()
@@ -615,7 +615,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtmlFileExists = task.htmlFile.exists()
@@ -662,7 +662,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()

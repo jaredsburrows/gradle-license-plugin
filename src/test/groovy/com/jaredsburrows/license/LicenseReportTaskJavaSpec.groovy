@@ -11,7 +11,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -57,7 +57,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -140,7 +140,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -183,7 +183,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -266,7 +266,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -303,7 +303,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -364,7 +364,7 @@ http://website.tld/</pre>
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -430,7 +430,7 @@ http://website.tld/</pre>
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
@@ -518,7 +518,7 @@ http://website.tld/</pre>
 
     when:
     project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    LicenseReportTask task = project.tasks.getByName("licenseReport")
     task.execute()
 
     def actualHtml = task.htmlFile.text.stripIndent().trim()
