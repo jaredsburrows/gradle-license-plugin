@@ -41,7 +41,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll def "java - #projectPlugin licenseReport - project dependencies"() {
+  @Unroll def "java - #projectPlugin licenseReport - project dependencies - multi java modules"() {
     given:
     project.apply plugin: projectPlugin
     new LicensePlugin().apply(project)
@@ -500,5 +500,94 @@ http://website.tld/</pre>
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
+  }
+
+  @Unroll def "java - #projectPlugin licenseReport - use api and implementation configurations - multi java modules"() {
+    given:
+    project.apply plugin: projectPlugin
+    new LicensePlugin().apply(project)
+    project.dependencies {
+      api APPCOMPAT_V7
+      implementation project.project(":subproject")
+    }
+
+    subproject.apply plugin: "java-library"
+    subproject.dependencies {
+      implementation DESIGN
+    }
+
+    when:
+    project.evaluate()
+    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#1288284111'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Design",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    }
+]
+""".stripIndent().trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    projectPlugin << ["java-library"]
   }
 }

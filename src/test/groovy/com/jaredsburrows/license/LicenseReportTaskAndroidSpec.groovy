@@ -538,95 +538,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "jvm - #projectPlugin licenseReport - use api and implementation configurations"() {
-    given:
-    project.apply plugin: projectPlugin
-    new LicensePlugin().apply(project)
-    project.dependencies {
-      api APPCOMPAT_V7
-      implementation project.project(":subproject")
-    }
-
-    subproject.apply plugin: "java-library"
-    subproject.dependencies {
-      implementation DESIGN
-    }
-
-    when:
-    project.evaluate()
-    def task = project.tasks.getByName("licenseReport") as LicenseReportTask
-    task.execute()
-
-    def actualHtml = task.htmlFile.text.stripIndent().trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href='#1288284111'>Appcompat-v7</a>
-      </li>
-      <li>
-        <a href='#1288284111'>Design</a>
-      </li>
-      <a name='1288284111' />
-      <pre>${getLicenseText("apache-2.0.txt")}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = task.jsonFile.text.stripIndent().trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ]
-    },
-    {
-        "project": "Design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ]
-    }
-]
-""".stripIndent().trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-
-    where:
-    projectPlugin << ["java-library"]
-  }
-
   @Unroll def "android - #taskName - reports enabled - copy enabled #copyEnabled"() {
     given:
     project.apply plugin: "com.android.application"
@@ -725,5 +636,104 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     where:
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
     copyEnabled << [true, false]
+  }
+
+  @Unroll def "android - #taskName - default buildTypes - multi module - android and java"() {
+    given:
+    project.apply plugin: "com.android.application"
+    new LicensePlugin().apply(project)
+    project.android {
+      compileSdkVersion COMPILE_SDK_VERSION
+      buildToolsVersion BUILD_TOOLS_VERSION
+
+      defaultConfig {
+        applicationId APPLICATION_ID
+      }
+    }
+    project.dependencies {
+      compile project.project(":subproject")
+      compile FAKE_DEPENDENCY
+    }
+
+    subproject.apply plugin: "java-library"
+    subproject.dependencies {
+      compile DESIGN
+    }
+
+    when:
+    project.evaluate()
+    def task = project.tasks.getByName(taskName) as LicenseReportTask
+    task.execute()
+
+    def actualHtml = task.htmlFile.text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#755498312'>Fake dependency name</a>
+      </li>
+      <pre>Some license
+http://website.tld/</pre>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = task.jsonFile.text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Design",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Fake dependency name",
+        "description": "Fake dependency description",
+        "version": "1.0.0",
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            }
+        ]
+    }
+]
+""".stripIndent().trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 }
