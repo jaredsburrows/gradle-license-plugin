@@ -7,7 +7,7 @@ package com.jaredsburrows.license.internal
  * License text from: https://github.com/github/choosealicense.com/blob/gh-pages/_licenses.
  */
 final class LicenseHelper {
-  final static LICENSE_MAP = [
+  final static def LICENSE_MAP = [
     // Apache License 2.0
     // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/apache-2.0.txt
     "The Apache Software License"                              : "apache-2.0.txt",

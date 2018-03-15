@@ -10,8 +10,8 @@ class LicenseReportExtension {
   boolean generateHtmlReport = true
 
   /**
-   * Whether or not the HTML report should be copied to the Android assets directory. Ignored if the project is not
-   * an Android project. Has no effect if the HTML report is disabled.
+   * Whether or not the HTML report should be copied to the Android assets directory. Ignored if
+   * the project is not an Android project. Has no effect if the HTML report is disabled.
    */
   boolean copyHtmlReportToAssets = true
 
@@ -21,8 +21,8 @@ class LicenseReportExtension {
   boolean generateJsonReport = true
 
   /**
-   * Whether or not the HTML report should be copied to the Android assets directory. Ignored if the project is not
-   * an Android project. Has no effect if the JSON report is disabled.
+   * Whether or not the HTML report should be copied to the Android assets directory. Ignored if
+   * the project is not an Android project. Has no effect if the JSON report is disabled.
    */
   boolean copyJsonReportToAssets = false
 }

@@ -15,27 +15,27 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 class LicenseReportTask extends DefaultTask {
-  final static POM_CONFIGURATION = "poms"
-  final static TEMP_POM_CONFIGURATION = "tempPoms"
-  final static ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-  final static APACHE_LICENSE_NAME = "The Apache Software License"
-  final static APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  final static OPEN_SOURCE_LICENSES = "open_source_licenses"
-  final static HTML_EXT = ".html"
-  final static JSON_EXT = ".json"
+  final static def POM_CONFIGURATION = "poms"
+  final static def TEMP_POM_CONFIGURATION = "tempPoms"
+  final static def ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+  final static def APACHE_LICENSE_NAME = "The Apache Software License"
+  final static def APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+  final static def OPEN_SOURCE_LICENSES = "open_source_licenses"
+  final static def HTML_EXT = ".html"
+  final static def JSON_EXT = ".json"
   @Internal final List<Project> projects = []
   @Optional @Input File[] assetDirs = []
-  @Optional @Input generateHtmlReport
-  @Optional @Input generateJsonReport
-  @Optional @Input copyHtmlReportToAssets
-  @Optional @Input copyJsonReportToAssets
-  @Optional @Input buildType
-  @Optional @Input variant
-  @Optional @Internal productFlavors = []
+  @Optional @Input def generateHtmlReport
+  @Optional @Input def generateJsonReport
+  @Optional @Input def copyHtmlReportToAssets
+  @Optional @Input def copyJsonReportToAssets
+  @Optional @Input def buildType
+  @Optional @Input def variant
+  @Optional @Internal def productFlavors = []
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
-  @SuppressWarnings("GroovyUnusedDeclaration") @TaskAction licenseReport() {
+  @SuppressWarnings("GroovyUnusedDeclaration") @TaskAction def licenseReport() {
     setupEnvironment()
     collectDependencies()
     generatePOMInfo()
@@ -62,7 +62,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Setup configurations to collect dependencies.
    */
-  def setupEnvironment() {
+  private def setupEnvironment() {
     // Create temporary configuration in order to store POM information
     project.configurations.create(POM_CONFIGURATION)
 
@@ -76,7 +76,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Iterate through all configurations and collect dependencies.
    */
-  def collectDependencies() {
+  private def collectDependencies() {
     // Add POM information to our POM configuration
     final Set<Configuration> configurations = new LinkedHashSet<>()
 
@@ -121,11 +121,11 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Get POM information from the dependency artifacts.
    */
-  def generatePOMInfo() {
+  private def generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
-      final pomFile = pom.file
-      final pomText = new XmlParser().parse(pomFile)
+      final def pomFile = pom.file
+      final def pomText = new XmlParser().parse(pomFile)
 
       // License information
       def name = getName(pomText)
@@ -141,7 +141,6 @@ class LicenseReportTask extends DefaultTask {
       def url = pomText.url?.text()
       def year = pomText.inceptionYear?.text()
 
-
       // Clean up and format
       name = name?.capitalize()
       version = version?.trim()
@@ -156,7 +155,7 @@ class LicenseReportTask extends DefaultTask {
       }
 
       // Store the information that we need
-      final project = new Project(
+      final def project = new Project(
         name: name,
         description: description,
         version: version,
@@ -173,19 +172,19 @@ class LicenseReportTask extends DefaultTask {
     projects.sort { project -> project.name }
   }
 
-  def getName(def pomText) {
+  static def getName(def pomText) {
     def name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
-  def findLicenses(File pomFile) {
+  def findLicenses(def pomFile) {
     if (!pomFile) {
       return null
     }
-    final pomText = new XmlParser().parse(pomFile)
+    final def pomText = new XmlParser().parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    final name = getName(pomText)
+    final def name = getName(pomText)
     if (!name) {
       logger.log(LogLevel.WARN, String.format("POM file is missing a name: %s", pomFile))
       return null
@@ -202,8 +201,9 @@ class LicenseReportTask extends DefaultTask {
         def licenseName = license.name?.text()
         def licenseUrl = license.url?.text()
         try {
+          //noinspection GroovyResultOfObjectAllocationIgnored
           new URL(licenseUrl)
-            licenseName = licenseName?.trim().capitalize()
+            licenseName = licenseName?.trim()?.capitalize()
             licenseUrl = licenseUrl?.trim()
             licenses << new License(name: licenseName, url: licenseUrl)
         } catch (Exception ignore) {
@@ -214,9 +214,9 @@ class LicenseReportTask extends DefaultTask {
     }
     logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
 
-    final hasParent = pomText.parent != null
+    final def hasParent = pomText.parent != null
     if (hasParent) {
-      final parentPomFile = getParentPomFile(pomText)
+      final def parentPomFile = getParentPomFile(pomText)
       return findLicenses(parentPomFile)
     }
     return null
@@ -225,7 +225,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  def getParentPomFile(def pomText) {
+  private def getParentPomFile(def pomText) {
     // Get parent POM information
     def groupId = pomText?.parent?.groupId?.text()
     def artifactId = pomText?.parent?.artifactId?.text()
@@ -249,7 +249,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Generated HTML report.
    */
-  def createHtmlReport() {
+  private def createHtmlReport() {
     // Remove existing file
     project.file(htmlFile).delete()
 
@@ -257,7 +257,7 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.parentFile.mkdirs()
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
-      final printStream = new PrintStream(outputStream)
+      final def printStream = new PrintStream(outputStream)
       printStream.print(new HtmlReport(projects).string())
       printStream.println() // Add new line to file
     }
@@ -269,7 +269,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Generated JSON report.
    */
-  def createJsonReport() {
+  private def createJsonReport() {
     // Remove existing file
     project.file(jsonFile).delete()
 
@@ -277,7 +277,7 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.parentFile.mkdirs()
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
-      final printStream = new PrintStream(outputStream)
+      final def printStream = new PrintStream(outputStream)
       printStream.println new JsonReport(projects).string()
       printStream.println() // Add new line to file
     }
@@ -286,10 +286,10 @@ class LicenseReportTask extends DefaultTask {
     logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", getClickableFileUrl(jsonFile)))
   }
 
-  def copyHtmlReport() {
+  private def copyHtmlReport() {
    // Iterate through all asset directories
     assetDirs.each { directory ->
-      final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+      final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
       // Remove existing file
       project.file(licenseFile).delete()
@@ -303,10 +303,10 @@ class LicenseReportTask extends DefaultTask {
     }
   }
 
-  def copyJsonReport() {
+  private def copyJsonReport() {
     // Iterate through all asset directories
     assetDirs.each { directory ->
-      final licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
+      final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
 
       // Remove existing file
       project.file(licenseFile).delete()

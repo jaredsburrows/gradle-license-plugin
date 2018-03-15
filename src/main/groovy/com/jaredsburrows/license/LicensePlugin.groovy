@@ -4,8 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 final class LicensePlugin implements Plugin<Project> {
-  final static ANDROID_PLUGINS = ["com.android.application", "com.android.library", "com.android.test"]
-  final static JVM_PLUGINS = ["groovy", "java", "java-library"]
+  final static def ANDROID_PLUGINS = ["com.android.application", "com.android.library", "com.android.test"]
+  final static def JVM_PLUGINS = ["groovy", "java", "java-library"]
 
   @Override void apply(Project project) {
     project.evaluationDependsOnChildren()
@@ -23,17 +23,16 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Configure project and all variants for Android.
    */
-  static configureAndroidProject(project) {
+  private static configureAndroidProject(project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    final variants = getAndroidVariants(project)
-
-    final configuration = project.extensions.create("licenseReport", LicenseReportExtension)
+    final def variants = getAndroidVariants(project)
+    final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->
-      final variantName = variant.name.capitalize()
-      final taskName = "license${variantName}Report"
-      final path = "${project.buildDir}/reports/licenses/$taskName"
+      final def variantName = variant.name.capitalize()
+      final def taskName = "license${variantName}Report"
+      final def path = "${project.buildDir}/reports/licenses/$taskName"
 
       // Create tasks based on variant
       final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
@@ -57,11 +56,10 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Configure project for Groovy/Java.
    */
-  static configureJavaProject(project) {
-    final taskName = "licenseReport"
-    final path = "${project.buildDir}/reports/licenses/$taskName"
-
-    final configuration = project.extensions.create("licenseReport", LicenseReportExtension)
+  private static configureJavaProject(project) {
+    final def taskName = "licenseReport"
+    final def path = "${project.buildDir}/reports/licenses/$taskName"
+    final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Create tasks
     final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
@@ -80,7 +78,7 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Check for the android library plugin, default to application variants for applications and test plugin.
    */
-  static getAndroidVariants(project) {
+  private static getAndroidVariants(project) {
     (project.android.hasProperty("libraryVariants")
       ? project.android.libraryVariants
       : project.android.applicationVariants)
@@ -89,14 +87,14 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Check if the project has Android plugins.
    */
-  static isAndroidProject(project) {
+  private static isAndroidProject(project) {
     ANDROID_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 
   /**
    * Check if project has Java plugins.
    */
-  static isJavaProject(project) {
+  private static isJavaProject(project) {
     JVM_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 }

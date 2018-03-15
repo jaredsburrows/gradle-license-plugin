@@ -6,12 +6,12 @@ import com.jaredsburrows.license.internal.pom.Project
 import groovy.xml.MarkupBuilder
 
 final class HtmlReport {
-  final static BODY_CSS = "body{font-family: sans-serif}"
-  final static PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"
-  final static CSS_STYLE = BODY_CSS + " " + PRE_CSS
-  final static OPEN_SOURCE_LIBRARIES = "Open source licenses"
-  final static NO_LIBRARIES = "None"
-  final static NOTICE_LIBRARIES = "Notice for packages:"
+  final static def BODY_CSS = "body{font-family: sans-serif}"
+  final static def PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"
+  final static def CSS_STYLE = BODY_CSS + " " + PRE_CSS
+  final static def OPEN_SOURCE_LIBRARIES = "Open source licenses"
+  final static def NO_LIBRARIES = "None"
+  final static def NOTICE_LIBRARIES = "Notice for packages:"
   final List<Project> projects
 
   HtmlReport(projects) {
@@ -29,8 +29,8 @@ final class HtmlReport {
    * Html report when there are open source licenses.
    */
   private def openSourceHtml() {
-    final writer = new StringWriter()
-    final markup = new MarkupBuilder(writer)
+    final def writer = new StringWriter()
+    final def markup = new MarkupBuilder(writer)
     final Map<License, List<Project>> projectsMap = new HashMap<>()
 
     // Store packages by license
@@ -98,8 +98,8 @@ final class HtmlReport {
    * Html report when there are no open source licenses.
    */
   private static noOpenSourceHtml() {
-    final writer = new StringWriter()
-    final markup = new MarkupBuilder(writer)
+    final def writer = new StringWriter()
+    final def markup = new MarkupBuilder(writer)
 
     markup.html {
       head {
