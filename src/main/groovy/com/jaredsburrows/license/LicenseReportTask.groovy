@@ -150,7 +150,7 @@ class LicenseReportTask extends DefaultTask {
 
       def licenses = findLicenses(pomFile)
       if (!licenses) {
-        logger.log(LogLevel.WARN, String.format("%s dependency does not have a license.", name))
+        logger.log(LogLevel.WARN, "${name} dependency does not have a license.")
         return
       }
 
@@ -186,7 +186,7 @@ class LicenseReportTask extends DefaultTask {
     // If the POM is missing a name, do not record it
     final def name = getName(pomText)
     if (!name) {
-      logger.log(LogLevel.WARN, String.format("POM file is missing a name: %s", pomFile))
+      logger.log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
@@ -207,12 +207,12 @@ class LicenseReportTask extends DefaultTask {
             licenseUrl = licenseUrl?.trim()
             licenses << new License(name: licenseName, url: licenseUrl)
         } catch (Exception ignore) {
-          logger.log(LogLevel.WARN, String.format("%s dependency has an invalid license URL; skipping license", name))
+          logger.log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
         }
       }
       return licenses
     }
-    logger.log(LogLevel.INFO, String.format("Project, %s, has no license in POM file.", name))
+    logger.log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
     final def hasParent = pomText.parent != null
     if (hasParent) {
@@ -263,7 +263,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote HTML report to %s.", getClickableFileUrl(htmlFile)))
+    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
   }
 
   /**
@@ -283,7 +283,7 @@ class LicenseReportTask extends DefaultTask {
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, String.format("Wrote JSON report to %s.", getClickableFileUrl(jsonFile)))
+    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${getClickableFileUrl(jsonFile)}.")
   }
 
   private def copyHtmlReport() {

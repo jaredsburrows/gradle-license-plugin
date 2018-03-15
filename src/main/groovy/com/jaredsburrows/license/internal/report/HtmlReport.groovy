@@ -66,7 +66,7 @@ final class HtmlReport {
 
               // Display libraries
               li {
-                a(href: String.format("%s%s", "#", currentLicense), project.name)
+                a(href: "#${currentLicense}", project.name)
               }
             }
 
@@ -81,7 +81,7 @@ final class HtmlReport {
               pre(getLicenseText(licenseMap.get(entry.key.name)))
             } else {
               if (currentProject && (currentProject.licenses[0].name.trim() || currentProject.licenses[0].url.trim())) {
-                pre(String.format("%s\n%s", currentProject.licenses[0].name.trim(), currentProject.licenses[0].url.trim()))
+                pre("${currentProject.licenses[0].name.trim()}\n${currentProject.licenses[0].url.trim()}")
               } else {
                 pre(NO_LIBRARIES)
               }
