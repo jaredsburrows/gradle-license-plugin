@@ -6,8 +6,8 @@ import com.jaredsburrows.license.internal.pom.Project
 import groovy.xml.MarkupBuilder
 
 final class HtmlReport {
-  final static def BODY_CSS = "body{font-family: sans-serif}"
-  final static def PRE_CSS = "pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}"
+  final static def BODY_CSS = "body { font-family: sans-serif }"
+  final static def PRE_CSS = "pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
   final static def CSS_STYLE = BODY_CSS + " " + PRE_CSS
   final static def OPEN_SOURCE_LIBRARIES = "Open source licenses"
   final static def NO_LIBRARIES = "None"
