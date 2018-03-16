@@ -8,8 +8,6 @@ final class LicensePlugin implements Plugin<Project> {
   final static def JVM_PLUGINS = ["groovy", "java", "java-library"]
 
   @Override void apply(Project project) {
-    project.evaluationDependsOnChildren()
-
     if (isAndroidProject(project)) {
       configureAndroidProject(project)
     } else if (isJavaProject(project)) {
