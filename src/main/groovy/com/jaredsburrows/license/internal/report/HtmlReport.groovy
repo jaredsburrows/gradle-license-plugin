@@ -14,7 +14,7 @@ final class HtmlReport {
   final static def NOTICE_LIBRARIES = "Notice for packages:"
   final List<Project> projects
 
-  HtmlReport(projects) {
+  HtmlReport(def projects) {
     this.projects = projects
   }
 
@@ -37,7 +37,7 @@ final class HtmlReport {
     projects.each { project ->
       def key = project.licenses[0]
       if (!projectsMap.containsKey(key)) {
-        projectsMap.put(key, new ArrayList<>())
+        projectsMap.put(key, [])
       }
 
       projectsMap.get(key).add(project)
@@ -53,14 +53,14 @@ final class HtmlReport {
         h3(NOTICE_LIBRARIES)
         ul {
 
-          for (Map.Entry<License, List<Project>> entry : projectsMap.entrySet()) {
+          projectsMap.entrySet().each { entry ->
             final List<Project> sortedProjects = entry.value.sort {
               left, right -> left.name <=> right.name
             }
 
             def currentProject = null
             def currentLicense = null
-            for (Project project : sortedProjects) {
+            sortedProjects.each { project ->
               currentProject = project
               currentLicense = entry.key.url.hashCode()
 

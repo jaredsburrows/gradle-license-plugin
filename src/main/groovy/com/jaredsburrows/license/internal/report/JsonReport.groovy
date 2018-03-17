@@ -5,18 +5,17 @@ import com.jaredsburrows.license.internal.pom.License
 import groovy.json.JsonBuilder
 
 final class JsonReport {
-  final static def PROJECT = "project"
-  final static def DESCRIPTION = "description"
-  final static def VERSION = "version"
-  final static def DEVELOPERS = "developers"
-  final static def URL = "url"
-  final static def YEAR = "year"
-  final static def LICENSES = "licenses"
-  final static def LICENSE = "license"
-  final static def LICENSE_URL = "license_url"
-  final static def EMPTY_JSON_ARRAY = "[]"
-  final List<License> licenses
-  final List<Project> projects
+  private final static def PROJECT = "project"
+  private final static def DESCRIPTION = "description"
+  private final static def VERSION = "version"
+  private final static def DEVELOPERS = "developers"
+  private final static def URL = "url"
+  private final static def YEAR = "year"
+  private final static def LICENSES = "licenses"
+  private final static def LICENSE = "license"
+  private final static def LICENSE_URL = "license_url"
+  private final static def EMPTY_JSON_ARRAY = "[]"
+  private final List<Project> projects
 
   JsonReport(projects) {
     this.projects = projects

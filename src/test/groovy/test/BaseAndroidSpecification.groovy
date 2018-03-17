@@ -19,6 +19,6 @@ class BaseAndroidSpecification extends BaseJavaSpecification {
     testProjectDir.newFile(MANIFEST_FILE_PATH) << MANIFEST
 
     // Set mock test sdk, we only need to test the plugins tasks
-    SdkHandler.sTestSdkFolder = project.file(TEST_ANDROID_SDK)
+    SdkHandler.sTestSdkFolder = new File(TEST_ANDROID_SDK)
   }
 }

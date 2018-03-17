@@ -21,7 +21,7 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Configure project and all variants for Android.
    */
-  private static configureAndroidProject(project) {
+  private static configureAndroidProject(def project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     final def variants = getAndroidVariants(project)
     final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
@@ -54,7 +54,7 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Configure project for Groovy/Java.
    */
-  private static configureJavaProject(project) {
+  private static configureJavaProject(def project) {
     final def taskName = "licenseReport"
     final def path = "${project.buildDir}/reports/licenses/$taskName"
     final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
@@ -76,7 +76,7 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Check for the android library plugin, default to application variants for applications and test plugin.
    */
-  private static getAndroidVariants(project) {
+  private static getAndroidVariants(def project) {
     (project.android.hasProperty("libraryVariants")
       ? project.android.libraryVariants
       : project.android.applicationVariants)
@@ -85,14 +85,14 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Check if the project has Android plugins.
    */
-  private static isAndroidProject(project) {
+  private static isAndroidProject(def project) {
     ANDROID_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 
   /**
    * Check if project has Java plugins.
    */
-  private static isJavaProject(project) {
+  private static isJavaProject(def project) {
     JVM_PLUGINS.find { plugin -> project.plugins.hasPlugin(plugin) }
   }
 }

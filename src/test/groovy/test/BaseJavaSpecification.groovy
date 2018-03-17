@@ -53,7 +53,7 @@ class BaseJavaSpecification extends Specification {
     }
   }
 
-  def getLicenseText(fileName) {
+  def getLicenseText(def fileName) {
     getClass().getResource("/license/${fileName}").text
   }
 }
