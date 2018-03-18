@@ -4,7 +4,7 @@ import spock.lang.Unroll
 import test.BaseAndroidSpecification
 
 final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
-  @Unroll def "android - #taskName - no dependencies"() {
+  @Unroll def "android project running #taskName that has no dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -49,7 +49,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android - #taskName - no open source dependencies"() {
+  @Unroll def "android project #taskName with no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -97,7 +97,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android - #taskName - default buildTypes"() {
+  @Unroll def "android project running #taskName with default buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -191,7 +191,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android - #taskName - buildTypes"() {
+  @Unroll def "android project running #taskName with buildTypes"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -290,7 +290,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android - #taskName - buildTypes + productFlavors + flavorDimensions"() {
+  @Unroll def "android project running #taskName with buildTypes + productFlavors + flavorDimensions"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -442,7 +442,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                  "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport"]
   }
 
-  @Unroll def "readme example - #taskName"() {
+  @Unroll def "android project running #taskName from readme example"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -538,7 +538,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
-  @Unroll def "android - #taskName - reports enabled - copy enabled #copyEnabled"() {
+  @Unroll def "android project running #taskName with reports enabled and copy enabled #copyEnabled"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -588,7 +588,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     copyEnabled << [true, false]
   }
 
-  @Unroll def "android - #taskName - reports disabled - copy enabled #copyEnabled"() {
+  @Unroll def "android project running #taskName with reports disabled and copy enabled #copyEnabled"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)
@@ -638,7 +638,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     copyEnabled << [true, false]
   }
 
-  @Unroll def "android - #taskName - default buildTypes - multi module - android and java"() {
+  @Unroll def "android project running #taskName with default buildTypes, multi module and android and java"() {
     given:
     project.apply plugin: "com.android.application"
     new LicensePlugin().apply(project)

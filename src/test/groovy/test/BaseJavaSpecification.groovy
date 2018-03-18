@@ -2,13 +2,8 @@ package test
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 
-class BaseJavaSpecification extends Specification {
-  @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
-  def buildFile
+class BaseJavaSpecification extends BaseSpecification {
   // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
   def SUPPORT_VERSION = "26.1.0"
@@ -32,8 +27,6 @@ class BaseJavaSpecification extends Specification {
   Project subproject
 
   def "setup"() {
-    buildFile = testProjectDir.newFile("build.gradle")
-
     // Setup project
     project = ProjectBuilder.builder()
       .withProjectDir(testProjectDir.root)

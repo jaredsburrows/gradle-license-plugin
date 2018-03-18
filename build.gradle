@@ -35,10 +35,25 @@ jar {
   }
 }
 
+task createClasspathManifest() {
+  def outputDir = file("$buildDir/$name")
+
+  inputs.files sourceSets.main.runtimeClasspath
+  outputs.dir outputDir
+
+  doLast {
+    outputDir.mkdirs()
+    file("$outputDir/main-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+    file("$outputDir/main-test-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n") + "\n" + sourceSets.test.runtimeClasspath.join("\n")
+  }
+}
+
 dependencies {
   implementation localGroovy()
 
   compileOnly deps.gradle
+
+  testRuntime files(createClasspathManifest)
 
   testImplementation deps.gradle
   testImplementation deps.spockCore, { exclude module: "groovy-all" } // Use localGroovy()
