@@ -1,12 +1,11 @@
 package com.jaredsburrows.license
 
-import spock.lang.Unroll
 import test.BaseJavaSpecification
 
 final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
-  @Unroll def "java - #projectPlugin licenseReport - no dependencies"() {
+  def "java project running licenseReport with no dependencies"() {
     given:
-    project.apply plugin: projectPlugin
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
 
     when:
@@ -36,14 +35,11 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
-
-    where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll def "java - #projectPlugin licenseReport - project dependencies - multi java modules"() {
+  def "java project running licenseReport with project dependencies - multi java modules"() {
     given:
-    project.apply plugin: projectPlugin
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile APPCOMPAT_V7
@@ -125,14 +121,11 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
-
-    where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll def "java - #projectPlugin licenseReport - no open source dependencies"() {
+  def "java project running licenseReport with  no open source dependencies"() {
     given:
-    project.apply plugin: projectPlugin
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile FIREBASE_CORE
@@ -165,14 +158,11 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
-
-    where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  @Unroll def "java - #projectPlugin licenseReport"() {
+  def "java project running licenseReport with duplicate dependencies"() {
     given:
-    project.apply plugin: projectPlugin
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       // Handles duplicates
@@ -251,14 +241,11 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
-
-    where:
-    projectPlugin << LicensePlugin.JVM_PLUGINS
   }
 
-  def "java - dependency with full pom - project name, developers, url, year, bad license"() {
+  def "java project running licenseReport with dependency with full pom with project name, developers, url, year, bad license"() {
     given:
-    project.apply plugin: "java-library"
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY3
@@ -293,9 +280,9 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     actualJson == expectedJson
   }
 
-  def "java - dependency with full pom - project name, developers, url, year, single license"() {
+  def "java project running licenseReport with dependency with full pom and project name, developers, url, year, single license"() {
     given:
-    project.apply plugin: "java-library"
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY
@@ -354,9 +341,9 @@ http://website.tld/</pre>
     actualJson == expectedJson
   }
 
-  def "java - dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
+  def "java project with running licenseReport dependency with full pom - project name, multiple developers, url, year, multiple licenses"() {
     given:
-    project.apply plugin: "java-library"
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile FAKE_DEPENDENCY2
@@ -419,9 +406,9 @@ http://website.tld/</pre>
     actualJson == expectedJson
   }
 
-  def "java - dependency without license information - check it's parent"() {
+  def "java project running licenseReport with dependency without license information that check it's parent's pom"() {
     given:
-    project.apply plugin: "java-library"
+    project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
       compile CHILD_DEPENDENCY
@@ -502,9 +489,9 @@ http://website.tld/</pre>
     actualJson == expectedJson
   }
 
-  @Unroll def "java - #projectPlugin licenseReport - use api and implementation configurations - multi java modules"() {
+  def "java project running licenseReport using api and implementation configurations with multi java modules"() {
     given:
-    project.apply plugin: projectPlugin
+    project.apply plugin: "java-library"
     new LicensePlugin().apply(project)
     project.dependencies {
       api APPCOMPAT_V7
@@ -586,8 +573,5 @@ http://website.tld/</pre>
     then:
     actualHtml == expectedHtml
     actualJson == expectedJson
-
-    where:
-    projectPlugin << ["java-library"]
   }
 }

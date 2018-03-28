@@ -8,6 +8,5 @@ final class DeveloperSpec extends Specification {
   def "name"() {
     expect:
     sut.name == "name"
-    sut.getName() == "name"
   }
 }

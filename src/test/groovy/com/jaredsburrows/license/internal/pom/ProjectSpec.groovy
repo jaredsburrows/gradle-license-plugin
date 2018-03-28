@@ -12,13 +12,11 @@ final class ProjectSpec extends Specification {
   def "name"() {
     expect:
     sut.name == "name"
-    sut.getName() == "name"
   }
 
   def "licenses"() {
     expect:
     sut.licenses == licenses
-    sut.getLicenses() == licenses
   }
 
   def "url"() {
@@ -30,12 +28,10 @@ final class ProjectSpec extends Specification {
   def "developers"() {
     expect:
     sut.developers == developers
-    sut.getDevelopers() == developers
   }
 
   def "year"() {
     expect:
     sut.year == "year"
-    sut.getYear() == "year"
   }
 }

@@ -8,13 +8,11 @@ final class LicenseSpec extends Specification {
   def "get name"() {
     expect:
     sut.name == "name"
-    sut.getName() == "name"
   }
 
   def "url"() {
     expect:
     sut.url == "url"
-    sut.getUrl() == "url"
   }
 
   def "equals and hashcode"() {
