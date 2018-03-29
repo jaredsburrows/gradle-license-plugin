@@ -6,10 +6,10 @@ import org.gradle.testfixtures.ProjectBuilder
 class BaseJavaSpecification extends BaseSpecification {
   // Test fixture that emulates a google()/mavenCentral()/jcenter()/"https://plugins.gradle.org/m2/"
   def TEST_MAVEN_REPOSITORY = getClass().getResource("/maven").toURI()
-  def SUPPORT_VERSION = "26.1.0"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/google/m2repository"
   def FIREBASE_CORE = "com.google.firebase:firebase-core:10.0.1"
   // Maven repo - "file://${System.env.ANDROID_HOME}/extras/android/m2repository"
+  def SUPPORT_VERSION = "26.1.0"
   def APPCOMPAT_V7 = "com.android.support:appcompat-v7:$SUPPORT_VERSION"
   def DESIGN = "com.android.support:design:$SUPPORT_VERSION"
   def SUPPORT_ANNOTATIONS = "com.android.support:support-annotations:$SUPPORT_VERSION"
