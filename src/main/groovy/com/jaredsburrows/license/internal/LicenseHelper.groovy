@@ -10,8 +10,9 @@ final class LicenseHelper {
   final static def LICENSE_MAP = [
     // Apache License 2.0
     // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/apache-2.0.txt
-    "The Apache Software License"                              : "apache-2.0.txt",
+    "Apache 2.0"                                               : "apache-2.0.txt",
     "Apache License 2.0"                                       : "apache-2.0.txt",
+    "The Apache Software License"                              : "apache-2.0.txt",
     "The Apache Software License, Version 2.0"                 : "apache-2.0.txt",
     "http://www.apache.org/licenses/LICENSE-2.0.txt"           : "apache-2.0.txt",
     "https://www.apache.org/licenses/LICENSE-2.0.txt"          : "apache-2.0.txt",
