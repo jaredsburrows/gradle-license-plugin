@@ -1,28 +1,40 @@
 package com.jaredsburrows.license
 
+import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Unroll
 import test.BaseAndroidSpecification
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   @Unroll def "android project running #taskName that has no dependencies"() {
     given:
-    project.apply plugin: "com.android.application"
-    new LicensePlugin().apply(project)
-    project.android {
-      compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
+    def classpathString = mainTestPluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
 
-      defaultConfig {
-        applicationId APPLICATION_ID
-      }
-    }
+    buildFile <<
+      """
+        buildscript {
+          dependencies {
+            classpath files($classpathString)
+          }
+        }
 
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
+        apply plugin: "com.android.application"
+        apply plugin: "com.jaredsburrows.license"
 
-    def actualHtml = task.htmlFile.text.stripIndent().trim()
+        android {
+          compileSdkVersion ${COMPILE_SDK_VERSION}
+          buildToolsVersion "${BUILD_TOOLS_VERSION}"
+
+          defaultConfig {
+            applicationId "${APPLICATION_ID}"
+          }
+        }
+      """.stripIndent().trim()
+
     def expectedHtml =
       """
 <html>
@@ -35,13 +47,25 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
   </body>
 </html>
 """.stripIndent().trim()
-    def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
 []
 """.stripIndent().trim()
 
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments("${taskName}")
+      .build()
+
     then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote HTML report to file:///.*/build/reports/licenses/${taskName}.html.")
+    result.output.find("Wrote JSON report to file:///.*/build/reports/licenses/${taskName}.json.")
+
+    def actualHtml = new File(new URI(result.output.find("file:///.*/build/reports/licenses/${taskName}.html")).path).text.stripIndent().trim()
+    def actualJson = new File(new URI(result.output.find("file:///.*/build/reports/licenses/${taskName}.json")).path).text.stripIndent().trim()
+
     actualHtml == expectedHtml
     actualJson == expectedJson
 
