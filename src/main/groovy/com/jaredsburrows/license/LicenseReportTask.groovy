@@ -151,7 +151,7 @@ class LicenseReportTask extends DefaultTask {
       def licenses = findLicenses(pomFile)
       if (!licenses) {
         logger.log(LogLevel.WARN, "${name} dependency does not have a license.")
-        return
+        licenses = []
       }
 
       // Store the information that we need
@@ -162,7 +162,8 @@ class LicenseReportTask extends DefaultTask {
         developers: developers,
         licenses: licenses,
         url: url,
-        year: year
+        year: year,
+        dependencyString: pom.owner
       )
 
       projects << project
