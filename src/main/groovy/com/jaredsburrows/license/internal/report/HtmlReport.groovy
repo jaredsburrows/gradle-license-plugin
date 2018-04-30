@@ -38,7 +38,7 @@ final class HtmlReport {
     projects.each { project ->
       def key = new License(name: "No license found", url: "N/A")
 
-      if (project.licenses.size > 0) {
+      if (project.licenses && project.licenses.size > 0) {
         key = project.licenses[0]
       }
 
@@ -79,7 +79,7 @@ final class HtmlReport {
             // Display associated license with libraries
             // Try to find license by URL, name and then default to whatever is listed in the POM.xml
             def licenseMap = LicenseHelper.LICENSE_MAP
-            if (currentProject.licenses.size == 0) {
+            if (!currentProject.licenses || currentProject.licenses.size == 0) {
               pre(NO_LICENSE)
             } else if (licenseMap.containsKey(entry.key.url)) {
               a(name: currentLicense)

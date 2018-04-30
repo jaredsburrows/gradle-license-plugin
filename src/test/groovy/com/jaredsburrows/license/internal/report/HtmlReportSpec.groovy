@@ -37,7 +37,9 @@ final class HtmlReportSpec extends Specification {
     def license = new License(name: "name", url: "url")
     def project = new Project(name: "name", licenses: [license], url: "url", developers: developers,
       year: "year")
-    def projects = [project, project]
+    def missingLicensesproject = new Project(name: "name", url: "url", developers: developers,
+      year: "year")
+    def projects = [project, project, missingLicensesproject]
     def sut = new HtmlReport(projects)
 
     when:
@@ -52,6 +54,10 @@ final class HtmlReportSpec extends Specification {
   <body>
     <h3>Notice for packages:</h3>
     <ul>
+      <li>
+        <a href='#76480'>name</a>
+      </li>
+      <pre>No license found</pre>
       <li>
         <a href='#116079'>name</a>
       </li>
