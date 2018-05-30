@@ -98,7 +98,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -115,7 +115,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -173,7 +173,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
         "licenses": [
             
         ],
-        "dependency_string": "com.google.firebase:firebase-core:10.0.1"
+        "dependency": "com.google.firebase:firebase-core:10.0.1"
     }
 ]
 """.stripIndent().trim()
@@ -241,7 +241,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -258,7 +258,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -357,7 +357,7 @@ http://website.tld/</pre>
                 "license_url": "http://website.tld/"
             }
         ],
-        "dependency_string": "group:name:1.0.0"
+        "dependency": "group:name:1.0.0"
     }
 ]
 """.stripIndent().trim()
@@ -423,7 +423,7 @@ http://website.tld/</pre>
                 "license_url": "http://website.tld/"
             }
         ],
-        "dependency_string": "group:name2:1.0.0"
+        "dependency": "group:name2:1.0.0"
     }
 ]
 """.stripIndent().trim()
@@ -491,7 +491,7 @@ http://website.tld/</pre>
                 "license_url": "http://website.tld/"
             }
         ],
-        "dependency_string": "group:child:1.0.0"
+        "dependency": "group:child:1.0.0"
     },
     {
         "project": "Retrofit",
@@ -508,7 +508,7 @@ http://website.tld/</pre>
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.squareup.retrofit2:retrofit:2.3.0"
+        "dependency": "com.squareup.retrofit2:retrofit:2.3.0"
     }
 ]
 """.stripIndent().trim()
@@ -579,7 +579,7 @@ http://website.tld/</pre>
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -596,7 +596,7 @@ http://website.tld/</pre>
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()

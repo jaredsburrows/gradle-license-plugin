@@ -163,7 +163,7 @@ class LicenseReportTask extends DefaultTask {
         licenses: licenses,
         url: url,
         year: year,
-        dependencyString: pom.owner
+        gav: pom.owner
       )
 
       projects << project

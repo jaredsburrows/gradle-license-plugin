@@ -13,6 +13,7 @@ final class HtmlReport {
   final static def NO_LIBRARIES = "None"
   final static def NO_LICENSE = "No license found"
   final static def NOTICE_LIBRARIES = "Notice for packages:"
+  final static def NO_URL = "N/A"
   final List<Project> projects
 
   HtmlReport(def projects) {
@@ -36,7 +37,7 @@ final class HtmlReport {
 
     // Store packages by license
     projects.each { project ->
-      def key = new License(name: "No license found", url: "N/A")
+      def key = new License(name: NO_LICENSE, url: NO_URL)
 
       if (project.licenses && project.licenses.size > 0) {
         key = project.licenses[0]

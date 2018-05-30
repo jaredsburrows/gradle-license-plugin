@@ -15,7 +15,7 @@ final class JsonReport {
   private final static def LICENSE = "license"
   private final static def LICENSE_URL = "license_url"
   private final static def EMPTY_JSON_ARRAY = "[]"
-  private final static def DEPENDENCY_STRING = "dependency_string"
+  private final static def DEPENDENCY = "dependency"
   private final List<Project> projects
 
   JsonReport(projects) {
@@ -47,7 +47,7 @@ final class JsonReport {
         "$URL"        : project.url ? project.url : null,
         "$YEAR"       : project.year ? project.year : null,
         "$LICENSES"   : licensesJson,
-        "$DEPENDENCY_STRING": project.dependencyString
+        "$DEPENDENCY" : project.gav
       ]
     })
   }

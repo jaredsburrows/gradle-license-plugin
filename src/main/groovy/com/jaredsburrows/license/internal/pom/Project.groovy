@@ -8,5 +8,5 @@ final class Project {
   String url
   List<Developer> developers
   String year
-  String dependencyString
+  String gav // Group/artifact/version
 }

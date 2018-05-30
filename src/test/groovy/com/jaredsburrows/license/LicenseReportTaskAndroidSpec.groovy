@@ -129,7 +129,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
         "licenses": [
             
         ],
-        "dependency_string": "com.google.firebase:firebase-core:10.0.1"
+        "dependency": "com.google.firebase:firebase-core:10.0.1"
     }
 ]
 """.stripIndent().trim()
@@ -208,7 +208,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -225,7 +225,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -309,7 +309,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -326,7 +326,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -430,7 +430,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:appcompat-v7:26.1.0"
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -447,7 +447,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     },
     {
         "project": "Support-annotations",
@@ -464,7 +464,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:support-annotations:26.1.0"
+        "dependency": "com.android.support:support-annotations:26.1.0"
     },
     {
         "project": "Support-v4",
@@ -481,7 +481,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:support-v4:26.1.0"
+        "dependency": "com.android.support:support-v4:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -563,7 +563,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://opensource.org/licenses/MIT"
             }
         ],
-        "dependency_string": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+        "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
     },
     {
         "project": "Design",
@@ -580,7 +580,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -764,7 +764,7 @@ http://website.tld/</pre>
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         ],
-        "dependency_string": "com.android.support:design:26.1.0"
+        "dependency": "com.android.support:design:26.1.0"
     },
     {
         "project": "Fake dependency name",
@@ -781,7 +781,7 @@ http://website.tld/</pre>
                 "license_url": "http://website.tld/"
             }
         ],
-        "dependency_string": "group:name:1.0.0"
+        "dependency": "group:name:1.0.0"
     }
 ]
 """.stripIndent().trim()

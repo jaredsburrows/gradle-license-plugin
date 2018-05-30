@@ -24,7 +24,7 @@ final class JsonReportSpec extends Specification {
 
   def "open source json - missing values"() {
     given:
-    def project = new Project(name: "name", developers: [], dependencyString: "foo:bar:1.2.3")
+    def project = new Project(name: "name", developers: [], gav: "foo:bar:1.2.3")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -45,7 +45,7 @@ final class JsonReportSpec extends Specification {
         "licenses": [
             
         ],
-        "dependency_string": "foo:bar:1.2.3"
+        "dependency": "foo:bar:1.2.3"
     },
     {
         "project": "name",
@@ -59,7 +59,7 @@ final class JsonReportSpec extends Specification {
         "licenses": [
             
         ],
-        "dependency_string": "foo:bar:1.2.3"
+        "dependency": "foo:bar:1.2.3"
     }
 ]
 """.stripIndent().trim()
@@ -74,7 +74,7 @@ final class JsonReportSpec extends Specification {
     def developers = [developer, developer]
     def license = new License(name: "name", url: "url")
     def project = new Project(name: "name", description: "description", version: "1.0.0",
-      licenses: [license], url: "url", developers: developers, year: "year", dependencyString: "foo:bar:1.2.3")
+      licenses: [license], url: "url", developers: developers, year: "year", gav: "foo:bar:1.2.3")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -99,7 +99,7 @@ final class JsonReportSpec extends Specification {
                 "license_url": "url"
             }
         ],
-        "dependency_string": "foo:bar:1.2.3"
+        "dependency": "foo:bar:1.2.3"
     },
     {
         "project": "name",
@@ -117,7 +117,7 @@ final class JsonReportSpec extends Specification {
                 "license_url": "url"
             }
         ],
-        "dependency_string": "foo:bar:1.2.3"
+        "dependency": "foo:bar:1.2.3"
     }
 ]
 """.stripIndent().trim()
