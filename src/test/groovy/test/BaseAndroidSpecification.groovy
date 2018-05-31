@@ -1,6 +1,7 @@
 package test
 
 import com.android.build.gradle.internal.SdkHandler
+import groovy.json.StringEscapeUtils
 
 class BaseAndroidSpecification extends BaseJavaSpecification {
   def COMPILE_SDK_VERSION = 26
@@ -21,6 +22,6 @@ class BaseAndroidSpecification extends BaseJavaSpecification {
     // Set mock test sdk, we only need to test the plugins tasks
     def testAndroidSdk = new File(TEST_ANDROID_SDK)
     SdkHandler.sTestSdkFolder = testAndroidSdk
-    new File (testProjectDir.root, "local.properties") << "sdk.dir=${testAndroidSdk.path}"
+    new File (testProjectDir.root, "local.properties") << "sdk.dir=${StringEscapeUtils.escapeJava(testAndroidSdk.path)}"
   }
 }
