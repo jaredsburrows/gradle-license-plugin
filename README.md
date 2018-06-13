@@ -75,7 +75,7 @@ dependencies {
   <body>
     <h3>Notice for packages:</h3>
     <ul>
-	  <li>
+      <li>
         <a href='#76480'>WSDL4J</a>
       </li>
       <pre>No license found</pre>
