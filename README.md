@@ -61,6 +61,7 @@ Example `build.gradle`:
 dependencies {
   compile "com.android.support:design:26.1.0"
   compile "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+  compile "wsdl4j:wsdl4j:1.5.1" // Very old library with no license info available
 }
 ```
 
@@ -74,6 +75,10 @@ dependencies {
   <body>
     <h3>Notice for packages:</h3>
     <ul>
+	  <li>
+        <a href='#76480'>WSDL4J</a>
+      </li>
+      <pre>No license found</pre>
       <li>
         <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
@@ -106,7 +111,8 @@ dependencies {
         "license": "The MIT License",
         "license_url": "http://opensource.org/licenses/MIT"
       }
-    ]
+    ],
+    "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
   },
   {
     "project": "Design",
@@ -122,10 +128,27 @@ dependencies {
         "license": "The Apache Software License",
         "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
-    ]
+    ],
+    "dependency": "com.android.support:design:26.1.0"
+  },
+  {
+	"project": "WSDL4J",
+	"description": "Java stub generator for WSDL",
+	"version": "1.5.1",
+	"developers": [
+		
+	],
+	"url": "http://sf.net/projects/wsdl4j",
+	"year": null,
+	"licenses": [
+		
+	],
+	"dependency": "wsdl4j:wsdl4j:1.5.1"
   }
 ]
 ```
+
+Note, if no license information is found for a component, the `licenses` element in the JSON output will be an empty array.
 
 ## Configuration
 The plugin can be configured to generate specific reports and automatically copy the reports to the assets directory (Android projects only). The default behaviours are: 
