@@ -132,18 +132,18 @@ dependencies {
     "dependency": "com.android.support:design:26.1.0"
   },
   {
-	"project": "WSDL4J",
-	"description": "Java stub generator for WSDL",
-	"version": "1.5.1",
-	"developers": [
+    "project": "WSDL4J",
+    "description": "Java stub generator for WSDL",
+    "version": "1.5.1",
+    "developers": [
 		
-	],
-	"url": "http://sf.net/projects/wsdl4j",
-	"year": null,
-	"licenses": [
+    ],
+    "url": "http://sf.net/projects/wsdl4j",
+    "year": null,
+    "licenses": [
 		
-	],
-	"dependency": "wsdl4j:wsdl4j:1.5.1"
+    ],
+    "dependency": "wsdl4j:wsdl4j:1.5.1"
   }
 ]
 ```
