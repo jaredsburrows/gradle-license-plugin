@@ -24,8 +24,7 @@ final class JsonReportSpec extends Specification {
 
   def "open source json - missing values"() {
     given:
-    def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", licenses: [license], developers: [])
+    def project = new Project(name: "name", developers: [], gav: "foo:bar:1.2.3")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -44,11 +43,9 @@ final class JsonReportSpec extends Specification {
         "url": null,
         "year": null,
         "licenses": [
-            {
-                "license": "name",
-                "license_url": "url"
-            }
-        ]
+            
+        ],
+        "dependency": "foo:bar:1.2.3"
     },
     {
         "project": "name",
@@ -60,11 +57,9 @@ final class JsonReportSpec extends Specification {
         "url": null,
         "year": null,
         "licenses": [
-            {
-                "license": "name",
-                "license_url": "url"
-            }
-        ]
+            
+        ],
+        "dependency": "foo:bar:1.2.3"
     }
 ]
 """.stripIndent().trim()
@@ -79,7 +74,7 @@ final class JsonReportSpec extends Specification {
     def developers = [developer, developer]
     def license = new License(name: "name", url: "url")
     def project = new Project(name: "name", description: "description", version: "1.0.0",
-      licenses: [license], url: "url", developers: developers, year: "year")
+      licenses: [license], url: "url", developers: developers, year: "year", gav: "foo:bar:1.2.3")
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -103,7 +98,8 @@ final class JsonReportSpec extends Specification {
                 "license": "name",
                 "license_url": "url"
             }
-        ]
+        ],
+        "dependency": "foo:bar:1.2.3"
     },
     {
         "project": "name",
@@ -120,7 +116,8 @@ final class JsonReportSpec extends Specification {
                 "license": "name",
                 "license_url": "url"
             }
-        ]
+        ],
+        "dependency": "foo:bar:1.2.3"
     }
 ]
 """.stripIndent().trim()

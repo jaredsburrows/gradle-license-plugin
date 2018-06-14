@@ -11,7 +11,9 @@ final class HtmlReport {
   final static def CSS_STYLE = BODY_CSS + " " + PRE_CSS
   final static def OPEN_SOURCE_LIBRARIES = "Open source licenses"
   final static def NO_LIBRARIES = "None"
+  final static def NO_LICENSE = "No license found"
   final static def NOTICE_LIBRARIES = "Notice for packages:"
+  final static def NO_URL = "N/A"
   final List<Project> projects
 
   HtmlReport(def projects) {
@@ -35,7 +37,12 @@ final class HtmlReport {
 
     // Store packages by license
     projects.each { project ->
-      def key = project.licenses[0]
+      def key = new License(name: NO_LICENSE, url: NO_URL)
+
+      if (project.licenses && project.licenses.size > 0) {
+        key = project.licenses[0]
+      }
+
       if (!projectsMap.containsKey(key)) {
         projectsMap.put(key, [])
       }
@@ -73,7 +80,9 @@ final class HtmlReport {
             // Display associated license with libraries
             // Try to find license by URL, name and then default to whatever is listed in the POM.xml
             def licenseMap = LicenseHelper.LICENSE_MAP
-            if (licenseMap.containsKey(entry.key.url)) {
+            if (!currentProject.licenses || currentProject.licenses.size == 0) {
+              pre(NO_LICENSE)
+            } else if (licenseMap.containsKey(entry.key.url)) {
               a(name: currentLicense)
               pre(getLicenseText(licenseMap.get(entry.key.url)))
             } else if (licenseMap.containsKey(entry.key.name)) {
@@ -83,7 +92,7 @@ final class HtmlReport {
               if (currentProject && (currentProject.licenses[0].name.trim() || currentProject.licenses[0].url.trim())) {
                 pre("${currentProject.licenses[0].name.trim()}\n${currentProject.licenses[0].url.trim()}")
               } else {
-                pre(NO_LIBRARIES)
+                pre(NO_LICENSE)
               }
             }
           }
