@@ -90,11 +90,11 @@ final class HtmlReport {
               pre(getLicenseText(licenseMap.get(entry.key.name)))
             } else {
               if (currentProject) {
-                def currentProjectName = currentProject.licenses[0].name.trim()
+                def currentLicenseName = currentProject.licenses[0].name.trim()
                 def currentUrl = currentProject.licenses[0].url.trim()
-                if (currentProjectName || currentUrl) {
+                if (currentLicenseName || currentUrl) {
                   pre {
-                    mkp.yield("$currentProjectName\n")
+                    mkp.yield("$currentLicenseName\n")
                     mkp.yieldUnescaped("<a href='$currentUrl'>$currentUrl</a>")
                   }
                 }
