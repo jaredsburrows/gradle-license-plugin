@@ -33,14 +33,26 @@ final class HtmlReport {
   private def openSourceHtml() {
     final def writer = new StringWriter()
     final def markup = new MarkupBuilder(writer)
-    final Map<License, List<Project>> projectsMap = new HashMap<>()
+    final Map<String, List<Project>> projectsMap = new HashMap<>()
+    def licenseMap = LicenseHelper.LICENSE_MAP
 
     // Store packages by license
     projects.each { project ->
-      def key = new License(name: NO_LICENSE, url: NO_URL)
+      def key = ""
 
+      // first check to see if the project's license is in our list of known licenses:
       if (project.licenses && project.licenses.size > 0) {
-        key = project.licenses[0]
+        def license = project.licenses[0]
+        if (licenseMap.containsKey(license.url)) {
+          // look up by url
+          key = licenseMap[license.url]
+        } else if (licenseMap.containsKey(license.name)) {
+          // then by name
+          key = licenseMap[license.name]
+        } else {
+          // otherwise, use the url as a key
+          key = license.url
+        }
       }
 
       if (!projectsMap.containsKey(key)) {
@@ -69,7 +81,7 @@ final class HtmlReport {
             def currentLicense = null
             sortedProjects.each { project ->
               currentProject = project
-              currentLicense = entry.key.url.hashCode()
+              currentLicense = entry.key.hashCode()
 
               // Display libraries
               li {
@@ -77,18 +89,15 @@ final class HtmlReport {
               }
             }
 
+            a(name: currentLicense)
             // Display associated license with libraries
-            // Try to find license by URL, name and then default to whatever is listed in the POM.xml
-            def licenseMap = LicenseHelper.LICENSE_MAP
             if (!currentProject.licenses || currentProject.licenses.size == 0) {
               pre(NO_LICENSE)
-            } else if (licenseMap.containsKey(entry.key.url)) {
-              a(name: currentLicense)
-              pre(getLicenseText(licenseMap.get(entry.key.url)))
-            } else if (licenseMap.containsKey(entry.key.name)) {
-              a(name: currentLicense)
-              pre(getLicenseText(licenseMap.get(entry.key.name)))
+            } else if (!entry.key.empty && licenseMap.values().contains(entry.key)) {
+              // license from license map
+              pre(getLicenseText(entry.key))
             } else {
+              // if not found in the map, just display the info from the POM.xml -  name along with the url
               if (currentProject && (currentProject.licenses[0].name.trim() || currentProject.licenses[0].url.trim())) {
                 pre("${currentProject.licenses[0].name.trim()}\n${currentProject.licenses[0].url.trim()}")
               } else {

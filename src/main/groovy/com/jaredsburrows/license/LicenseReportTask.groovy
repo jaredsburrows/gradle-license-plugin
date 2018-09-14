@@ -87,6 +87,7 @@ class LicenseReportTask extends DefaultTask {
     if (project.configurations.find { it.name == "api" }) configurations << project.configurations."api"
     if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."implementation"
 
+
     // If Android project, add extra configurations
     if (variant) {
       // Add buildType configurations
@@ -102,6 +103,14 @@ class LicenseReportTask extends DefaultTask {
           if (project.configurations.find { it.name == "api" }) configurations << project.configurations."${flavor.name}Api"
           if (project.configurations.find { it.name == "implementation" }) configurations << project.configurations."${flavor.name}Implementation"
         }
+      }
+    }
+
+
+    configurations.each { configuration ->
+      configuration.canBeResolved &&
+        configuration.resolvedConfiguration.lenientConfiguration.artifacts.each { artifact ->
+        logger.log(LogLevel.WARN, "Found ${artifact.name} module! ${artifact.moduleVersion}")
       }
     }
 
