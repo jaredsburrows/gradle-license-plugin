@@ -13,7 +13,6 @@ final class HtmlReport {
   final static def NO_LIBRARIES = "None"
   final static def NO_LICENSE = "No license found"
   final static def NOTICE_LIBRARIES = "Notice for packages:"
-  final static def NO_URL = "N/A"
   final List<Project> projects
 
   HtmlReport(def projects) {
