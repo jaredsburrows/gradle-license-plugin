@@ -1,7 +1,7 @@
 plugins {
   id "com.gradle.build-scan" version "1.16"
   id "com.jfrog.artifactory" version "4.7.5"
-  id "g" version "1.8.4"
+  id "com.jfrog.bintray" version "1.8.4"
   id "com.github.ben-manes.versions" version "0.20.0"
   id "com.gradle.plugin-publish" version "0.10.0"
   id "java-gradle-plugin"

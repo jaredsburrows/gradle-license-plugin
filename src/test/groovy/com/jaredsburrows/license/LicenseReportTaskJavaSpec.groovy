@@ -97,7 +97,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -113,7 +114,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -145,14 +147,35 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     <title>Open source licenses</title>
   </head>
   <body>
-    <h3>None</h3>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#76480'>Firebase-core</a>
+      </li>
+      <pre>No license found</pre>
+    </ul>
   </body>
 </html>
 """.stripIndent().trim()
     def actualJson = task.jsonFile.text.stripIndent().trim()
     def expectedJson =
       """
-[]
+[
+    {
+        "project": "Firebase-core",
+        "description": null,
+        "version": "10.0.1",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            
+        ],
+        "dependency": "com.google.firebase:firebase-core:10.0.1"
+    }
+]
 """.stripIndent().trim()
 
     then:
@@ -217,7 +240,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -233,7 +257,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
@@ -331,7 +356,8 @@ http://website.tld/</pre>
                 "license": "Some license",
                 "license_url": "http://website.tld/"
             }
-        ]
+        ],
+        "dependency": "group:name:1.0.0"
     }
 ]
 """.stripIndent().trim()
@@ -396,7 +422,8 @@ http://website.tld/</pre>
                 "license": "Some license",
                 "license_url": "http://website.tld/"
             }
-        ]
+        ],
+        "dependency": "group:name2:1.0.0"
     }
 ]
 """.stripIndent().trim()
@@ -463,7 +490,8 @@ http://website.tld/</pre>
                 "license": "Some license",
                 "license_url": "http://website.tld/"
             }
-        ]
+        ],
+        "dependency": "group:child:1.0.0"
     },
     {
         "project": "Retrofit",
@@ -479,7 +507,8 @@ http://website.tld/</pre>
                 "license": "Apache 2.0",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.squareup.retrofit2:retrofit:2.3.0"
     }
 ]
 """.stripIndent().trim()
@@ -549,7 +578,8 @@ http://website.tld/</pre>
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
         "project": "Design",
@@ -565,7 +595,8 @@ http://website.tld/</pre>
                 "license": "The Apache Software License",
                 "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-        ]
+        ],
+        "dependency": "com.android.support:design:26.1.0"
     }
 ]
 """.stripIndent().trim()
