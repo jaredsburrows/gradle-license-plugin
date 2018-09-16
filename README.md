@@ -29,7 +29,7 @@ buildscript {
 apply plugin: "com.android.application" // or "java-library"
 apply plugin: "com.jaredsburrows.license"
 ```
-Release versions are available in the JFrog Bintray repository: https://bintray.com/jaredsburrows/maven/gradle-license-plugin
+Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/).
 
 **Snapshot:**
 ```groovy
@@ -46,7 +46,7 @@ buildscript {
 apply plugin: "com.android.application" // or "java-library"
 apply plugin: "com.jaredsburrows.license"
 ```
-Snapshot versions are available in the JFrog Artifactory repository: https://oss.jfrog.org/webapp/#/builds/gradle-license-plugin
+Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/).
 
 ## Tasks
 
@@ -136,12 +136,12 @@ dependencies {
     "description": "Java stub generator for WSDL",
     "version": "1.5.1",
     "developers": [
-		
+
     ],
     "url": "http://sf.net/projects/wsdl4j",
     "year": null,
     "licenses": [
-		
+
     ],
     "dependency": "wsdl4j:wsdl4j:1.5.1"
   }
