@@ -97,8 +97,13 @@ final class HtmlReport {
               pre(getLicenseText(entry.key))
             } else {
               // if not found in the map, just display the info from the POM.xml -  name along with the url
-              if (currentProject && (currentProject.licenses[0].name.trim() || currentProject.licenses[0].url.trim())) {
-                pre("${currentProject.licenses[0].name.trim()}\n${currentProject.licenses[0].url.trim()}")
+              def currentLicenseName = currentProject.licenses[0].name.trim()
+              def currentUrl = currentProject.licenses[0].url.trim()
+              if (currentLicenseName || currentUrl) {
+                pre {
+                  mkp.yield("$currentLicenseName\n")
+                  mkp.yieldUnescaped("<a href='$currentUrl'>$currentUrl</a>")
+                }
               } else {
                 pre(NO_LICENSE)
               }

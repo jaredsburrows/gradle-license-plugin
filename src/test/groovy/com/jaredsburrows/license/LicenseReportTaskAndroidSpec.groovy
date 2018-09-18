@@ -742,6 +742,12 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       </li>
       <a name='755498312' />
       <pre>Some license
+<a href='http://website.tld/'>http://website.tld/</a></pre>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
 http://website.tld/</pre>
     </ul>
   </body>

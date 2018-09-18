@@ -67,7 +67,7 @@ final class HtmlReportSpec extends Specification {
       </li>
       <a name='116079' />
       <pre>name
-url</pre>
+<a href='url'>url</a></pre>
     </ul>
   </body>
 </html>

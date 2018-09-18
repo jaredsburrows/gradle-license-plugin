@@ -335,7 +335,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
       </li>
       <a name='755498312' />
       <pre>Some license
-http://website.tld/</pre>
+<a href='http://website.tld/'>http://website.tld/</a></pre>
     </ul>
   </body>
 </html>
@@ -398,7 +398,7 @@ http://website.tld/</pre>
       </li>
       <a name='755498312' />
       <pre>Some license
-http://website.tld/</pre>
+<a href='http://website.tld/'>http://website.tld/</a></pre>
     </ul>
   </body>
 </html>
@@ -471,7 +471,12 @@ http://website.tld/</pre>
       </li>
       <a name='755498312' />
       <pre>Some license
-http://website.tld/</pre>
+<a href='http://website.tld/'>http://website.tld/</a></pre>
+      <li>
+        <a href='#1288284111'>Retrofit</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
   </body>
 </html>
