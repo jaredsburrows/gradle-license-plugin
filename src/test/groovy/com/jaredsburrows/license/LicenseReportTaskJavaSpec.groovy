@@ -466,6 +466,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
       </li>
       <a name='314129783' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
+      <pre>Some license
+<a href='http://website.tld/'>http://website.tld/</a></pre>
       <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
