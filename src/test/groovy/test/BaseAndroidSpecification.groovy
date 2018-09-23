@@ -2,7 +2,6 @@ package test
 
 class BaseAndroidSpecification extends BaseJavaSpecification {
   def COMPILE_SDK_VERSION = 27
-  def BUILD_TOOLS_VERSION = "27.0.3"
   def APPLICATION_ID = "com.example"
   def SRC_FOLDER = "src"
   def MAIN_FOLDER = "main"

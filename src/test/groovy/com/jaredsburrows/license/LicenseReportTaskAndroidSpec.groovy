@@ -28,7 +28,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
 
         android {
           compileSdkVersion ${COMPILE_SDK_VERSION}
-          buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
           defaultConfig {
             applicationId "${APPLICATION_ID}"
@@ -81,7 +80,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -150,7 +148,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -246,7 +243,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -347,7 +343,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -503,7 +498,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -601,7 +595,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -651,7 +644,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
@@ -701,7 +693,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     new LicensePlugin().apply(project)
     project.android {
       compileSdkVersion COMPILE_SDK_VERSION
-      buildToolsVersion BUILD_TOOLS_VERSION
 
       defaultConfig {
         applicationId APPLICATION_ID
