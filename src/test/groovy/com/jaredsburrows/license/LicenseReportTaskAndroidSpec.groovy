@@ -86,7 +86,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       }
     }
     project.dependencies {
-      compile FIREBASE_CORE
+      implementation FIREBASE_CORE
     }
 
     when:
@@ -155,9 +155,9 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     }
     project.dependencies {
       // Handles duplicates
-      compile APPCOMPAT_V7
-      compile APPCOMPAT_V7
-      compile DESIGN
+      implementation APPCOMPAT_V7
+      implementation APPCOMPAT_V7
+      implementation DESIGN
     }
 
     when:
@@ -254,10 +254,10 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       }
     }
     project.dependencies {
-      compile APPCOMPAT_V7
+      implementation APPCOMPAT_V7
 
-      debugCompile DESIGN
-      releaseCompile DESIGN
+      debugImplementation DESIGN
+      releaseImplementation DESIGN
     }
 
     when:
@@ -363,15 +363,15 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       }
     }
     project.dependencies {
-      compile APPCOMPAT_V7
+      implementation APPCOMPAT_V7
 
-      debugCompile DESIGN
-      releaseCompile DESIGN
+      debugImplementation DESIGN
+      releaseImplementation DESIGN
 
-      flavor1Compile SUPPORT_V4
-      flavor2Compile SUPPORT_V4
-      flavor3Compile SUPPORT_ANNOTATIONS
-      flavor4Compile SUPPORT_ANNOTATIONS
+      flavor1Implementation SUPPORT_V4
+      flavor2Implementation SUPPORT_V4
+      flavor3Implementation SUPPORT_ANNOTATIONS
+      flavor4Implementation SUPPORT_ANNOTATIONS
     }
 
     when:
@@ -504,10 +504,10 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       }
     }
     project.dependencies {
-      debugCompile DESIGN
-      debugCompile ANDROID_GIF_DRAWABLE
-      releaseCompile DESIGN
-      releaseCompile ANDROID_GIF_DRAWABLE
+      debugImplementation DESIGN
+      debugImplementation ANDROID_GIF_DRAWABLE
+      releaseImplementation DESIGN
+      releaseImplementation ANDROID_GIF_DRAWABLE
     }
 
     when:
@@ -602,9 +602,9 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     }
     project.dependencies {
       // Handles duplicates
-      compile APPCOMPAT_V7
-      compile APPCOMPAT_V7
-      compile DESIGN
+      implementation APPCOMPAT_V7
+      implementation APPCOMPAT_V7
+      implementation DESIGN
     }
     project.licenseReport {
       generateHtmlReport = true
@@ -651,9 +651,9 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     }
     project.dependencies {
       // Handles duplicates
-      compile APPCOMPAT_V7
-      compile APPCOMPAT_V7
-      compile DESIGN
+      implementation APPCOMPAT_V7
+      implementation APPCOMPAT_V7
+      implementation DESIGN
     }
     project.licenseReport {
       generateHtmlReport = false
@@ -699,13 +699,13 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       }
     }
     project.dependencies {
-      compile project.project(":subproject")
-      compile FAKE_DEPENDENCY
+      implementation project.project(":subproject")
+      implementation FAKE_DEPENDENCY
     }
 
     subproject.apply plugin: "java-library"
     subproject.dependencies {
-      compile DESIGN
+      implementation DESIGN
     }
 
     when:

@@ -42,13 +42,13 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile APPCOMPAT_V7
-      compile project.project(":subproject")
+      implementation APPCOMPAT_V7
+      implementation project.project(":subproject")
     }
 
     subproject.apply plugin: "java-library"
     subproject.dependencies {
-      compile DESIGN
+      implementation DESIGN
     }
 
     when:
@@ -130,7 +130,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile FIREBASE_CORE
+      implementation FIREBASE_CORE
     }
 
     when:
@@ -189,9 +189,9 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     new LicensePlugin().apply(project)
     project.dependencies {
       // Handles duplicates
-      compile APPCOMPAT_V7
-      compile APPCOMPAT_V7
-      compile DESIGN
+      implementation APPCOMPAT_V7
+      implementation APPCOMPAT_V7
+      implementation DESIGN
     }
 
     when:
@@ -273,7 +273,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile FAKE_DEPENDENCY3
+      implementation FAKE_DEPENDENCY3
     }
 
     when:
@@ -310,7 +310,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile FAKE_DEPENDENCY
+      implementation FAKE_DEPENDENCY
     }
 
     when:
@@ -372,7 +372,7 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile FAKE_DEPENDENCY2
+      implementation FAKE_DEPENDENCY2
     }
 
     when:
@@ -438,8 +438,8 @@ final class LicenseReportTaskJavaSpec extends BaseJavaSpecification {
     project.apply plugin: "java"
     new LicensePlugin().apply(project)
     project.dependencies {
-      compile CHILD_DEPENDENCY
-      compile RETROFIT_DEPENDENCY
+      implementation CHILD_DEPENDENCY
+      implementation RETROFIT_DEPENDENCY
     }
 
     when:
