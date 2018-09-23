@@ -56,16 +56,16 @@ final class LicensePluginAndroidSpec extends BaseAndroidSpecification {
     where:
     [gradleVersion, agpVersion] << [
       [
-        "4.1",
-        "4.2",
-        "4.3",
         "4.4",
         "4.5",
-        "4.6"
+        "4.6",
+        "4.7",
+        "4.8",
+        "4.9",
+        "4.10"
       ],
       [
-        "2.3.0",
-        "3.0.0"
+        "3.1.0"
       ]
     ].combinations()
   }
@@ -112,12 +112,13 @@ final class LicensePluginAndroidSpec extends BaseAndroidSpecification {
 
     where:
     gradleVersion << [
-      "4.1",
-      "4.2",
-      "4.3",
       "4.4",
       "4.5",
       "4.6",
+      "4.7",
+      "4.8",
+      "4.9",
+      "4.10"
     ]
   }
 

@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.Ignore
 import spock.lang.Unroll
 import test.BaseAndroidSpecification
 
@@ -73,6 +74,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     taskName << ["licenseDebugReport", "licenseReleaseReport"]
   }
 
+  @Ignore("migrate to android sdk")
   @Unroll def "android project #taskName with no open source dependencies"() {
     given:
     project.apply plugin: "com.android.application"
