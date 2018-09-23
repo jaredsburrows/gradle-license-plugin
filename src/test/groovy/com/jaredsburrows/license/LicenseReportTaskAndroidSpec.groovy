@@ -735,7 +735,7 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
         <a href='#755498312'>Fake dependency name</a>
       </li>
       <pre>Some license
-http://website.tld/</pre>
+<a href='http://website.tld/'>http://website.tld/</a></pre>
       <li>
         <a href='#1288284111'>Design</a>
       </li>
