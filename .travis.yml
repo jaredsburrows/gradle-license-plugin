@@ -1,8 +1,17 @@
-language: java
+language: android
 
 jdk: oraclejdk8
 
 install: true
+
+before_script:
+  # Download SDK
+  - yes | sdkmanager "tools" &>/dev/null
+  - yes | sdkmanager "platform-tools" &>/dev/null
+  - yes | sdkmanager "platforms;android-28" &>/dev/null
+  # Update remaining dependencies and accept licenses
+  - yes | sdkmanager --update &>/dev/null
+  - yes | sdkmanager --licenses &>/dev/null
 
 script: ./gradlew clean build -s --scan
 
