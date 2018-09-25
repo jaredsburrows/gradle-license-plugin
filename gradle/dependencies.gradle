@@ -1,6 +1,6 @@
 ext {
   javaVersion = "1.8"
-  agpVersion = rootProject.hasProperty("agpVersion") ? rootProject.property("agpVersion") : "3.1.4"
+  agpVersion = rootProject.hasProperty("agpVersion") ? rootProject.property("agpVersion") : "3.2.0"
 }
 
 ext.deps = [
