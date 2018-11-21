@@ -15,7 +15,7 @@ before_script:
 
 script: ./gradlew clean build -s --scan
 
-after_success: .buildscript/deploySnapshot.sh
+after_success: .buildscript/deploy-snapshot.sh
 
 branches:
   except:
