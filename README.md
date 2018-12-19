@@ -80,14 +80,14 @@ dependencies {
       </li>
       <pre>No license found</pre>
       <li>
-        <a href='#1068328410'>Android GIF Drawable Library</a>
+        <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
-      <a name='1068328410' />
+      <a name='-989315363' />
       <pre>mit.txt here</pre>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
-      <a name='314129783' />
+      <a name='1288284111' />
       <pre>apache-2.0.txt here</pre>
     </ul>
   </body>

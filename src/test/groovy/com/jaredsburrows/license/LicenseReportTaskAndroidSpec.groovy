@@ -106,9 +106,8 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#0'>Firebase-core</a>
+        <a href='#76480'>Firebase-core</a>
       </li>
-      <a name='0' />
       <pre>No license found</pre>
     </ul>
   </body>
@@ -178,12 +177,12 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
-      <a name='314129783' />
+      <a name='1288284111' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
   </body>
@@ -278,12 +277,12 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
-      <a name='314129783' />
+      <a name='1288284111' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
   </body>
@@ -392,18 +391,18 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href='#1288284111'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
       <li>
-        <a href='#314129783'>Support-annotations</a>
+        <a href='#1288284111'>Support-annotations</a>
       </li>
       <li>
-        <a href='#314129783'>Support-v4</a>
+        <a href='#1288284111'>Support-v4</a>
       </li>
-      <a name='314129783' />
+      <a name='1288284111' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
   </body>
@@ -528,14 +527,14 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1068328410'>Android GIF Drawable Library</a>
+        <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
-      <a name='1068328410' />
+      <a name='-989315363' />
       <pre>${getLicenseText("mit.txt")}</pre>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href='#1288284111'>Design</a>
       </li>
-      <a name='314129783' />
+      <a name='1288284111' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
     </ul>
   </body>
@@ -726,14 +725,8 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Design</a>
-      </li>
-      <a name='314129783' />
-      <pre>${getLicenseText("apache-2.0.txt")}</pre>
-      <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
-      <a name='755498312' />
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
       <li>
@@ -741,7 +734,6 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
       </li>
       <a name='1288284111' />
       <pre>${getLicenseText("apache-2.0.txt")}</pre>
-http://website.tld/</pre>
     </ul>
   </body>
 </html>
