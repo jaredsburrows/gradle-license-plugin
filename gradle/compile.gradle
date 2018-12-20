@@ -43,22 +43,6 @@ tasks.withType(Test) {
   maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 }
 
-tasks.withType(Javadoc) {
-  title = '${project.name} ${project.version}'
-  configure(options) {
-    header = project.name
-    encoding 'UTF-8'
-    docEncoding 'UTF-8'
-    charSet 'UTF-8'
-    linkSource true
-    author = true
-    links("http://docs.oracle.com/javase/8/docs/api/",
-            "http://docs.oracle.com/javaee/7/api/")
-    exclude "**/*Test.java"
-    if (JavaVersion.current().java8Compatible) addStringOption('Xdoclint:none', '-quiet')
-  }
-}
-
 tasks.withType(Groovydoc) {
   docTitle = '${project.name} ${project.version}'
   header = project.name
@@ -66,13 +50,4 @@ tasks.withType(Groovydoc) {
           'http://docs.oracle.com/javaee/7/api/',
           'http://groovy.codehaus.org/gapi/')
   exclude "**/*Spec.java"
-}
-
-// Prevent forked processes from stealing focus (on MacOS at least)
-tasks.withType(JavaForkOptions) {
-  // should improve memory on a 64bit JVM
-  jvmArgs '-XX:+UseCompressedOops'
-  // should avoid GradleWorkerMain to steal focus
-  jvmArgs '-Djava.awt.headless=true'
-  jvmArgs '-Dapple.awt.UIElement=true'
 }
