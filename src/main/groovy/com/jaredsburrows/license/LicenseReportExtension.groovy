@@ -25,4 +25,10 @@ class LicenseReportExtension {
    * the project is not an Android project. Has no effect if the JSON report is disabled.
    */
   boolean copyJsonReportToAssets = false
+
+  /**
+   * Wheither when copying reports to the Android assets directory, it uses the variant-specific
+   * asset directory instead of main. Defaults to false.
+   */
+  boolean useVariantSpecificAssetDirs = false
 }

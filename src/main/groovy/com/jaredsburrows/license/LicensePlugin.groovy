@@ -66,7 +66,11 @@ final class LicensePlugin implements Plugin<Project> {
       task.generateJsonReport = configuration.generateJsonReport
       task.copyHtmlReportToAssets = configuration.copyHtmlReportToAssets
       task.copyJsonReportToAssets = configuration.copyJsonReportToAssets
-      task.assetDirs = project.android.sourceSets.main.assets.srcDirs
+      if (configuration.useVariantSpecificAssetDirs) {
+        task.assetDirs = project.android.sourceSets[variant.name].assets.srcDirs
+      } else {
+        task.assetDirs = project.android.sourceSets.main.assets.srcDirs
+      }
       task.buildType = variant.buildType.name
       task.variant = variant.name
       task.productFlavors = variant.productFlavors
