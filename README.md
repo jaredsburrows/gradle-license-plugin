@@ -167,10 +167,15 @@ licenseReport {
     // These options are ignored for Java projects
     copyHtmlReportToAssets = true
     copyJsonReportToAssets = false
+    useVariantSpecificAssetDirs = false
 }
 ```
 
 The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
+
+The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant.
+For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`.
+They are copied into `src/main/assets` by default.
 
 ## Usage
 
