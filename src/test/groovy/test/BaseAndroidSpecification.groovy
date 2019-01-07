@@ -5,6 +5,8 @@ class BaseAndroidSpecification extends BaseJavaSpecification {
   def APPLICATION_ID = "com.example"
   def SRC_FOLDER = "src"
   def MAIN_FOLDER = "main"
+  def VARIANT_DIMENSION_NAME = 'flavor'
+  def VARIANT_DIMENSION_VALUES = ['paid', 'free']
   def MANIFEST_FILE_PATH = "src/main/AndroidManifest.xml"
   def MANIFEST = "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" package=\"$APPLICATION_ID\"/>"
 

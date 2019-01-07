@@ -638,6 +638,75 @@ final class LicenseReportTaskAndroidSpec extends BaseAndroidSpecification {
     copyEnabled << [true, false]
   }
 
+  @Unroll def "android project running #taskName with variant-specific report copy enabled"() {
+    given:
+    project.apply plugin: "com.android.application"
+    new LicensePlugin().apply(project)
+    project.android {
+      compileSdkVersion COMPILE_SDK_VERSION
+
+      defaultConfig {
+        applicationId APPLICATION_ID
+      }
+
+      flavorDimensions VARIANT_DIMENSION_NAME
+      productFlavors {
+        VARIANT_DIMENSION_VALUES.each { variantName ->
+          create(variantName)
+        }
+      }
+    }
+    project.dependencies {
+      // Handles duplicates
+      implementation APPCOMPAT_V7
+      implementation APPCOMPAT_V7
+      implementation DESIGN
+    }
+    project.licenseReport {
+      generateHtmlReport = true
+      generateJsonReport = true
+      copyHtmlReportToAssets = true
+      copyJsonReportToAssets = true
+      useVariantSpecificAssetDirs = true
+    }
+
+    when:
+    project.evaluate()
+    LicenseReportTask task = project.tasks.getByName(taskName)
+    task.execute()
+
+    def variantName = taskName
+      .replace("license", "")
+      .replace("Report", "")
+      .uncapitalize()
+
+    def assetsFiles = task.assetDirs[0].listFiles()
+    def assetHtmlReportFile = assetsFiles.find { f -> f.path.endsWith('.html') }
+    def assetJsonReportFile = assetsFiles.find { f -> f.path.endsWith('.json') }
+
+    def assetHtmlReportPathParts = assetHtmlReportFile.path.split(File.separator)
+    def assetJsonReportPathParts = assetJsonReportFile.path.split(File.separator)
+
+    def assetHtmlReportPathContainsVariant = assetHtmlReportPathParts.contains(variantName)
+    def assetHtmlReportPathContainsMain = assetHtmlReportPathParts.contains(MAIN_FOLDER)
+    def assetJsonReportPathContainsVariant = assetJsonReportPathParts.contains(variantName)
+    def assetJsonReportPathContainsMain = assetJsonReportPathParts.contains(MAIN_FOLDER)
+
+    then:
+    assetHtmlReportPathContainsVariant
+    !assetHtmlReportPathContainsMain
+    assetJsonReportPathContainsVariant
+    !assetJsonReportPathContainsMain
+
+    where:
+    taskName << [
+      "licensePaidDebugReport",
+      "licensePaidReleaseReport",
+      "licenseFreeDebugReport",
+      "licenseFreeReleaseReport"
+    ]
+  }
+
   @Unroll def "android project running #taskName with reports disabled and copy enabled #copyEnabled"() {
     given:
     project.apply plugin: "com.android.application"
