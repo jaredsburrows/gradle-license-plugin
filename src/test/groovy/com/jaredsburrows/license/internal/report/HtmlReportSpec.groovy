@@ -6,7 +6,7 @@ import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 final class HtmlReportSpec extends Specification {
-  def "no open source html"() {
+  def 'no open source html'() {
     given:
     def projects = []
     def sut = new HtmlReport(projects)
@@ -30,15 +30,15 @@ final class HtmlReportSpec extends Specification {
     actual == expected
   }
 
-  def "open source html"() {
+  def 'open source html'() {
     given:
-    def developer = new Developer(name: "name")
+    def developer = new Developer(name: 'name')
     def developers = [developer, developer]
-    def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", licenses: [license], url: "url", developers: developers,
-      year: "year")
-    def missingLicensesproject = new Project(name: "name", url: "url", developers: developers,
-      year: "year")
+    def license = new License(name: 'name', url: 'url')
+    def project = new Project(name: 'name', licenses: [license], url: 'url', developers: developers,
+      year: 'year')
+    def missingLicensesproject = new Project(name: 'name', url: 'url', developers: developers,
+      year: 'year')
     def projects = [project, project, missingLicensesproject]
     def sut = new HtmlReport(projects)
 

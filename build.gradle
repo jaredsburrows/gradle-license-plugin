@@ -43,8 +43,8 @@ task createClasspathManifest() {
 
   doLast {
     outputDir.mkdirs()
-    file("$outputDir/main-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n')
-    file("$outputDir/main-test-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') + '\n' + sourceSets.test.runtimeClasspath.join('\n')
+    // Combine both main and test plugin classpaths
+    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') + '\n' + sourceSets.test.runtimeClasspath.join('\n')
   }
 }
 
@@ -53,7 +53,7 @@ dependencies {
 
   compileOnly deps.android.tools.build.gradle
 
-  testRuntime files(createClasspathManifest)
+  testRuntimeOnly files(createClasspathManifest)
 
   testImplementation deps.android.tools.build.gradle
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()

@@ -6,7 +6,7 @@ import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 final class JsonReportSpec extends Specification {
-  def "no open source json"() {
+  def 'no open source json'() {
     given:
     def projects = []
     def sut = new JsonReport(projects)
@@ -22,9 +22,9 @@ final class JsonReportSpec extends Specification {
     actual == expected
   }
 
-  def "open source json - missing values"() {
+  def 'open source json - missing values'() {
     given:
-    def project = new Project(name: "name", developers: [], gav: "foo:bar:1.2.3")
+    def project = new Project(name: 'name', developers: [], gav: 'foo:bar:1.2.3')
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
@@ -68,13 +68,13 @@ final class JsonReportSpec extends Specification {
     actual == expected
   }
 
-  def "open source json - all values"() {
+  def 'open source json - all values'() {
     given:
-    def developer = new Developer(name: "name")
+    def developer = new Developer(name: 'name')
     def developers = [developer, developer]
-    def license = new License(name: "name", url: "url")
-    def project = new Project(name: "name", description: "description", version: "1.0.0",
-      licenses: [license], url: "url", developers: developers, year: "year", gav: "foo:bar:1.2.3")
+    def license = new License(name: 'name', url: 'url')
+    def project = new Project(name: 'name', description: 'description', version: '1.0.0',
+      licenses: [license], url: 'url', developers: developers, year: 'year', gav: 'foo:bar:1.2.3')
     def projects = [project, project]
     def sut = new JsonReport(projects)
 
