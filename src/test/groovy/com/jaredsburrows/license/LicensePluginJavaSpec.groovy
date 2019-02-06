@@ -1,30 +1,21 @@
 package com.jaredsburrows.license
 
-import org.gradle.testkit.runner.GradleRunner
-import spock.lang.Unroll
-import test.TestUtils
-
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.getLicenseText
 
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 final class LicensePluginJavaSpec extends Specification {
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder()
-  private List<File> pluginClasspath
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
 
   def 'setup'() {
-    def pluginClasspathResource = getClass().classLoader.findResource('plugin-classpath.txt')
-    if (pluginClasspathResource == null) {
-      throw new IllegalStateException(
-        'Did not find plugin classpath resource, run `testClasses` build task.')
-    }
-
-    pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
@@ -70,7 +61,8 @@ final class LicensePluginJavaSpec extends Specification {
       '4.9',
       '4.10',
       '5.0',
-      '5.1'
+      '5.1',
+      '5.2'
     ]
   }
 
@@ -79,7 +71,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
       """
@@ -124,7 +116,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -200,7 +192,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -247,7 +239,7 @@ final class LicensePluginJavaSpec extends Specification {
         <a href='#1288284111'>Design</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -302,7 +294,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -357,7 +349,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -437,7 +429,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -516,13 +508,12 @@ final class LicensePluginJavaSpec extends Specification {
     actualJson == expectedJson
   }
 
-  // TODO make fake dependency from retrofit
   def 'licenseReport with dependency without license information that in parent pom'() {
     given:
     buildFile <<
       """
         plugins {
-          id 'java'
+          id 'java-library'
           id 'com.jaredsburrows.license'
         }
 
@@ -570,7 +561,7 @@ final class LicensePluginJavaSpec extends Specification {
         <a href='#1288284111'>Retrofit</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -616,6 +607,236 @@ final class LicensePluginJavaSpec extends Specification {
 ]
 """.stripIndent().trim()
 
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def 'licenseReport with project dependencies - multi java modules'() {
+    given:
+    def settingsFile = testProjectDir.newFile('settings.gradle')
+    settingsFile << """
+include 'subproject'
+        """
+
+    buildFile << """
+plugins {
+  id 'java-library'
+  id 'com.jaredsburrows.license'
+}
+
+allprojects {
+  repositories {
+    maven {
+      url '${mavenRepoUrl}'
+    }
+  }
+}
+
+dependencies {
+  implementation project(':subproject')
+  implementation 'com.android.support:appcompat-v7:26.1.0'
+}
+
+project(':subproject') {
+  apply plugin: 'java-library'
+
+  dependencies {
+    implementation 'com.android.support:design:26.1.0'
+  }
+}
+"""
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments('licenseReport')
+      .withPluginClasspath()
+      .build()
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+
+    def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#1288284111'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ],
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
+    },
+    {
+        "project": "Design",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ],
+        "dependency": "com.android.support:design:26.1.0"
+    }
+]
+""".stripIndent().trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+  }
+
+  def 'licenseReport using api and implementation configurations with multi java modules'() {
+    given:
+    def settingsFile = testProjectDir.newFile('settings.gradle')
+    settingsFile << """
+include 'subproject'
+        """
+
+    buildFile << """
+plugins {
+  id 'java-library'
+  id 'com.jaredsburrows.license'
+}
+
+allprojects {
+  repositories {
+    maven {
+      url '${mavenRepoUrl}'
+    }
+  }
+}
+
+dependencies {
+  api project(':subproject')
+  implementation 'com.android.support:appcompat-v7:26.1.0'
+}
+
+project(':subproject') {
+  apply plugin: 'java-library'
+
+  dependencies {
+    implementation 'com.android.support:design:26.1.0'
+  }
+}
+"""
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments('licenseReport')
+      .withPluginClasspath()
+      .build()
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+
+    def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#1288284111'>Appcompat-v7</a>
+      </li>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Appcompat-v7",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ],
+        "dependency": "com.android.support:appcompat-v7:26.1.0"
+    },
+    {
+        "project": "Design",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ],
+        "dependency": "com.android.support:design:26.1.0"
+    }
+]
+""".stripIndent().trim()
+
+    then:
     actualHtml == expectedHtml
     actualJson == expectedJson
   }

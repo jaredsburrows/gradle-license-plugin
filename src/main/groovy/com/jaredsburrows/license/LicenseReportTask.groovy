@@ -35,7 +35,7 @@ class LicenseReportTask extends DefaultTask {
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
-  @SuppressWarnings("GroovyUnusedDeclaration") @TaskAction def licenseReport() {
+  @TaskAction def licenseReport() {
     setupEnvironment()
     collectDependencies()
     generatePOMInfo()
