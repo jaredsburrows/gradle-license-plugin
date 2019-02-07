@@ -181,16 +181,15 @@ public static class OpenSourceLicensesDialog extends DialogFragment {
   public OpenSourceLicensesDialog() {
   }
 
-  @Override
-  public Dialog onCreateDialog(@NonNull Bundle savedInstanceState) {
-    final WebView webView = new WebView(getActivity());
+  @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    WebView webView = new WebView(getActivity());
     webView.loadUrl("file:///android_asset/open_source_licenses.html");
 
-    return new AlertDialog.Builder(getActivity())
+    return new AlertDialog.Builder(requireActivity())
       .setTitle("Open Source Licenses")
       .setView(webView)
       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
+        @Override public void onClick(DialogInterface dialog, int which) {
           dialog.dismiss();
         }
       }
@@ -202,16 +201,16 @@ public static class OpenSourceLicensesDialog extends DialogFragment {
 
 ### How to use it
 ```java
-public static void showOpenSourceLicenses(@NonNull Activity activity) {
-  final FragmentManager fm = activity.getFragmentManager();
-  final FragmentTransaction ft = fm.beginTransaction();
-  final Fragment prev = fm.findFragmentByTag("dialog_licenses");
-  if (prev != null) {
-    ft.remove(prev);
+public static void showOpenSourceLicenses(Activity activity) {
+  FragmentManager fragmentManager = activity.getFragmentManager();
+  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+  Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
+  if (previousFragment != null) {
+    fragmentTransaction.remove(previousFragment);
   }
-  ft.addToBackStack(null);
+  fragmentTransaction.addToBackStack(null);
 
-  new OpenSourceLicensesDialog().show(ft, "dialog_licenses");
+  new OpenSourceLicensesDialog().show(fragmentTransaction, "dialog_licenses");
 }
 ```
 
