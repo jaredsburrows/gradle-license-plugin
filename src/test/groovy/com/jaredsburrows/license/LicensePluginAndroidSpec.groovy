@@ -78,12 +78,8 @@ final class LicensePluginAndroidSpec extends Specification {
     [gradleVersion, agpVersion] << [
       [
         '4.6',
-        '4.7',
-        '4.8',
-        '4.9',
         '4.10',
         '5.0',
-        '5.1',
         '5.2'
       ],
       [
