@@ -1,13 +1,13 @@
 package com.jaredsburrows.license
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.getLicenseText
+
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
-import test.TestUtils
-
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 final class LicensePluginAndroidSpec extends Specification {
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -29,7 +29,7 @@ final class LicensePluginAndroidSpec extends Specification {
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
   }
 
-  @Unroll def 'licenseDebugReport using with gradle #gradleVersion with android gradle plugin #agpVersion'() {
+  @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
     given:
     def classpathString = pluginClasspath
       .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
@@ -81,145 +81,18 @@ final class LicensePluginAndroidSpec extends Specification {
         '4.7',
         '4.8',
         '4.9',
-        '4.10'
+        '4.10',
+        '5.0',
+        '5.1',
+        '5.2'
       ],
       [
         '3.1.0',
-        '3.2.0'
+        '3.2.0',
+        '3.3.0'
       ]
     ].combinations()
   }
-
-  def 'buildTypes'() {
-    given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
-    buildFile <<
-      """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-        }
-      """.stripIndent().trim()
-
-    when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-
-    def actualHtml = new File("${reportFolder}/licenseDebugReport.html").text.stripIndent().trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>None</h3>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/licenseDebugReport.json").text.stripIndent().trim()
-    def expectedJson =
-      """
-[]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-}
-
-  def 'buildTypes and productFlavors'() {
-    given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(', ')
-
-    buildFile <<
-      """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-
-          flavorDimensions 'a', 'b'
-
-          productFlavors {
-            flavor1 { dimension 'a' }
-            flavor2 { dimension 'a' }
-            flavor3 { dimension 'b' }
-            flavor4 { dimension 'b' }
-          }
-        }
-      """.stripIndent().trim()
-
-    when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseFlavor1Flavor3DebugReport')
-      .build()
-
-    then:
-    result.task(':licenseFlavor1Flavor3DebugReport').outcome == SUCCESS
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseFlavor1Flavor3DebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseFlavor1Flavor3DebugReport.json.")
-
-    def actualHtml = new File("${reportFolder}/licenseFlavor1Flavor3DebugReport.html").text.stripIndent().trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>None</h3>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/licenseFlavor1Flavor3DebugReport.json").text.stripIndent().trim()
-    def expectedJson =
-      """
-[]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
- }
 
   @Unroll def '#taskName that has no dependencies'() {
     given:
@@ -354,7 +227,7 @@ final class LicensePluginAndroidSpec extends Specification {
         <a href='#1288284111'>Design</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -481,7 +354,7 @@ final class LicensePluginAndroidSpec extends Specification {
         <a href='#1288284111'>Design</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -628,7 +501,7 @@ final class LicensePluginAndroidSpec extends Specification {
         <a href='#1288284111'>Support-v4</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -782,12 +655,12 @@ final class LicensePluginAndroidSpec extends Specification {
         <a href='#-989315363'>Android GIF Drawable Library</a>
       </li>
       <a name='-989315363' />
-      <pre>${TestUtils.getLicenseText('mit.txt')}</pre>
+      <pre>${getLicenseText('mit.txt')}</pre>
       <li>
         <a href='#1288284111'>Design</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText('apache-2.0.txt')}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>

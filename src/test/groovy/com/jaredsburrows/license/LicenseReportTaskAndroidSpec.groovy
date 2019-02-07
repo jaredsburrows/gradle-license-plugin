@@ -1,5 +1,7 @@
 package com.jaredsburrows.license
 
+import static test.TestUtils.getLicenseText
+
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
@@ -7,20 +9,19 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
-import test.TestUtils
 
 @Deprecated // TODO migrate to LicensePluginJavaSpec
 final class LicenseReportTaskAndroidSpec extends Specification {
   @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
-  def buildFile
-  def pluginClasspath = []
-  Project project
-  Project subproject
+  private String reportFolder
+  private Project project
+  private Project subproject
   def MANIFEST_FILE_PATH = 'src/main/AndroidManifest.xml'
   def MANIFEST = "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" package=\"com.example\"/>"
 
   def 'setup'() {
-    // Setup project
+    reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
+
     project = ProjectBuilder.builder()
       .withProjectDir(testProjectDir.root)
       .withName('project')
@@ -29,7 +30,6 @@ final class LicenseReportTaskAndroidSpec extends Specification {
       maven { url getClass().getResource('/maven').toURI() }
     }
 
-    // Setup subproject
     subproject = ProjectBuilder.builder()
       .withParent(project)
       .withName('subproject')
@@ -38,23 +38,12 @@ final class LicenseReportTaskAndroidSpec extends Specification {
       maven { url getClass().getResource('/maven').toURI() }
     }
 
-    buildFile = testProjectDir.newFile('build.gradle')
-
-    def pluginClasspathResource = getClass().classLoader.findResource('plugin-classpath.txt')
-    if (pluginClasspathResource == null) {
-      throw new IllegalStateException(
-        'Did not find plugin classpath resource, run `testClasses` build task.')
-    }
-
-    pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
-
-    // Make sure Android projects have a manifest
     testProjectDir.newFolder('src', 'main')
     testProjectDir.newFile(MANIFEST_FILE_PATH) << MANIFEST
   }
 
   @Ignore('migrate to android sdk')
-  @Unroll def 'android project #taskName with no open source dependencies'() {
+  @Unroll def '#taskName with no open source dependencies'() {
     given:
     project.apply plugin: 'com.android.application'
     new LicensePlugin().apply(project)
@@ -74,7 +63,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
-    def actualHtml = task.htmlFile.text.stripIndent().trim()
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -93,7 +82,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
   </body>
 </html>
 """.stripIndent().trim()
-    def actualJson = task.jsonFile.text.stripIndent().trim()
+    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -122,7 +111,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def 'android project running #taskName with default buildTypes, multi module and android and java'() {
+  @Unroll def '#taskName with default buildTypes, multi module and android and java'() {
     given:
     project.apply plugin: 'com.android.application'
     new LicensePlugin().apply(project)
@@ -148,7 +137,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     LicenseReportTask task = project.tasks.getByName(taskName)
     task.execute()
 
-    def actualHtml = task.htmlFile.text.stripIndent().trim()
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
       """
 <html>
@@ -168,12 +157,12 @@ final class LicenseReportTaskAndroidSpec extends Specification {
         <a href='#1288284111'>Design</a>
       </li>
       <a name='1288284111' />
-      <pre>${TestUtils.getLicenseText("apache-2.0.txt")}</pre>
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
 """.stripIndent().trim()
-    def actualJson = task.jsonFile.text.stripIndent().trim()
+    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
       """
 [
@@ -222,7 +211,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def 'android project running #taskName with reports enabled and copy enabled #copyEnabled'() {
+  @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
     given:
     project.apply plugin: 'com.android.application'
     new LicensePlugin().apply(project)
@@ -271,7 +260,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     copyEnabled << [true, false]
   }
 
-  @Unroll def 'android project running #taskName with reports disabled and copy enabled #copyEnabled'() {
+  @Unroll def '#taskName with reports disabled and copy enabled #copyEnabled'() {
     given:
     project.apply plugin: 'com.android.application'
     new LicensePlugin().apply(project)
