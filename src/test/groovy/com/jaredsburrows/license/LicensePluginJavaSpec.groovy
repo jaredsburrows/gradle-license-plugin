@@ -603,8 +603,7 @@ final class LicensePluginJavaSpec extends Specification {
 
   def 'licenseReport with project dependencies - multi java modules'() {
     given:
-    def settingsFile = testProjectDir.newFile('settings.gradle')
-    settingsFile << """
+    testProjectDir.newFile('settings.gradle') << """
 include 'subproject'
         """
 
@@ -718,8 +717,7 @@ project(':subproject') {
 
   def 'licenseReport using api and implementation configurations with multi java modules'() {
     given:
-    def settingsFile = testProjectDir.newFile('settings.gradle')
-    settingsFile << """
+    testProjectDir.newFile('settings.gradle') << """
 include 'subproject'
         """
 

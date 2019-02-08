@@ -1,12 +1,9 @@
 package com.jaredsburrows.license
 
-import static test.TestUtils.getLicenseText
-
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -42,175 +39,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     testProjectDir.newFile(MANIFEST_FILE_PATH) << MANIFEST
   }
 
-  @Ignore('migrate to android sdk')
-  @Unroll def '#taskName with no open source dependencies'() {
-    given:
-    project.apply plugin: 'com.android.application'
-    new LicensePlugin().apply(project)
-    project.android {
-      compileSdkVersion 28
-
-      defaultConfig {
-        applicationId 'com.example'
-      }
-    }
-    project.dependencies {
-      implementation 'com.google.firebase:firebase-core:10.0.1'
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href='#76480'>Firebase-core</a>
-      </li>
-      <pre>No license found</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Firebase-core",
-        "description": null,
-        "version": "10.0.1",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            
-        ],
-        "dependency": "com.google.firebase:firebase-core:10.0.1"
-    }
-]
-""".stripIndent().trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-
-    where:
-    taskName << ['licenseDebugReport', 'licenseReleaseReport']
-  }
-
-  @Unroll def '#taskName with default buildTypes, multi module and android and java'() {
-    given:
-    project.apply plugin: 'com.android.application'
-    new LicensePlugin().apply(project)
-    project.android {
-      compileSdkVersion 28
-
-      defaultConfig {
-        applicationId 'com.example'
-      }
-    }
-    project.dependencies {
-      implementation project.project(':subproject')
-      implementation 'group:name:1.0.0'
-    }
-
-    subproject.apply plugin: 'java-library'
-    subproject.dependencies {
-      implementation 'com.android.support:design:26.1.0'
-    }
-
-    when:
-    project.evaluate()
-    LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-      """
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href='#755498312'>Fake dependency name</a>
-      </li>
-      <pre>Some license
-<a href='http://website.tld/'>http://website.tld/</a></pre>
-      <li>
-        <a href='#1288284111'>Design</a>
-      </li>
-      <a name='1288284111' />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-      """
-[
-    {
-        "project": "Design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    },
-    {
-        "project": "Fake dependency name",
-        "description": "Fake dependency description",
-        "version": "1.0.0",
-        "developers": [
-            "name"
-        ],
-        "url": "https://github.com/user/repo",
-        "year": "2017",
-        "licenses": [
-            {
-                "license": "Some license",
-                "license_url": "http://website.tld/"
-            }
-        ],
-        "dependency": "group:name:1.0.0"
-    }
-]
-""".stripIndent().trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
-
-    where:
-    taskName << ['licenseDebugReport', 'licenseReleaseReport']
-  }
-
+  // TODO migrate to LicensePluginJavaSpec
   @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
     given:
     project.apply plugin: 'com.android.application'
@@ -260,6 +89,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     copyEnabled << [true, false]
   }
 
+  // TODO migrate to LicensePluginJavaSpec
   @Unroll def '#taskName with reports disabled and copy enabled #copyEnabled'() {
     given:
     project.apply plugin: 'com.android.application'

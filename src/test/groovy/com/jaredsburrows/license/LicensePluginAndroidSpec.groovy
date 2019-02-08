@@ -708,4 +708,236 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
+
+  @Unroll def '#taskName with no open source dependencies'() {
+    given:
+    def classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+
+    buildFile <<
+      """
+        buildscript {
+          dependencies {
+            classpath files($classpathString)
+          }
+        }
+        
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+
+        apply plugin: 'com.android.application'
+        apply plugin: 'com.jaredsburrows.license'
+
+        android {
+          compileSdkVersion 28
+    
+          defaultConfig {
+            applicationId 'com.example'
+          }
+        }
+
+        dependencies {
+          implementation 'group:name4:1.0.0'
+        }
+      """
+
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments("${taskName}")
+      .build()
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#76480'>Fake dependency name</a>
+      </li>
+      <pre>No license found</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Fake dependency name",
+        "description": "Fake dependency description",
+        "version": "1.0.0",
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
+        "year": "2017",
+        "licenses": [
+            
+        ],
+        "dependency": "group:name4:1.0.0"
+    }
+]
+""".stripIndent().trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll def '#taskName with default buildTypes, multi module and android and java'() {
+    given:
+    def classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+
+    testProjectDir.newFile('settings.gradle') << """
+include 'subproject'
+        """
+
+    buildFile << """
+        buildscript {
+          dependencies {
+            classpath files($classpathString)
+          }
+        }
+        
+        allprojects {
+          repositories {
+            maven {
+              url '${mavenRepoUrl}'
+            }
+          }
+        }
+        
+        apply plugin: 'com.android.application'
+        apply plugin: 'com.jaredsburrows.license'
+        
+        android {
+          compileSdkVersion 28
+    
+          defaultConfig {
+            applicationId 'com.example'
+          }
+        }
+        
+        dependencies {
+          api project(':subproject')
+          implementation 'group:name:1.0.0'
+        }
+        
+        project(':subproject') {
+          apply plugin: 'java-library'
+        
+          dependencies {
+            implementation 'com.android.support:design:26.1.0'
+          }
+        }
+      """
+
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments("${taskName}")
+      .build()
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
+    def expectedHtml =
+      """
+<html>
+  <head>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <title>Open source licenses</title>
+  </head>
+  <body>
+    <h3>Notice for packages:</h3>
+    <ul>
+      <li>
+        <a href='#755498312'>Fake dependency name</a>
+      </li>
+      <pre>Some license
+<a href='http://website.tld/'>http://website.tld/</a></pre>
+      <li>
+        <a href='#1288284111'>Design</a>
+      </li>
+      <a name='1288284111' />
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
+    </ul>
+  </body>
+</html>
+""".stripIndent().trim()
+    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
+    def expectedJson =
+      """
+[
+    {
+        "project": "Design",
+        "description": null,
+        "version": "26.1.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ],
+        "dependency": "com.android.support:design:26.1.0"
+    },
+    {
+        "project": "Fake dependency name",
+        "description": "Fake dependency description",
+        "version": "1.0.0",
+        "developers": [
+            "name"
+        ],
+        "url": "https://github.com/user/repo",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "Some license",
+                "license_url": "http://website.tld/"
+            }
+        ],
+        "dependency": "group:name:1.0.0"
+    }
+]
+""".stripIndent().trim()
+
+    then:
+    actualHtml == expectedHtml
+    actualJson == expectedJson
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
 }
