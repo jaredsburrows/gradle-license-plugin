@@ -35,7 +35,7 @@ class LicenseReportTask extends DefaultTask {
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
-  @SuppressWarnings("GroovyUnusedDeclaration") @TaskAction def licenseReport() {
+  @TaskAction def licenseReport() {
     setupEnvironment()
     collectDependencies()
     generatePOMInfo()
@@ -78,7 +78,7 @@ class LicenseReportTask extends DefaultTask {
    */
   private def collectDependencies() {
     // Add POM information to our POM configuration
-    final Set<Configuration> configurations = new LinkedHashSet<>()
+    Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add "compile" configuration older java and android gradle plugins
     if (project.configurations.find { it.name == "compile" }) configurations << project.configurations."compile"
@@ -124,8 +124,8 @@ class LicenseReportTask extends DefaultTask {
   private def generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     project.configurations."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
-      final def pomFile = pom.file
-      final def pomText = new XmlParser().parse(pomFile)
+      def pomFile = pom.file
+      def pomText = new XmlParser().parse(pomFile)
 
       // License information
       def name = getName(pomText)
@@ -155,7 +155,7 @@ class LicenseReportTask extends DefaultTask {
       }
 
       // Store the information that we need
-      final def project = new Project(
+      def project = new Project(
         name: name,
         description: description,
         version: version,
@@ -182,10 +182,10 @@ class LicenseReportTask extends DefaultTask {
     if (!pomFile) {
       return null
     }
-    final def pomText = new XmlParser().parse(pomFile)
+    def pomText = new XmlParser().parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    final def name = getName(pomText)
+    def name = getName(pomText)
     if (!name) {
       logger.log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
@@ -215,9 +215,9 @@ class LicenseReportTask extends DefaultTask {
     }
     logger.log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    final def hasParent = pomText.parent != null
+    def hasParent = pomText.parent != null
     if (hasParent) {
-      final def parentPomFile = getParentPomFile(pomText)
+      def parentPomFile = getParentPomFile(pomText)
       return findLicenses(parentPomFile)
     }
     return null
@@ -258,7 +258,7 @@ class LicenseReportTask extends DefaultTask {
     htmlFile.parentFile.mkdirs()
     htmlFile.createNewFile()
     htmlFile.withOutputStream { outputStream ->
-      final def printStream = new PrintStream(outputStream)
+      def printStream = new PrintStream(outputStream)
       printStream.print(new HtmlReport(projects).string())
       printStream.println() // Add new line to file
     }
@@ -278,7 +278,7 @@ class LicenseReportTask extends DefaultTask {
     jsonFile.parentFile.mkdirs()
     jsonFile.createNewFile()
     jsonFile.withOutputStream { outputStream ->
-      final def printStream = new PrintStream(outputStream)
+      def printStream = new PrintStream(outputStream)
       printStream.println new JsonReport(projects).string()
       printStream.println() // Add new line to file
     }
@@ -290,7 +290,7 @@ class LicenseReportTask extends DefaultTask {
   private def copyHtmlReport() {
    // Iterate through all asset directories
     assetDirs.each { directory ->
-      final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+      def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
 
       // Remove existing file
       project.file(licenseFile).delete()
@@ -307,7 +307,7 @@ class LicenseReportTask extends DefaultTask {
   private def copyJsonReport() {
     // Iterate through all asset directories
     assetDirs.each { directory ->
-      final def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
+      def licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
 
       // Remove existing file
       project.file(licenseFile).delete()

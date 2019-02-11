@@ -1,78 +1,43 @@
 tasks.withType(JavaCompile) {
-  sourceCompatibility = rootProject.ext.javaVersion
-  targetCompatibility = rootProject.ext.javaVersion
+  sourceCompatibility = rootProject.versions.java
+  targetCompatibility = rootProject.versions.java
 
   // Show all warnings except boot classpath
   configure(options) {
-    compilerArgs << "-Xlint:all"            // Turn on all warnings
-    compilerArgs << "-Werror"               // Turn warnings into errors
-    encoding = "utf-8"
-    fork = true
+    compilerArgs << '-Xlint:all'            // Turn on all warnings
+    compilerArgs << '-Werror'               // Turn warnings into errors
+    encoding = 'utf-8'
   }
 }
 
 tasks.withType(GroovyCompile) {
-  sourceCompatibility = rootProject.ext.javaVersion
-  targetCompatibility = rootProject.ext.javaVersion
+  sourceCompatibility = rootProject.versions.java
+  targetCompatibility = rootProject.versions.java
 
   // Show all warnings except boot classpath
   configure(options) {
-    compilerArgs << "-Xlint:all"            // Turn on all warnings
-    compilerArgs << "-Werror"               // Turn warnings into errors
-    encoding = "utf-8"
-    fork = true
-  }
-
-  configure(groovyOptions) {
-    encoding = "utf-8"
-    fork = true
+    compilerArgs << '-Xlint:all'            // Turn on all warnings
+    compilerArgs << '-Werror'               // Turn warnings into errors
+    encoding = 'utf-8'
   }
 }
 
 tasks.withType(Test) {
   // Turn on logging for all tests, filter to show failures/skips only
   testLogging {
-    exceptionFormat "full"
+    exceptionFormat 'full'
     showCauses true
     showExceptions true
     showStackTraces true
-    events "failed", "skipped"
-  }
-
-  failFast = true
-  maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-}
-
-tasks.withType(Javadoc) {
-  title = "${project.name} ${project.version}"
-  configure(options) {
-    header = project.name
-    encoding "UTF-8"
-    docEncoding "UTF-8"
-    charSet "UTF-8"
-    linkSource true
-    author = true
-    links("http://docs.oracle.com/javase/8/docs/api/",
-            "http://docs.oracle.com/javaee/7/api/")
-    exclude "**/*Test.java"
-    if (JavaVersion.current().java8Compatible) addStringOption("Xdoclint:none", "-quiet")
+    events 'failed', 'skipped'
   }
 }
 
 tasks.withType(Groovydoc) {
-  docTitle = "${project.name} ${project.version}"
+  docTitle = '${project.name} ${project.version}'
   header = project.name
-  link("http://docs.oracle.com/javase/8/docs/api/",
-          "http://docs.oracle.com/javaee/7/api/",
-          "http://groovy.codehaus.org/gapi/")
+  link('http://docs.oracle.com/javase/8/docs/api/',
+          'http://docs.oracle.com/javaee/7/api/',
+          'http://groovy.codehaus.org/gapi/')
   exclude "**/*Spec.java"
-}
-
-// Prevent forked processes from stealing focus (on MacOS at least)
-tasks.withType(JavaForkOptions) {
-  // should improve memory on a 64bit JVM
-  jvmArgs "-XX:+UseCompressedOops"
-  // should avoid GradleWorkerMain to steal focus
-  jvmArgs "-Djava.awt.headless=true"
-  jvmArgs "-Dapple.awt.UIElement=true"
 }

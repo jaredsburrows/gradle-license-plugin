@@ -22,12 +22,12 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.8.41"
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.42'
   }
 }
 
-apply plugin: "com.android.application" // or "java-library"
-apply plugin: "com.jaredsburrows.license"
+apply plugin: 'com.android.application' // or 'java-library'
+apply plugin: 'com.jaredsburrows.license'
 ```
 Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/).
 
@@ -35,16 +35,16 @@ Release versions are available in the [JFrog Bintray repository](https://jcenter
 ```groovy
 buildscript {
   repositories {
-    maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local/" }
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
   }
 
   dependencies {
-    classpath "com.jaredsburrows:gradle-license-plugin:0.8.42-SNAPSHOT"
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
   }
 }
 
-apply plugin: "com.android.application" // or "java-library"
-apply plugin: "com.jaredsburrows.license"
+apply plugin: 'com.android.application' // or 'java-library'
+apply plugin: 'com.jaredsburrows.license'
 ```
 Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/).
 
@@ -59,9 +59,9 @@ Example `build.gradle`:
 
 ```groovy
 dependencies {
-  compile "com.android.support:design:26.1.0"
-  compile "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-  compile "wsdl4j:wsdl4j:1.5.1" // Very old library with no license info available
+  compile 'com.android.support:design:26.1.0'
+  compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+  compile 'wsdl4j:wsdl4j:1.5.1' // Very old library with no license info available
 }
 ```
 
@@ -181,16 +181,15 @@ public static class OpenSourceLicensesDialog extends DialogFragment {
   public OpenSourceLicensesDialog() {
   }
 
-  @Override
-  public Dialog onCreateDialog(Bundle savedInstanceState) {
-    final WebView webView = new WebView(getActivity());
+  @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    WebView webView = new WebView(getActivity());
     webView.loadUrl("file:///android_asset/open_source_licenses.html");
 
-    return new AlertDialog.Builder(getActivity())
+    return new AlertDialog.Builder(requireActivity())
       .setTitle("Open Source Licenses")
       .setView(webView)
       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
+        @Override public void onClick(DialogInterface dialog, int which) {
           dialog.dismiss();
         }
       }
@@ -203,15 +202,15 @@ public static class OpenSourceLicensesDialog extends DialogFragment {
 ### How to use it
 ```java
 public static void showOpenSourceLicenses(Activity activity) {
-  final FragmentManager fm = activity.getFragmentManager();
-  final FragmentTransaction ft = fm.beginTransaction();
-  final Fragment prev = fm.findFragmentByTag("dialog_licenses");
-  if (prev != null) {
-    ft.remove(prev);
+  FragmentManager fragmentManager = activity.getFragmentManager();
+  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+  Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
+  if (previousFragment != null) {
+    fragmentTransaction.remove(previousFragment);
   }
-  ft.addToBackStack(null);
+  fragmentTransaction.addToBackStack(null);
 
-  new OpenSourceLicensesDialog().show(ft, "dialog_licenses");
+  new OpenSourceLicensesDialog().show(fragmentTransaction, "dialog_licenses");
 }
 ```
 

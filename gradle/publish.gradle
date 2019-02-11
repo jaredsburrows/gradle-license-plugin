@@ -33,38 +33,32 @@ def pomConfig = {
   }
 }
 
-task testsJar(type: Jar) {
-  group = "Publications"
-  description = "Create jar of all tests."
-  classifier = "tests"
-  from sourceSets.test.output
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-  group = "Publications"
-  description = "Create jar of the sources."
-  classifier = "sources"
-  from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-  group = "Publications"
-  description = "Create javadoc jar of Java documentation."
-  classifier = "javadoc"
-  from javadoc.destinationDir
-}
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
-  group = "Publications"
-  description = "Create javadoc jar of Groovy documentation."
-  classifier = "groovydoc"
+  group = 'Publications'
+  description = 'Create javadoc jar of Groovy documentation.'
+  classifier = 'groovydoc'
   from groovydoc.destinationDir
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+  group = 'Publications'
+  description = 'Create jar of the sources.'
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+task testsJar(type: Jar) {
+  group = 'Publications'
+  description = 'Create jar of all tests.'
+  classifier = 'tests'
+  from sourceSets.test.output
+}
+
 task reportsZip(type: Zip, dependsOn: check) {
-  group = "Publications"
-  description = "Create a zip of all reports."
-  classifier = "reports"
+  group = 'Publications'
+  description = 'Create a zip of all reports.'
+  classifier = 'reports'
   from reporting.baseDir
 }
 
@@ -76,11 +70,10 @@ publishing {
 
   publications {
     maven(MavenPublication) {
-      from components.java // includes main "artifact jar"
-      artifact testsJar
-      artifact sourcesJar
-      artifact javadocJar
+      from components.java // includes main 'artifact jar'
       artifact groovydocJar
+      artifact sourcesJar
+      artifact testsJar
       artifact reportsZip
 
       groupId GROUP
@@ -88,9 +81,9 @@ publishing {
       version VERSION_NAME
 
       pom.withXml {
-        // All dependencies should use the default scope "compile" not "runtime"
+        // All dependencies should use the default scope 'compile' not 'runtime'
         asNode().dependencies.dependency.each { dep ->
-          if (dep.scope.text() == "runtime") dep.remove(dep.scope)
+          if (dep.scope.text() == 'runtime') dep.remove(dep.scope)
         }
 
         // Add parent POM information
@@ -99,51 +92,51 @@ publishing {
     }
   }
 }
-publish.dependsOn jar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
-publish.dependsOn "generatePomFileForMavenPublication"
+publish.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+publish.dependsOn 'generatePomFileForMavenPublication'
 
 // Snapshots published to JFrog Artifactory repository
 artifactory {
-  contextUrl = "https://oss.jfrog.org"
+  contextUrl = 'https://oss.jfrog.org'
 
   publish {
     repository {
-      repoKey = "oss-snapshot-local"
-      username = project.properties["BINTRAY_USERNAME"] ?: System.getenv("BINTRAY_USERNAME")
-      password = project.properties["BINTRAY_API_KEY"] ?: System.getenv("BINTRAY_API_KEY")
+      repoKey = 'oss-snapshot-local'
+      username = project.properties['BINTRAY_USERNAME'] ?: System.getenv('BINTRAY_USERNAME')
+      password = project.properties['BINTRAY_API_KEY'] ?: System.getenv('BINTRAY_API_KEY')
     }
 
     defaults {
-      publications "maven"
+      publications 'maven'
     }
   }
 
   resolve {
     repository {
-      repoKey = "libs-release"
+      repoKey = 'libs-release'
     }
   }
 }
-artifactoryPublish.dependsOn jar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
-artifactoryPublish.dependsOn "generatePomFileForMavenPublication"
+artifactoryPublish.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+artifactoryPublish.dependsOn 'generatePomFileForMavenPublication'
 
 // Publishes to JFrog Bintray's JCenter repository
 bintray {
-  user = project.properties["BINTRAY_USERNAME"] ?: System.getenv("BINTRAY_USERNAME")
-  key = project.properties["BINTRAY_API_KEY"] ?: System.getenv("BINTRAY_API_KEY")
-  publications = ["maven"]
+  user = project.properties['BINTRAY_USERNAME'] ?: System.getenv('BINTRAY_USERNAME')
+  key = project.properties['BINTRAY_API_KEY'] ?: System.getenv('BINTRAY_API_KEY')
+  publications = ['maven']
   publish = true
 
   pkg {
-    repo = "maven"
+    repo = 'maven'
     name = POM_ARTIFACT_ID
     desc = POM_DESCRIPTION
     websiteUrl = POM_URL
     issueTrackerUrl = POM_ISSUE_URL
     vcsUrl = POM_URL
-    labels = ["gradle", "plugin", "license"]
+    labels = ['gradle', 'plugin', 'license']
     githubRepo = BINTRAY_GITHUB_REPO
-    githubReleaseNotesFile = "README.md"
+    githubReleaseNotesFile = 'README.md'
 
     version {
       name = VERSION_NAME
@@ -153,15 +146,15 @@ bintray {
 
       mavenCentralSync {
         sync = false
-        user = project.properties["SONATYPE_USERNAME"] ?: System.getenv("SONATYPE_USERNAME")
-        password = project.properties["SONATYPE_PASSWORD"] ?: System.getenv("SONATYPE_PASSWORD")
-        close = "1"
+        user = project.properties['SONATYPE_USERNAME'] ?: System.getenv('SONATYPE_USERNAME')
+        password = project.properties['SONATYPE_PASSWORD'] ?: System.getenv('SONATYPE_PASSWORD')
+        close = '1'
       }
     }
   }
 }
-bintrayUpload.dependsOn jar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
-bintrayUpload.dependsOn "generatePomFileForMavenPublication"
+bintrayUpload.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+bintrayUpload.dependsOn 'generatePomFileForMavenPublication'
 
 // Publishes to JFrog Bintray's JCenter repository
 pluginBundle {
@@ -172,16 +165,15 @@ pluginBundle {
 
   plugins {
     licensePlugin {
-      id = "com.jaredsburrows.license"
       displayName = POM_NAME
     }
   }
 }
-publishPlugins.dependsOn jar, sourcesJar, javadocJar, groovydocJar, testsJar, reportsZip
-publishPlugins.dependsOn "generatePomFileForMavenPublication"
+publishPlugins.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+publishPlugins.dependsOn 'generatePomFileForMavenPublication'
 
 // Publish to both Bintray and Gradle repositories
 task release(dependsOn: [bintrayUpload, publishPlugins]) {
-  group = "Publishing"
-  description = "Publish to JFrog Jcenter's Brintray and Gradle Plugins Repositories."
+  group = 'Publishing'
+  description = 'Publish to JFrog Jcenter\'s Brintray and Gradle Plugins Repositories.'
 }
