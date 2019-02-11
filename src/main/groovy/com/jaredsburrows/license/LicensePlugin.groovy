@@ -24,12 +24,12 @@ final class LicensePlugin implements Plugin<Project> {
    * Configure for Java projects.
    */
   private static configureJavaProject(def project) {
-    final def taskName = "licenseReport"
-    final def path = "${project.buildDir}/reports/licenses/$taskName"
-    final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
+    def taskName = "licenseReport"
+    def path = "${project.buildDir}/reports/licenses/$taskName"
+    def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Create tasks
-    final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
+    LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
     task.description = "Outputs licenses report."
     task.group = "Reporting"
     task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)
@@ -47,17 +47,17 @@ final class LicensePlugin implements Plugin<Project> {
    */
   private static configureAndroidProject(def project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    final def variants = getAndroidVariants(project)
-    final def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
+    def variants = getAndroidVariants(project)
+    def configuration = project.extensions.create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->
-      final def variantName = variant.name.capitalize()
-      final def taskName = "license${variantName}Report"
-      final def path = "${project.buildDir}/reports/licenses/$taskName"
+      def variantName = variant.name.capitalize()
+      def taskName = "license${variantName}Report"
+      def path = "${project.buildDir}/reports/licenses/$taskName"
 
       // Create tasks based on variant
-      final LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
+      LicenseReportTask task = project.tasks.create("$taskName", LicenseReportTask)
       task.description = "Outputs licenses report for ${variantName} variant."
       task.group = "Reporting"
       task.htmlFile = project.file(path + LicenseReportTask.HTML_EXT)

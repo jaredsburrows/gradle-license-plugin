@@ -31,9 +31,9 @@ final class HtmlReport {
    * Html report when there are open source licenses.
    */
   private def openSourceHtml() {
-    final def writer = new StringWriter()
-    final def markup = new MarkupBuilder(writer)
-    final Map<License, List<Project>> projectsMap = new HashMap<>()
+    def writer = new StringWriter()
+    def markup = new MarkupBuilder(writer)
+    Map<License, List<Project>> projectsMap = new HashMap<>()
 
     // Store packages by license
     projects.each { project ->
@@ -61,7 +61,7 @@ final class HtmlReport {
         ul {
 
           projectsMap.entrySet().each { entry ->
-            final List<Project> sortedProjects = entry.value.sort {
+            List<Project> sortedProjects = entry.value.sort {
               left, right -> left.name <=> right.name
             }
 
@@ -114,8 +114,8 @@ final class HtmlReport {
    * Html report when there are no open source licenses.
    */
   private static noOpenSourceHtml() {
-    final def writer = new StringWriter()
-    final def markup = new MarkupBuilder(writer)
+    def writer = new StringWriter()
+    def markup = new MarkupBuilder(writer)
 
     markup.html {
       head {
