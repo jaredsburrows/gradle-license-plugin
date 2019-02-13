@@ -67,7 +67,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     when:
     project.evaluate()
     LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
+    task.licenseReport()
 
     def actualHtmlFileExists = task.htmlFile.exists()
     def expectedHtmlFileExists = true
@@ -117,7 +117,7 @@ final class LicenseReportTaskAndroidSpec extends Specification {
     when:
     project.evaluate()
     LicenseReportTask task = project.tasks.getByName(taskName)
-    task.execute()
+    task.licenseReport()
 
     def actualHtmlFileExists = task.htmlFile.exists()
     def expectedHtmlFileExists = false
