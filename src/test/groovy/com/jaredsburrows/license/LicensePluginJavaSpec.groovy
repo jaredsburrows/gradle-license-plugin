@@ -145,8 +145,9 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#76480'>Firebase-core</a>
+        <a href='#0'>Firebase-core</a>
       </li>
+      <a name='0' />
       <pre>No license found</pre>
     </ul>
   </body>
@@ -223,12 +224,12 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -380,6 +381,7 @@ final class LicensePluginJavaSpec extends Specification {
       <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
+      <a name='755498312' />
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
     </ul>
@@ -460,6 +462,7 @@ final class LicensePluginJavaSpec extends Specification {
       <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
+      <a name='755498312' />
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
     </ul>
@@ -543,15 +546,15 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
+        <a href='#314129783'>Retrofit</a>
+      </li>
+      <a name='314129783' />
+      <pre>${getLicenseText('apache-2.0.txt')}</pre>
+      <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
-      <li>
-        <a href='#1288284111'>Retrofit</a>
-      </li>
-      <a name='1288284111' />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
 </html>
@@ -658,12 +661,12 @@ project(':subproject') {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -772,12 +775,12 @@ project(':subproject') {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>

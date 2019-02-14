@@ -217,12 +217,12 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -344,12 +344,12 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -485,18 +485,18 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#1288284111'>Appcompat-v7</a>
+        <a href='#314129783'>Appcompat-v7</a>
       </li>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
       <li>
-        <a href='#1288284111'>Support-annotations</a>
+        <a href='#314129783'>Support-annotations</a>
       </li>
       <li>
-        <a href='#1288284111'>Support-v4</a>
+        <a href='#314129783'>Support-v4</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -653,9 +653,9 @@ final class LicensePluginAndroidSpec extends Specification {
       <a name='-989315363' />
       <pre>${getLicenseText('mit.txt')}</pre>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -884,9 +884,9 @@ include 'subproject'
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
       <li>
-        <a href='#1288284111'>Design</a>
+        <a href='#314129783'>Design</a>
       </li>
-      <a name='1288284111' />
+      <a name='314129783' />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
