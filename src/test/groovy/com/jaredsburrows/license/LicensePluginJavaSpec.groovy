@@ -553,6 +553,7 @@ final class LicensePluginJavaSpec extends Specification {
       <li>
         <a href='#755498312'>Fake dependency name</a>
       </li>
+      <a name='755498312' />
       <pre>Some license
 <a href='http://website.tld/'>http://website.tld/</a></pre>
     </ul>
