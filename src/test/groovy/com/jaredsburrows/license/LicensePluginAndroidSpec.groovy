@@ -769,8 +769,9 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#76480'>Fake dependency name</a>
+        <a href='#0'>Fake dependency name</a>
       </li>
+      <a name='0' />
       <pre>No license found</pre>
     </ul>
   </body>
