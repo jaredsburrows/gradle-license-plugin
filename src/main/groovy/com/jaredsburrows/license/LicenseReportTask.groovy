@@ -25,10 +25,10 @@ class LicenseReportTask extends DefaultTask {
   static final String JSON_EXT = ".json"
   @Internal final List<Project> projects = []
   @Optional @Input File[] assetDirs = []
-  @Optional @Input def generateHtmlReport
-  @Optional @Input def generateJsonReport
-  @Optional @Input def copyHtmlReportToAssets
-  @Optional @Input def copyJsonReportToAssets
+  @Optional @Input boolean generateHtmlReport
+  @Optional @Input boolean generateJsonReport
+  @Optional @Input boolean copyHtmlReportToAssets
+  @Optional @Input boolean copyJsonReportToAssets
   @Optional @Input def buildType
   @Optional @Input def variant
   @Optional @Internal def productFlavors = []
