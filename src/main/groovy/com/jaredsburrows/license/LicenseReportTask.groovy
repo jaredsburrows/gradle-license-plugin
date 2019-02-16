@@ -21,8 +21,8 @@ class LicenseReportTask extends DefaultTask {
   private static final String APACHE_LICENSE_NAME = "The Apache Software License"
   private static final String APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
-  private static final String HTML_EXT = ".html"
-  private static final String JSON_EXT = ".json"
+  static final String HTML_EXT = ".html"
+  static final String JSON_EXT = ".json"
   @Internal final List<Project> projects = []
   @Optional @Input File[] assetDirs = []
   @Optional @Input def generateHtmlReport
@@ -81,26 +81,26 @@ class LicenseReportTask extends DefaultTask {
     Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add "compile" configuration older java and android gradle plugins
-    if (getProject().getConfigurations().find { it.name == "compile" }) configurations << getProject().getConfigurations()."compile"
+    if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."compile"
 
     // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    if (getProject().getConfigurations().find { it.name == "api" }) configurations << getProject().getConfigurations()."api"
-    if (getProject().getConfigurations().find { it.name == "implementation" }) configurations << getProject().getConfigurations()."implementation"
+    if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."api"
+    if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."implementation"
 
     // If Android project, add extra configurations
     if (variant) {
       // Add buildType configurations
-      if (getProject().getConfigurations().find { it.name == "compile" }) configurations << getProject().getConfigurations()."${buildType}Compile"
-      if (getProject().getConfigurations().find { it.name == "api" }) configurations << getProject().getConfigurations()."${buildType}Api"
-      if (getProject().getConfigurations().find { it.name == "implementation" }) configurations << getProject().getConfigurations()."${buildType}Implementation"
+      if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${buildType}Compile"
+      if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${buildType}Api"
+      if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${buildType}Implementation"
 
       // Add productFlavors configurations
       productFlavors.each { flavor ->
         // Works for productFlavors and productFlavors with dimensions
         if (variant.capitalize().contains(flavor.name.capitalize())) {
-          if (getProject().getConfigurations().find { it.name == "compile" }) configurations << getProject().getConfigurations()."${flavor.name}Compile"
-          if (getProject().getConfigurations().find { it.name == "api" }) configurations << getProject().getConfigurations()."${flavor.name}Api"
-          if (getProject().getConfigurations().find { it.name == "implementation" }) configurations << getProject().getConfigurations()."${flavor.name}Implementation"
+          if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${flavor.name}Compile"
+          if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${flavor.name}Api"
+          if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${flavor.name}Implementation"
         }
       }
     }
@@ -108,11 +108,11 @@ class LicenseReportTask extends DefaultTask {
     // Iterate through all the configurations's dependencies
     configurations.each { configuration ->
       configuration.canBeResolved &&
-        configuration.resolvedConfiguration.lenientConfiguration.artifacts*.moduleVersion.id.collect { id ->
+        configuration.getResolvedConfiguration().getLenientConfiguration().getArtifacts()*.getModuleVersion().id.collect { id ->
           "$id.group:$id.name:$id.version@pom"
         }.each { pom ->
           getProject().getConfigurations()."$POM_CONFIGURATION".dependencies.add(
-            project.dependencies.add("$POM_CONFIGURATION", pom)
+            getProject().getDependencies().add("$POM_CONFIGURATION", pom)
           )
         }
     }
@@ -123,7 +123,7 @@ class LicenseReportTask extends DefaultTask {
    */
   private void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    getProject().getConfigurations()."$POM_CONFIGURATION".resolvedConfiguration.lenientConfiguration.artifacts.each { pom ->
+    getProject().getConfigurations()."$POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts().each { pom ->
       File pomFile = pom.file
       Node pomText = new XmlParser().parse(pomFile)
 
@@ -187,7 +187,7 @@ class LicenseReportTask extends DefaultTask {
     // If the POM is missing a name, do not record it
     def name = getName(pomText)
     if (!name) {
-      logger.log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
+      getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
@@ -197,7 +197,7 @@ class LicenseReportTask extends DefaultTask {
 
     // License information found
     if (pomText.licenses) {
-      List<License> licenses = []
+      List<License> licenses = new ArrayList<>()
       pomText.licenses[0].license.each { license ->
         String licenseName = license.name?.text()
         String licenseUrl = license.url?.text()
@@ -208,7 +208,7 @@ class LicenseReportTask extends DefaultTask {
             licenseUrl = licenseUrl?.trim()
             licenses << new License(name: licenseName, url: licenseUrl)
         } catch (Exception ignore) {
-          logger.log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
+          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
         }
       }
       return licenses
@@ -290,7 +290,7 @@ class LicenseReportTask extends DefaultTask {
   private void copyHtmlReport() {
    // Iterate through all asset directories
     assetDirs.each { directory ->
-      File licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + HTML_EXT)
 
       // Remove existing file
       getProject().file(licenseFile).delete()
@@ -300,14 +300,14 @@ class LicenseReportTask extends DefaultTask {
       licenseFile.createNewFile()
 
       // Copy HTML file to the assets directory
-      getProject().file(licenseFile << getProject().file(htmlFile).text)
+      getProject().file(licenseFile << getProject().file(htmlFile).getText())
     }
   }
 
   private void copyJsonReport() {
     // Iterate through all asset directories
     assetDirs.each { directory ->
-      File licenseFile = new File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
+      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + JSON_EXT)
 
       // Remove existing file
       getProject().file(licenseFile).delete()
@@ -317,7 +317,7 @@ class LicenseReportTask extends DefaultTask {
       licenseFile.createNewFile()
 
       // Copy JSON file to the assets directory
-      getProject().file(licenseFile << project.file(jsonFile).text)
+      getProject().file(licenseFile << getProject().file(jsonFile).getText())
     }
   }
 
