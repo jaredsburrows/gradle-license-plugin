@@ -5,6 +5,7 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
+import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
@@ -13,7 +14,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-class LicenseReportTask extends LicenseReportTaskKt {
+class LicenseReportTask extends DefaultTask {
   static final def POM_CONFIGURATION = "poms"
   static final def TEMP_POM_CONFIGURATION = "tempPoms"
   private static final String ANDROID_SUPPORT_GROUP_ID = "com.android.support"
@@ -22,15 +23,15 @@ class LicenseReportTask extends LicenseReportTaskKt {
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
-  @Internal final List<Project> projects = new ArrayList<>()
+  @Internal final List<Project> projects = []
   @Optional @Input File[] assetDirs = []
-  @Optional @Input boolean generateHtmlReport
-  @Optional @Input boolean generateJsonReport
-  @Optional @Input boolean copyHtmlReportToAssets
-  @Optional @Input boolean copyJsonReportToAssets
+  @Optional @Input def generateHtmlReport
+  @Optional @Input def generateJsonReport
+  @Optional @Input def copyHtmlReportToAssets
+  @Optional @Input def copyJsonReportToAssets
   @Optional @Input def buildType
   @Optional @Input def variant
-  @Optional @Internal def productFlavors = new ArrayList<>()
+  @Optional @Internal def productFlavors = []
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
@@ -42,18 +43,18 @@ class LicenseReportTask extends LicenseReportTaskKt {
     if (generateHtmlReport) {
       createHtmlReport()
 
-        // If Android project and copy enabled, copy to asset directory
-        if (variant && copyHtmlReportToAssets) {
-          copyHtmlReport()
-        }
+      // If Android project and copy enabled, copy to asset directory
+      if (variant && copyHtmlReportToAssets) {
+        copyHtmlReport()
       }
+    }
 
     if (generateJsonReport) {
       createJsonReport()
 
       // If Android project and copy enabled, copy to asset directory
       if (variant && copyJsonReportToAssets) {
-        copyJsonReport(assetDirs, jsonFile)
+        copyJsonReport()
       }
     }
   }
@@ -130,7 +131,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
       def name = getName(pomText)
       String version = pomText.version?.text()
       String description = pomText.description?.text()
-      List<Developer> developers = new ArrayList<>()
+      List<Developer> developers = []
       if (pomText.developers) {
         developers = pomText.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
@@ -150,7 +151,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
       List<License> licenses = findLicenses(pomFile)
       if (!licenses) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
-        licenses = new ArrayList<>()
+        licenses = []
       }
 
       // Store the information that we need
@@ -203,9 +204,9 @@ class LicenseReportTask extends LicenseReportTaskKt {
         try {
           //noinspection GroovyResultOfObjectAllocationIgnored
           new URL(licenseUrl)
-            licenseName = licenseName?.trim()?.capitalize()
-            licenseUrl = licenseUrl?.trim()
-            licenses << new License(name: licenseName, url: licenseUrl)
+          licenseName = licenseName?.trim()?.capitalize()
+          licenseUrl = licenseUrl?.trim()
+          licenses << new License(name: licenseName, url: licenseUrl)
         } catch (Exception ignore) {
           getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
         }
@@ -287,7 +288,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   }
 
   private void copyHtmlReport() {
-   // Iterate through all asset directories
+    // Iterate through all asset directories
     assetDirs.each { directory ->
       File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + HTML_EXT)
 
@@ -303,7 +304,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
   }
 
-  private void copyJsonReport(File[] assetDirs, File jsonFile) {
+  private void copyJsonReport() {
     // Iterate through all asset directories
     assetDirs.each { directory ->
       File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + JSON_EXT)
@@ -318,5 +319,9 @@ class LicenseReportTask extends LicenseReportTaskKt {
       // Copy JSON file to the assets directory
       getProject().file(licenseFile << getProject().file(jsonFile).getText())
     }
+  }
+
+  private static String getClickableFileUrl(File file) {
+    return new URI("file", "", file.toURI().getPath(), null, null).toString()
   }
 }

@@ -37,9 +37,9 @@ final class HtmlReportSpec extends Specification {
     def license = new License(name: 'name', url: 'url')
     def project = new Project(name: 'name', licenses: [license], url: 'url', developers: developers,
       year: 'year')
-    def missingLicensesproject = new Project(name: 'name', url: 'url', developers: developers,
+    def missingLicensesProject = new Project(name: 'name', url: 'url', developers: developers,
       year: 'year')
-    def projects = [project, project, missingLicensesproject]
+    def projects = [project, project, missingLicensesProject]
     def sut = new HtmlReport(projects)
 
     when:

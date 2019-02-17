@@ -5,31 +5,15 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import groovy.xml.MarkupBuilder
 
-final class HtmlReport {
-  private static final String BODY_CSS = "body { font-family: sans-serif }"
-  private static final String PRE_CSS = "pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
-  private static final String CSS_STYLE = BODY_CSS + " " + PRE_CSS
-  private static final String OPEN_SOURCE_LIBRARIES = "Open source licenses"
-  private static final String NO_LIBRARIES = "None"
-  private static final String NO_LICENSE = "No license found"
-  private static final String NOTICE_LIBRARIES = "Notice for packages:"
-  private final List<Project> projects
-
+final class HtmlReport extends HtmlReportKt {
   public HtmlReport(List<Project> projects) {
-    this.projects = projects
-  }
-
-  /**
-   * Return Html as a String.
-   */
-  public String string() {
-    return projects.isEmpty() ? noOpenSourceHtml() : openSourceHtml()
+    super(projects)
   }
 
   /**
    * Html report when there are open source licenses.
    */
-  private String openSourceHtml() {
+  public String openSourceHtml() {
     StringWriter writer = new StringWriter()
     MarkupBuilder markup = new MarkupBuilder(writer)
     Map<String, List<Project>> projectsMap = new HashMap<>()
@@ -63,7 +47,7 @@ final class HtmlReport {
 
     markup.html {
       head {
-        style(CSS_STYLE)
+        style(CSS)
         title(OPEN_SOURCE_LIBRARIES)
       }
 
@@ -114,29 +98,5 @@ final class HtmlReport {
       }
     }
     return writer.toString()
-  }
-
-  /**
-   * Html report when there are no open source licenses.
-   */
-  private static String noOpenSourceHtml() {
-    StringWriter writer = new StringWriter()
-    MarkupBuilder markup = new MarkupBuilder(writer)
-
-    markup.html {
-      head {
-        style(CSS_STYLE)
-        title(OPEN_SOURCE_LIBRARIES)
-      }
-
-      body {
-        h3(NO_LIBRARIES)
-      }
-    }
-    return writer.toString()
-  }
-
-  private String getLicenseText(String fileName) {
-    return getClass().getResource("/license/${fileName}").getText()
   }
 }
