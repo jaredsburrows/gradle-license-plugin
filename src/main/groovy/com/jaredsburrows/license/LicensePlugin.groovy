@@ -1,7 +1,9 @@
 package com.jaredsburrows.license
 
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.PluginContainer
 
 final class LicensePlugin implements Plugin<Project> {
   // Handles pre-3.0 and 3.0+, "com.android.base" was added in AGP 3.0
@@ -47,7 +49,7 @@ final class LicensePlugin implements Plugin<Project> {
    */
   private static void configureAndroidProject(Project project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    def variants = getAndroidVariants(project)
+    DomainObjectCollection<com.android.build.gradle.api.BaseVariant> variants = getAndroidVariant(project)
     LicenseReportExtension configuration = project.getExtensions().create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
@@ -78,9 +80,20 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Check for the android library plugin, default to application variants for applications and test plugin.
    */
-  private static getAndroidVariants(Project project) {
-    return project.android.hasProperty("libraryVariants")
-      ? project.android.libraryVariants
-      : project.android.applicationVariants
+  private static DomainObjectCollection<com.android.build.gradle.api.BaseVariant> getAndroidVariant(Project project) {
+    PluginContainer pluginContainer = project.getPlugins()
+    if (pluginContainer.hasPlugin("com.android.application")) {
+      return project.extensions.findByType(com.android.build.gradle.AppExtension.class).applicationVariants
+    }
+
+    if (pluginContainer.hasPlugin("com.android.test")) {
+      return project.extensions.findByType(com.android.build.gradle.TestExtension.class).applicationVariants
+    }
+
+    if (pluginContainer.hasPlugin("com.android.library")) {
+      return project.extensions.findByType(com.android.build.gradle.LibraryExtension.class).libraryVariants
+    }
+
+    throw new IllegalArgumentException("Missing the Android Gradle Plugin.")
   }
 }

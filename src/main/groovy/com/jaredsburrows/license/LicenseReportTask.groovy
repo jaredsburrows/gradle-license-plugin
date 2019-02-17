@@ -23,7 +23,7 @@ class LicenseReportTask extends DefaultTask {
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
-  @Internal final List<Project> projects = []
+  @Internal final List<Project> projects = new ArrayList<>()
   @Optional @Input File[] assetDirs = []
   @Optional @Input boolean generateHtmlReport
   @Optional @Input boolean generateJsonReport
@@ -31,7 +31,7 @@ class LicenseReportTask extends DefaultTask {
   @Optional @Input boolean copyJsonReportToAssets
   @Optional @Input def buildType
   @Optional @Input def variant
-  @Optional @Internal def productFlavors = []
+  @Optional @Internal def productFlavors = new ArrayList<>()
   @OutputFile File htmlFile
   @OutputFile File jsonFile
 
@@ -131,7 +131,7 @@ class LicenseReportTask extends DefaultTask {
       def name = getName(pomText)
       String version = pomText.version?.text()
       String description = pomText.description?.text()
-      List<Developer> developers = []
+      List<Developer> developers = new ArrayList<>()
       if (pomText.developers) {
         developers = pomText.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
@@ -151,7 +151,7 @@ class LicenseReportTask extends DefaultTask {
       List<License> licenses = findLicenses(pomFile)
       if (!licenses) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
-        licenses = []
+        licenses = new ArrayList<>()
       }
 
       // Store the information that we need
