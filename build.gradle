@@ -51,13 +51,28 @@ task createClasspathManifest() {
   }
 }
 
+configurations.all {
+  resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+
+  resolutionStrategy {
+    eachDependency { details ->
+      if (details.requested.group == 'org.jetbrains.kotlin') {
+        details.useVersion versions.kotlin
+      }
+    }
+  }
+}
+
 dependencies {
   implementation localGroovy()
+  implementation deps.kotlin.stdlib.jdk
+  implementation deps.kotlin.reflect
 
   compileOnly deps.android.tools.build.gradle
 
   testRuntimeOnly files(createClasspathManifest)
 
+  testImplementation localGroovy()
   testImplementation deps.android.tools.build.gradle
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
 }

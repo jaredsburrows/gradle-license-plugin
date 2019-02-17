@@ -1,31 +1,13 @@
 package com.jaredsburrows.license
 
 import org.gradle.api.DomainObjectCollection
-import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.PluginContainer
 
-final class LicensePlugin implements Plugin<Project> {
-  // Handles pre-3.0 and 3.0+, "com.android.base" was added in AGP 3.0
-  private static final String[] ANDROID_IDS = [
-    "com.android.application",
-    "com.android.feature",
-    "com.android.instantapp",
-    "com.android.library",
-    "com.android.test"]
-
-  @Override public void apply(Project project) {
-    project.getPlugins().withId("java", { configureJavaProject(project) })
-
-    ANDROID_IDS.each { id ->
-      project.getPlugins().withId(id, { configureAndroidProject(project) })
-    }
-  }
-
+final class LicensePlugin extends LicensePluginKt {
   /**
    * Configure for Java projects.
    */
-  private static void configureJavaProject(Project project) {
+  @Override protected void configureJavaProject(Project project) {
     String taskName = "licenseReport"
     String path = "${project.getBuildDir()}/reports/licenses/$taskName"
     LicenseReportExtension configuration = project.getExtensions().create("licenseReport", LicenseReportExtension)
@@ -47,7 +29,7 @@ final class LicensePlugin implements Plugin<Project> {
   /**
    * Configure for Android projects.
    */
-  private static void configureAndroidProject(Project project) {
+  @Override protected void configureAndroidProject(Project project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     DomainObjectCollection<com.android.build.gradle.api.BaseVariant> variants = getAndroidVariant(project)
     LicenseReportExtension configuration = project.getExtensions().create("licenseReport", LicenseReportExtension)
@@ -75,25 +57,5 @@ final class LicensePlugin implements Plugin<Project> {
       // Make sure update on each run
       task.getOutputs().upToDateWhen { false }
     }
-  }
-
-  /**
-   * Check for the android library plugin, default to application variants for applications and test plugin.
-   */
-  private static DomainObjectCollection<com.android.build.gradle.api.BaseVariant> getAndroidVariant(Project project) {
-    PluginContainer pluginContainer = project.getPlugins()
-    if (pluginContainer.hasPlugin("com.android.application")) {
-      return project.extensions.findByType(com.android.build.gradle.AppExtension.class).applicationVariants
-    }
-
-    if (pluginContainer.hasPlugin("com.android.test")) {
-      return project.extensions.findByType(com.android.build.gradle.TestExtension.class).applicationVariants
-    }
-
-    if (pluginContainer.hasPlugin("com.android.library")) {
-      return project.extensions.findByType(com.android.build.gradle.LibraryExtension.class).libraryVariants
-    }
-
-    throw new IllegalArgumentException("Missing the Android Gradle Plugin.")
   }
 }
