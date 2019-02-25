@@ -81,6 +81,7 @@ apply from: 'gradle/compile.gradle'
 apply from: 'gradle/plugin.gradle'
 apply from: 'gradle/publish.gradle'
 
-compileGroovy.dependsOn compileKotlin
-compileGroovy.classpath += files(compileKotlin.destinationDir)
-classes.dependsOn compileGroovy
+//compileGroovy.dependsOn = compileGroovy.taskDependencies.values - 'compileJava'
+compileKotlin.dependsOn compileGroovy
+compileKotlin.classpath += files(compileGroovy.destinationDir)
+classes.dependsOn compileKotlin

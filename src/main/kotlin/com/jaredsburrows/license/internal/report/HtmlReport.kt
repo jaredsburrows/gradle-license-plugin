@@ -10,13 +10,13 @@ import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.unsafe
 
-abstract class HtmlReportKt(val projects: List<Project>) {
+class HtmlReport(private val projects: List<Project>) : HtmlReportG() {
   companion object {
-    const val CSS = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
-    const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
-    const val NO_LIBRARIES = "None"
-    const val NO_LICENSE = "No license found"
-    const val NOTICE_LIBRARIES = "Notice for packages:"
+//    const val CSS = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
+//    const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
+//    const val NO_LIBRARIES = "None"
+//    const val NO_LICENSE = "No license found"
+//    const val NOTICE_LIBRARIES = "Notice for packages:"
   }
 
   /**
@@ -26,7 +26,6 @@ abstract class HtmlReportKt(val projects: List<Project>) {
     return if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
   }
 
-  abstract fun openSourceHtml(): String
 /*
   /**
    * Html report when there are open source licenses.
@@ -167,7 +166,7 @@ abstract class HtmlReportKt(val projects: List<Project>) {
       }.toString()
   }
 
-  protected fun getLicenseText(fileName: String): String {
-    return HtmlReportKt::class.java.getResource("/license/$fileName").readText()
+  private fun getLicenseText(fileName: String): String {
+    return HtmlReport::class.java.getResource("/license/$fileName").readText()
   }
 }
