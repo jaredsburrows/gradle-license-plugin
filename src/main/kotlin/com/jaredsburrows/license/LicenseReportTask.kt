@@ -3,6 +3,7 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
 import groovy.util.NodeList
@@ -22,12 +23,12 @@ import java.net.URI
 
 open class LicenseReportTask : DefaultTask() {
   companion object {
-    const val POM_CONFIGURATION = "poms"
-    const val TEMP_POM_CONFIGURATION = "tempPoms"
-    const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    const val APACHE_LICENSE_NAME = "The Apache Software License"
-    const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    private const val POM_CONFIGURATION = "poms"
+    private const val TEMP_POM_CONFIGURATION = "tempPoms"
+    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+    private const val APACHE_LICENSE_NAME = "The Apache Software License"
+    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
 
@@ -44,7 +45,7 @@ open class LicenseReportTask : DefaultTask() {
   @Optional @Input var copyJsonReportToAssets: Boolean = false
   @Optional @Input var buildType: String? = null
   @Optional @Input var variant: String? = null
-  @Optional @Internal var productFlavors = arrayListOf<com.android.builder.model.ProductFlavor>()
+  @Optional @Internal var productFlavors = listOf<com.android.builder.model.ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
 
@@ -83,7 +84,8 @@ open class LicenseReportTask : DefaultTask() {
       forEach { configuration ->
         try {
           configuration.isCanBeResolved = true
-        } catch (ignore: Exception) { }
+        } catch (ignore: Exception) {
+        }
       }
     }
   }
@@ -145,7 +147,8 @@ open class LicenseReportTask : DefaultTask() {
    */
   open fun generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    project.configurations.getByName(POM_CONFIGURATION).resolvedConfiguration.lenientConfiguration.artifacts.forEach { artifact ->
+    project.configurations.getByName(POM_CONFIGURATION)
+      .resolvedConfiguration.lenientConfiguration.artifacts.forEach { artifact ->
       val pomFile = artifact.file
       val pomText = XmlParser().parse(pomFile)
 
@@ -232,7 +235,7 @@ open class LicenseReportTask : DefaultTask() {
     if (!pomText.getAt(QName("licenses")).isNullOrEmpty()) {
       val licenses = arrayListOf<License>()
       pomText.getAt(QName("licenses")).getAt(QName("license")).forEach { license ->
-        // TODO
+        // TODO finish
 //        val licenseName = license.geta
       }
       return licenses
@@ -265,7 +268,8 @@ open class LicenseReportTask : DefaultTask() {
       )
     }
 
-    val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION).resolvedConfiguration.lenientConfiguration.artifacts.first().file
+    val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION)
+      .resolvedConfiguration.lenientConfiguration.artifacts.first().file
 
     // Reset dependencies in temporary configuration
     project.configurations.remove(project.configurations.getByName(TEMP_POM_CONFIGURATION))
@@ -277,7 +281,7 @@ open class LicenseReportTask : DefaultTask() {
    * Generated HTML report.
    */
   open fun createHtmlReport() {
-    jsonFile.apply {
+    htmlFile.apply {
       // Remove existing file
       delete()
 
@@ -287,7 +291,7 @@ open class LicenseReportTask : DefaultTask() {
 
       // Write report for file
       bufferedWriter().use { out ->
-//        out.write(HtmlReport(projects).string())
+        out.write(HtmlReport(projects).string())
       }
     }
   }

@@ -74,14 +74,10 @@ dependencies {
   testImplementation localGroovy()
   testImplementation deps.android.tools.build.gradle
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation deps.xmlunit
 }
 
 apply from: 'gradle/scan.gradle'
 apply from: 'gradle/compile.gradle'
 apply from: 'gradle/plugin.gradle'
 apply from: 'gradle/publish.gradle'
-
-//compileGroovy.dependsOn = compileGroovy.taskDependencies.values - 'compileJava'
-compileKotlin.dependsOn compileGroovy
-compileKotlin.classpath += files(compileGroovy.destinationDir)
-classes.dependsOn compileKotlin

@@ -7,7 +7,7 @@ import org.gradle.api.Project
 class LicensePlugin : Plugin<Project> {
   companion object {
     // Handles pre-3.0 and 3.0+, "com.android.base" was added in AGP 3.0
-    @JvmStatic val ANDROID_IDS = arrayOf(
+    private val ANDROID_IDS = arrayOf(
       "com.android.application",
       "com.android.feature",
       "com.android.instantapp",
@@ -16,6 +16,8 @@ class LicensePlugin : Plugin<Project> {
   }
 
   override fun apply(project: Project) {
+    project.extensions.create("licenseReport", LicenseReportExtension::class.java)
+
     project.plugins.withId("java") { configureJavaProject(project) }
 
     ANDROID_IDS.forEach { id ->
@@ -29,7 +31,7 @@ class LicensePlugin : Plugin<Project> {
   private fun configureJavaProject(project: Project) {
     val taskName = "licenseReport"
     val path = "${project.buildDir}/reports/licenses/$taskName"
-    val configuration = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
+    val configuration = project.extensions.getByType(LicenseReportExtension::class.java)
 
     // Create tasks
     project.tasks.create(taskName, LicenseReportTask::class.java).apply {
@@ -52,7 +54,7 @@ class LicensePlugin : Plugin<Project> {
   private fun configureAndroidProject(project: Project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     val variants = getAndroidVariant(project)
-    val configuration = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
+    val configuration = project.extensions.getByType(LicenseReportExtension::class.java)
 
     // Configure tasks for all variants
     variants?.all { variant ->
@@ -73,7 +75,7 @@ class LicensePlugin : Plugin<Project> {
         // assetDirs = project.android.sourceSets.main.assets.srcDirs
         buildType = variant.buildType.name
         // variant = variant.name
-        productFlavors = ArrayList(variant.productFlavors)
+        productFlavors = variant.productFlavors
         // Make sure update on each run
         outputs.upToDateWhen { false }
       }

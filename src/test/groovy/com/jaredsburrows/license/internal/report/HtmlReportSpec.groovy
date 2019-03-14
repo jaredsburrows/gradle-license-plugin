@@ -3,6 +3,7 @@ package com.jaredsburrows.license.internal.report
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import org.xmlunit.builder.DiffBuilder
 import spock.lang.Specification
 
 final class HtmlReportSpec extends Specification {
@@ -12,7 +13,7 @@ final class HtmlReportSpec extends Specification {
     def sut = new HtmlReport(projects)
 
     when:
-    def actual = sut.string().stripIndent().trim()
+    def actual = sut.string()
     def expected =
       """
 <html>
@@ -24,10 +25,15 @@ final class HtmlReportSpec extends Specification {
     <h3>None</h3>
   </body>
 </html>
-""".stripIndent().trim()
+"""
+    def diff = !DiffBuilder.compare(expected)
+      .withTest(actual)
+      .ignoreComments()
+      .ignoreWhitespace()
+      .build()
 
     then:
-    actual == expected
+    !diff
   }
 
   def 'open source html'() {
@@ -72,8 +78,13 @@ final class HtmlReportSpec extends Specification {
   </body>
 </html>
 """.stripIndent().trim()
+    def diff = !DiffBuilder.compare(expected)
+      .withTest(actual)
+      .ignoreComments()
+      .ignoreWhitespace()
+      .build()
 
     then:
-    actual == expected
+    !diff
   }
 }

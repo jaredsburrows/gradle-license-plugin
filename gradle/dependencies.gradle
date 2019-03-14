@@ -18,7 +18,7 @@ ext.deps = [
       'jvm': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.12'
     ]
   ],
-  'ktlint': 'com.github.shyiko:ktlint:0.29.0',
+  'ktlint' : 'com.github.shyiko:ktlint:0.29.0',
   'android': [
     'tools': [
       'build': [
@@ -27,4 +27,5 @@ ext.deps = [
     ]
   ],
   'spock'  : 'org.spockframework:spock-core:1.1-groovy-2.4',
+  'xmlunit': 'org.xmlunit:xmlunit-matchers:2.0.0'
 ]
