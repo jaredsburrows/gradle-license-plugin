@@ -2,9 +2,12 @@ package com.jaredsburrows.license.internal.pom
 
 /**
  * Represents license information in a POM file.
+ * See: https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
  */
 class License {
+  /** Name of the License in the POM. */
   var name: String? = null
+  /** URL of the License in the POM. */
   var url: String? = null
 
   override fun equals(other: Any?): Boolean {
@@ -14,7 +17,5 @@ class License {
     return true
   }
 
-  override fun hashCode(): Int {
-    return url?.hashCode() ?: 0
-  }
+  override fun hashCode(): Int = url?.hashCode() ?: 0
 }

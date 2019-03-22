@@ -27,10 +27,10 @@ class JsonReport(private val projects: List<Project>) {
    * Json report when there are open source licenses.
    */
   private fun jsonArray(): String {
-    val reportList = arrayListOf<Map<String, Any?>>()
+    val reportList = mutableListOf<Map<String, Any?>>()
     projects.forEach { project ->
       // Handle multiple licenses
-      val licensesJson = arrayListOf<Map<String, String?>>()
+      val licensesJson = mutableListOf<Map<String, String?>>()
       project.licenses.orEmpty().forEach { license ->
         licensesJson.add(linkedMapOf(
           LICENSE to license.name,
@@ -39,13 +39,13 @@ class JsonReport(private val projects: List<Project>) {
       }
 
       // Handle multiple developer
-      val developerNames = arrayListOf<String?>()
+      val developerNames = mutableListOf<String?>()
       project.developers.orEmpty().forEach { developer ->
         developerNames.add(developer.name)
       }
 
       // Build the report
-      reportList.add(linkedMapOf<String, Any?>(
+      reportList.add(linkedMapOf(
         PROJECT to if (!project.name.isNullOrEmpty()) project.name else null,
         DESCRIPTION to if (!project.description.isNullOrEmpty()) project.description else null,
         VERSION to if (!project.version.isNullOrEmpty()) project.version else null,

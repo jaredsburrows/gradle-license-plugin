@@ -22,9 +22,7 @@ abstract class HtmlReportKt(val projects: List<Project>) {
   /**
    * Return Html as a String.
    */
-  fun string(): String {
-    return if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
-  }
+  fun string(): String = if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
 
   abstract fun openSourceHtml(): String
 /*
@@ -148,9 +146,7 @@ abstract class HtmlReportKt(val projects: List<Project>) {
       .html {
         head {
           style {
-            unsafe {
-              +CSS
-            }
+            unsafe { +CSS }
           }
           title {
             +OPEN_SOURCE_LIBRARIES
@@ -159,9 +155,7 @@ abstract class HtmlReportKt(val projects: List<Project>) {
 
         body {
           h3 {
-            unsafe {
-              +NO_LIBRARIES
-            }
+            unsafe { +NO_LIBRARIES }
           }
         }
       }.toString()

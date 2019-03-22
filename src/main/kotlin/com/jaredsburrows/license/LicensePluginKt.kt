@@ -6,7 +6,7 @@ import org.gradle.api.Project
 
 abstract class LicensePluginKt : Plugin<Project> {
   companion object {
-    // Handles pre-3.0 and 3.0+, "com.android.base" was added in AGP 3.0
+    /** Handles pre-3.0 and 3.0+, "com.android.base" was added in AGP 3.0 */
     @JvmStatic val ANDROID_IDS = arrayOf(
       "com.android.application",
       "com.android.feature",
