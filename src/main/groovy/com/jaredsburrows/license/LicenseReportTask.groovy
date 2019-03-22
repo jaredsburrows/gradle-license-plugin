@@ -24,7 +24,7 @@ class LicenseReportTask extends DefaultTask {
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
   @Internal final List<Project> projects = []
-  @Optional @Input File[] assetDirs = []
+  @Optional @Input Set<File> assetDirs = []
   @Optional @Input def generateHtmlReport
   @Optional @Input def generateJsonReport
   @Optional @Input def copyHtmlReportToAssets

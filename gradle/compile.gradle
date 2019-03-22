@@ -5,7 +5,7 @@ tasks.withType(JavaCompile) {
   // Show all warnings except boot classpath
   configure(options) {
     compilerArgs << '-Xlint:all'            // Turn on all warnings
-    compilerArgs << '-Werror'               // Turn warnings into errors
+//    compilerArgs << '-Werror'               // Turn warnings into errors
     encoding = 'utf-8'
   }
 }
@@ -17,7 +17,7 @@ tasks.withType(GroovyCompile) {
   // Show all warnings except boot classpath
   configure(options) {
     compilerArgs << '-Xlint:all'            // Turn on all warnings
-    compilerArgs << '-Werror'               // Turn warnings into errors
+//    compilerArgs << '-Werror'               // Turn warnings into errors
     encoding = 'utf-8'
   }
 }
