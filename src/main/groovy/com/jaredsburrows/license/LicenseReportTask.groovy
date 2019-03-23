@@ -5,7 +5,6 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
-import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
@@ -14,7 +13,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-class LicenseReportTask extends DefaultTask {
+class LicenseReportTask extends LicenseReportTaskKt {
   static final def POM_CONFIGURATION = "poms"
   static final def TEMP_POM_CONFIGURATION = "tempPoms"
   private static final String ANDROID_SUPPORT_GROUP_ID = "com.android.support"
@@ -319,9 +318,5 @@ class LicenseReportTask extends DefaultTask {
       // Copy JSON file to the assets directory
       getProject().file(licenseFile << getProject().file(jsonFile).getText())
     }
-  }
-
-  private static String getClickableFileUrl(File file) {
-    return new URI("file", "", file.toURI().getPath(), null, null).toString()
   }
 }
