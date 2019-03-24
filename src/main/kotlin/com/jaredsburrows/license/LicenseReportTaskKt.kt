@@ -1,7 +1,9 @@
 package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.pom.Project
+import com.jaredsburrows.license.internal.report.JsonReport
 import org.gradle.api.DefaultTask
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -36,6 +38,49 @@ abstract class LicenseReportTaskKt : DefaultTask() {
 //  @Optional @Internal var productFlavors = listOf<com.android.builder.model.ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
+
+  /**
+   * Generated JSON report.
+   */
+  open fun createJsonReport() {
+    jsonFile.apply {
+      // Remove existing file
+      delete()
+
+      // Create directories
+      parentFile.mkdirs()
+      createNewFile()
+
+      // Write report for file
+      bufferedWriter().use { out ->
+        out.write(JsonReport(projects).string())
+      }
+    }
+
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${getClickableFileUrl(jsonFile)}.")
+  }
+
+  open fun copyHtmlReport() {
+    // Iterate through all asset directories
+    assetDirs.forEach { directory ->
+      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
+
+      licenseFile.apply {
+        // Remove existing file
+        delete()
+
+        // Create new file
+        parentFile.mkdirs()
+        createNewFile()
+
+        // Copy HTML file to the assets directory
+        licenseFile.bufferedWriter().use { out ->
+          out.write(htmlFile.readText())
+        }
+      }
+    }
+  }
 
   open fun copyJsonReport() {
     // Iterate through all asset directories
