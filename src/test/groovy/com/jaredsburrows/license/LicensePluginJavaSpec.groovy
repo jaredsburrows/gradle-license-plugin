@@ -29,6 +29,11 @@ final class LicensePluginJavaSpec extends Specification {
           id 'java'
           id 'com.jaredsburrows.license'
         }
+        
+        repositories {
+          jcenter()
+          mavenCentral()
+        }
       """
 
     when:

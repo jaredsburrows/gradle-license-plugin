@@ -40,14 +40,21 @@ final class LicensePluginAndroidSpec extends Specification {
       """
         buildscript {
           repositories {
-            jcenter()
             google()
+            jcenter()
+            mavenCentral()
           }
 
           dependencies {
             classpath "com.android.tools.build:gradle:${agpVersion}"
             classpath files($classpathString)
           }
+        }
+        
+        repositories {
+          google()
+          jcenter()
+          mavenCentral()
         }
 
         apply plugin: 'com.android.application'
@@ -83,8 +90,7 @@ final class LicensePluginAndroidSpec extends Specification {
         '5.2'
       ],
       [
-        '3.1.0',
-        '3.2.0',
+        '3.0.0',
         '3.3.0'
       ]
     ].combinations()
