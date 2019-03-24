@@ -66,8 +66,6 @@ abstract class LicenseReportTaskKt : DefaultTask() {
 
   abstract fun initDependencies()
 
-  abstract fun createHtmlReport()
-
   abstract fun generatePOMInfo()
 
   /**
@@ -86,6 +84,11 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       }
     }
   }
+
+  /**
+   * Generated HTML report.
+   */
+  abstract fun createHtmlReport()
 
   /**
    * Generated JSON report.

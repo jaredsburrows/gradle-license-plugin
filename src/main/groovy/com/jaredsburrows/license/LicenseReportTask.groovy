@@ -4,14 +4,10 @@ import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
-import com.jaredsburrows.license.internal.report.JsonReport
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
 
 class LicenseReportTask extends LicenseReportTaskKt {
   static final def POM_CONFIGURATION = "poms"
@@ -22,17 +18,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
-//  @Internal final List<Project> projects = []
-//  @Optional @Input File[] assetDirs = []
-//  @Optional @Input def generateHtmlReport
-//  @Optional @Input def generateJsonReport
-//  @Optional @Input def copyHtmlReportToAssets
-//  @Optional @Input def copyJsonReportToAssets
-//  @Optional @Input def buildType
-//  @Optional @Input def variant
   @Optional @Internal def productFlavors = []
-//  @OutputFile File htmlFile
-//  @OutputFile File jsonFile
 
   /**
    * Iterate through all configurations and collect dependencies.
@@ -84,15 +70,16 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    getProject().getConfigurations()."$POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts().each { pom ->
-      File pomFile = pom.file
+    getProject().getConfigurations().getByName("$POM_CONFIGURATION").getResolvedConfiguration()
+      .getLenientConfiguration().getArtifacts().each { pom ->
+      File pomFile = pom.getFile()
       Node pomText = new XmlParser().parse(pomFile)
 
       // License information
-      def name = getName(pomText)
+      String name = getName(pomText)
       String version = pomText.version?.text()
       String description = pomText.description?.text()
-      List<Developer> developers = []
+      List<Developer> developers = new ArrayList<>()
       if (pomText.developers) {
         developers = pomText.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
@@ -112,7 +99,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
       List<License> licenses = findLicenses(pomFile)
       if (!licenses) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
-        licenses = []
+        licenses = new ArrayList<>()
       }
 
       // Store the information that we need
@@ -131,11 +118,11 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
 
     // Sort POM information by name
-    projects.sort { project -> project.name }
+    projects.sort { project -> project.getName() }
   }
 
-  static def getName(def pomText) {
-    def name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
+  String getName(Node pomText) {
+    String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
@@ -146,14 +133,14 @@ class LicenseReportTask extends LicenseReportTaskKt {
     Node pomText = new XmlParser().parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    def name = getName(pomText)
+    String name = getName(pomText)
     if (!name) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == pomText.groupId?.text()) {
-      return [ new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL) ]
+      return [new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL)]
     }
 
     // License information found
@@ -168,7 +155,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
           licenseName = licenseName?.trim()?.capitalize()
           licenseUrl = licenseUrl?.trim()
           licenses << new License(name: licenseName, url: licenseUrl)
-        } catch (Exception ignore) {
+        } catch (Exception ignored) {
           getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
         }
       }
@@ -176,8 +163,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
     getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    def hasParent = pomText.parent != null
-    if (hasParent) {
+    if (pomText.parent != null) {
       File parentPomFile = getParentPomFile(pomText)
       return findLicenses(parentPomFile)
     }
@@ -187,7 +173,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  private File getParentPomFile(def pomText) {
+  private File getParentPomFile(Node pomText) {
     // Get parent POM information
     String groupId = pomText?.parent?.groupId?.text()
     String artifactId = pomText?.parent?.artifactId?.text()
@@ -196,14 +182,16 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
     // Add dependency to temporary configuration
     getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-    getProject().getConfigurations()."$TEMP_POM_CONFIGURATION".dependencies.add(
+    getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION").dependencies.add(
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
 
-    File pomFile = getProject().getConfigurations()."$TEMP_POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
+    File pomFile = getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION")
+      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
 
     // Reset dependencies in temporary configuration
-    getProject().getConfigurations().remove(getProject().getConfigurations()."$TEMP_POM_CONFIGURATION")
+    getProject().getConfigurations().remove(getProject().getConfigurations()
+      .getByName("$TEMP_POM_CONFIGURATION"))
 
     return pomFile
   }

@@ -68,7 +68,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = GradleRunner.create()
       .withGradleVersion(gradleVersion)
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport')
+      .withArguments('licenseDebugReport', '-s')
       .build()
 
     then:
@@ -122,7 +122,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -199,7 +199,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -326,7 +326,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -467,7 +467,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -630,7 +630,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -751,7 +751,7 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
@@ -862,7 +862,7 @@ include 'subproject'
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}")
+      .withArguments("${taskName}", '-s')
       .build()
 
     then:
