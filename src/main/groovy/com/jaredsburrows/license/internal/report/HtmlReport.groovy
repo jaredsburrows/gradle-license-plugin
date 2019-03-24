@@ -20,7 +20,7 @@ final class HtmlReport extends HtmlReportKt {
     Map<String, String> licenseMap = LicenseHelper.getLicenseMap()
 
     // Store packages by license
-    projects.each { project ->
+    for (Project project : projects) {
       String key = ""
 
       // first check to see if the project's license is in our list of known licenses:
@@ -39,7 +39,7 @@ final class HtmlReport extends HtmlReportKt {
       }
 
       if (!projectsMap.containsKey(key)) {
-        projectsMap.put(key, [])
+        projectsMap.put(key, new ArrayList<>())
       }
 
       projectsMap.get(key).add(project)
@@ -54,15 +54,14 @@ final class HtmlReport extends HtmlReportKt {
       body {
         h3(NOTICE_LIBRARIES)
         ul {
-
-          projectsMap.entrySet().each { entry ->
+          for (Map.Entry<String, List<Project>> entry : projectsMap.entrySet()) {
             List<Project> sortedProjects = entry.getValue().sort {
               left, right -> left.getName() <=> right.getName()
             }
 
             Project currentProject = null
             Integer currentLicense = null
-            sortedProjects.each { project ->
+            for (Project project : sortedProjects) {
               currentProject = project
               currentLicense = entry.getKey().hashCode()
 

@@ -5,6 +5,7 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -28,37 +29,56 @@ class LicenseReportTask extends LicenseReportTaskKt {
     Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add "compile" configuration older java and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."compile"
+    if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+      configurations.add(getProject().getConfigurations()."compile")
+    }
 
     // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."api"
-    if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."implementation"
+    if (getProject().getConfigurations().find { it.getName() == "api" }) {
+      configurations.add(getProject().getConfigurations()."api")
+    }
+    if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+      configurations.add(getProject().getConfigurations()."implementation")
+    }
 
     // If Android project, add extra configurations
     if (variant) {
       // Add buildType configurations
-      if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${buildType}Compile"
-      if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${buildType}Api"
-      if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${buildType}Implementation"
+      if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+        configurations.add(getProject().getConfigurations()."${buildType}Compile")
+      }
+      if (getProject().getConfigurations().find { it.getName() == "api" }) {
+        configurations.add(getProject().getConfigurations()."${buildType}Api")
+      }
+      if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+        configurations.add(getProject().getConfigurations()."${buildType}Implementation")
+      }
 
       // Add productFlavors configurations
-      productFlavors.each { flavor ->
+      for (def flavor : productFlavors) {
         // Works for productFlavors and productFlavors with dimensions
         if (variant.capitalize().contains(flavor.name.capitalize())) {
-          if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${flavor.name}Compile"
-          if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${flavor.name}Api"
-          if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${flavor.name}Implementation"
+          if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+            configurations.add(getProject().getConfigurations()."${flavor.name}Compile")
+          }
+          if (getProject().getConfigurations().find { it.getName() == "api" }) {
+            configurations.add(getProject().getConfigurations()."${flavor.name}Api")
+          }
+          if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+            configurations.add(getProject().getConfigurations()."${flavor.name}Implementation")
+          }
         }
       }
     }
 
     // Iterate through all the configurations's dependencies
-    configurations.each { configuration ->
+    for (Configuration configuration : configurations) {
       configuration.canBeResolved &&
-        configuration.getResolvedConfiguration().getLenientConfiguration().getArtifacts()*.getModuleVersion().id.collect { id ->
+        configuration.getResolvedConfiguration().getLenientConfiguration()
+          .getArtifacts()*.getModuleVersion().id.collect { id ->
           "$id.group:$id.name:$id.version@pom"
         }.each { pom ->
-          getProject().getConfigurations()."$POM_CONFIGURATION".dependencies.add(
+          getProject().getConfigurations().getByName("$POM_CONFIGURATION").dependencies.add(
             getProject().getDependencies().add("$POM_CONFIGURATION", pom)
           )
         }
@@ -70,8 +90,8 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    getProject().getConfigurations().getByName("$POM_CONFIGURATION").getResolvedConfiguration()
-      .getLenientConfiguration().getArtifacts().each { pom ->
+    for (ResolvedArtifact pom : getProject().getConfigurations().getByName("$POM_CONFIGURATION")
+      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()) {
       File pomFile = pom.getFile()
       Node pomText = new XmlParser().parse(pomFile)
 
@@ -114,19 +134,19 @@ class LicenseReportTask extends LicenseReportTaskKt {
         gav: pom.owner
       )
 
-      projects << project
+      projects.add(project)
     }
 
     // Sort POM information by name
     projects.sort { project -> project.getName() }
   }
 
-  String getName(Node pomText) {
+  @Override String getName(Node pomText) {
     String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
-  List<License> findLicenses(File pomFile) {
+  @Override List<License> findLicenses(File pomFile) {
     if (!pomFile) {
       return null
     }
@@ -173,7 +193,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  private File getParentPomFile(Node pomText) {
+  @Override File getParentPomFile(Node pomText) {
     // Get parent POM information
     String groupId = pomText?.parent?.groupId?.text()
     String artifactId = pomText?.parent?.artifactId?.text()

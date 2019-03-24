@@ -1,7 +1,9 @@
 package com.jaredsburrows.license
 
+import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.JsonReport
+import groovy.util.Node
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
@@ -84,6 +86,15 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       }
     }
   }
+
+  abstract fun getName(pomText: Node?): String
+
+  abstract fun findLicenses(pomFile: File?): List<License>
+
+  /**
+   * Use Parent POM information when individual dependency license information is missing.
+   */
+  abstract fun getParentPomFile(pomText: Node?): File
 
   /**
    * Generated HTML report.
