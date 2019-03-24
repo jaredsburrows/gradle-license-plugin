@@ -22,17 +22,17 @@ class LicenseReportTask extends LicenseReportTaskKt {
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
-  @Internal final List<Project> projects = []
-  @Optional @Input File[] assetDirs = []
-  @Optional @Input def generateHtmlReport
-  @Optional @Input def generateJsonReport
-  @Optional @Input def copyHtmlReportToAssets
-  @Optional @Input def copyJsonReportToAssets
-  @Optional @Input def buildType
-  @Optional @Input def variant
+//  @Internal final List<Project> projects = []
+//  @Optional @Input File[] assetDirs = []
+//  @Optional @Input def generateHtmlReport
+//  @Optional @Input def generateJsonReport
+//  @Optional @Input def copyHtmlReportToAssets
+//  @Optional @Input def copyJsonReportToAssets
+//  @Optional @Input def buildType
+//  @Optional @Input def variant
   @Optional @Internal def productFlavors = []
-  @OutputFile File htmlFile
-  @OutputFile File jsonFile
+//  @OutputFile File htmlFile
+//  @OutputFile File jsonFile
 
   @TaskAction public void licenseReport() {
     setupEnvironment()
@@ -303,20 +303,20 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
   }
 
-  private void copyJsonReport() {
-    // Iterate through all asset directories
-    assetDirs.each { directory ->
-      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + JSON_EXT)
-
-      // Remove existing file
-      getProject().file(licenseFile).delete()
-
-      // Create new file
-      licenseFile.getParentFile().mkdirs()
-      licenseFile.createNewFile()
-
-      // Copy JSON file to the assets directory
-      getProject().file(licenseFile << getProject().file(jsonFile).getText())
-    }
-  }
+//  private void copyJsonReport() {
+//    // Iterate through all asset directories
+//    assetDirs.each { directory ->
+//      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + JSON_EXT)
+//
+//      // Remove existing file
+//      getProject().file(licenseFile).delete()
+//
+//      // Create new file
+//      licenseFile.getParentFile().mkdirs()
+//      licenseFile.createNewFile()
+//
+//      // Copy JSON file to the assets directory
+//      getProject().file(licenseFile << getProject().file(jsonFile).getText())
+//    }
+//  }
 }
