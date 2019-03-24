@@ -34,48 +34,10 @@ class LicenseReportTask extends LicenseReportTaskKt {
 //  @OutputFile File htmlFile
 //  @OutputFile File jsonFile
 
-  @TaskAction public void licenseReport() {
-    setupEnvironment()
-    collectDependencies()
-    generatePOMInfo()
-
-    if (generateHtmlReport) {
-      createHtmlReport()
-
-      // If Android project and copy enabled, copy to asset directory
-      if (variant && copyHtmlReportToAssets) {
-        copyHtmlReport()
-      }
-    }
-
-    if (generateJsonReport) {
-      createJsonReport()
-
-      // If Android project and copy enabled, copy to asset directory
-      if (variant && copyJsonReportToAssets) {
-        copyJsonReport()
-      }
-    }
-  }
-
-  /**
-   * Setup configurations to collect dependencies.
-   */
-  private void setupEnvironment() {
-    // Create temporary configuration in order to store POM information
-    getProject().getConfigurations().create(POM_CONFIGURATION)
-
-    getProject().getConfigurations().every {
-      try {
-        it.canBeResolved = true
-      } catch (Exception ignore) { }
-    }
-  }
-
   /**
    * Iterate through all configurations and collect dependencies.
    */
-  private void collectDependencies() {
+  @Override void initDependencies() {
     // Add POM information to our POM configuration
     Set<Configuration> configurations = new LinkedHashSet<>()
 
@@ -120,7 +82,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Get POM information from the dependency artifacts.
    */
-  private void generatePOMInfo() {
+  @Override void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     getProject().getConfigurations()."$POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts().each { pom ->
       File pomFile = pom.file
@@ -249,7 +211,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Generated HTML report.
    */
-  private void createHtmlReport() {
+  @Override void createHtmlReport() {
     // Remove existing file
     getProject().file(htmlFile).delete()
 

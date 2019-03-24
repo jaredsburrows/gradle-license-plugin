@@ -8,6 +8,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
 
@@ -38,6 +39,53 @@ abstract class LicenseReportTaskKt : DefaultTask() {
 //  @Optional @Internal var productFlavors = listOf<com.android.builder.model.ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
+
+  @TaskAction open fun licenseReport() {
+    setupEnvironment()
+    initDependencies()
+    generatePOMInfo()
+
+    if (generateHtmlReport) {
+      createHtmlReport()
+
+      // If Android project and copy enabled, copy to asset directory
+      if (!variant.isNullOrEmpty() && copyHtmlReportToAssets) {
+        copyHtmlReport()
+      }
+    }
+
+    if (generateJsonReport) {
+      createJsonReport()
+
+      // If Android project and copy enabled, copy to asset directory
+      if (!variant.isNullOrEmpty() && copyJsonReportToAssets) {
+        copyJsonReport()
+      }
+    }
+  }
+
+  abstract fun initDependencies()
+
+  abstract fun createHtmlReport()
+
+  abstract fun generatePOMInfo()
+
+  /**
+   * Setup configurations to collect dependencies.
+   */
+  open fun setupEnvironment() {
+    // Create temporary configuration in order to store POM information
+    project.configurations.apply {
+      create(POM_CONFIGURATION)
+
+      forEach { configuration ->
+        try {
+          configuration.isCanBeResolved = true
+        } catch (ignored: Exception) {
+        }
+      }
+    }
+  }
 
   /**
    * Generated JSON report.
