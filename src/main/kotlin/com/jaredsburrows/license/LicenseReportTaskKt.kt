@@ -42,7 +42,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
 
-  @TaskAction open fun licenseReport() {
+  @TaskAction fun licenseReport() {
     setupEnvironment()
     initDependencies()
     generatePOMInfo()
@@ -66,14 +66,14 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  abstract fun initDependencies()
+  protected abstract fun initDependencies()
 
-  abstract fun generatePOMInfo()
+  protected abstract fun generatePOMInfo()
 
   /**
    * Setup configurations to collect dependencies.
    */
-  open fun setupEnvironment() {
+  private fun setupEnvironment() {
     // Create temporary configuration in order to store POM information
     project.configurations.apply {
       create(POM_CONFIGURATION)
@@ -87,24 +87,24 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  abstract fun getName(pomText: Node?): String
+  protected abstract fun getName(pomText: Node?): String
 
-  abstract fun findLicenses(pomFile: File?): List<License>
+  protected abstract fun findLicenses(pomFile: File?): List<License>
 
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  abstract fun getParentPomFile(pomText: Node?): File
+  protected abstract fun getParentPomFile(pomText: Node?): File
 
   /**
    * Generated HTML report.
    */
-  abstract fun createHtmlReport()
+  protected abstract fun createHtmlReport()
 
   /**
    * Generated JSON report.
    */
-  open fun createJsonReport() {
+  private fun createJsonReport() {
     jsonFile.apply {
       // Remove existing file
       delete()
@@ -123,7 +123,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${getClickableFileUrl(jsonFile)}.")
   }
 
-  open fun copyHtmlReport() {
+  private fun copyHtmlReport() {
     // Iterate through all asset directories
     assetDirs.forEach { directory ->
       val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
@@ -144,7 +144,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  open fun copyJsonReport() {
+  private fun copyJsonReport() {
     // Iterate through all asset directories
     assetDirs.forEach { directory ->
       val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)

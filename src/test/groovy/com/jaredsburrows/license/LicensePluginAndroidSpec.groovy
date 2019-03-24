@@ -30,7 +30,7 @@ final class LicensePluginAndroidSpec extends Specification {
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
   }
 
-  @Ignore
+  @Ignore("Jcenter 502 errors")
   @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
     given:
     def classpathString = pluginClasspath

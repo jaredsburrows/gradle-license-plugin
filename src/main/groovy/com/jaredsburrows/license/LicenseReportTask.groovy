@@ -24,34 +24,34 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Iterate through all configurations and collect dependencies.
    */
-  @Override void initDependencies() {
+  @Override protected void initDependencies() {
     // Add POM information to our POM configuration
     Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add "compile" configuration older java and android gradle plugins
     if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-      configurations.add(getProject().getConfigurations()."compile")
+      configurations.add(getProject().getConfigurations().getByName("compile"))
     }
 
     // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
     if (getProject().getConfigurations().find { it.getName() == "api" }) {
-      configurations.add(getProject().getConfigurations()."api")
+      configurations.add(getProject().getConfigurations().getByName("api"))
     }
     if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-      configurations.add(getProject().getConfigurations()."implementation")
+      configurations.add(getProject().getConfigurations().getByName("implementation"))
     }
 
     // If Android project, add extra configurations
     if (variant) {
       // Add buildType configurations
       if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-        configurations.add(getProject().getConfigurations()."${buildType}Compile")
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Compile"))
       }
       if (getProject().getConfigurations().find { it.getName() == "api" }) {
-        configurations.add(getProject().getConfigurations()."${buildType}Api")
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Api"))
       }
       if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-        configurations.add(getProject().getConfigurations()."${buildType}Implementation")
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Implementation"))
       }
 
       // Add productFlavors configurations
@@ -59,13 +59,14 @@ class LicenseReportTask extends LicenseReportTaskKt {
         // Works for productFlavors and productFlavors with dimensions
         if (variant.capitalize().contains(flavor.name.capitalize())) {
           if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-            configurations.add(getProject().getConfigurations()."${flavor.name}Compile")
+            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Compile"))
           }
           if (getProject().getConfigurations().find { it.getName() == "api" }) {
-            configurations.add(getProject().getConfigurations()."${flavor.name}Api")
+            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Api"))
           }
           if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-            configurations.add(getProject().getConfigurations()."${flavor.name}Implementation")
+            configurations.add(getProject().getConfigurations()
+              .getByName("${flavor.name}Implementation"))
           }
         }
       }
@@ -88,7 +89,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Get POM information from the dependency artifacts.
    */
-  @Override void generatePOMInfo() {
+  @Override protected void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     for (ResolvedArtifact pom : getProject().getConfigurations().getByName("$POM_CONFIGURATION")
       .getResolvedConfiguration().getLenientConfiguration().getArtifacts()) {
@@ -141,12 +142,12 @@ class LicenseReportTask extends LicenseReportTaskKt {
     projects.sort { project -> project.getName() }
   }
 
-  @Override String getName(Node pomText) {
+  @Override protected String getName(Node pomText) {
     String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
-  @Override List<License> findLicenses(File pomFile) {
+  @Override protected List<License> findLicenses(File pomFile) {
     if (!pomFile) {
       return null
     }
@@ -176,7 +177,8 @@ class LicenseReportTask extends LicenseReportTaskKt {
           licenseUrl = licenseUrl?.trim()
           licenses << new License(name: licenseName, url: licenseUrl)
         } catch (Exception ignored) {
-          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
+          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL;" +
+            " skipping license")
         }
       }
       return licenses
@@ -193,7 +195,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  @Override File getParentPomFile(Node pomText) {
+  @Override protected File getParentPomFile(Node pomText) {
     // Get parent POM information
     String groupId = pomText?.parent?.groupId?.text()
     String artifactId = pomText?.parent?.artifactId?.text()
@@ -219,7 +221,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Generated HTML report.
    */
-  @Override void createHtmlReport() {
+  @Override protected void createHtmlReport() {
     // Remove existing file
     getProject().file(htmlFile).delete()
 

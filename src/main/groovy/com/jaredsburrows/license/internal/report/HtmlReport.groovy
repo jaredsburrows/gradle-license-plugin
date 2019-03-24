@@ -24,7 +24,7 @@ final class HtmlReport extends HtmlReportKt {
       String key = ""
 
       // first check to see if the project's license is in our list of known licenses:
-      if (project.getLicenses() && !project.getLicenses().isEmpty()) {
+      if (project.getLicenses() != null && !project.getLicenses().isEmpty()) {
         License license = project.getLicenses().get(0)
         if (licenseMap.containsKey(license.getUrl())) {
           // look up by url
@@ -73,7 +73,7 @@ final class HtmlReport extends HtmlReportKt {
 
             a(name: currentLicense)
             // Display associated license with libraries
-            if (!currentProject.getLicenses() || currentProject.getLicenses().isEmpty()) {
+            if (currentProject.getLicenses() == null || currentProject.getLicenses().isEmpty()) {
               pre(NO_LICENSE)
             } else if (!entry.getKey().isEmpty() && licenseMap.values().contains(entry.getKey())) {
               // license from license map
@@ -82,7 +82,7 @@ final class HtmlReport extends HtmlReportKt {
               // if not found in the map, just display the info from the POM.xml -  name along with the url
               String currentLicenseName = currentProject.getLicenses().get(0).getName().trim()
               String currentUrl = currentProject.getLicenses().get(0).getUrl().trim()
-              if (currentLicenseName || currentUrl) {
+              if (currentLicenseName != null || currentUrl != null) {
                 pre {
                   mkp.yield("$currentLicenseName\n")
                   mkp.yieldUnescaped("<a href='$currentUrl'>$currentUrl</a>")

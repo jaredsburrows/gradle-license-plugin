@@ -6,7 +6,6 @@ import static test.TestUtils.getLicenseText
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -22,7 +21,6 @@ final class LicensePluginJavaSpec extends Specification {
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
   }
 
-  @Ignore
   @Unroll def 'licenseReport using with gradle #gradleVersion'() {
     given:
     buildFile <<
