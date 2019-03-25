@@ -145,9 +145,9 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#0'>Firebase-core</a>
+        <a href="#0">Firebase-core</a>
       </li>
-      <a name='0' />
+      <a name="0" />
       <pre>No license found</pre>
     </ul>
   </body>
@@ -224,12 +224,12 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href="#314129783">Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href="#314129783">Design</a>
       </li>
-      <a name='314129783' />
+      <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -379,11 +379,11 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#755498312'>Fake dependency name</a>
+        <a href="#755498312">Fake dependency name</a>
       </li>
-      <a name='755498312' />
+      <a name="755498312" />
       <pre>Some license
-<a href='http://website.tld/'>http://website.tld/</a></pre>
+<a href="http://website.tld/">http://website.tld/</a></pre>
     </ul>
   </body>
 </html>
@@ -460,11 +460,11 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#755498312'>Fake dependency name</a>
+        <a href="#755498312">Fake dependency name</a>
       </li>
-      <a name='755498312' />
+      <a name="755498312" />
       <pre>Some license
-<a href='http://website.tld/'>http://website.tld/</a></pre>
+<a href="http://website.tld/">http://website.tld/</a></pre>
     </ul>
   </body>
 </html>
@@ -546,16 +546,16 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Retrofit</a>
+        <a href="#314129783">Retrofit</a>
       </li>
-      <a name='314129783' />
+      <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
       <li>
-        <a href='#755498312'>Fake dependency name</a>
+        <a href="#755498312">Fake dependency name</a>
       </li>
-      <a name='755498312' />
+      <a name="755498312" />
       <pre>Some license
-<a href='http://website.tld/'>http://website.tld/</a></pre>
+<a href="http://website.tld/">http://website.tld/</a></pre>
     </ul>
   </body>
 </html>
@@ -607,37 +607,39 @@ final class LicensePluginJavaSpec extends Specification {
 
   def 'licenseReport with project dependencies - multi java modules'() {
     given:
-    testProjectDir.newFile('settings.gradle') << """
-include 'subproject'
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'subproject'
         """
 
-    buildFile << """
-plugins {
-  id 'java-library'
-  id 'com.jaredsburrows.license'
-}
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
 
-allprojects {
-  repositories {
-    maven {
-      url '${mavenRepoUrl}'
-    }
-  }
-}
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+      }
 
-dependencies {
-  implementation project(':subproject')
-  implementation 'com.android.support:appcompat-v7:26.1.0'
-}
+      dependencies {
+        implementation project(':subproject')
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      }
 
-project(':subproject') {
-  apply plugin: 'java-library'
-
-  dependencies {
-    implementation 'com.android.support:design:26.1.0'
-  }
-}
-"""
+      project(':subproject') {
+        apply plugin: 'java-library'
+      
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+      """
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
@@ -662,12 +664,12 @@ project(':subproject') {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href="#314129783">Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href="#314129783">Design</a>
       </li>
-      <a name='314129783' />
+      <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>
@@ -721,37 +723,39 @@ project(':subproject') {
 
   def 'licenseReport using api and implementation configurations with multi java modules'() {
     given:
-    testProjectDir.newFile('settings.gradle') << """
-include 'subproject'
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'subproject'
         """
 
-    buildFile << """
-plugins {
-  id 'java-library'
-  id 'com.jaredsburrows.license'
-}
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
 
-allprojects {
-  repositories {
-    maven {
-      url '${mavenRepoUrl}'
-    }
-  }
-}
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+      }
 
-dependencies {
-  api project(':subproject')
-  implementation 'com.android.support:appcompat-v7:26.1.0'
-}
+      dependencies {
+        api project(':subproject')
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      }
 
-project(':subproject') {
-  apply plugin: 'java-library'
-
-  dependencies {
-    implementation 'com.android.support:design:26.1.0'
-  }
-}
-"""
+      project(':subproject') {
+        apply plugin: 'java-library'
+      
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+      """
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
@@ -776,12 +780,12 @@ project(':subproject') {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#314129783'>Appcompat-v7</a>
+        <a href="#314129783">Appcompat-v7</a>
       </li>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href="#314129783">Design</a>
       </li>
-      <a name='314129783' />
+      <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
     </ul>
   </body>

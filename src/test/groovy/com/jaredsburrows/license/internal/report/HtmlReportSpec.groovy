@@ -55,19 +55,19 @@ final class HtmlReportSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#0'>name</a>
+        <a href="#0">name</a>
       </li>
-      <a name='0' />
+      <a name="0" />
       <pre>No license found</pre>
       <li>
-        <a href='#116079'>name</a>
+        <a href="#116079">name</a>
       </li>
       <li>
-        <a href='#116079'>name</a>
+        <a href="#116079">name</a>
       </li>
-      <a name='116079' />
+      <a name="116079" />
       <pre>name
-<a href='url'>url</a></pre>
+<a href="url">url</a></pre>
     </ul>
   </body>
 </html>
