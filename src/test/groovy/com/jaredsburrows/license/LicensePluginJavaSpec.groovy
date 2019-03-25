@@ -35,7 +35,7 @@ final class LicensePluginJavaSpec extends Specification {
     def result = GradleRunner.create()
       .withGradleVersion(gradleVersion)
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -69,7 +69,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -124,7 +124,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -203,7 +203,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -303,7 +303,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -358,7 +358,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -439,7 +439,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -525,7 +525,7 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -641,7 +641,7 @@ project(':subproject') {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 
@@ -755,7 +755,7 @@ project(':subproject') {
     when:
     def result = GradleRunner.create()
       .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport')
+      .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
 

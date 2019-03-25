@@ -4,17 +4,13 @@ import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
-import com.jaredsburrows.license.internal.report.JsonReport
-import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
 
-class LicenseReportTask extends DefaultTask {
+class LicenseReportTask extends LicenseReportTaskKt {
   static final def POM_CONFIGURATION = "poms"
   static final def TEMP_POM_CONFIGURATION = "tempPoms"
   private static final String ANDROID_SUPPORT_GROUP_ID = "com.android.support"
@@ -23,95 +19,67 @@ class LicenseReportTask extends DefaultTask {
   private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
   static final String HTML_EXT = ".html"
   static final String JSON_EXT = ".json"
-  @Internal final List<Project> projects = []
-  @Optional @Input File[] assetDirs = []
-  @Optional @Input def generateHtmlReport
-  @Optional @Input def generateJsonReport
-  @Optional @Input def copyHtmlReportToAssets
-  @Optional @Input def copyJsonReportToAssets
-  @Optional @Input def buildType
-  @Optional @Input def variant
   @Optional @Internal def productFlavors = []
-  @OutputFile File htmlFile
-  @OutputFile File jsonFile
-
-  @TaskAction public void licenseReport() {
-    setupEnvironment()
-    collectDependencies()
-    generatePOMInfo()
-
-    if (generateHtmlReport) {
-      createHtmlReport()
-
-      // If Android project and copy enabled, copy to asset directory
-      if (variant && copyHtmlReportToAssets) {
-        copyHtmlReport()
-      }
-    }
-
-    if (generateJsonReport) {
-      createJsonReport()
-
-      // If Android project and copy enabled, copy to asset directory
-      if (variant && copyJsonReportToAssets) {
-        copyJsonReport()
-      }
-    }
-  }
-
-  /**
-   * Setup configurations to collect dependencies.
-   */
-  private void setupEnvironment() {
-    // Create temporary configuration in order to store POM information
-    getProject().getConfigurations().create(POM_CONFIGURATION)
-
-    getProject().getConfigurations().every {
-      try {
-        it.canBeResolved = true
-      } catch (Exception ignore) { }
-    }
-  }
 
   /**
    * Iterate through all configurations and collect dependencies.
    */
-  private void collectDependencies() {
+  @Override protected void initDependencies() {
     // Add POM information to our POM configuration
     Set<Configuration> configurations = new LinkedHashSet<>()
 
     // Add "compile" configuration older java and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."compile"
+    if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+      configurations.add(getProject().getConfigurations().getByName("compile"))
+    }
 
     // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."api"
-    if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."implementation"
+    if (getProject().getConfigurations().find { it.getName() == "api" }) {
+      configurations.add(getProject().getConfigurations().getByName("api"))
+    }
+    if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+      configurations.add(getProject().getConfigurations().getByName("implementation"))
+    }
 
     // If Android project, add extra configurations
     if (variant) {
       // Add buildType configurations
-      if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${buildType}Compile"
-      if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${buildType}Api"
-      if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${buildType}Implementation"
+      if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Compile"))
+      }
+      if (getProject().getConfigurations().find { it.getName() == "api" }) {
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Api"))
+      }
+      if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+        configurations.add(getProject().getConfigurations().getByName("${buildType}Implementation"))
+      }
 
       // Add productFlavors configurations
-      productFlavors.each { flavor ->
+      for (def flavor : productFlavors) {
         // Works for productFlavors and productFlavors with dimensions
         if (variant.capitalize().contains(flavor.name.capitalize())) {
-          if (getProject().getConfigurations().find { it.getName() == "compile" }) configurations << getProject().getConfigurations()."${flavor.name}Compile"
-          if (getProject().getConfigurations().find { it.getName() == "api" }) configurations << getProject().getConfigurations()."${flavor.name}Api"
-          if (getProject().getConfigurations().find { it.getName() == "implementation" }) configurations << getProject().getConfigurations()."${flavor.name}Implementation"
+          if (getProject().getConfigurations().find { it.getName() == "compile" }) {
+            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Compile"))
+          }
+          if (getProject().getConfigurations().find { it.getName() == "api" }) {
+            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Api"))
+          }
+          if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
+            configurations.add(getProject().getConfigurations()
+              .getByName("${flavor.name}Implementation"))
+          }
         }
       }
     }
 
     // Iterate through all the configurations's dependencies
-    configurations.each { configuration ->
+    for (Configuration configuration : configurations) {
       configuration.canBeResolved &&
-        configuration.getResolvedConfiguration().getLenientConfiguration().getArtifacts()*.getModuleVersion().id.collect { id ->
+        configuration.getResolvedConfiguration().getLenientConfiguration()
+          .getArtifacts()*.getModuleVersion().id.collect { id ->
           "$id.group:$id.name:$id.version@pom"
         }.each { pom ->
-          getProject().getConfigurations()."$POM_CONFIGURATION".dependencies.add(
+          getProject().getConfigurations().getByName("$POM_CONFIGURATION").dependencies.add(
             getProject().getDependencies().add("$POM_CONFIGURATION", pom)
           )
         }
@@ -121,17 +89,18 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Get POM information from the dependency artifacts.
    */
-  private void generatePOMInfo() {
+  @Override protected void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    getProject().getConfigurations()."$POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts().each { pom ->
-      File pomFile = pom.file
+    for (ResolvedArtifact pom : getProject().getConfigurations().getByName("$POM_CONFIGURATION")
+      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()) {
+      File pomFile = pom.getFile()
       Node pomText = new XmlParser().parse(pomFile)
 
       // License information
-      def name = getName(pomText)
+      String name = getName(pomText)
       String version = pomText.version?.text()
       String description = pomText.description?.text()
-      List<Developer> developers = []
+      List<Developer> developers = new ArrayList<>()
       if (pomText.developers) {
         developers = pomText.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
@@ -151,7 +120,7 @@ class LicenseReportTask extends DefaultTask {
       List<License> licenses = findLicenses(pomFile)
       if (!licenses) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
-        licenses = []
+        licenses = new ArrayList<>()
       }
 
       // Store the information that we need
@@ -166,33 +135,33 @@ class LicenseReportTask extends DefaultTask {
         gav: pom.owner
       )
 
-      projects << project
+      projects.add(project)
     }
 
     // Sort POM information by name
-    projects.sort { project -> project.name }
+    projects.sort { project -> project.getName() }
   }
 
-  static def getName(def pomText) {
-    def name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
+  @Override protected String getName(Node pomText) {
+    String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
-  List<License> findLicenses(File pomFile) {
+  @Override protected List<License> findLicenses(File pomFile) {
     if (!pomFile) {
       return null
     }
     Node pomText = new XmlParser().parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    def name = getName(pomText)
+    String name = getName(pomText)
     if (!name) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == pomText.groupId?.text()) {
-      return [ new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL) ]
+      return [new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL)]
     }
 
     // License information found
@@ -207,16 +176,16 @@ class LicenseReportTask extends DefaultTask {
           licenseName = licenseName?.trim()?.capitalize()
           licenseUrl = licenseUrl?.trim()
           licenses << new License(name: licenseName, url: licenseUrl)
-        } catch (Exception ignore) {
-          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL; skipping license")
+        } catch (Exception ignored) {
+          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL;" +
+            " skipping license")
         }
       }
       return licenses
     }
     getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    def hasParent = pomText.parent != null
-    if (hasParent) {
+    if (pomText.parent != null) {
       File parentPomFile = getParentPomFile(pomText)
       return findLicenses(parentPomFile)
     }
@@ -226,7 +195,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  private File getParentPomFile(def pomText) {
+  @Override protected File getParentPomFile(Node pomText) {
     // Get parent POM information
     String groupId = pomText?.parent?.groupId?.text()
     String artifactId = pomText?.parent?.artifactId?.text()
@@ -235,14 +204,16 @@ class LicenseReportTask extends DefaultTask {
 
     // Add dependency to temporary configuration
     getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-    getProject().getConfigurations()."$TEMP_POM_CONFIGURATION".dependencies.add(
+    getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION").dependencies.add(
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
 
-    File pomFile = getProject().getConfigurations()."$TEMP_POM_CONFIGURATION".getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
+    File pomFile = getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION")
+      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
 
     // Reset dependencies in temporary configuration
-    getProject().getConfigurations().remove(getProject().getConfigurations()."$TEMP_POM_CONFIGURATION")
+    getProject().getConfigurations().remove(getProject().getConfigurations()
+      .getByName("$TEMP_POM_CONFIGURATION"))
 
     return pomFile
   }
@@ -250,7 +221,7 @@ class LicenseReportTask extends DefaultTask {
   /**
    * Generated HTML report.
    */
-  private void createHtmlReport() {
+  @Override protected void createHtmlReport() {
     // Remove existing file
     getProject().file(htmlFile).delete()
 
@@ -265,63 +236,5 @@ class LicenseReportTask extends DefaultTask {
 
     // Log output directory for user
     getLogger().log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
-  }
-
-  /**
-   * Generated JSON report.
-   */
-  private void createJsonReport() {
-    // Remove existing file
-    getProject().file(jsonFile).delete()
-
-    // Create directories and write report for file
-    jsonFile.getParentFile().mkdirs()
-    jsonFile.createNewFile()
-    jsonFile.withOutputStream { outputStream ->
-      PrintStream printStream = new PrintStream(outputStream)
-      printStream.println new JsonReport(projects).string()
-      printStream.println() // Add new line to file
-    }
-
-    // Log output directory for user
-    getLogger().log(LogLevel.LIFECYCLE, "Wrote JSON report to ${getClickableFileUrl(jsonFile)}.")
-  }
-
-  private void copyHtmlReport() {
-    // Iterate through all asset directories
-    assetDirs.each { directory ->
-      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + HTML_EXT)
-
-      // Remove existing file
-      getProject().file(licenseFile).delete()
-
-      // Create new file
-      licenseFile.getParentFile().mkdirs()
-      licenseFile.createNewFile()
-
-      // Copy HTML file to the assets directory
-      getProject().file(licenseFile << getProject().file(htmlFile).getText())
-    }
-  }
-
-  private void copyJsonReport() {
-    // Iterate through all asset directories
-    assetDirs.each { directory ->
-      File licenseFile = new File(directory.getPath(), OPEN_SOURCE_LICENSES + JSON_EXT)
-
-      // Remove existing file
-      getProject().file(licenseFile).delete()
-
-      // Create new file
-      licenseFile.getParentFile().mkdirs()
-      licenseFile.createNewFile()
-
-      // Copy JSON file to the assets directory
-      getProject().file(licenseFile << getProject().file(jsonFile).getText())
-    }
-  }
-
-  private static String getClickableFileUrl(File file) {
-    return new URI("file", "", file.toURI().getPath(), null, null).toString()
   }
 }
