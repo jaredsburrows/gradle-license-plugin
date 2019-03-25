@@ -69,25 +69,25 @@ dependencies {
 ```html
 <html>
   <head>
-    <style>body{font-family: sans-serif} pre{background-color: #eeeeee; padding: 1em; white-space: pre-wrap}</style>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
     <title>Open source licenses</title>
   </head>
   <body>
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href='#76480'>WSDL4J</a>
+        <a href="#76480">WSDL4J</a>
       </li>
       <pre>No license found</pre>
       <li>
-        <a href='#1068328410'>Android GIF Drawable Library</a>
+        <a href="#1068328410">Android GIF Drawable Library</a>
       </li>
-      <a name='1068328410' />
+      <a name="1068328410" />
       <pre>mit.txt here</pre>
       <li>
-        <a href='#314129783'>Design</a>
+        <a href="#314129783">Design</a>
       </li>
-      <a name='314129783' />
+      <a name="314129783" />
       <pre>apache-2.0.txt here</pre>
     </ul>
   </body>

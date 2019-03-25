@@ -16,6 +16,7 @@ final class HtmlReport extends HtmlReportKt {
   public String openSourceHtml() {
     StringWriter writer = new StringWriter()
     MarkupBuilder markup = new MarkupBuilder(writer)
+    markup.setDoubleQuotes(true)
     Map<String, List<Project>> projectsMap = new HashMap<>()
     Map<String, String> licenseMap = LicenseHelper.getLicenseMap()
 
@@ -85,7 +86,7 @@ final class HtmlReport extends HtmlReportKt {
               if (currentLicenseName != null || currentUrl != null) {
                 pre {
                   mkp.yield("$currentLicenseName\n")
-                  mkp.yieldUnescaped("<a href='$currentUrl'>$currentUrl</a>")
+                  mkp.yieldUnescaped("<a href=\"$currentUrl\">$currentUrl</a>")
                 }
               } else {
                 pre(NO_LICENSE)
