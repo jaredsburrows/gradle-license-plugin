@@ -14,7 +14,7 @@ final class JsonReportSpec extends Specification {
     when:
     def actual = sut.string().stripIndent().trim()
     def expected =
-      """
+"""
 []
 """.stripIndent().trim()
 
@@ -31,7 +31,7 @@ final class JsonReportSpec extends Specification {
     when:
     def actual = sut.string().stripIndent().trim()
     def expected =
-      """
+"""
 [
     {
         "project": "name",
@@ -81,7 +81,7 @@ final class JsonReportSpec extends Specification {
     when:
     def actual = sut.string().stripIndent().trim()
     def expected =
-      """
+"""
 [
     {
         "project": "name",

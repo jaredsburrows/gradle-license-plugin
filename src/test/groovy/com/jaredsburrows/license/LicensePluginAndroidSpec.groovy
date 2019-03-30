@@ -40,28 +40,28 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          repositories {
-            jcenter()
-            google()
-          }
-
-          dependencies {
-            classpath "com.android.tools.build:gradle:${agpVersion}"
-            classpath files($classpathString)
-          }
+      buildscript {
+        repositories {
+          jcenter()
+          google()
         }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
+      
+        dependencies {
+          classpath "com.android.tools.build:gradle:${agpVersion}"
+          classpath files($classpathString)
         }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
       """.stripIndent().trim()
 
     when:
@@ -101,22 +101,22 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
         }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
         }
+      }
       """.stripIndent().trim()
 
     when:
@@ -132,7 +132,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -145,7 +145,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 []
 """.stripIndent().trim()
 
@@ -165,35 +165,35 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-        }
-
+      buildscript {
         dependencies {
-          // Handles duplicates
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-          implementation 'com.android.support:design:26.1.0'
+          classpath files($classpathString)
         }
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      
+      dependencies {
+        // Handles duplicates
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
       """.stripIndent().trim()
 
     when:
@@ -209,7 +209,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -232,7 +232,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",
@@ -287,40 +287,40 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-
-          buildTypes {
-            debug {}
-            release {}
-          }
-        }
-
+      buildscript {
         dependencies {
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-
-          debugImplementation 'com.android.support:design:26.1.0'
-          releaseImplementation 'com.android.support:design:26.1.0'
+          classpath files($classpathString)
         }
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      
+        buildTypes {
+          debug {}
+          release {}
+        }
+      }
+      
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      
+        debugImplementation 'com.android.support:design:26.1.0'
+        releaseImplementation 'com.android.support:design:26.1.0'
+      }
       """.stripIndent().trim()
 
     when:
@@ -336,7 +336,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -359,7 +359,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",
@@ -414,54 +414,54 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-    
-          defaultConfig {
-            applicationId 'com.example'
-          }
-    
-          buildTypes {
-            debug {}
-            release {}
-          }
-
-          flavorDimensions 'a', 'b'
-
-          productFlavors {
-            flavor1 { dimension 'a' }
-            flavor2 { dimension 'a' }
-            flavor3 { dimension 'b' }
-            flavor4 { dimension 'b' }
-          }
-        }
-
+      buildscript {
         dependencies {
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-
-          debugImplementation 'com.android.support:design:26.1.0'
-          releaseImplementation 'com.android.support:design:26.1.0'
-
-          flavor1Implementation 'com.android.support:support-v4:26.1.0'
-          flavor2Implementation 'com.android.support:support-v4:26.1.0'
-          flavor3Implementation 'com.android.support:support-annotations:26.1.0'
-          flavor4Implementation 'com.android.support:support-annotations:26.1.0'
+          classpath files($classpathString)
         }
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      
+        buildTypes {
+          debug {}
+          release {}
+        }
+      
+        flavorDimensions 'a', 'b'
+      
+        productFlavors {
+          flavor1 { dimension 'a' }
+          flavor2 { dimension 'a' }
+          flavor3 { dimension 'b' }
+          flavor4 { dimension 'b' }
+        }
+      }
+      
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      
+        debugImplementation 'com.android.support:design:26.1.0'
+        releaseImplementation 'com.android.support:design:26.1.0'
+      
+        flavor1Implementation 'com.android.support:support-v4:26.1.0'
+        flavor2Implementation 'com.android.support:support-v4:26.1.0'
+        flavor3Implementation 'com.android.support:support-annotations:26.1.0'
+        flavor4Implementation 'com.android.support:support-annotations:26.1.0'
+      }
       """.stripIndent().trim()
 
     when:
@@ -477,7 +477,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -506,7 +506,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",
@@ -596,35 +596,35 @@ final class LicensePluginAndroidSpec extends Specification {
 
     buildFile <<
       """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-        }
-
+      buildscript {
         dependencies {
-          debugImplementation 'com.android.support:design:26.1.0'
-          debugImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
-          releaseImplementation 'com.android.support:design:26.1.0'
-          releaseImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+          classpath files($classpathString)
         }
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      
+      dependencies {
+        debugImplementation 'com.android.support:design:26.1.0'
+        debugImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        releaseImplementation 'com.android.support:design:26.1.0'
+        releaseImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+      }
       """.stripIndent().trim()
 
     when:
@@ -640,7 +640,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -665,7 +665,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Android GIF Drawable Library",
@@ -725,24 +725,24 @@ final class LicensePluginAndroidSpec extends Specification {
             classpath files($classpathString)
           }
         }
-
+      
         repositories {
           maven {
             url '${mavenRepoUrl}'
           }
         }
-
+      
         apply plugin: 'com.android.application'
         apply plugin: 'com.jaredsburrows.license'
-
+      
         android {
           compileSdkVersion 28
-
+      
           defaultConfig {
             applicationId 'com.example'
           }
         }
-
+      
         dependencies {
           implementation 'group:name4:1.0.0'
         }
@@ -761,7 +761,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -781,7 +781,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Fake dependency name",
@@ -818,46 +818,47 @@ final class LicensePluginAndroidSpec extends Specification {
     testProjectDir.newFile('settings.gradle') <<
       """
       include 'subproject'
-        """
+      """
 
-    buildFile << """
-        buildscript {
-          dependencies {
-            classpath files($classpathString)
-          }
-        }
-
-        allprojects {
-          repositories {
-            maven {
-              url '${mavenRepoUrl}'
-            }
-          }
-        }
-
-        apply plugin: 'com.android.application'
-        apply plugin: 'com.jaredsburrows.license'
-        
-        android {
-          compileSdkVersion 28
-
-          defaultConfig {
-            applicationId 'com.example'
-          }
-        }
-
+    buildFile <<
+      """
+      buildscript {
         dependencies {
-          api project(':subproject')
-          implementation 'group:name:1.0.0'
+          classpath files($classpathString)
         }
-
-        project(':subproject') {
-          apply plugin: 'java-library'
-
-          dependencies {
-            implementation 'com.android.support:design:26.1.0'
+      }
+      
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
           }
         }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      
+      dependencies {
+        api project(':subproject')
+        implementation 'group:name:1.0.0'
+      }
+      
+      project(':subproject') {
+        apply plugin: 'java-library'
+      
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
       """
 
     when:
@@ -873,7 +874,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -899,7 +900,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Design",
