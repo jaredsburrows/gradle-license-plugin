@@ -25,10 +25,10 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java'
-          id 'com.jaredsburrows.license'
-        }
+      plugins {
+        id 'java'
+        id 'com.jaredsburrows.license'
+      }
       """
 
     when:
@@ -60,10 +60,10 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
-        }
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
       """
 
     when:
@@ -80,7 +80,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -93,7 +93,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 []
 """.stripIndent().trim()
 
@@ -105,20 +105,20 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'com.google.firebase:firebase-core:10.0.1'
-        }
+      }
+      
+      dependencies {
+        implementation 'com.google.firebase:firebase-core:10.0.1'
+      }
       """
 
     when:
@@ -135,7 +135,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -155,7 +155,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Firebase-core",
@@ -182,22 +182,22 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-          implementation 'com.android.support:appcompat-v7:26.1.0'
-          implementation 'com.android.support:design:26.1.0'
-        }
+      }
+      
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
       """
 
     when:
@@ -214,7 +214,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -237,7 +237,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",
@@ -284,20 +284,20 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'group:name3:1.0.0'
-        }
+      }
+      
+      dependencies {
+        implementation 'group:name3:1.0.0'
+      }
       """
 
     when:
@@ -314,7 +314,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -327,7 +327,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 []
 """.stripIndent().trim()
 
@@ -339,20 +339,20 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'group:name:1.0.0'
-        }
+      }
+      
+      dependencies {
+        implementation 'group:name:1.0.0'
+      }
       """
 
     when:
@@ -369,7 +369,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -390,7 +390,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Fake dependency name",
@@ -420,20 +420,20 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'group:name2:1.0.0'
-        }
+      }
+      
+      dependencies {
+        implementation 'group:name2:1.0.0'
+      }
       """
 
     when:
@@ -450,7 +450,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -471,7 +471,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Fake dependency name",
@@ -505,21 +505,21 @@ final class LicensePluginJavaSpec extends Specification {
     given:
     buildFile <<
       """
-        plugins {
-          id 'java-library'
-          id 'com.jaredsburrows.license'
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+      
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
         }
-
-        repositories {
-          maven {
-            url '${mavenRepoUrl}'
-          }
-        }
-
-        dependencies {
-          implementation 'group:child:1.0.0'
-          implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-        }
+      }
+      
+      dependencies {
+        implementation 'group:child:1.0.0'
+        implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+      }
       """
 
     when:
@@ -536,7 +536,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -562,7 +562,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Fake dependency name",
@@ -610,7 +610,7 @@ final class LicensePluginJavaSpec extends Specification {
     testProjectDir.newFile('settings.gradle') <<
       """
       include 'subproject'
-        """
+      """
 
     buildFile <<
       """
@@ -618,7 +618,7 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-
+      
       allprojects {
         repositories {
           maven {
@@ -626,12 +626,12 @@ final class LicensePluginJavaSpec extends Specification {
           }
         }
       }
-
+      
       dependencies {
         implementation project(':subproject')
         implementation 'com.android.support:appcompat-v7:26.1.0'
       }
-
+      
       project(':subproject') {
         apply plugin: 'java-library'
       
@@ -654,7 +654,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -677,7 +677,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",
@@ -726,7 +726,7 @@ final class LicensePluginJavaSpec extends Specification {
     testProjectDir.newFile('settings.gradle') <<
       """
       include 'subproject'
-        """
+      """
 
     buildFile <<
       """
@@ -770,7 +770,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     def actualHtml = new File("${reportFolder}/licenseReport.html").text.stripIndent().trim()
     def expectedHtml =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -793,7 +793,7 @@ final class LicensePluginJavaSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/licenseReport.json").text.stripIndent().trim()
     def expectedJson =
-      """
+"""
 [
     {
         "project": "Appcompat-v7",

@@ -14,7 +14,7 @@ final class HtmlReportSpec extends Specification {
     when:
     def actual = sut.string().stripIndent().trim()
     def expected =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -45,7 +45,7 @@ final class HtmlReportSpec extends Specification {
     when:
     def actual = sut.string().stripIndent().trim()
     def expected =
-      """
+"""
 <html>
   <head>
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
