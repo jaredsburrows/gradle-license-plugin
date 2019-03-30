@@ -91,7 +91,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override protected void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    for (ResolvedArtifact pom : getProject().getConfigurations().getByName("$POM_CONFIGURATION")
+    for (ResolvedArtifact pom : getProject().getConfigurations().getByName(POM_CONFIGURATION)
       .getResolvedConfiguration().getLenientConfiguration().getArtifacts()) {
       File pomFile = pom.getFile()
       Node pomText = new XmlParser().parse(pomFile)
@@ -171,11 +171,10 @@ class LicenseReportTask extends LicenseReportTaskKt {
         String licenseName = license.name?.text()
         String licenseUrl = license.url?.text()
         try {
-          //noinspection GroovyResultOfObjectAllocationIgnored
           new URL(licenseUrl)
           licenseName = licenseName?.trim()?.capitalize()
           licenseUrl = licenseUrl?.trim()
-          licenses << new License(name: licenseName, url: licenseUrl)
+          licenses.add(new License(name: licenseName, url: licenseUrl))
         } catch (Exception ignored) {
           getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL;" +
             " skipping license")
@@ -204,16 +203,16 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
     // Add dependency to temporary configuration
     getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-    getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION").dependencies.add(
+    getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
 
-    File pomFile = getProject().getConfigurations().getByName("$TEMP_POM_CONFIGURATION")
+    File pomFile = getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION)
       .getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
 
     // Reset dependencies in temporary configuration
     getProject().getConfigurations().remove(getProject().getConfigurations()
-      .getByName("$TEMP_POM_CONFIGURATION"))
+      .getByName(TEMP_POM_CONFIGURATION))
 
     return pomFile
   }
