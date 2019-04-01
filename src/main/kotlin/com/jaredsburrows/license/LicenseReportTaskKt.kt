@@ -94,7 +94,15 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  protected abstract fun getParentPomFile(pomText: Node?): File
+  protected open fun getParentPomFile(pomText: Node?): File? {
+    val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION)
+      .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
+
+    // Reset dependencies in temporary configuration
+    project.configurations.remove(project.configurations.getByName(TEMP_POM_CONFIGURATION))
+
+    return pomFile
+  }
 
   /**
    * Generated HTML report.
