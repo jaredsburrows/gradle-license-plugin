@@ -194,28 +194,20 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  @Override protected File getParentPomFile(Node pomText) {
-    // Get parent POM information
-    String groupId = pomText?.parent?.groupId?.text()
-    String artifactId = pomText?.parent?.artifactId?.text()
-    String version = pomText?.parent?.version?.text()
-    String dependency = "$groupId:$artifactId:$version@pom"
+    @Override protected File getParentPomFile(Node pomText) {
+      // Get parent POM information
+      String groupId = pomText?.parent?.groupId?.text()
+      String artifactId = pomText?.parent?.artifactId?.text()
+      String version = pomText?.parent?.version?.text()
+      String dependency = "$groupId:$artifactId:$version@pom"
 
-    // Add dependency to temporary configuration
-    getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-    getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
-      getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
-    )
-
-    File pomFile = getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION)
-      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()?.file[0]
-
-    // Reset dependencies in temporary configuration
-    getProject().getConfigurations().remove(getProject().getConfigurations()
-      .getByName(TEMP_POM_CONFIGURATION))
-
-    return pomFile
-  }
+      // Add dependency to temporary configuration
+      getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
+      getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
+        getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
+      )
+      return super.getParentPomFile(pomText)
+    }
 
   /**
    * Generated HTML report.
