@@ -111,7 +111,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
       String year = pomText.inceptionYear?.text()
 
       // Clean up and format
-      name = name?.capitalize()
+      name = name?.trim()
       version = version?.trim()
       description = description?.trim()
       url = url?.trim()
@@ -139,7 +139,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
 
     // Sort POM information by name
-    projects.sort { project -> project.getName() }
+    projects.sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
   }
 
   @Override protected String getName(Node pomText) {

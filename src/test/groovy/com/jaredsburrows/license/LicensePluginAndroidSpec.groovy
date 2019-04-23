@@ -219,10 +219,10 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -235,7 +235,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -252,7 +252,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -346,10 +346,10 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -362,7 +362,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -379,7 +379,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -487,16 +487,16 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <li>
-        <a href="#314129783">Support-annotations</a>
+        <a href="#314129783">support-annotations</a>
       </li>
       <li>
-        <a href="#314129783">Support-v4</a>
+        <a href="#314129783">support-v4</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -509,7 +509,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -526,7 +526,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -543,7 +543,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "com.android.support:design:26.1.0"
     },
     {
-        "project": "Support-annotations",
+        "project": "support-annotations",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -560,7 +560,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "com.android.support:support-annotations:26.1.0"
     },
     {
-        "project": "Support-v4",
+        "project": "support-v4",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -655,7 +655,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <a name="1068328410" />
       <pre>${getLicenseText('mit.txt')}</pre>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -685,7 +685,7 @@ final class LicensePluginAndroidSpec extends Specification {
         "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -884,7 +884,7 @@ final class LicensePluginAndroidSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -903,7 +903,7 @@ final class LicensePluginAndroidSpec extends Specification {
 """
 [
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
