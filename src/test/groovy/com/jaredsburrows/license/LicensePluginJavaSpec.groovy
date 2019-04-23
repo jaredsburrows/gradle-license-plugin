@@ -567,7 +567,7 @@ final class LicensePluginJavaSpec extends Specification {
     {
         "project": "Fake dependency name",
         "description": "Fake dependency description",
-        "version": null,
+        "version": "1.0.0",
         "developers": [
             "name"
         ],
@@ -584,7 +584,7 @@ final class LicensePluginJavaSpec extends Specification {
     {
         "project": "Retrofit",
         "description": null,
-        "version": null,
+        "version": "2.3.0",
         "developers": [
             
         ],
