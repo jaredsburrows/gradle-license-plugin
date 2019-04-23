@@ -1,5 +1,18 @@
 # Change Log
 
+## Version 0.8.5 (2019-04-23)
+ 
+ * Converted many files to Kotlin
+ * [#57](https://github.com/jaredsburrows/gradle-license-plugin/pull/57) Eliminate duplicate licenses
+ * [#76](https://github.com/jaredsburrows/gradle-license-plugin/pull/76) Use double quotes for HTML
+ * [#69](https://github.com/jaredsburrows/gradle-license-plugin/pull/69) Undesired capitalisation
+ * [#55](https://github.com/jaredsburrows/gradle-license-plugin/pull/55) Running multiple build variant license tasks crashes build
+ * [#48](https://github.com/jaredsburrows/gradle-license-plugin/pull/48) Version is null for some dependencies
+
+  Many thanks to
+  [@iankerr](https://github.com/iankerr)
+  for the code contributions!
+
 ## Version 0.8.42 (2018-11-21)
 
  * [#44](https://github.com/jaredsburrows/gradle-license-plugin/pull/44) Extra report info
