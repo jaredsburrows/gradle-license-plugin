@@ -587,6 +587,70 @@ final class LicensePluginAndroidSpec extends Specification {
                  'licenseFlavor2Flavor4DebugReport', 'licenseFlavor2Flavor4ReleaseReport']
   }
 
+  def 'run build task with buildTypes + productFlavors + flavorDimensions'() {
+    given:
+    def classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion 28
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+
+        buildTypes {
+          debug {}
+          release {}
+        }
+
+        flavorDimensions 'a', 'b'
+
+        productFlavors {
+          flavor1 { dimension 'a' }
+          flavor2 { dimension 'a' }
+          flavor3 { dimension 'b' }
+          flavor4 { dimension 'b' }
+        }
+      }
+
+      dependencies {
+      }
+      """.stripIndent().trim()
+
+    when:
+    def result = GradleRunner.create()
+      .withProjectDir(testProjectDir.root)
+      .withArguments("licenseFlavor1Flavor3DebugReport", "licenseFlavor1Flavor3ReleaseReport",
+      "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport", '-s')
+      .build()
+
+    then:
+    result.task(":licenseFlavor1Flavor3DebugReport").outcome == SUCCESS
+    result.task(":licenseFlavor1Flavor3ReleaseReport").outcome == SUCCESS
+    result.task(":licenseFlavor2Flavor4DebugReport").outcome == SUCCESS
+    result.task(":licenseFlavor2Flavor4ReleaseReport").outcome == SUCCESS
+  }
+
   @Unroll def '#taskName from readme example'() {
     given:
     def classpathString = pluginClasspath

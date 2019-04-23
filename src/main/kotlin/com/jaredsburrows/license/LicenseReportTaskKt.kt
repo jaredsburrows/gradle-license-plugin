@@ -13,15 +13,14 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
+import java.util.UUID
 
 abstract class LicenseReportTaskKt : DefaultTask() {
   companion object {
-    private const val POM_CONFIGURATION = "poms"
-    private const val TEMP_POM_CONFIGURATION = "tempPoms"
-    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    private const val APACHE_LICENSE_NAME = "The Apache Software License"
-    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+    const val APACHE_LICENSE_NAME = "The Apache Software License"
+    const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    const val OPEN_SOURCE_LICENSES = "open_source_licenses"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
 
@@ -41,6 +40,8 @@ abstract class LicenseReportTaskKt : DefaultTask() {
 //  @Optional @Internal var productFlavors = listOf<com.android.builder.model.ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
+  var POM_CONFIGURATION = "poms"
+  var TEMP_POM_CONFIGURATION = "tempPoms"
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -74,6 +75,9 @@ abstract class LicenseReportTaskKt : DefaultTask() {
    * Setup configurations to collect dependencies.
    */
   private fun setupEnvironment() {
+    POM_CONFIGURATION += POM_CONFIGURATION + variant.orEmpty() + UUID.randomUUID()
+    TEMP_POM_CONFIGURATION += TEMP_POM_CONFIGURATION + variant.orEmpty() + UUID.randomUUID()
+
     // Create temporary configuration in order to store POM information
     project.configurations.apply {
       create(POM_CONFIGURATION)

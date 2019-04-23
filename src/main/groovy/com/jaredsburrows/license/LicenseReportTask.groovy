@@ -11,14 +11,6 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 
 class LicenseReportTask extends LicenseReportTaskKt {
-  static final def POM_CONFIGURATION = "poms"
-  static final def TEMP_POM_CONFIGURATION = "tempPoms"
-  private static final String ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-  private static final String APACHE_LICENSE_NAME = "The Apache Software License"
-  private static final String APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  private static final String OPEN_SOURCE_LICENSES = "open_source_licenses"
-  static final String HTML_EXT = ".html"
-  static final String JSON_EXT = ".json"
   @Optional @Internal def productFlavors = []
 
   /**
