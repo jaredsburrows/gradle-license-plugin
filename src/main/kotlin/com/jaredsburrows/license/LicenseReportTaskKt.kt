@@ -75,8 +75,8 @@ abstract class LicenseReportTaskKt : DefaultTask() {
    * Setup configurations to collect dependencies.
    */
   private fun setupEnvironment() {
-    POM_CONFIGURATION += POM_CONFIGURATION + variant.orEmpty() + UUID.randomUUID()
-    TEMP_POM_CONFIGURATION += TEMP_POM_CONFIGURATION + variant.orEmpty() + UUID.randomUUID()
+    POM_CONFIGURATION += variant.orEmpty() + UUID.randomUUID()
+    TEMP_POM_CONFIGURATION += variant.orEmpty() + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
     project.configurations.apply {

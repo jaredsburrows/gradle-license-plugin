@@ -71,8 +71,8 @@ class LicenseReportTask extends LicenseReportTaskKt {
           .getArtifacts()*.getModuleVersion().id.collect { id ->
           "$id.group:$id.name:$id.version@pom"
         }.each { pom ->
-          getProject().getConfigurations().getByName("$POM_CONFIGURATION").dependencies.add(
-            getProject().getDependencies().add("$POM_CONFIGURATION", pom)
+          getProject().getConfigurations().getByName(POM_CONFIGURATION).dependencies.add(
+            getProject().getDependencies().add(POM_CONFIGURATION, pom)
           )
         }
     }
@@ -109,10 +109,16 @@ class LicenseReportTask extends LicenseReportTaskKt {
       url = url?.trim()
       year = year?.trim()
 
+      // Search for licenses
       List<License> licenses = findLicenses(pomFile)
       if (!licenses) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
         licenses = new ArrayList<>()
+      }
+
+      // Search for version
+      if (!version) {
+        version = findVersion(pomFile)
       }
 
       // Store the information that we need
@@ -132,6 +138,30 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
     // Sort POM information by name
     projects.sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
+  }
+
+  private String findVersion(File pomFile) {
+    if (!pomFile) {
+      return null
+    }
+    Node pomText = new XmlParser().parse(pomFile)
+
+    // If the POM is missing a name, do not record it
+    String name = getName(pomText)
+    if (!name) {
+      getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
+      return null
+    }
+
+    if (pomText.version) {
+      return pomText.version?.text()?.trim()
+    }
+
+    if (pomText.parent != null) {
+      File parentPomFile = getParentPomFile(pomText)
+      return findVersion(parentPomFile)
+    }
+    return null
   }
 
   @Override protected String getName(Node pomText) {
