@@ -56,9 +56,8 @@ final class HtmlReport extends HtmlReportKt {
         h3(NOTICE_LIBRARIES)
         ul {
           for (Map.Entry<String, List<Project>> entry : projectsMap.entrySet()) {
-            List<Project> sortedProjects = entry.getValue().sort {
-              left, right -> left.getName() <=> right.getName()
-            }
+            List<Project> sortedProjects = entry.getValue().
+              sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
 
             Project currentProject = null
             Integer currentLicense = null

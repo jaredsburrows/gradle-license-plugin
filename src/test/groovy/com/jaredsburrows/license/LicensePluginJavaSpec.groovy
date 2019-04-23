@@ -145,7 +145,7 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#0">Firebase-core</a>
+        <a href="#0">firebase-core</a>
       </li>
       <a name="0" />
       <pre>No license found</pre>
@@ -158,7 +158,7 @@ final class LicensePluginJavaSpec extends Specification {
 """
 [
     {
-        "project": "Firebase-core",
+        "project": "firebase-core",
         "description": null,
         "version": "10.0.1",
         "developers": [
@@ -224,10 +224,10 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -240,7 +240,7 @@ final class LicensePluginJavaSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -257,7 +257,7 @@ final class LicensePluginJavaSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -664,10 +664,10 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -680,7 +680,7 @@ final class LicensePluginJavaSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -697,7 +697,7 @@ final class LicensePluginJavaSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -780,10 +780,10 @@ final class LicensePluginJavaSpec extends Specification {
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#314129783">Appcompat-v7</a>
+        <a href="#314129783">appcompat-v7</a>
       </li>
       <li>
-        <a href="#314129783">Design</a>
+        <a href="#314129783">design</a>
       </li>
       <a name="314129783" />
       <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -796,7 +796,7 @@ final class LicensePluginJavaSpec extends Specification {
 """
 [
     {
-        "project": "Appcompat-v7",
+        "project": "appcompat-v7",
         "description": null,
         "version": "26.1.0",
         "developers": [
@@ -813,7 +813,7 @@ final class LicensePluginJavaSpec extends Specification {
         "dependency": "com.android.support:appcompat-v7:26.1.0"
     },
     {
-        "project": "Design",
+        "project": "design",
         "description": null,
         "version": "26.1.0",
         "developers": [
