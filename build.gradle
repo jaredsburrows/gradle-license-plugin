@@ -74,6 +74,7 @@ dependencies {
   testImplementation localGroovy()
   testImplementation deps.android.tools.build.gradle
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation deps.xmlunit.matchers
 }
 
 apply from: 'gradle/scan.gradle'
