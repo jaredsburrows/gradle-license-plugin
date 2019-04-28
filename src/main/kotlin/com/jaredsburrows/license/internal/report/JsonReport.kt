@@ -1,7 +1,8 @@
 package com.jaredsburrows.license.internal.report
 
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.jaredsburrows.license.internal.pom.Project
-import groovy.json.JsonBuilder
 
 class JsonReport(private val projects: List<Project>) {
   companion object {
@@ -14,19 +15,23 @@ class JsonReport(private val projects: List<Project>) {
     private const val LICENSES = "licenses"
     private const val LICENSE = "license"
     private const val LICENSE_URL = "license_url"
-    private const val EMPTY_JSON_ARRAY = "[]"
+    private const val EMPTY_JSON = "[]"
     private const val DEPENDENCY = "dependency"
+    private val gson = GsonBuilder()
+      .setPrettyPrinting()
+      .serializeNulls()
+      .create()
   }
 
   /**
    * Return Json as a String.
    */
-  fun string(): String = if (projects.isEmpty()) EMPTY_JSON_ARRAY else jsonArray()
+  fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
 
   /**
    * Json report when there are open source licenses.
    */
-  private fun jsonArray(): String {
+  private fun json(): String {
     val reportList = mutableListOf<Map<String, Any?>>()
     projects.forEach { project ->
       // Handle multiple licenses
@@ -57,6 +62,6 @@ class JsonReport(private val projects: List<Project>) {
       ))
     }
 
-    return JsonBuilder(reportList).toPrettyString()
+    return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)
   }
 }

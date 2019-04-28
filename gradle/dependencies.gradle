@@ -14,11 +14,10 @@ ext.deps = [
     'reflect': "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
   ],
   'kotlinx': [
-    'html': [
-      'jvm': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.12'
-    ]
+    'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.12',
   ],
   'ktlint': 'com.github.shyiko:ktlint:0.29.0',
+  'gson': 'com.google.code.gson:gson:2.8.5',
   'android': [
     'tools': [
       'build': [

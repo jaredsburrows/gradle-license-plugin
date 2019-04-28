@@ -145,9 +145,9 @@ final class LicensePluginAndroidSpec extends Specification {
 """.stripIndent().trim()
     def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
     def expectedJson =
-"""
-[]
-""".stripIndent().trim()
+      """
+      []
+      """.stripIndent().trim()
 
     actualHtml == expectedHtml
     actualJson == expectedJson
@@ -234,40 +234,36 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
+  {
+    "project": "appcompat-v7",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:appcompat-v7:26.1.0"
+  },
+  {
+    "project": "design",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:design:26.1.0"
+  }
 ]
 """.stripIndent().trim()
 
@@ -361,40 +357,36 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
+  {
+    "project": "appcompat-v7",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:appcompat-v7:26.1.0"
+  },
+  {
+    "project": "design",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:design:26.1.0"
+  }
 ]
 """.stripIndent().trim()
 
@@ -508,74 +500,66 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    },
-    {
-        "project": "support-annotations",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:support-annotations:26.1.0"
-    },
-    {
-        "project": "support-v4",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:support-v4:26.1.0"
-    }
+  {
+    "project": "appcompat-v7",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:appcompat-v7:26.1.0"
+  },
+  {
+    "project": "design",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:design:26.1.0"
+  },
+  {
+    "project": "support-annotations",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:support-annotations:26.1.0"
+  },
+  {
+    "project": "support-v4",
+    "description": null,
+    "version": "26.1.0",
+    "developers": [],
+    "url": null,
+    "year": null,
+    "licenses": [
+      {
+        "license": "The Apache Software License",
+        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency": "com.android.support:support-v4:26.1.0"
+  }
 ]
 """.stripIndent().trim()
 
@@ -731,40 +715,38 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "Android GIF Drawable Library",
-        "description": "Views and Drawable for displaying animated GIFs for Android",
-        "version": "1.2.3",
-        "developers": [
-            "Karol Wr\\u00c3\\u00b3tniak"
-        ],
-        "url": "https://github.com/koral--/android-gif-drawable",
-        "year": null,
-        "licenses": [
-            {
-                "license": "The MIT License",
-                "license_url": "http://opensource.org/licenses/MIT"
-            }
-        ],
-        "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
+  {
+    "project":"Android GIF Drawable Library",
+    "description":"Views and Drawable for displaying animated GIFs for Android",
+    "version":"1.2.3",
+    "developers":[
+      "Karol Wr\\u00c3\\u00b3tniak"
+    ],
+    "url":"https://github.com/koral--/android-gif-drawable",
+    "year":null,
+    "licenses":[
+      {
+        "license":"The MIT License",
+        "license_url":"http://opensource.org/licenses/MIT"
+      }
+    ],
+    "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+  },
+  {
+    "project":"design",
+    "description":null,
+    "version":"26.1.0",
+    "developers":[],
+    "url":null,
+    "year":null,
+    "licenses":[
+      {
+        "license":"The Apache Software License",
+        "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency":"com.android.support:design:26.1.0"
+  }
 ]
 """.stripIndent().trim()
 
@@ -847,20 +829,18 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "Fake dependency name",
-        "description": "Fake dependency description",
-        "version": "1.0.0",
-        "developers": [
-            "name"
-        ],
-        "url": "https://github.com/user/repo",
-        "year": "2017",
-        "licenses": [
-            
-        ],
-        "dependency": "group:name4:1.0.0"
-    }
+  {
+    "project":"Fake dependency name",
+    "description":"Fake dependency description",
+    "version":"1.0.0",
+    "developers":[
+      "name"
+    ],
+    "url":"https://github.com/user/repo",
+    "year":"2017",
+    "licenses":[],
+    "dependency":"group:name4:1.0.0"
+  }
 ]
 """.stripIndent().trim()
 
@@ -966,40 +946,38 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
 """
 [
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    },
-    {
-        "project": "Fake dependency name",
-        "description": "Fake dependency description",
-        "version": "1.0.0",
-        "developers": [
-            "name"
-        ],
-        "url": "https://github.com/user/repo",
-        "year": "2017",
-        "licenses": [
-            {
-                "license": "Some license",
-                "license_url": "http://website.tld/"
-            }
-        ],
-        "dependency": "group:name:1.0.0"
-    }
+  {
+    "project":"design",
+    "description":null,
+    "version":"26.1.0",
+    "developers":[],
+    "url":null,
+    "year":null,
+    "licenses":[
+      {
+        "license":"The Apache Software License",
+        "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "dependency":"com.android.support:design:26.1.0"
+  },
+  {
+    "project":"Fake dependency name",
+    "description":"Fake dependency description",
+    "version":"1.0.0",
+    "developers":[
+      "name"
+    ],
+    "url":"https://github.com/user/repo",
+    "year":"2017",
+    "licenses":[
+      {
+        "license":"Some license",
+        "license_url":"http://website.tld/"
+      }
+    ],
+    "dependency":"group:name:1.0.0"
+  }
 ]
 """.stripIndent().trim()
 
