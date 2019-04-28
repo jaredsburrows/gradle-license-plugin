@@ -65,7 +65,8 @@ dependencies {
   implementation localGroovy()
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlin.reflect
-  implementation deps.kotlinx.html.jvm
+  implementation deps.kotlinx.html
+  implementation deps.gson
 
   compileOnly deps.android.tools.build.gradle
 

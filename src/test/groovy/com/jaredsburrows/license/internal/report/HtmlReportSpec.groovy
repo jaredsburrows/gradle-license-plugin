@@ -1,10 +1,10 @@
 package com.jaredsburrows.license.internal.report
 
+import static test.TestUtils.assertHtml
+
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import org.xmlunit.builder.DiffBuilder
-import org.xmlunit.builder.Input
 import spock.lang.Specification
 
 final class HtmlReportSpec extends Specification {
@@ -31,14 +31,8 @@ final class HtmlReportSpec extends Specification {
       </html>
       """
 
-    def diff = DiffBuilder.compare(Input.fromString(actual).build())
-      .withTest(Input.fromString(expected).build())
-      .normalizeWhitespace()
-      .ignoreWhitespace()
-      .build()
-
     then:
-    !diff.hasDifferences()
+    assertHtml(expected, actual)
   }
 
   def 'open source html'() {
@@ -98,13 +92,7 @@ final class HtmlReportSpec extends Specification {
       </html>
       """
 
-    def diff = DiffBuilder.compare(Input.fromString(actual).build())
-      .withTest(Input.fromString(expected).build())
-      .normalizeWhitespace()
-      .ignoreWhitespace()
-      .build()
-
     then:
-    !diff.hasDifferences()
+    assertHtml(expected, actual)
   }
 }
