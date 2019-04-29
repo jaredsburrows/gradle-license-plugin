@@ -19,6 +19,7 @@ final class LicensePluginAndroidSpec extends Specification {
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
+  private String assetsFolder
 
   def 'setup'() {
     def pluginClasspathResource = getClass().classLoader.findResource('plugin-classpath.txt')
@@ -31,6 +32,7 @@ final class LicensePluginAndroidSpec extends Specification {
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
+    assetsFolder = "${testProjectDir.root.path}/src/main/assets"
   }
 
   @Ignore("Jcenter 502 errors")
@@ -972,5 +974,115 @@ final class LicensePluginAndroidSpec extends Specification {
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
+    given:
+    def classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      
+      licenseReport {
+        generateHtmlReport = true
+        generateJsonReport = true
+        copyHtmlReportToAssets = "${copyEnabled}"
+        copyJsonReportToAssets = "${copyEnabled}"
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
+    result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+    copyEnabled << [true, false]
+  }
+
+  @Unroll def '#taskName with reports disabled and copy enabled #copyEnabled'() {
+    given:
+    def classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      
+      android {
+        compileSdkVersion 28
+      
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      
+      licenseReport {
+        generateHtmlReport = false
+        generateJsonReport = false
+        copyHtmlReportToAssets = "${copyEnabled}"
+        copyJsonReportToAssets = "${copyEnabled}"
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    !result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    !result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
+    !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+    copyEnabled << [true, false]
   }
 }

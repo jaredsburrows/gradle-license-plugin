@@ -153,6 +153,9 @@ abstract class LicenseReportTaskKt : DefaultTask() {
           out.write(htmlFile.readText())
         }
       }
+
+      // Log output directory for user
+      logger.log(LogLevel.LIFECYCLE, "Copied HTML report to ${getClickableFileUrl(licenseFile)}.")
     }
   }
 
@@ -174,6 +177,9 @@ abstract class LicenseReportTaskKt : DefaultTask() {
           out.write(jsonFile.readText())
         }
       }
+
+      // Log output directory for user
+      logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${getClickableFileUrl(licenseFile)}.")
     }
   }
 }
