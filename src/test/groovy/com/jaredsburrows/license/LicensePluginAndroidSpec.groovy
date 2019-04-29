@@ -1,7 +1,10 @@
 package com.jaredsburrows.license
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.assertHtml
+import static test.TestUtils.assertJson
 import static test.TestUtils.getLicenseText
+import static test.TestUtils.gradleWithCommand
 
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
@@ -62,7 +65,7 @@ final class LicensePluginAndroidSpec extends Specification {
           applicationId 'com.example'
         }
       }
-      """.stripIndent().trim()
+      """
 
     when:
     def result = GradleRunner.create()
@@ -117,40 +120,38 @@ final class LicensePluginAndroidSpec extends Specification {
           applicationId 'com.example'
         }
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>None</h3>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      []
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>None</h3>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -194,85 +195,79 @@ final class LicensePluginAndroidSpec extends Specification {
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:design:26.1.0'
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#314129783">appcompat-v7</a>
+            </li>
+            <li>
+              <a href="#314129783">design</a>
+            </li>
+            <a name="314129783" />
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project": "appcompat-v7",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:appcompat-v7:26.1.0"
+        },
+        {
+          "project": "design",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:design:26.1.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#314129783">appcompat-v7</a>
-      </li>
-      <li>
-        <a href="#314129783">design</a>
-      </li>
-      <a name="314129783" />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
-]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -321,85 +316,79 @@ final class LicensePluginAndroidSpec extends Specification {
         debugImplementation 'com.android.support:design:26.1.0'
         releaseImplementation 'com.android.support:design:26.1.0'
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#314129783">appcompat-v7</a>
+            </li>
+            <li>
+              <a href="#314129783">design</a>
+            </li>
+            <a name="314129783" />
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project": "appcompat-v7",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:appcompat-v7:26.1.0"
+        },
+        {
+          "project": "design",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:design:26.1.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#314129783">appcompat-v7</a>
-      </li>
-      <li>
-        <a href="#314129783">design</a>
-      </li>
-      <a name="314129783" />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
-]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -462,125 +451,115 @@ final class LicensePluginAndroidSpec extends Specification {
         flavor3Implementation 'com.android.support:support-annotations:26.1.0'
         flavor4Implementation 'com.android.support:support-annotations:26.1.0'
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#314129783">appcompat-v7</a>
+            </li>
+            <li>
+              <a href="#314129783">design</a>
+            </li>
+            <li>
+              <a href="#314129783">support-annotations</a>
+            </li>
+            <li>
+              <a href="#314129783">support-v4</a>
+            </li>
+            <a name="314129783" />
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project": "appcompat-v7",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:appcompat-v7:26.1.0"
+        },
+        {
+          "project": "design",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:design:26.1.0"
+        },
+        {
+          "project": "support-annotations",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:support-annotations:26.1.0"
+        },
+        {
+          "project": "support-v4",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:support-v4:26.1.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#314129783">appcompat-v7</a>
-      </li>
-      <li>
-        <a href="#314129783">design</a>
-      </li>
-      <li>
-        <a href="#314129783">support-annotations</a>
-      </li>
-      <li>
-        <a href="#314129783">support-v4</a>
-      </li>
-      <a name="314129783" />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "appcompat-v7",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:appcompat-v7:26.1.0"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    },
-    {
-        "project": "support-annotations",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:support-annotations:26.1.0"
-    },
-    {
-        "project": "support-v4",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:support-v4:26.1.0"
-    }
-]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseFlavor1Flavor3DebugReport', 'licenseFlavor1Flavor3ReleaseReport',
@@ -635,14 +614,12 @@ final class LicensePluginAndroidSpec extends Specification {
 
       dependencies {
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("licenseFlavor1Flavor3DebugReport", "licenseFlavor1Flavor3ReleaseReport",
-      "licenseFlavor2Flavor4DebugReport", "licenseFlavor2Flavor4ReleaseReport", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, 'licenseFlavor1Flavor3DebugReport',
+      'licenseFlavor1Flavor3ReleaseReport', 'licenseFlavor2Flavor4DebugReport',
+      'licenseFlavor2Flavor4ReleaseReport', '-s')
 
     then:
     result.task(":licenseFlavor1Flavor3DebugReport").outcome == SUCCESS
@@ -689,87 +666,83 @@ final class LicensePluginAndroidSpec extends Specification {
         releaseImplementation 'com.android.support:design:26.1.0'
         releaseImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
       }
-      """.stripIndent().trim()
+      """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#1068328410">Android GIF Drawable Library</a>
+            </li>
+            <a name="1068328410" />
+            <pre>${getLicenseText('mit.txt')}</pre>
+            <li>
+              <a href="#314129783">design</a>
+            </li>
+            <a name="314129783" />
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Android GIF Drawable Library",
+          "description":"Views and Drawable for displaying animated GIFs for Android",
+          "version":"1.2.3",
+          "developers":[
+            "Karol Wr\\u00c3\\u00b3tniak"
+          ],
+          "url":"https://github.com/koral--/android-gif-drawable",
+          "year":null,
+          "licenses":[
+            {
+              "license":"The MIT License",
+              "license_url":"http://opensource.org/licenses/MIT"
+            }
+          ],
+          "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+        },
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#1068328410">Android GIF Drawable Library</a>
-      </li>
-      <a name="1068328410" />
-      <pre>${getLicenseText('mit.txt')}</pre>
-      <li>
-        <a href="#314129783">design</a>
-      </li>
-      <a name="314129783" />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "Android GIF Drawable Library",
-        "description": "Views and Drawable for displaying animated GIFs for Android",
-        "version": "1.2.3",
-        "developers": [
-            "Karol Wr\\u00c3\\u00b3tniak"
-        ],
-        "url": "https://github.com/koral--/android-gif-drawable",
-        "year": null,
-        "licenses": [
-            {
-                "license": "The MIT License",
-                "license_url": "http://opensource.org/licenses/MIT"
-            }
-        ],
-        "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
-    },
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    }
-]
-""".stripIndent().trim()
-
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -813,60 +786,55 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#0">Fake dependency name</a>
+            </li>
+            <a name="0" />
+            <pre>No license found</pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Fake dependency name",
+          "description":"Fake dependency description",
+          "version":"1.0.0",
+          "developers":[
+            "name"
+          ],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[],
+          "dependency":"group:name4:1.0.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#0">Fake dependency name</a>
-      </li>
-      <a name="0" />
-      <pre>No license found</pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "Fake dependency name",
-        "description": "Fake dependency description",
-        "version": "1.0.0",
-        "developers": [
-            "name"
-        ],
-        "url": "https://github.com/user/repo",
-        "year": "2017",
-        "licenses": [
-            
-        ],
-        "dependency": "group:name4:1.0.0"
-    }
-]
-""".stripIndent().trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -926,86 +894,81 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withArguments("${taskName}", '-s')
-      .build()
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif } 
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+          </style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#314129783">design</a>
+            </li>
+            <a name="314129783" />
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+            <li>
+              <a href="#755498312">Fake dependency name</a>
+            </li>
+            <a name="755498312" />
+            <pre>Some license
+            <a href="http://website.tld/">http://website.tld/</a></pre>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        },
+        {
+          "project":"Fake dependency name",
+          "description":"Fake dependency description",
+          "version":"1.0.0",
+          "developers":[
+            "name"
+          ],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:name:1.0.0"
+        }
+      ]
+      """
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-
-    def actualHtml = new File("${reportFolder}/${taskName}.html").text.stripIndent().trim()
-    def expectedHtml =
-"""
-<html>
-  <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
-    <title>Open source licenses</title>
-  </head>
-  <body>
-    <h3>Notice for packages:</h3>
-    <ul>
-      <li>
-        <a href="#314129783">design</a>
-      </li>
-      <a name="314129783" />
-      <pre>${getLicenseText('apache-2.0.txt')}</pre>
-      <li>
-        <a href="#755498312">Fake dependency name</a>
-      </li>
-      <a name="755498312" />
-      <pre>Some license
-<a href="http://website.tld/">http://website.tld/</a></pre>
-    </ul>
-  </body>
-</html>
-""".stripIndent().trim()
-    def actualJson = new File("${reportFolder}/${taskName}.json").text.stripIndent().trim()
-    def expectedJson =
-"""
-[
-    {
-        "project": "design",
-        "description": null,
-        "version": "26.1.0",
-        "developers": [
-            
-        ],
-        "url": null,
-        "year": null,
-        "licenses": [
-            {
-                "license": "The Apache Software License",
-                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        ],
-        "dependency": "com.android.support:design:26.1.0"
-    },
-    {
-        "project": "Fake dependency name",
-        "description": "Fake dependency description",
-        "version": "1.0.0",
-        "developers": [
-            "name"
-        ],
-        "url": "https://github.com/user/repo",
-        "year": "2017",
-        "licenses": [
-            {
-                "license": "Some license",
-                "license_url": "http://website.tld/"
-            }
-        ],
-        "dependency": "group:name:1.0.0"
-    }
-]
-""".stripIndent().trim()
-
-    then:
-    actualHtml == expectedHtml
-    actualJson == expectedJson
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']

@@ -59,9 +59,9 @@ Example `build.gradle`:
 
 ```groovy
 dependencies {
-  compile 'com.android.support:design:26.1.0'
-  compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
-  compile 'wsdl4j:wsdl4j:1.5.1' // Very old library with no license info available
+  implementation 'com.android.support:design:26.1.0'
+  implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+  implementation 'wsdl4j:wsdl4j:1.5.1' // Very old library with no license info available
 }
 ```
 
@@ -69,7 +69,10 @@ dependencies {
 ```html
 <html>
   <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <style>
+      body { font-family: sans-serif } 
+      pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+    </style>
     <title>Open source licenses</title>
   </head>
   <body>
@@ -118,9 +121,7 @@ dependencies {
     "project": "Design",
     "description": null,
     "version": "26.1.0",
-    "developers": [
-        
-    ],
+    "developers": [],
     "url": null,
     "year": null,
     "licenses": [
@@ -135,14 +136,10 @@ dependencies {
     "project": "WSDL4J",
     "description": "Java stub generator for WSDL",
     "version": "1.5.1",
-    "developers": [
-
-    ],
+    "developers": [],
     "url": "http://sf.net/projects/wsdl4j",
     "year": null,
-    "licenses": [
-
-    ],
+    "licenses": [],
     "dependency": "wsdl4j:wsdl4j:1.5.1"
   }
 ]
@@ -161,12 +158,12 @@ To override the defaults, add the `licenseReport` configuration closure to the b
 apply plugin: "com.jaredsburrows.license"
 
 licenseReport {
-    generateHtmlReport = false
-    generateJsonReport = true
-    
-    // These options are ignored for Java projects
-    copyHtmlReportToAssets = true
-    copyJsonReportToAssets = false
+  generateHtmlReport = false
+  generateJsonReport = true
+  
+  // These options are ignored for Java projects
+  copyHtmlReportToAssets = true
+  copyJsonReportToAssets = false
 }
 ```
 
@@ -176,42 +173,50 @@ The `copyHtmlReportToAssets` option in the above example would have no effect si
 
 ### Create an open source dialog
 ```java
-public static class OpenSourceLicensesDialog extends DialogFragment {
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.webkit.WebView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+public class OpenSourceLicensesDialog extends DialogFragment {
 
   public OpenSourceLicensesDialog() {
   }
 
+  public static void showLicenses(Activity activity) {
+    FragmentManager fragmentManager = activity.getFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
+    if (previousFragment != null) {
+      fragmentTransaction.remove(previousFragment);
+    }
+    fragmentTransaction.addToBackStack(null);
+
+    show(fragmentTransaction, "dialog_licenses");
+  }
+
   @Override public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    WebView webView = new WebView(getActivity());
+    WebView webView = new WebView(requireActivity());
     webView.loadUrl("file:///android_asset/open_source_licenses.html");
 
     return new AlertDialog.Builder(requireActivity())
       .setTitle("Open Source Licenses")
       .setView(webView)
-      .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-        @Override public void onClick(DialogInterface dialog, int which) {
-          dialog.dismiss();
-        }
-      }
-    )
-    .create();
+      .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss())
+      .create();
   }
 }
 ```
 
 ### How to use it
 ```java
-public static void showOpenSourceLicenses(Activity activity) {
-  FragmentManager fragmentManager = activity.getFragmentManager();
-  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-  Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
-  if (previousFragment != null) {
-    fragmentTransaction.remove(previousFragment);
-  }
-  fragmentTransaction.addToBackStack(null);
-
-  new OpenSourceLicensesDialog().show(fragmentTransaction, "dialog_licenses");
-}
+new OpenSourceLicensesDialog().showLicenses(fragmentTransaction, "dialog_licenses");
 ```
 
 Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52

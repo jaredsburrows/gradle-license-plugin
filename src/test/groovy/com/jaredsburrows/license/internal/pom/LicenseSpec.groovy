@@ -3,7 +3,10 @@ package com.jaredsburrows.license.internal.pom
 import spock.lang.Specification
 
 final class LicenseSpec extends Specification {
-  def sut = new License(name: 'name', url: 'url')
+  def sut = new License(
+    name: 'name',
+    url: 'url'
+  )
 
   def 'get name'() {
     expect:
@@ -17,8 +20,14 @@ final class LicenseSpec extends Specification {
 
   def 'equals and hashcode'() {
     given:
-    def one = new License(name: 'name', url: 'url')
-    def two = new License(name: 'name', url: 'url')
+    def one = new License(
+      name: 'name',
+      url: 'url'
+    )
+    def two = new License(
+      name: 'name',
+      url: 'url'
+    )
 
     expect:
     one.name == two.name
