@@ -16,6 +16,7 @@ import spock.lang.Unroll
 final class LicensePluginAndroidSpec extends Specification {
   @Rule public TemporaryFolder testProjectDir = new TemporaryFolder()
   private List<File> pluginClasspath
+  private String classpathString
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
@@ -29,6 +30,10 @@ final class LicensePluginAndroidSpec extends Specification {
     }
 
     pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
+    classpathString = pluginClasspath
+      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
@@ -38,11 +43,6 @@ final class LicensePluginAndroidSpec extends Specification {
   @Ignore("Jcenter 502 errors")
   @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -99,11 +99,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName that has no dependencies'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -161,11 +156,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with default buildTypes'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -277,11 +267,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with buildTypes'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -398,11 +383,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with buildTypes + productFlavors + flavorDimensions'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -570,11 +550,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   def 'run build task with buildTypes + productFlavors + flavorDimensions'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -632,11 +607,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName from readme example'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -752,11 +722,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with no open source dependencies'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
         buildscript {
@@ -844,11 +809,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with default buildTypes, multi module and android and java'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     testProjectDir.newFile('settings.gradle') <<
       """
       include 'subproject'
@@ -978,11 +938,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
@@ -1033,11 +988,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
   @Unroll def '#taskName with reports disabled and copy enabled #copyEnabled'() {
     given:
-    def classpathString = pluginClasspath
-      .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
-      .collect { "'$it'" }
-      .join(", ")
-
     buildFile <<
       """
       buildscript {
