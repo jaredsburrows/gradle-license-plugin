@@ -67,13 +67,11 @@ dependencies {
   implementation deps.kotlin.reflect
   implementation deps.kotlinx.html
   implementation deps.gson
-
-  compileOnly deps.android.tools.build.gradle
+  implementation deps.android.tools.build.gradle
 
   testRuntimeOnly files(createClasspathManifest)
 
   testImplementation localGroovy()
-  testImplementation deps.android.tools.build.gradle
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
   testImplementation deps.xmlunit.matchers
 }

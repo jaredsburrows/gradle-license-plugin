@@ -1,10 +1,12 @@
 package com.jaredsburrows.license
 
+import com.android.builder.model.ProductFlavor
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
@@ -24,9 +26,8 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
 
-    @JvmStatic fun getClickableFileUrl(file: File): String {
-      return URI("file", "", file.toURI().path, null, null).toString()
-    }
+    @JvmStatic fun getClickableFileUrl(file: File): String =
+      URI("file", "", file.toURI().path, null, null).toString()
   }
 
   @Internal var projects = arrayListOf<Project>()
@@ -36,8 +37,8 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   @Optional @Input var copyHtmlReportToAssets: Boolean = false
   @Optional @Input var copyJsonReportToAssets: Boolean = false
   @Optional @Input var buildType: String? = null
-  @Optional @Input var variant: String? = null
-//  @Optional @Internal var productFlavors = listOf<com.android.builder.model.ProductFlavor>()
+  @Optional @Input var variantName: String? = null
+  @Optional @Internal var productFlavors = listOf<ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
   var POM_CONFIGURATION = "poms"
@@ -52,7 +53,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       createHtmlReport()
 
       // If Android project and copy enabled, copy to asset directory
-      if (!variant.isNullOrEmpty() && copyHtmlReportToAssets) {
+      if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
         copyHtmlReport()
       }
     }
@@ -61,13 +62,76 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       createJsonReport()
 
       // If Android project and copy enabled, copy to asset directory
-      if (!variant.isNullOrEmpty() && copyJsonReportToAssets) {
+      if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
         copyJsonReport()
       }
     }
   }
 
-  protected abstract fun initDependencies()
+  /**
+   * Iterate through all configurations and collect dependencies.
+   */
+  protected fun initDependencies() {
+    // Add POM information to our POM configuration
+    val configurationSet = linkedSetOf<Configuration>()
+    val configurations = project.configurations
+
+    // Add "compile" configuration older java and android gradle plugins
+    configurations.find { it.name == "compile" }?.let {
+      configurationSet.add(configurations.getByName("compile"))
+    }
+
+    // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
+    configurations.find { it.name == "api" }?.let {
+      configurationSet.add(configurations.getByName("api"))
+    }
+    configurations.find { it.name == "implementation" }?.let {
+      configurationSet.add(configurations.getByName("implementation"))
+    }
+
+    // If Android project, add extra configurations
+    variantName?.let { variant ->
+      // Add buildType configurations
+      configurations.find { it.name == "compile" }?.let {
+        configurationSet.add(configurations.getByName("${buildType}Compile"))
+      }
+      configurations.find { it.name == "api" }?.let {
+        configurationSet.add(configurations.getByName("${buildType}Api"))
+      }
+      configurations.find { it.name == "implementation" }?.let {
+        configurationSet.add(configurations.getByName("${buildType}Implementation"))
+      }
+
+      // Add productFlavors configurations
+      productFlavors.forEach { flavor ->
+        // Works for productFlavors and productFlavors with dimensions
+        if (variant.capitalize().contains(flavor.name.capitalize())) {
+          configurations.find { it.name == "compile" }?.let {
+            configurationSet.add(configurations.getByName("${flavor.name}Compile"))
+          }
+          configurations.find { it.name == "api" }?.let {
+            configurationSet.add(configurations.getByName("${flavor.name}Api"))
+          }
+          configurations.find { it.name == "implementation" }?.let {
+            configurationSet.add(configurations.getByName("${flavor.name}Implementation"))
+          }
+        }
+      }
+    }
+
+    // Iterate through all the configurations's dependencies
+    configurationSet.forEach { set ->
+      if (set.isCanBeResolved) {
+        set.resolvedConfiguration.lenientConfiguration.artifacts.forEach { artifact ->
+          val id = artifact.moduleVersion.id
+          val gav = "${id.group}:${id.name}:${id.version}@pom"
+          configurations.getByName(POM_CONFIGURATION).dependencies.add(
+            project.dependencies.add(POM_CONFIGURATION, gav)
+          )
+        }
+      }
+    }
+  }
 
   protected abstract fun generatePOMInfo()
 
@@ -75,8 +139,8 @@ abstract class LicenseReportTaskKt : DefaultTask() {
    * Setup configurations to collect dependencies.
    */
   private fun setupEnvironment() {
-    POM_CONFIGURATION += variant.orEmpty() + UUID.randomUUID()
-    TEMP_POM_CONFIGURATION += variant.orEmpty() + UUID.randomUUID()
+    POM_CONFIGURATION += variantName.orEmpty() + UUID.randomUUID()
+    TEMP_POM_CONFIGURATION += variantName.orEmpty() + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
     project.configurations.apply {

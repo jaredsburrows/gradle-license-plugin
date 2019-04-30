@@ -4,79 +4,10 @@ import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Optional
 
 class LicenseReportTask extends LicenseReportTaskKt {
-  @Optional @Internal def productFlavors = []
-
-  /**
-   * Iterate through all configurations and collect dependencies.
-   */
-  @Override protected void initDependencies() {
-    // Add POM information to our POM configuration
-    Set<Configuration> configurations = new LinkedHashSet<>()
-
-    // Add "compile" configuration older java and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-      configurations.add(getProject().getConfigurations().getByName("compile"))
-    }
-
-    // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    if (getProject().getConfigurations().find { it.getName() == "api" }) {
-      configurations.add(getProject().getConfigurations().getByName("api"))
-    }
-    if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-      configurations.add(getProject().getConfigurations().getByName("implementation"))
-    }
-
-    // If Android project, add extra configurations
-    if (variant) {
-      // Add buildType configurations
-      if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-        configurations.add(getProject().getConfigurations().getByName("${buildType}Compile"))
-      }
-      if (getProject().getConfigurations().find { it.getName() == "api" }) {
-        configurations.add(getProject().getConfigurations().getByName("${buildType}Api"))
-      }
-      if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-        configurations.add(getProject().getConfigurations().getByName("${buildType}Implementation"))
-      }
-
-      // Add productFlavors configurations
-      for (def flavor : productFlavors) {
-        // Works for productFlavors and productFlavors with dimensions
-        if (variant.capitalize().contains(flavor.name.capitalize())) {
-          if (getProject().getConfigurations().find { it.getName() == "compile" }) {
-            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Compile"))
-          }
-          if (getProject().getConfigurations().find { it.getName() == "api" }) {
-            configurations.add(getProject().getConfigurations().getByName("${flavor.name}Api"))
-          }
-          if (getProject().getConfigurations().find { it.getName() == "implementation" }) {
-            configurations.add(getProject().getConfigurations()
-              .getByName("${flavor.name}Implementation"))
-          }
-        }
-      }
-    }
-
-    // Iterate through all the configurations's dependencies
-    for (Configuration configuration : configurations) {
-      configuration.canBeResolved &&
-        configuration.getResolvedConfiguration().getLenientConfiguration()
-          .getArtifacts()*.getModuleVersion().id.collect { id ->
-          "$id.group:$id.name:$id.version@pom"
-        }.each { pom ->
-          getProject().getConfigurations().getByName(POM_CONFIGURATION).dependencies.add(
-            getProject().getDependencies().add(POM_CONFIGURATION, pom)
-          )
-        }
-    }
-  }
 
   /**
    * Get POM information from the dependency artifacts.
