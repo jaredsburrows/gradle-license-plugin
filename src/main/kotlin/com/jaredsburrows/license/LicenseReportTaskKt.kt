@@ -3,6 +3,7 @@ package com.jaredsburrows.license
 import com.android.builder.model.ProductFlavor
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
 import org.gradle.api.DefaultTask
@@ -71,7 +72,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   /**
    * Iterate through all configurations and collect dependencies.
    */
-  protected fun initDependencies() {
+  private fun initDependencies() {
     // Add POM information to our POM configuration
     val configurationSet = linkedSetOf<Configuration>()
     val configurations = project.configurations
@@ -175,7 +176,23 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   /**
    * Generated HTML report.
    */
-  protected abstract fun createHtmlReport()
+  private fun createHtmlReport() {
+    // Remove existing file
+    htmlFile.apply {
+      // Remove existing file
+      delete()
+
+      // Create directories
+      parentFile.mkdirs()
+      createNewFile()
+
+      // Write report for file
+      bufferedWriter().use { out -> out.write(HtmlReport(projects).string()) }
+    }
+
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
+  }
 
   /**
    * Generated JSON report.
@@ -190,9 +207,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { out ->
-        out.write(JsonReport(projects).string())
-      }
+      bufferedWriter().use { out -> out.write(JsonReport(projects).string()) }
     }
 
     // Log output directory for user
@@ -213,9 +228,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
         createNewFile()
 
         // Copy HTML file to the assets directory
-        licenseFile.bufferedWriter().use { out ->
-          out.write(htmlFile.readText())
-        }
+        licenseFile.bufferedWriter().use { out -> out.write(htmlFile.readText()) }
       }
 
       // Log output directory for user
@@ -237,9 +250,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
         createNewFile()
 
         // Copy JSON file to the assets directory
-        licenseFile.bufferedWriter().use { out ->
-          out.write(jsonFile.readText())
-        }
+        licenseFile.bufferedWriter().use { out -> out.write(jsonFile.readText()) }
       }
 
       // Log output directory for user

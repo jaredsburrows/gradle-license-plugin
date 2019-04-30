@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.InstantAppPlugin
 import com.android.build.gradle.LibraryExtension
@@ -18,16 +19,12 @@ abstract class LicensePluginKt : Plugin<Project> {
   override fun apply(project: Project) {
     project.plugins.all { plugin ->
       when (plugin) {
-        is JavaPlugin -> {
-          configureJavaProject(project)
-        }
+        is JavaPlugin -> configureJavaProject(project)
         is AppPlugin,
         is FeaturePlugin,
         is LibraryPlugin,
         is InstantAppPlugin,
-        is TestPlugin -> {
-          configureAndroidProject(project)
-        }
+        is TestPlugin -> configureAndroidProject(project)
       }
     }
   }
@@ -43,24 +40,20 @@ abstract class LicensePluginKt : Plugin<Project> {
   protected fun getAndroidVariant(
     project: Project
   ): DomainObjectCollection<out BaseVariant>? {
-    if (project.plugins.hasPlugin("com.android.application")) {
-      return project.extensions
+    return when {
+      project.plugins.hasPlugin(AppPlugin::class.java) -> project.extensions
         .findByType(AppExtension::class.java)
         ?.applicationVariants
-    }
-
-    if (project.plugins.hasPlugin("com.android.test")) {
-      return project.extensions
-        .findByType(TestExtension::class.java)
-        ?.applicationVariants
-    }
-
-    if (project.plugins.hasPlugin("com.android.library")) {
-      return project.extensions
+      project.plugins.hasPlugin(FeaturePlugin::class.java) -> project.extensions
+        .findByType(FeatureExtension::class.java)
+        ?.featureVariants
+      project.plugins.hasPlugin(LibraryPlugin::class.java) -> project.extensions
         .findByType(LibraryExtension::class.java)
         ?.libraryVariants
+      project.plugins.hasPlugin(TestPlugin::class.java) -> project.extensions
+        .findByType(TestExtension::class.java)
+        ?.applicationVariants
+      else -> throw IllegalArgumentException("Missing the Android Gradle Plugin.")
     }
-
-    throw IllegalArgumentException("Missing the Android Gradle Plugin.")
   }
 }
