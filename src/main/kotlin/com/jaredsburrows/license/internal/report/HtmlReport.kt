@@ -136,30 +136,27 @@ class HtmlReport(private val projects: List<Project>) {
   /**
    * Html report when there are no open source licenses.
    */
-  private fun noOpenSourceHtml(): String {
-    return StringBuilder()
-      .appendHTML()
-      .html {
-        head {
-          style {
-            unsafe { +CSS_STYLE }
-          }
-          title {
-            +OPEN_SOURCE_LIBRARIES
-          }
+  private fun noOpenSourceHtml(): String = StringBuilder()
+    .appendHTML()
+    .html {
+      head {
+        style {
+          unsafe { +CSS_STYLE }
         }
-
-        body {
-          h3 {
-            unsafe { +NO_LIBRARIES }
-          }
+        title {
+          +OPEN_SOURCE_LIBRARIES
         }
-      }.toString()
-  }
+      }
 
-  private fun getLicenseText(fileName: String): String {
-    return HtmlReport::class.java.getResource("/license/$fileName").readText()
-  }
+      body {
+        h3 {
+          unsafe { +NO_LIBRARIES }
+        }
+      }
+    }.toString()
+
+  private fun getLicenseText(fileName: String): String =
+    HtmlReport::class.java.getResource("/license/$fileName").readText()
 }
 
 @HtmlTagMarker
@@ -175,99 +172,3 @@ fun FlowOrInteractiveOrPhrasingContent.a(
   "class", classes,
   "name", name), consumer)
   .visit(block)
-
-/**
-final class HtmlReport extends HtmlReportKt {
-  public HtmlReport(List<Project> projects) {
-    super(projects)
-  }
-
-  /**
-   * Html report when there are open source licenses.
-   */
-  public String openSourceHtml2() {
-    StringWriter writer = new StringWriter()
-    MarkupBuilder markup = new MarkupBuilder(writer)
-    markup.setDoubleQuotes(true)
-    Map<String, List<Project>> projectsMap = new HashMap<>()
-    Map<String, String> licenseMap = LicenseHelper.getLicenseMap()
-
-    // Store packages by license
-    for (Project project : projects) {
-      String key = ""
-
-      // first check to see if the project's license is in our list of known licenses:
-      if (project.getLicenses() != null && !project.getLicenses().isEmpty()) {
-        License license = project.getLicenses().get(0)
-        if (licenseMap.containsKey(license.getUrl())) {
-          // look up by url
-          key = licenseMap[license.getUrl()]
-        } else if (licenseMap.containsKey(license.getName())) {
-          // then by name
-          key = licenseMap[license.getName()]
-        } else {
-          // otherwise, use the url as a key
-          key = license.getUrl()
-        }
-      }
-
-      if (!projectsMap.containsKey(key)) {
-        projectsMap.put(key, new ArrayList<>())
-      }
-
-      projectsMap.get(key).add(project)
-    }
-
-    markup.html {
-      head {
-        style(CSS)
-        title(OPEN_SOURCE_LIBRARIES)
-      }
-
-      body {
-        h3(NOTICE_LIBRARIES)
-        ul {
-          for (Map.Entry<String, List<Project>> entry : projectsMap.entrySet()) {
-            List<Project> sortedProjects = entry.getValue().
-              sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
-
-            Project currentProject = null
-            Integer currentLicense = null
-            for (Project project : sortedProjects) {
-              currentProject = project
-              currentLicense = entry.getKey().hashCode()
-
-              // Display libraries
-              li {
-                a(href: "#${currentLicense}", project.getName())
-              }
-            }
-
-            a(name: currentLicense)
-            // Display associated license with libraries
-            if (currentProject.getLicenses() == null || currentProject.getLicenses().isEmpty()) {
-              pre(NO_LICENSE)
-            } else if (!entry.getKey().isEmpty() && licenseMap.values().contains(entry.getKey())) {
-              // license from license map
-              pre(getLicenseText(entry.key))
-            } else {
-              // if not found in the map, just display the info from the POM.xml -  name along with the url
-              String currentLicenseName = currentProject.getLicenses().get(0).getName().trim()
-              String currentUrl = currentProject.getLicenses().get(0).getUrl().trim()
-              if (currentLicenseName != null || currentUrl != null) {
-                pre {
-                  mkp.yield("$currentLicenseName\n")
-                  mkp.yieldUnescaped("<a href=\"$currentUrl\">$currentUrl</a>")
-                }
-              } else {
-                pre(NO_LICENSE)
-              }
-            }
-          }
-
-        }
-      }
-    }
-    return writer.toString()
-  }
-**/

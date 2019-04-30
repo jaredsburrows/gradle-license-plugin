@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Project
 
@@ -10,7 +11,8 @@ final class LicensePlugin extends LicensePluginKt {
   @Override protected void configureJavaProject(Project project) {
     String taskName = "licenseReport"
     String path = "${project.getBuildDir()}/reports/licenses/$taskName"
-    LicenseReportExtension configuration = project.getExtensions().create("licenseReport", LicenseReportExtension)
+    LicenseReportExtension configuration = project.getExtensions().
+      create("licenseReport", LicenseReportExtension)
 
     // Create tasks
     LicenseReportTask task = project.getTasks().create("$taskName", LicenseReportTask)
@@ -31,8 +33,9 @@ final class LicensePlugin extends LicensePluginKt {
    */
   @Override protected void configureAndroidProject(Project project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
-    DomainObjectCollection<com.android.build.gradle.api.BaseVariant> variants = getAndroidVariant(project)
-    LicenseReportExtension configuration = project.getExtensions().create("licenseReport", LicenseReportExtension)
+    DomainObjectCollection<BaseVariant> variants = getAndroidVariant(project)
+    LicenseReportExtension configuration = project.getExtensions().
+      create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->

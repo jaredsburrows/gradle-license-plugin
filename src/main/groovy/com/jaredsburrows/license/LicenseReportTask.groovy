@@ -3,7 +3,6 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import com.jaredsburrows.license.internal.report.HtmlReport
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
@@ -147,38 +146,18 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-    @Override protected File getParentPomFile(Node pomText) {
-      // Get parent POM information
-      String groupId = pomText?.parent?.groupId?.text()
-      String artifactId = pomText?.parent?.artifactId?.text()
-      String version = pomText?.parent?.version?.text()
-      String dependency = "$groupId:$artifactId:$version@pom"
+  @Override protected File getParentPomFile(Node pomText) {
+    // Get parent POM information
+    String groupId = pomText?.parent?.groupId?.text()
+    String artifactId = pomText?.parent?.artifactId?.text()
+    String version = pomText?.parent?.version?.text()
+    String dependency = "$groupId:$artifactId:$version@pom"
 
-      // Add dependency to temporary configuration
-      getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-      getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
-        getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
-      )
-      return super.getParentPomFile(pomText)
-    }
-
-  /**
-   * Generated HTML report.
-   */
-  @Override protected void createHtmlReport() {
-    // Remove existing file
-    getProject().file(htmlFile).delete()
-
-    // Create directories and write report for file
-    htmlFile.getParentFile().mkdirs()
-    htmlFile.createNewFile()
-    htmlFile.withOutputStream { outputStream ->
-      PrintStream printStream = new PrintStream(outputStream)
-      printStream.print(new HtmlReport(projects).string())
-      printStream.println() // Add new line to file
-    }
-
-    // Log output directory for user
-    getLogger().log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
+    // Add dependency to temporary configuration
+    getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
+    getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
+      getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
+    )
+    return super.getParentPomFile(pomText)
   }
 }
