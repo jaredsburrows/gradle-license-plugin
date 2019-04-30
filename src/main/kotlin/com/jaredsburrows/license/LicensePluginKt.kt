@@ -1,5 +1,9 @@
 package com.jaredsburrows.license
 
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.TestExtension
+import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -33,22 +37,22 @@ abstract class LicensePluginKt : Plugin<Project> {
    */
   protected fun getAndroidVariant(
     project: Project
-  ): DomainObjectCollection<out com.android.build.gradle.api.BaseVariant>? {
+  ): DomainObjectCollection<out BaseVariant>? {
     if (project.plugins.hasPlugin("com.android.application")) {
       return project.extensions
-        .findByType(com.android.build.gradle.AppExtension::class.java)
+        .findByType(AppExtension::class.java)
         ?.applicationVariants
     }
 
     if (project.plugins.hasPlugin("com.android.test")) {
       return project.extensions
-        .findByType(com.android.build.gradle.TestExtension::class.java)
+        .findByType(TestExtension::class.java)
         ?.applicationVariants
     }
 
     if (project.plugins.hasPlugin("com.android.library")) {
       return project.extensions
-        .findByType(com.android.build.gradle.LibraryExtension::class.java)
+        .findByType(LibraryExtension::class.java)
         ?.libraryVariants
     }
 
