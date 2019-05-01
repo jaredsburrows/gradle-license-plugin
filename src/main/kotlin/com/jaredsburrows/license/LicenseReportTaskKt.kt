@@ -1,7 +1,6 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
-import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
@@ -156,10 +155,6 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  protected abstract fun getName(pomText: Node?): String
-
-  protected abstract fun findLicenses(pomFile: File?): List<License>
-
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
@@ -187,7 +182,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { out -> out.write(HtmlReport(projects).string()) }
+      bufferedWriter().use { it.write(HtmlReport(projects).string()) }
     }
 
     // Log output directory for user
@@ -207,7 +202,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { out -> out.write(JsonReport(projects).string()) }
+      bufferedWriter().use { it.write(JsonReport(projects).string()) }
     }
 
     // Log output directory for user
@@ -228,7 +223,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
         createNewFile()
 
         // Copy HTML file to the assets directory
-        licenseFile.bufferedWriter().use { out -> out.write(htmlFile.readText()) }
+        licenseFile.bufferedWriter().use { it.write(htmlFile.readText()) }
       }
 
       // Log output directory for user
@@ -250,7 +245,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
         createNewFile()
 
         // Copy JSON file to the assets directory
-        licenseFile.bufferedWriter().use { out -> out.write(jsonFile.readText()) }
+        licenseFile.bufferedWriter().use { it.write(jsonFile.readText()) }
       }
 
       // Log output directory for user
