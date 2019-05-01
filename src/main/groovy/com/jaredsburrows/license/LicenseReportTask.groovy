@@ -3,6 +3,7 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
@@ -13,24 +14,25 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override protected void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    for (ResolvedArtifact pom : getProject().getConfigurations().getByName(POM_CONFIGURATION)
-      .getResolvedConfiguration().getLenientConfiguration().getArtifacts()) {
-      File pomFile = pom.getFile()
-      Node pomText = new XmlParser().parse(pomFile)
+    for (ResolvedArtifact resolvedArtifact : getProject().getConfigurations()
+      .getByName(POM_CONFIGURATION).getResolvedConfiguration().getLenientConfiguration()
+      .getArtifacts()) {
+      File pomFile = resolvedArtifact.getFile()
+      Node pom = new XmlParser(false, false).parse(pomFile)
 
       // License information
-      String name = getName(pomText)
-      String version = pomText.version?.text()
-      String description = pomText.description?.text()
+      String name = getName(pom)
+      String version = pom.version?.text()
+      String description = pom.description?.text()
       List<Developer> developers = new ArrayList<>()
-      if (pomText.developers) {
-        developers = pomText.developers.developer?.collect { developer ->
+      if (pom.developers != null && !pom.developers.isEmpty()) {
+        developers = pom.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
         }
       }
 
-      String url = pomText.url?.text()
-      String year = pomText.inceptionYear?.text()
+      String url = pom.url?.text()
+      String year = pom.inceptionYear?.text()
 
       // Clean up and format
       name = name?.trim()
@@ -41,13 +43,13 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
       // Search for licenses
       List<License> licenses = findLicenses(pomFile)
-      if (!licenses) {
+      if (licenses == null || licenses.isEmpty()) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
         licenses = new ArrayList<>()
       }
 
       // Search for version
-      if (!version) {
+      if (version == null || version.isEmpty()) {
         version = findVersion(pomFile)
       }
 
@@ -60,7 +62,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
         licenses: licenses,
         url: url,
         year: year,
-        gav: pom.owner
+        gav: resolvedArtifact.owner
       )
 
       projects.add(project)
@@ -71,55 +73,54 @@ class LicenseReportTask extends LicenseReportTaskKt {
   }
 
   private String findVersion(File pomFile) {
-    if (!pomFile) {
+    if (pomFile == null || pomFile.length() == 0) {
       return null
     }
-    Node pomText = new XmlParser().parse(pomFile)
+    Node pom = new XmlParser(false, false).parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    String name = getName(pomText)
-    if (!name) {
+    String name = getName(pom)
+    if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
-    if (pomText.version) {
-      return pomText.version?.text()?.trim()
+    if (pom.version != null && !pom.version.isEmpty()) {
+      return pom.version?.text()?.trim()
     }
 
-    if (pomText.parent != null) {
-      File parentPomFile = getParentPomFile(pomText)
-      return findVersion(parentPomFile)
+    if (pom.parent != null) {
+      return findVersion(getParentPomFile(pom))
     }
     return null
   }
 
-  @Override protected String getName(Node pomText) {
+  private String getName(Node pomText) {
     String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
     return name?.trim()
   }
 
-  @Override protected List<License> findLicenses(File pomFile) {
-    if (!pomFile) {
+  private List<License> findLicenses(File pomFile) {
+    if (pomFile == null || pomFile.length() == 0) {
       return null
     }
-    Node pomText = new XmlParser().parse(pomFile)
+    Node pom = new XmlParser(false, false).parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    String name = getName(pomText)
-    if (!name) {
+    String name = getName(pom)
+    if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
-    if (ANDROID_SUPPORT_GROUP_ID == pomText.groupId?.text()) {
+    if (ANDROID_SUPPORT_GROUP_ID == pom.groupId?.text()) {
       return [new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL)]
     }
 
     // License information found
-    if (pomText.licenses) {
+    if (pom.licenses != null && !pom.licenses.isEmpty()) {
       List<License> licenses = new ArrayList<>()
-      pomText.licenses[0].license.each { license ->
+      pom.licenses[0].license.each { license ->
         String licenseName = license.name?.text()
         String licenseUrl = license.url?.text()
         try {
@@ -136,9 +137,8 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
     getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    if (pomText.parent != null) {
-      File parentPomFile = getParentPomFile(pomText)
-      return findLicenses(parentPomFile)
+    if (pom.parent != null) {
+      return findLicenses(getParentPomFile(pom))
     }
     return null
   }
