@@ -82,7 +82,7 @@ class LicensePlugin : Plugin<Project> {
         copyJsonReportToAssets = false
         assetDirs = (project
           .extensions
-          .getByName("andriod") as BaseExtension)
+          .getByName("android") as BaseExtension)
           .sourceSets
           .getByName("main")
           .assets
