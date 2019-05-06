@@ -5,6 +5,8 @@ import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
+import groovy.util.NodeList
+import groovy.xml.QName
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
@@ -15,6 +17,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
+import java.net.URL
 import java.util.UUID
 
 abstract class LicenseReportTaskKt : DefaultTask() {
@@ -158,7 +161,21 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  protected open fun getParentPomFile(pomText: Node?): File? {
+  protected open fun getParentPomFile(node: Node?): File? {
+    // Get parent POM information
+    val parent = node?.getAt("parent")
+    val groupId = parent?.getAt("groupId")?.text().orEmpty()
+    val artifactId = parent?.getAt("artifactId")?.text().orEmpty()
+    val version = parent?.getAt("version")?.text().orEmpty()
+    val dependency = "$groupId:$artifactId:$version@pom"
+
+    // Add dependency to temporary configuration
+    val configurations = project.configurations
+    configurations.create(TEMP_POM_CONFIGURATION)
+    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
+      project.dependencies.add(TEMP_POM_CONFIGURATION, dependency)
+    )
+
     val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION)
       .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
 
@@ -252,4 +269,35 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${getClickableFileUrl(licenseFile)}.")
     }
   }
+
+  protected fun isUrlValid(licenseUrl: String): Boolean {
+    var url: URL? = null
+    try {
+      url = URL(licenseUrl)
+    } catch (ignored: Exception) {
+      logger.log(LogLevel.WARN, "$name dependency has an invalid license URL; skipping license")
+    }
+    return url != null
+  }
+}
+
+private fun Node.getAt(name: String): NodeList {
+  val answer = NodeList()
+  val var3 = this.children().iterator()
+
+  while (var3.hasNext()) {
+    val child = var3.next()
+    if (child is Node) {
+      val childNodeName = child.name()
+      if (childNodeName is QName) {
+        if (childNodeName.matches(name)) {
+          answer.add(child)
+        }
+      } else if (name == childNodeName) {
+        answer.add(child)
+      }
+    }
+  }
+
+  return answer
 }

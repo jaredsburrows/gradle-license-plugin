@@ -135,35 +135,4 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
     return new ArrayList<License>()
   }
-
-  /**
-   * Use Parent POM information when individual dependency license information is missing.
-   */
-  @Nullable @Override protected File getParentPomFile(Node node) {
-    // Get parent POM information
-    NodeList parent = node.getAt("parent")
-    String groupId = parent.getAt("groupId").text()
-    String artifactId = parent.getAt("artifactId").text()
-    String version = parent.getAt("version").text()
-    String dependency = "$groupId:$artifactId:$version@pom"
-
-    // Add dependency to temporary configuration
-    ConfigurationContainer configurations = getProject().getConfigurations()
-    configurations.create(TEMP_POM_CONFIGURATION)
-    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
-      getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
-    )
-    return super.getParentPomFile(node)
-  }
-
-  private boolean isUrlValid(String licenseUrl) {
-    URL url = null
-    try {
-      url = new URL(licenseUrl)
-    } catch (Exception ignored) {
-      getLogger().log(LogLevel.WARN,
-        "${name} dependency has an invalid license URL; skipping license")
-    }
-    return url != null
-  }
 }
