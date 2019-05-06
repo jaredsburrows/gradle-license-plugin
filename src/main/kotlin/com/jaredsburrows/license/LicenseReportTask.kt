@@ -198,7 +198,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Sort POM information by name
-    projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name!! })
+    projects.sortedBy { it.name?.toLowerCase() }
   }
 
   /**

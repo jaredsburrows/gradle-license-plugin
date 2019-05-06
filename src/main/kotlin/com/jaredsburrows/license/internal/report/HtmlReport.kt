@@ -83,7 +83,7 @@ class HtmlReport(private val projects: List<Project>) {
           }
           ul {
             projectsMap.entries.forEach { entry ->
-              val sortedProjects = entry.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name!! })
+              val sortedProjects = entry.value.sortedBy { it.name?.toLowerCase() }
 
               var currentProject: Project? = null
               var currentLicense: Int? = null
