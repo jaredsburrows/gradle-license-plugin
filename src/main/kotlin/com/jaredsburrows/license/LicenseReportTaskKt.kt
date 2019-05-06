@@ -1,10 +1,14 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
+import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
+import groovy.util.NodeList
+import groovy.util.XmlParser
+import groovy.xml.QName
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
@@ -15,10 +19,13 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
+import java.net.URL
 import java.util.UUID
 
 abstract class LicenseReportTaskKt : DefaultTask() {
   companion object {
+    val xmlParser = XmlParser(false, false)
+
     const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     const val APACHE_LICENSE_NAME = "The Apache Software License"
     const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -158,7 +165,21 @@ abstract class LicenseReportTaskKt : DefaultTask() {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  protected open fun getParentPomFile(pomText: Node?): File? {
+  protected open fun getParentPomFile(node: Node?): File? {
+    // Get parent POM information
+    val parent = node?.getAt("parent")
+    val groupId = parent?.getAt("groupId")?.text().orEmpty()
+    val artifactId = parent?.getAt("artifactId")?.text().orEmpty()
+    val version = parent?.getAt("version")?.text().orEmpty()
+    val dependency = "$groupId:$artifactId:$version@pom"
+
+    // Add dependency to temporary configuration
+    val configurations = project.configurations
+    configurations.create(TEMP_POM_CONFIGURATION)
+    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
+      project.dependencies.add(TEMP_POM_CONFIGURATION, dependency)
+    )
+
     val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION)
       .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
 
@@ -252,4 +273,114 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${getClickableFileUrl(licenseFile)}.")
     }
   }
+
+  protected fun isUrlValid(licenseUrl: String): Boolean {
+    var url: URL? = null
+    try {
+      url = URL(licenseUrl)
+    } catch (ignored: Exception) {
+      logger.log(LogLevel.WARN, "$name dependency has an invalid license URL; skipping license")
+    }
+    return url != null
+  }
+
+  protected fun findVersion(pomFile: File?): String {
+    if (pomFile.isNullOrEmpty()) {
+      return ""
+    }
+    val node = xmlParser.parse(pomFile)
+
+    // If the POM is missing a name, do not record it
+    val name = getName(node)
+    if (name.isEmpty()) {
+      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      return ""
+    }
+
+    if (node.getAt("version").isNotEmpty()) {
+      return node.getAt("version").text().trim()
+    }
+
+    if (node.getAt("parent").isNotEmpty()) {
+      return findVersion(getParentPomFile(node))
+    }
+    return ""
+  }
+
+  protected fun findLicenses(pomFile: File?): List<License> {
+    if (pomFile.isNullOrEmpty()) {
+      return arrayListOf()
+    }
+    val node = xmlParser.parse(pomFile)
+
+    // If the POM is missing a name, do not record it
+    val name = getName(node)
+    if (name.isEmpty()) {
+      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      return arrayListOf()
+    }
+
+    if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
+      return listOf(
+        License().apply {
+          this.name = APACHE_LICENSE_NAME
+          url = APACHE_LICENSE_URL
+        }
+      )
+    }
+
+    // License information found
+    if (node.getAt("licenses").isNotEmpty()) {
+      val licenses = arrayListOf<License>()
+      (node.getAt("licenses")[0] as Node).getAt("license").forEach { license ->
+        val licenseName = (license as Node).getAt("name").text().trim()
+        val licenseUrl = license.getAt("url").text().trim()
+        if (isUrlValid(licenseUrl)) {
+          licenses.add(License().apply {
+            this.name = licenseName
+            url = licenseUrl
+          })
+        }
+      }
+      return licenses
+    }
+
+    logger.log(LogLevel.INFO, "Project, $name, has no license in POM file.")
+
+    if (!node.getAt("parent").isEmpty()) {
+      return findLicenses(getParentPomFile(node))
+    }
+    return arrayListOf()
+  }
+
+  protected fun getName(node: Node): String {
+    return if (node.getAt("name").text().isNotEmpty()) {
+      node.getAt("name").text()
+    } else {
+      node.getAt("artifactId").text()
+    }.trim()
+  }
+}
+
+private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
+
+private fun Node.getAt(name: String): NodeList {
+  val answer = NodeList()
+  val var3 = this.children().iterator()
+
+  while (var3.hasNext()) {
+    val child = var3.next()
+    if (child is Node) {
+      val childNodeName = child.name()
+      if (childNodeName is QName) {
+        if (childNodeName.matches(name)) {
+          answer.add(child)
+        }
+      } else if (name == childNodeName) {
+        answer.add(child)
+      }
+    }
+  }
+
+  return answer
 }

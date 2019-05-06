@@ -3,8 +3,6 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import javax.annotation.Nullable
-import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
@@ -68,102 +66,5 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
     // Sort POM information by name
     projects.sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
-  }
-
-  private String findVersion(File pomFile) {
-    if (pomFile == null || pomFile.length() == 0) {
-      return ""
-    }
-    Node node = xmlParser.parse(pomFile)
-
-    // If the POM is missing a name, do not record it
-    String name = getName(node)
-    if (name == null || name.isEmpty()) {
-      getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
-      return ""
-    }
-
-    if (!node.getAt("version").isEmpty()) {
-      return node.getAt("version").text().trim()
-    }
-
-    if (!node.getAt("parent").isEmpty()) {
-      return findVersion(getParentPomFile(node))
-    }
-    return ""
-  }
-
-  private String getName(Node node) {
-    String name = !node.getAt("name").text().isEmpty() ? node.getAt("name").text() :
-      node.getAt("artifactId").text()
-    return name.trim()
-  }
-
-  private List<License> findLicenses(File pomFile) {
-    if (pomFile == null || pomFile.length() == 0) {
-      return new ArrayList<License>()
-    }
-    Node node = xmlParser.parse(pomFile)
-
-    // If the POM is missing a name, do not record it
-    String name = getName(node)
-    if (name == null || name.isEmpty()) {
-      getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
-      return new ArrayList<License>()
-    }
-
-    if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
-      return Arrays.asList(new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL))
-    }
-
-    // License information found
-    if (!node.getAt("licenses").isEmpty()) {
-      List<License> licenses = new ArrayList<>()
-      for (Node license : node.getAt("licenses").get(0).getAt("license")) {
-        String licenseName = license.getAt("name").text().trim()
-        String licenseUrl = license.getAt("url").text().trim()
-        if (isUrlValid(licenseUrl)) {
-          licenses.add(new License(name: licenseName, url: licenseUrl))
-        }
-      }
-      return licenses
-    }
-    getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
-
-    if (!node.getAt("parent").isEmpty()) {
-      return findLicenses(getParentPomFile(node))
-    }
-    return new ArrayList<License>()
-  }
-
-  /**
-   * Use Parent POM information when individual dependency license information is missing.
-   */
-  @Nullable @Override protected File getParentPomFile(Node node) {
-    // Get parent POM information
-    NodeList parent = node.getAt("parent")
-    String groupId = parent.getAt("groupId").text()
-    String artifactId = parent.getAt("artifactId").text()
-    String version = parent.getAt("version").text()
-    String dependency = "$groupId:$artifactId:$version@pom"
-
-    // Add dependency to temporary configuration
-    ConfigurationContainer configurations = getProject().getConfigurations()
-    configurations.create(TEMP_POM_CONFIGURATION)
-    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
-      getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
-    )
-    return super.getParentPomFile(node)
-  }
-
-  private boolean isUrlValid(String licenseUrl) {
-    URL url = null
-    try {
-      url = new URL(licenseUrl)
-    } catch (Exception ignored) {
-      getLogger().log(LogLevel.WARN,
-        "${name} dependency has an invalid license URL; skipping license")
-    }
-    return url != null
   }
 }
