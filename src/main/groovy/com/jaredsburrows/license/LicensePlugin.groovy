@@ -11,15 +11,15 @@ final class LicensePlugin extends LicensePluginKt {
   @Override protected void configureJavaProject(Project project) {
     String taskName = "licenseReport"
     String path = "${project.getBuildDir()}/reports/licenses/$taskName"
-    LicenseReportExtension configuration = project.getExtensions().
-      create("licenseReport", LicenseReportExtension)
+    LicenseReportExtension configuration = project.getExtensions()
+      .create("licenseReport", LicenseReportExtension)
 
     // Create tasks
     LicenseReportTask task = project.getTasks().create("$taskName", LicenseReportTask)
     task.setDescription("Outputs licenses report.")
     task.setGroup("Reporting")
-    task.setHtmlFile(project.file(path + LicenseReportTask.HTML_EXT))
-    task.setJsonFile(project.file(path + LicenseReportTask.JSON_EXT))
+    task.setHtmlFile(new File(path + LicenseReportTask.HTML_EXT))
+    task.setJsonFile(new File(path + LicenseReportTask.JSON_EXT))
     task.setGenerateHtmlReport(configuration.getGenerateHtmlReport())
     task.setGenerateJsonReport(configuration.getGenerateJsonReport())
     task.setCopyHtmlReportToAssets(false)
@@ -34,8 +34,8 @@ final class LicensePlugin extends LicensePluginKt {
   @Override protected void configureAndroidProject(Project project) {
     // Get correct plugin - Check for android library, default to application variant for application/test plugin
     DomainObjectCollection<BaseVariant> variants = getAndroidVariant(project)
-    LicenseReportExtension configuration = project.getExtensions().
-      create("licenseReport", LicenseReportExtension)
+    LicenseReportExtension configuration = project.getExtensions()
+      .create("licenseReport", LicenseReportExtension)
 
     // Configure tasks for all variants
     variants.all { variant ->
@@ -47,8 +47,8 @@ final class LicensePlugin extends LicensePluginKt {
       LicenseReportTask task = project.getTasks().create("$taskName", LicenseReportTask)
       task.setDescription("Outputs licenses report for ${variantName} variant.")
       task.setGroup("Reporting")
-      task.setHtmlFile(project.file(path + LicenseReportTask.HTML_EXT))
-      task.setJsonFile(project.file(path + LicenseReportTask.JSON_EXT))
+      task.setHtmlFile(new File(path + LicenseReportTask.HTML_EXT))
+      task.setJsonFile(new File(path + LicenseReportTask.JSON_EXT))
       task.setGenerateHtmlReport(configuration.getGenerateHtmlReport())
       task.setGenerateJsonReport(configuration.getGenerateJsonReport())
       task.setCopyHtmlReportToAssets(configuration.getCopyHtmlReportToAssets())
