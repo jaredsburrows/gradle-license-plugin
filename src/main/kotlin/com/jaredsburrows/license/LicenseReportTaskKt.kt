@@ -6,6 +6,7 @@ import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
 import groovy.util.NodeList
+import groovy.util.XmlParser
 import groovy.xml.QName
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
@@ -22,6 +23,8 @@ import java.util.UUID
 
 abstract class LicenseReportTaskKt : DefaultTask() {
   companion object {
+    val xmlParser = XmlParser(false, false)
+
     const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     const val APACHE_LICENSE_NAME = "The Apache Software License"
     const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -279,7 +282,41 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
     return url != null
   }
+
+  protected fun findVersion(pomFile: File?): String {
+    if (pomFile.isNullOrEmpty()) {
+      return ""
+    }
+
+    val node = xmlParser.parse(pomFile)
+
+    // If the POM is missing a name, do not record it
+    val name = getName(node)
+    if (name.isEmpty()) {
+      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      return ""
+    }
+
+    if (node.getAt("version").isNotEmpty()) {
+      return node.getAt("version").text().trim()
+    }
+
+    if (node.getAt("parent").isNotEmpty()) {
+      return findVersion(getParentPomFile(node))
+    }
+    return ""
+  }
+
+  protected fun getName(node: Node): String {
+    return if (node.getAt("name").text().isNotEmpty()) {
+      node.getAt("name").text()
+    } else {
+      node.getAt("artifactId").text()
+    }.trim()
+  }
 }
+
+private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
 
 private fun Node.getAt(name: String): NodeList {
   val answer = NodeList()

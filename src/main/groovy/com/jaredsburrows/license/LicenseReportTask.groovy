@@ -3,8 +3,6 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import javax.annotation.Nullable
-import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
@@ -68,35 +66,6 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
     // Sort POM information by name
     projects.sort { left, right -> left.getName().compareToIgnoreCase(right.getName()) }
-  }
-
-  private String findVersion(File pomFile) {
-    if (pomFile == null || pomFile.length() == 0) {
-      return ""
-    }
-    Node node = xmlParser.parse(pomFile)
-
-    // If the POM is missing a name, do not record it
-    String name = getName(node)
-    if (name == null || name.isEmpty()) {
-      getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
-      return ""
-    }
-
-    if (!node.getAt("version").isEmpty()) {
-      return node.getAt("version").text().trim()
-    }
-
-    if (!node.getAt("parent").isEmpty()) {
-      return findVersion(getParentPomFile(node))
-    }
-    return ""
-  }
-
-  private String getName(Node node) {
-    String name = !node.getAt("name").text().isEmpty() ? node.getAt("name").text() :
-      node.getAt("artifactId").text()
-    return name.trim()
   }
 
   private List<License> findLicenses(File pomFile) {
