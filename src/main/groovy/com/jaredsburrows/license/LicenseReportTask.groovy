@@ -3,6 +3,8 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import javax.annotation.Nullable
+import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
@@ -99,7 +101,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
   private List<License> findLicenses(File pomFile) {
     if (pomFile == null || pomFile.length() == 0) {
-      return null
+      return new ArrayList<License>()
     }
     Node node = xmlParser.parse(pomFile)
 
@@ -107,7 +109,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
     String name = getName(node)
     if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
-      return null
+      return new ArrayList<License>()
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
@@ -117,9 +119,9 @@ class LicenseReportTask extends LicenseReportTaskKt {
     // License information found
     if (node.getAt("licenses") != null && !node.getAt("licenses").text().isEmpty()) {
       List<License> licenses = new ArrayList<>()
-      node.licenses[0].license.each { license ->
-        String licenseName = license.name?.text()
-        String licenseUrl = license.url?.text()
+      node.getAt("licenses").get(0).getAt("license").each { license ->
+        String licenseName = license.getAt("name").text()
+        String licenseUrl = license.getAt("url").text()
         try {
           new URL(licenseUrl)
           licenseName = licenseName?.trim()?.capitalize()
@@ -137,22 +139,24 @@ class LicenseReportTask extends LicenseReportTaskKt {
     if (node.getAt("parent") != null) {
       return findLicenses(getParentPomFile(node))
     }
-    return null
+    return new ArrayList<License>()
   }
 
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  @Override protected File getParentPomFile(Node node) {
+  @Nullable @Override protected File getParentPomFile(Node node) {
     // Get parent POM information
-    String groupId = node.getAt("parent").getAt("groupId").text()
-    String artifactId = node.getAt("parent").getAt("artifactId").text()
-    String version = node.getAt("parent").getAt("version").text()
+    NodeList parent = node.getAt("parent")
+    String groupId = parent.getAt("groupId").text()
+    String artifactId = parent.getAt("artifactId").text()
+    String version = parent.getAt("version").text()
     String dependency = "$groupId:$artifactId:$version@pom"
 
     // Add dependency to temporary configuration
-    getProject().getConfigurations().create(TEMP_POM_CONFIGURATION)
-    getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
+    ConfigurationContainer configurations = getProject().getConfigurations()
+    configurations.create(TEMP_POM_CONFIGURATION)
+    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
     return super.getParentPomFile(node)
