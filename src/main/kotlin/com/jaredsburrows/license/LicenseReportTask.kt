@@ -23,34 +23,33 @@ import java.net.URI
 import java.net.URL
 import java.util.UUID
 
-abstract class LicenseReportTaskKt : DefaultTask() {
+open class LicenseReportTask : DefaultTask() { // tasks can't be final
   companion object {
-    val xmlParser = XmlParser(false, false)
-
-    const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    const val APACHE_LICENSE_NAME = "The Apache Software License"
-    const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    private val xmlParser = XmlParser(false, false)
+    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+    private const val APACHE_LICENSE_NAME = "The Apache Software License"
+    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
 
-    @JvmStatic fun getClickableFileUrl(file: File): String =
+    private fun getClickableFileUrl(file: File): String =
       URI("file", "", file.toURI().path, null, null).toString()
   }
 
   @Internal var projects = arrayListOf<Project>()
-  @Optional @Input var assetDirs = arrayOf<File>()
-  @Optional @Input var generateHtmlReport: Boolean = false
-  @Optional @Input var generateJsonReport: Boolean = false
-  @Optional @Input var copyHtmlReportToAssets: Boolean = false
-  @Optional @Input var copyJsonReportToAssets: Boolean = false
+  @Optional @Input var assetDirs = listOf<File>()
+  @Optional @Input var generateHtmlReport = false
+  @Optional @Input var generateJsonReport = false
+  @Optional @Input var copyHtmlReportToAssets = false
+  @Optional @Input var copyJsonReportToAssets = false
   @Optional @Input var buildType: String? = null
   @Optional @Input var variantName: String? = null
   @Optional @Internal var productFlavors = listOf<ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
-  var POM_CONFIGURATION = "poms"
-  var TEMP_POM_CONFIGURATION = "tempPoms"
+  private var POM_CONFIGURATION = "poms"
+  private var TEMP_POM_CONFIGURATION = "tempPoms"
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -334,7 +333,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  protected fun isUrlValid(licenseUrl: String): Boolean {
+  private fun isUrlValid(licenseUrl: String): Boolean {
     var url: URL? = null
     try {
       url = URL(licenseUrl)
@@ -344,7 +343,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return url != null
   }
 
-  protected fun findVersion(pomFile: File?): String {
+  private fun findVersion(pomFile: File?): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
@@ -367,7 +366,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return ""
   }
 
-  protected fun findLicenses(pomFile: File?): List<License> {
+  private fun findLicenses(pomFile: File?): List<License> {
     if (pomFile.isNullOrEmpty()) {
       return arrayListOf()
     }
@@ -405,7 +404,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return arrayListOf()
   }
 
-  protected fun getName(node: Node): String {
+  private fun getName(node: Node): String {
     return if (node.getAt("name").text().isNotEmpty()) {
       node.getAt("name").text()
     } else {
