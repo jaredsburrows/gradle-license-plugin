@@ -2,22 +2,23 @@ package com.jaredsburrows.license.internal.pom
 
 /**
  * Represents the information that is used to make HTML and JSON reports.
+ *
+ * @param name Name of the library in the POM.
+ * @param description Description of the library in the POM.
+ * @param version Version of the library in the POM.
+ * @param licenses List of Licenses of the library listed in the POM.
+ * @param url URL of the library listed in the POM.
+ * @param developers List of Developers of the library listed in the POM.
+ * @param year Year of the library in the POM.
+ * @param gav Group, Artifact and Version.
  */
-class Project {
-  /** Name of the library in the POM. */
-  var name: String? = null
-  /** Description of the library in the POM. */
-  var description: String? = null
-  /** Version of the library in the POM. */
-  var version: String? = null
-  /** List of Licenses of the library listed in the POM. */
-  var licenses: List<License>? = null
-  /** URL of the library listed in the POM. */
-  var url: String? = null
-  /** List of Developers of the library listed in the POM. */
-  var developers: List<Developer>? = null
-  /** Year of the library in the POM. */
-  var year: String? = null
-  /** Group, Artifact and Version. */
+data class Project(
+  var name: String? = null,
+  var description: String? = null,
+  var version: String? = null,
+  var licenses: List<License>? = null,
+  var url: String? = null,
+  var developers: List<Developer>? = null,
+  var year: String? = null,
   var gav: String? = null // group/artifact/version
-}
+)
