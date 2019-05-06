@@ -9,7 +9,7 @@ import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
 class LicenseReportTask extends LicenseReportTaskKt {
-  private final XmlParser xmlParser = new XmlParser(false, false)
+  private static final XmlParser xmlParser = new XmlParser(false, false)
 
   /**
    * Get POM information from the dependency artifacts.
@@ -41,7 +41,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
       // Search for licenses
       List<License> licenses = findLicenses(pomFile)
-      if (licenses == null || licenses.isEmpty()) {
+      if (licenses.isEmpty()) {
         getLogger().log(LogLevel.WARN, "${name} dependency does not have a license.")
         licenses = new ArrayList<>()
       }
@@ -72,7 +72,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
 
   private String findVersion(File pomFile) {
     if (pomFile == null || pomFile.length() == 0) {
-      return null
+      return ""
     }
     Node node = xmlParser.parse(pomFile)
 
@@ -80,23 +80,23 @@ class LicenseReportTask extends LicenseReportTaskKt {
     String name = getName(node)
     if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
-      return null
+      return ""
     }
 
     if (!node.getAt("version").isEmpty()) {
-      return node.getAt("version").text()?.trim()
+      return node.getAt("version").text().trim()
     }
 
-    if (node.getAt("parent") != null) {
+    if (!node.getAt("parent").isEmpty()) {
       return findVersion(getParentPomFile(node))
     }
-    return null
+    return ""
   }
 
   private String getName(Node node) {
     String name = !node.getAt("name").text().isEmpty() ? node.getAt("name").text() :
       node.getAt("artifactId").text()
-    return name?.trim()
+    return name.trim()
   }
 
   private List<License> findLicenses(File pomFile) {
@@ -117,26 +117,20 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
 
     // License information found
-    if (node.getAt("licenses") != null && !node.getAt("licenses").text().isEmpty()) {
+    if (!node.getAt("licenses").isEmpty()) {
       List<License> licenses = new ArrayList<>()
-      node.getAt("licenses").get(0).getAt("license").each { license ->
-        String licenseName = license.getAt("name").text()
-        String licenseUrl = license.getAt("url").text()
-        try {
-          new URL(licenseUrl)
-          licenseName = licenseName?.trim()?.capitalize()
-          licenseUrl = licenseUrl?.trim()
+      for (Node license : node.getAt("licenses").get(0).getAt("license")) {
+        String licenseName = license.getAt("name").text().trim()
+        String licenseUrl = license.getAt("url").text().trim()
+        if (isUrlValid(licenseUrl)) {
           licenses.add(new License(name: licenseName, url: licenseUrl))
-        } catch (Exception ignored) {
-          getLogger().log(LogLevel.WARN, "${name} dependency has an invalid license URL;" +
-            " skipping license")
         }
       }
       return licenses
     }
     getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    if (node.getAt("parent") != null) {
+    if (!node.getAt("parent").isEmpty()) {
       return findLicenses(getParentPomFile(node))
     }
     return new ArrayList<License>()
@@ -160,5 +154,16 @@ class LicenseReportTask extends LicenseReportTaskKt {
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
     return super.getParentPomFile(node)
+  }
+
+  private boolean isUrlValid(String licenseUrl) {
+    URL url = null
+    try {
+      url = new URL(licenseUrl)
+    } catch (Exception ignored) {
+      getLogger().log(LogLevel.WARN,
+        "${name} dependency has an invalid license URL; skipping license")
+    }
+    return url != null
   }
 }
