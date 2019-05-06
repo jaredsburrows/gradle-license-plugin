@@ -7,6 +7,7 @@ import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.logging.LogLevel
 
 class LicenseReportTask extends LicenseReportTaskKt {
+  private final XmlParser xmlParser = new XmlParser(false, false)
 
   /**
    * Get POM information from the dependency artifacts.
@@ -17,28 +18,21 @@ class LicenseReportTask extends LicenseReportTaskKt {
       .getByName(POM_CONFIGURATION).getResolvedConfiguration().getLenientConfiguration()
       .getArtifacts()) {
       File pomFile = resolvedArtifact.getFile()
-      Node pom = new XmlParser(false, false).parse(pomFile)
+      Node node = xmlParser.parse(pomFile)
 
       // License information
-      String name = getName(pom)
-      String version = pom.version?.text()
-      String description = pom.description?.text()
+      String name = getName(node)?.trim()
+      String version = node.getAt("version").text()?.trim()
+      String description = node.getAt("description").text()?.trim()
       List<Developer> developers = new ArrayList<>()
-      if (pom.developers != null && !pom.developers.isEmpty()) {
-        developers = pom.developers.developer?.collect { developer ->
+      if (node.getAt("developers") != null && !node.getAt("developers").isEmpty()) {
+        developers = node.developers.developer?.collect { developer ->
           new Developer(name: developer?.name?.text()?.trim())
         }
       }
 
-      String url = pom.url?.text()
-      String year = pom.inceptionYear?.text()
-
-      // Clean up and format
-      name = name?.trim()
-      version = version?.trim()
-      description = description?.trim()
-      url = url?.trim()
-      year = year?.trim()
+      String url = node.getAt("url").text()?.trim()
+      String inceptionYear = node.getAt("inceptionYear").text()?.trim()
 
       // Search for licenses
       List<License> licenses = findLicenses(pomFile)
@@ -60,7 +54,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
         developers: developers,
         licenses: licenses,
         url: url,
-        year: year,
+        year: inceptionYear,
         gav: resolvedArtifact.owner
       )
 
@@ -75,27 +69,28 @@ class LicenseReportTask extends LicenseReportTaskKt {
     if (pomFile == null || pomFile.length() == 0) {
       return null
     }
-    Node pom = new XmlParser(false, false).parse(pomFile)
+    Node node = xmlParser.parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    String name = getName(pom)
+    String name = getName(node)
     if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
-    if (pom.version != null && !pom.version.isEmpty()) {
-      return pom.version?.text()?.trim()
+    if (node.getAt("version") != null && !node.getAt("version").isEmpty()) {
+      return node.getAt("version").text()?.trim()
     }
 
-    if (pom.parent != null) {
-      return findVersion(getParentPomFile(pom))
+    if (node.getAt("parent") != null) {
+      return findVersion(getParentPomFile(node))
     }
     return null
   }
 
-  private String getName(Node pomText) {
-    String name = pomText.name?.text() ? pomText.name?.text() : pomText.artifactId?.text()
+  private String getName(Node node) {
+    String name = node.getAt("name").text() ? node.getAt("name").text() :
+      node.getAt("artifactId").text()
     return name?.trim()
   }
 
@@ -103,23 +98,23 @@ class LicenseReportTask extends LicenseReportTaskKt {
     if (pomFile == null || pomFile.length() == 0) {
       return null
     }
-    Node pom = new XmlParser(false, false).parse(pomFile)
+    Node node = xmlParser.parse(pomFile)
 
     // If the POM is missing a name, do not record it
-    String name = getName(pom)
+    String name = getName(node)
     if (name == null || name.isEmpty()) {
       getLogger().log(LogLevel.WARN, "POM file is missing a name: ${pomFile}")
       return null
     }
 
-    if (ANDROID_SUPPORT_GROUP_ID == pom.groupId?.text()) {
+    if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
       return [new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL)]
     }
 
     // License information found
-    if (pom.licenses != null && !pom.licenses.isEmpty()) {
+    if (node.licenses != null && !node.licenses.isEmpty()) {
       List<License> licenses = new ArrayList<>()
-      pom.licenses[0].license.each { license ->
+      node.licenses[0].license.each { license ->
         String licenseName = license.name?.text()
         String licenseUrl = license.url?.text()
         try {
@@ -136,8 +131,8 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
     getLogger().log(LogLevel.INFO, "Project, ${name}, has no license in POM file.")
 
-    if (pom.parent != null) {
-      return findLicenses(getParentPomFile(pom))
+    if (node.getAt("parent") != null) {
+      return findLicenses(getParentPomFile(node))
     }
     return null
   }
@@ -145,11 +140,11 @@ class LicenseReportTask extends LicenseReportTaskKt {
   /**
    * Use Parent POM information when individual dependency license information is missing.
    */
-  @Override protected File getParentPomFile(Node pomText) {
+  @Override protected File getParentPomFile(Node node) {
     // Get parent POM information
-    String groupId = pomText?.parent?.groupId?.text()
-    String artifactId = pomText?.parent?.artifactId?.text()
-    String version = pomText?.parent?.version?.text()
+    String groupId = node?.getAt("parent")?.getAt("groupId")?.text()
+    String artifactId = node?.getAt("parent")?.getAt("artifactId")?.text()
+    String version = node?.getAt("parent")?.getAt("version")?.text()
     String dependency = "$groupId:$artifactId:$version@pom"
 
     // Add dependency to temporary configuration
@@ -157,6 +152,6 @@ class LicenseReportTask extends LicenseReportTaskKt {
     getProject().getConfigurations().getByName(TEMP_POM_CONFIGURATION).dependencies.add(
       getProject().getDependencies().add(TEMP_POM_CONFIGURATION, dependency)
     )
-    return super.getParentPomFile(pomText)
+    return super.getParentPomFile(node)
   }
 }
