@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
+import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
@@ -140,7 +141,66 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  protected abstract fun generatePOMInfo()
+  /**
+   * Get POM information from the dependency artifacts.
+   */
+  private fun generatePOMInfo() {
+    // Iterate through all POMs in order from our custom POM configuration
+    project
+      .configurations
+      .getByName(POM_CONFIGURATION)
+      .resolvedConfiguration
+      .lenientConfiguration
+      .artifacts.forEach { resolvedArtifact ->
+
+      val pomFile = resolvedArtifact.file
+      val node = xmlParser.parse(pomFile)
+
+      // License information
+      val name = getName(node).trim()
+      var version = node.getAt("version").text().trim()
+      val description = node.getAt("description").text().trim()
+      val developers = arrayListOf<Developer>()
+      if (node.getAt("developers").isNotEmpty()) {
+        node.getAt("developers").getAt("developer").forEach { developer ->
+          developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+        }
+      }
+
+      val url = node.getAt("url").text().trim()
+      val inceptionYear = node.getAt("inceptionYear").text().trim()
+
+      // Search for licenses
+      var licenses = findLicenses(pomFile)
+      if (licenses.isEmpty()) {
+        logger.log(LogLevel.WARN, "$name dependency does not have a license.")
+        licenses = arrayListOf()
+      }
+
+      // Search for version
+      if (version.isEmpty()) {
+        version = findVersion(pomFile)
+      }
+
+      // Store the information that we need
+      val module = resolvedArtifact.moduleVersion.id
+      val project = Project().apply {
+        this.name = name
+        this.description = description
+        this.version = version
+        this.licenses = licenses
+        this.url = url
+        this.developers = developers
+        this.year = inceptionYear
+        this.gav = "${module.group}:${module.name}:${module.version}"
+      }
+
+      projects.add(project)
+    }
+
+    // Sort POM information by name
+    projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name!! })
+  }
 
   /**
    * Setup configurations to collect dependencies.
