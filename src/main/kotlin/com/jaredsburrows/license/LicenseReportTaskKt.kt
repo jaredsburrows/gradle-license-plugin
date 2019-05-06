@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
+import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
@@ -287,7 +288,6 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
-
     val node = xmlParser.parse(pomFile)
 
     // If the POM is missing a name, do not record it
@@ -305,6 +305,52 @@ abstract class LicenseReportTaskKt : DefaultTask() {
       return findVersion(getParentPomFile(node))
     }
     return ""
+  }
+
+  protected fun findLicenses(pomFile: File?): List<License> {
+    if (pomFile.isNullOrEmpty()) {
+      return arrayListOf()
+    }
+    val node = xmlParser.parse(pomFile)
+
+    // If the POM is missing a name, do not record it
+    val name = getName(node)
+    if (name.isEmpty()) {
+      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      return arrayListOf()
+    }
+
+    if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
+      return listOf(
+        License().apply {
+          this.name = APACHE_LICENSE_NAME
+          url = APACHE_LICENSE_URL
+        }
+      )
+    }
+
+    // License information found
+    if (node.getAt("licenses").isNotEmpty()) {
+      val licenses = arrayListOf<License>()
+      (node.getAt("licenses")[0] as Node).getAt("license").forEach { license ->
+        val licenseName = (license as Node).getAt("name").text().trim()
+        val licenseUrl = license.getAt("url").text().trim()
+        if (isUrlValid(licenseUrl)) {
+          licenses.add(License().apply {
+            this.name = licenseName
+            url = licenseUrl
+          })
+        }
+      }
+      return licenses
+    }
+
+    logger.log(LogLevel.INFO, "Project, $name, has no license in POM file.")
+
+    if (!node.getAt("parent").isEmpty()) {
+      return findLicenses(getParentPomFile(node))
+    }
+    return arrayListOf()
   }
 
   protected fun getName(node: Node): String {
