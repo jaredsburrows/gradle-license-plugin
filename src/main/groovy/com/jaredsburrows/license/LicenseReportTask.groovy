@@ -81,7 +81,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
       return null
     }
 
-    if (node.getAt("version") != null && !node.getAt("version").isEmpty()) {
+    if (!node.getAt("version").isEmpty()) {
       return node.getAt("version").text()?.trim()
     }
 
@@ -92,7 +92,7 @@ class LicenseReportTask extends LicenseReportTaskKt {
   }
 
   private String getName(Node node) {
-    String name = node.getAt("name").text() ? node.getAt("name").text() :
+    String name = !node.getAt("name").text().isEmpty() ? node.getAt("name").text() :
       node.getAt("artifactId").text()
     return name?.trim()
   }
@@ -111,11 +111,11 @@ class LicenseReportTask extends LicenseReportTaskKt {
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
-      return [new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL)]
+      return Arrays.asList(new License(name: APACHE_LICENSE_NAME, url: APACHE_LICENSE_URL))
     }
 
     // License information found
-    if (node.licenses != null && !node.licenses.isEmpty()) {
+    if (node.getAt("licenses") != null && !node.getAt("licenses").text().isEmpty()) {
       List<License> licenses = new ArrayList<>()
       node.licenses[0].license.each { license ->
         String licenseName = license.name?.text()
