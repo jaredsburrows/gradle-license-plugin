@@ -78,8 +78,8 @@ class LicensePlugin : Plugin<Project> {
         jsonFile = File(path + LicenseReportTask.JSON_EXT)
         generateHtmlReport = configuration.generateHtmlReport
         generateJsonReport = configuration.generateJsonReport
-        copyHtmlReportToAssets = false
-        copyJsonReportToAssets = false
+        copyHtmlReportToAssets = configuration.copyHtmlReportToAssets
+        copyJsonReportToAssets = configuration.copyJsonReportToAssets
         assetDirs = (project
           .extensions
           .getByName("android") as BaseExtension)
