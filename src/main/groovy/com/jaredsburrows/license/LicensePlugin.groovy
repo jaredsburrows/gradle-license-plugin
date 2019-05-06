@@ -54,9 +54,9 @@ final class LicensePlugin extends LicensePluginKt {
       task.setCopyHtmlReportToAssets(configuration.getCopyHtmlReportToAssets())
       task.setCopyJsonReportToAssets(configuration.getCopyJsonReportToAssets())
       task.assetDirs = project.android.sourceSets.main.assets.srcDirs
-      task.setBuildType(variant.buildType.name)
-      task.setVariantName(variant.name)
-      task.setProductFlavors(variant.productFlavors)
+      task.setBuildType(variant.getBuildType().getName())
+      task.setVariantName(variant.getName())
+      task.setProductFlavors(variant.getProductFlavors())
       // Make sure update on each run
       task.getOutputs().upToDateWhen { false }
     }
