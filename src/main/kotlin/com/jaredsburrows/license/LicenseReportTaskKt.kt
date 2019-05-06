@@ -321,12 +321,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
-      return listOf(
-        License().apply {
-          this.name = APACHE_LICENSE_NAME
-          url = APACHE_LICENSE_URL
-        }
-      )
+      return listOf(License(name = APACHE_LICENSE_NAME, url = APACHE_LICENSE_URL))
     }
 
     // License information found
@@ -336,10 +331,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
         val licenseName = (license as Node).getAt("name").text().trim()
         val licenseUrl = license.getAt("url").text().trim()
         if (isUrlValid(licenseUrl)) {
-          licenses.add(License().apply {
-            this.name = licenseName
-            url = licenseUrl
-          })
+          licenses.add(License(name = licenseName, url = licenseUrl))
         }
       }
       return licenses

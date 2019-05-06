@@ -3,13 +3,14 @@ package com.jaredsburrows.license.internal.pom
 /**
  * Represents license information in a POM file.
  * See: https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+ *
+ * @param name Name of the License in the POM.
+ * @param url URL of the License in the POM.
  */
-class License {
-  /** Name of the License in the POM. */
-  var name: String? = null
-  /** URL of the License in the POM. */
+data class License(
+  var name: String? = null,
   var url: String? = null
-
+) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is License) return false
