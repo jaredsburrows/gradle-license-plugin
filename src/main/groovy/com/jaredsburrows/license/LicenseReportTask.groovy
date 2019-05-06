@@ -14,25 +14,28 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override protected void generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
-    for (ResolvedArtifact resolvedArtifact : getProject().getConfigurations()
-      .getByName(POM_CONFIGURATION).getResolvedConfiguration().getLenientConfiguration()
+    for (ResolvedArtifact resolvedArtifact : getProject()
+      .getConfigurations()
+      .getByName(POM_CONFIGURATION)
+      .getResolvedConfiguration()
+      .getLenientConfiguration()
       .getArtifacts()) {
       File pomFile = resolvedArtifact.getFile()
       Node node = xmlParser.parse(pomFile)
 
       // License information
-      String name = getName(node)?.trim()
-      String version = node.getAt("version").text()?.trim()
-      String description = node.getAt("description").text()?.trim()
+      String name = getName(node).trim()
+      String version = node.getAt("version").text().trim()
+      String description = node.getAt("description").text().trim()
       List<Developer> developers = new ArrayList<>()
-      if (node.getAt("developers") != null && !node.getAt("developers").isEmpty()) {
-        developers = node.developers.developer?.collect { developer ->
-          new Developer(name: developer?.name?.text()?.trim())
+      if (!node.getAt("developers").isEmpty()) {
+        for (Node developer : node.getAt("developers").getAt("developer")) {
+          developers.add(new Developer(name: developer.getAt("name").text().trim()))
         }
       }
 
-      String url = node.getAt("url").text()?.trim()
-      String inceptionYear = node.getAt("inceptionYear").text()?.trim()
+      String url = node.getAt("url").text().trim()
+      String inceptionYear = node.getAt("inceptionYear").text().trim()
 
       // Search for licenses
       List<License> licenses = findLicenses(pomFile)
@@ -142,9 +145,9 @@ class LicenseReportTask extends LicenseReportTaskKt {
    */
   @Override protected File getParentPomFile(Node node) {
     // Get parent POM information
-    String groupId = node?.getAt("parent")?.getAt("groupId")?.text()
-    String artifactId = node?.getAt("parent")?.getAt("artifactId")?.text()
-    String version = node?.getAt("parent")?.getAt("version")?.text()
+    String groupId = node.getAt("parent").getAt("groupId").text()
+    String artifactId = node.getAt("parent").getAt("artifactId").text()
+    String version = node.getAt("parent").getAt("version").text()
     String dependency = "$groupId:$artifactId:$version@pom"
 
     // Add dependency to temporary configuration
