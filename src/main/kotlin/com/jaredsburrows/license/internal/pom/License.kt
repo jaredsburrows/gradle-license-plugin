@@ -8,8 +8,8 @@ package com.jaredsburrows.license.internal.pom
  * @param url URL of the License in the POM.
  */
 data class License(
-  var name: String? = null,
-  var url: String? = null
+  var name: String = "",
+  var url: String = ""
 ) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -18,5 +18,5 @@ data class License(
     return true
   }
 
-  override fun hashCode(): Int = url?.hashCode() ?: 0
+  override fun hashCode(): Int = url.hashCode()
 }

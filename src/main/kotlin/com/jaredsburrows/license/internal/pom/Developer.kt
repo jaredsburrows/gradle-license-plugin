@@ -7,5 +7,5 @@ package com.jaredsburrows.license.internal.pom
  * @param name Name of the Developer in the POM.
  */
 data class Developer(
-  var name: String? = null
+  var name: String = ""
 )
