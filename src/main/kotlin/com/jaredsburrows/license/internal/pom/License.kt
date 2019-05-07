@@ -12,10 +12,12 @@ data class License(
   var url: String = ""
 ) {
   override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is License) return false
-    if (url != other.url) return false
-    return true
+    return when {
+      this === other -> true
+      other !is License -> false
+      url != other.url -> false
+      else -> true
+    }
   }
 
   override fun hashCode(): Int = url.hashCode()

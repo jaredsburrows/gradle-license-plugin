@@ -32,25 +32,22 @@ class JsonReport(private val projects: List<Project>) {
    * Json report when there are open source licenses.
    */
   private fun json(): String {
-    val reportList = mutableListOf<Map<String, Any?>>()
-    projects.forEach { project ->
+    val reportList = projects.map { project ->
       // Handle multiple licenses
-      val licensesJson = mutableListOf<Map<String, String?>>()
-      project.licenses.forEach { license ->
-        licensesJson.add(linkedMapOf(
+      val licensesJson = project.licenses.map { license ->
+        linkedMapOf(
           LICENSE to license.name,
           LICENSE_URL to license.url
-        ))
+        )
       }
 
       // Handle multiple developer
-      val developerNames = mutableListOf<String?>()
-      project.developers.forEach { developer ->
-        developerNames.add(developer.name)
+      val developerNames = project.developers.map { developer ->
+        developer.name
       }
 
       // Build the report
-      reportList.add(linkedMapOf(
+      linkedMapOf(
         PROJECT to if (!project.name.isEmpty()) project.name else null,
         DESCRIPTION to if (!project.description.isEmpty()) project.description else null,
         VERSION to if (!project.version.isEmpty()) project.version else null,
@@ -59,7 +56,7 @@ class JsonReport(private val projects: List<Project>) {
         YEAR to if (!project.year.isEmpty()) project.year else null,
         LICENSES to licensesJson,
         DEPENDENCY to project.gav
-      ))
+      )
     }
 
     return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)

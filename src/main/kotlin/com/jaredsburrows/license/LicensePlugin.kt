@@ -37,8 +37,7 @@ class LicensePlugin : Plugin<Project> {
   private fun configureJavaProject(project: Project) {
     val taskName = "licenseReport"
     val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
-    val configuration = project.extensions
-      .create("licenseReport", LicenseReportExtension::class.java)
+    val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
 
     // Create tasks
     project.tasks.create(taskName, LicenseReportTask::class.java).apply {
@@ -46,8 +45,8 @@ class LicensePlugin : Plugin<Project> {
       group = "Reporting"
       htmlFile = File(path + LicenseReportTask.HTML_EXT)
       jsonFile = File(path + LicenseReportTask.JSON_EXT)
-      generateHtmlReport = configuration.generateHtmlReport
-      generateJsonReport = configuration.generateJsonReport
+      generateHtmlReport = extension.generateHtmlReport
+      generateJsonReport = extension.generateJsonReport
       copyHtmlReportToAssets = false
       copyJsonReportToAssets = false
       // Make sure update on each run
@@ -60,8 +59,7 @@ class LicensePlugin : Plugin<Project> {
    */
   private fun configureAndroidProject(project: Project) {
     val variants = getAndroidVariant(project)
-    val configuration = project.extensions
-      .create("licenseReport", LicenseReportExtension::class.java)
+    val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
 
     // Configure tasks for all variants
     variants?.all { variant ->
@@ -75,10 +73,10 @@ class LicensePlugin : Plugin<Project> {
         group = "Reporting"
         htmlFile = File(path + LicenseReportTask.HTML_EXT)
         jsonFile = File(path + LicenseReportTask.JSON_EXT)
-        generateHtmlReport = configuration.generateHtmlReport
-        generateJsonReport = configuration.generateJsonReport
-        copyHtmlReportToAssets = configuration.copyHtmlReportToAssets
-        copyJsonReportToAssets = configuration.copyJsonReportToAssets
+        generateHtmlReport = extension.generateHtmlReport
+        generateJsonReport = extension.generateJsonReport
+        copyHtmlReportToAssets = extension.copyHtmlReportToAssets
+        copyJsonReportToAssets = extension.copyJsonReportToAssets
         assetDirs = (project
           .extensions
           .getByName("android") as BaseExtension)
@@ -101,17 +99,19 @@ class LicensePlugin : Plugin<Project> {
    * test plugin.
    */
   private fun getAndroidVariant(project: Project): DomainObjectCollection<out BaseVariant>? {
+    val plugins = project.plugins
+    val extensions = project.extensions
     return when {
-      project.plugins.hasPlugin(AppPlugin::class.java) -> project.extensions
+      plugins.hasPlugin(AppPlugin::class.java) -> extensions
         .findByType(AppExtension::class.java)
         ?.applicationVariants
-      project.plugins.hasPlugin(FeaturePlugin::class.java) -> project.extensions
+      plugins.hasPlugin(FeaturePlugin::class.java) -> extensions
         .findByType(FeatureExtension::class.java)
         ?.featureVariants
-      project.plugins.hasPlugin(LibraryPlugin::class.java) -> project.extensions
+      plugins.hasPlugin(LibraryPlugin::class.java) -> extensions
         .findByType(LibraryExtension::class.java)
         ?.libraryVariants
-      project.plugins.hasPlugin(TestPlugin::class.java) -> project.extensions
+      plugins.hasPlugin(TestPlugin::class.java) -> extensions
         .findByType(TestExtension::class.java)
         ?.applicationVariants
       else -> throw IllegalArgumentException("Missing the Android Gradle Plugin.")
