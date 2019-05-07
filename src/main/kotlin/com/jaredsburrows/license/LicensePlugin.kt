@@ -36,7 +36,7 @@ class LicensePlugin : Plugin<Project> {
    */
   private fun configureJavaProject(project: Project) {
     val taskName = "licenseReport"
-    val path = "${project.buildDir}/reports/licenses/$taskName"
+    val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
     val configuration = project.extensions
       .create("licenseReport", LicenseReportExtension::class.java)
 
@@ -59,7 +59,6 @@ class LicensePlugin : Plugin<Project> {
    * Configure for Android projects.
    */
   private fun configureAndroidProject(project: Project) {
-    // Get correct plugin - Check for android library, default to application variant for application/test plugin
     val variants = getAndroidVariant(project)
     val configuration = project.extensions
       .create("licenseReport", LicenseReportExtension::class.java)
@@ -68,7 +67,7 @@ class LicensePlugin : Plugin<Project> {
     variants?.all { variant ->
       val name = variant.name.capitalize()
       val taskName = "license${name}Report"
-      val path = "${project.buildDir}/reports/licenses/$taskName"
+      val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
 
       // Create tasks based on variant
       project.tasks.create(taskName, LicenseReportTask::class.java).apply {
@@ -101,9 +100,7 @@ class LicensePlugin : Plugin<Project> {
    * Check for the android library plugin, default to application variants for applications and
    * test plugin.
    */
-  private fun getAndroidVariant(
-    project: Project
-  ): DomainObjectCollection<out BaseVariant>? {
+  private fun getAndroidVariant(project: Project): DomainObjectCollection<out BaseVariant>? {
     return when {
       project.plugins.hasPlugin(AppPlugin::class.java) -> project.extensions
         .findByType(AppExtension::class.java)

@@ -19,6 +19,7 @@ import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
 import kotlinx.html.visit
+import java.io.File
 
 class HtmlReport(private val projects: List<Project>) {
   companion object {
@@ -156,7 +157,9 @@ class HtmlReport(private val projects: List<Project>) {
     }.toString()
 
   private fun getLicenseText(fileName: String): String =
-    HtmlReport::class.java.getResource("/license/$fileName").readText()
+    HtmlReport::class.java.getResource(
+      "/license/$fileName".replace('/', File.separatorChar)
+    ).readText()
 }
 
 @HtmlTagMarker
