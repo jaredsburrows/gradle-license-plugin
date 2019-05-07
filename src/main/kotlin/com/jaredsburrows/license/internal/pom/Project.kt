@@ -13,12 +13,12 @@ package com.jaredsburrows.license.internal.pom
  * @param gav Group, Artifact and Version.
  */
 data class Project(
-  var name: String? = null,
-  var description: String? = null,
-  var version: String? = null,
-  var licenses: List<License>? = null,
-  var url: String? = null,
-  var developers: List<Developer>? = null,
-  var year: String? = null,
-  var gav: String? = null // group/artifact/version
+  var name: String = "",
+  var description: String = "",
+  var version: String = "",
+  var licenses: List<License> = listOf(),
+  var url: String = "",
+  var developers: List<Developer> = listOf(),
+  var year: String = "",
+  var gav: String = "" // group/artifact/version
 )

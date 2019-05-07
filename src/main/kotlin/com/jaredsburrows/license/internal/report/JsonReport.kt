@@ -32,34 +32,31 @@ class JsonReport(private val projects: List<Project>) {
    * Json report when there are open source licenses.
    */
   private fun json(): String {
-    val reportList = mutableListOf<Map<String, Any?>>()
-    projects.forEach { project ->
+    val reportList = projects.map { project ->
       // Handle multiple licenses
-      val licensesJson = mutableListOf<Map<String, String?>>()
-      project.licenses.orEmpty().forEach { license ->
-        licensesJson.add(linkedMapOf(
+      val licensesJson = project.licenses.map { license ->
+        linkedMapOf(
           LICENSE to license.name,
           LICENSE_URL to license.url
-        ))
+        )
       }
 
       // Handle multiple developer
-      val developerNames = mutableListOf<String?>()
-      project.developers.orEmpty().forEach { developer ->
-        developerNames.add(developer.name)
+      val developerNames = project.developers.map { developer ->
+        developer.name
       }
 
       // Build the report
-      reportList.add(linkedMapOf(
-        PROJECT to if (!project.name.isNullOrEmpty()) project.name else null,
-        DESCRIPTION to if (!project.description.isNullOrEmpty()) project.description else null,
-        VERSION to if (!project.version.isNullOrEmpty()) project.version else null,
+      linkedMapOf(
+        PROJECT to if (!project.name.isEmpty()) project.name else null,
+        DESCRIPTION to if (!project.description.isEmpty()) project.description else null,
+        VERSION to if (!project.version.isEmpty()) project.version else null,
         DEVELOPERS to developerNames,
-        URL to if (!project.url.isNullOrEmpty()) project.url else null,
-        YEAR to if (!project.year.isNullOrEmpty()) project.year else null,
+        URL to if (!project.url.isEmpty()) project.url else null,
+        YEAR to if (!project.year.isEmpty()) project.year else null,
         LICENSES to licensesJson,
         DEPENDENCY to project.gav
-      ))
+      )
     }
 
     return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)

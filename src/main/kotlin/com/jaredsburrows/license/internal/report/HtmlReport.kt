@@ -48,14 +48,14 @@ class HtmlReport(private val projects: List<Project>) {
 
       // first check to see if the project's license is in our list of known licenses:
       if (!project.licenses.isNullOrEmpty()) {
-        val license = project.licenses?.first()
+        val license = project.licenses.first()
         key = when {
           // look up by url
-          licenseMap.containsKey(license?.url) -> licenseMap[license?.url]
+          licenseMap.containsKey(license.url) -> licenseMap[license.url]
           // then by name
-          licenseMap.containsKey(license?.name) -> licenseMap[license?.name]
+          licenseMap.containsKey(license.name) -> licenseMap[license.name]
           // otherwise, use the url as a key
-          else -> license?.url
+          else -> license.url
         }
       }
 
@@ -84,7 +84,7 @@ class HtmlReport(private val projects: List<Project>) {
           }
           ul {
             projectsMap.entries.forEach { entry ->
-              val sortedProjects = entry.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name!! })
+              val sortedProjects = entry.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
 
               var currentProject: Project? = null
               var currentLicense: Int? = null
@@ -96,7 +96,7 @@ class HtmlReport(private val projects: List<Project>) {
                 // Display libraries
                 li {
                   a(href = "#$currentLicense") {
-                    +"${project.name}"
+                    +project.name
                   }
                 }
               }
