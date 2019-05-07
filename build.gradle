@@ -80,7 +80,3 @@ apply from: 'gradle/scan.gradle'
 apply from: 'gradle/compile.gradle'
 apply from: 'gradle/plugin.gradle'
 apply from: 'gradle/publish.gradle'
-
-compileGroovy.dependsOn compileKotlin
-compileGroovy.classpath += files(compileKotlin.destinationDir)
-classes.dependsOn compileGroovy

@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
+import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.HtmlReport
@@ -22,34 +23,33 @@ import java.net.URI
 import java.net.URL
 import java.util.UUID
 
-abstract class LicenseReportTaskKt : DefaultTask() {
+open class LicenseReportTask : DefaultTask() { // tasks can't be final
   companion object {
-    val xmlParser = XmlParser(false, false)
-
-    const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    const val APACHE_LICENSE_NAME = "The Apache Software License"
-    const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    private val xmlParser = XmlParser(false, false)
+    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+    private const val APACHE_LICENSE_NAME = "The Apache Software License"
+    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
 
-    @JvmStatic fun getClickableFileUrl(file: File): String =
+    private fun getClickableFileUrl(file: File): String =
       URI("file", "", file.toURI().path, null, null).toString()
   }
 
   @Internal var projects = arrayListOf<Project>()
-  @Optional @Input var assetDirs = arrayOf<File>()
-  @Optional @Input var generateHtmlReport: Boolean = false
-  @Optional @Input var generateJsonReport: Boolean = false
-  @Optional @Input var copyHtmlReportToAssets: Boolean = false
-  @Optional @Input var copyJsonReportToAssets: Boolean = false
+  @Optional @Input var assetDirs = listOf<File>()
+  @Optional @Input var generateHtmlReport = false
+  @Optional @Input var generateJsonReport = false
+  @Optional @Input var copyHtmlReportToAssets = false
+  @Optional @Input var copyJsonReportToAssets = false
   @Optional @Input var buildType: String? = null
   @Optional @Input var variantName: String? = null
   @Optional @Internal var productFlavors = listOf<ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
-  var POM_CONFIGURATION = "poms"
-  var TEMP_POM_CONFIGURATION = "tempPoms"
+  private var POM_CONFIGURATION = "poms"
+  private var TEMP_POM_CONFIGURATION = "tempPoms"
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -140,7 +140,66 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  protected abstract fun generatePOMInfo()
+  /**
+   * Get POM information from the dependency artifacts.
+   */
+  private fun generatePOMInfo() {
+    // Iterate through all POMs in order from our custom POM configuration
+    project
+      .configurations
+      .getByName(POM_CONFIGURATION)
+      .resolvedConfiguration
+      .lenientConfiguration
+      .artifacts.forEach { resolvedArtifact ->
+
+      val pomFile = resolvedArtifact.file
+      val node = xmlParser.parse(pomFile)
+
+      // License information
+      val name = getName(node).trim()
+      var version = node.getAt("version").text().trim()
+      val description = node.getAt("description").text().trim()
+      val developers = arrayListOf<Developer>()
+      if (node.getAt("developers").isNotEmpty()) {
+        node.getAt("developers").getAt("developer").forEach { developer ->
+          developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+        }
+      }
+
+      val url = node.getAt("url").text().trim()
+      val inceptionYear = node.getAt("inceptionYear").text().trim()
+
+      // Search for licenses
+      var licenses = findLicenses(pomFile)
+      if (licenses.isEmpty()) {
+        logger.log(LogLevel.WARN, "$name dependency does not have a license.")
+        licenses = arrayListOf()
+      }
+
+      // Search for version
+      if (version.isEmpty()) {
+        version = findVersion(pomFile)
+      }
+
+      // Store the information that we need
+      val module = resolvedArtifact.moduleVersion.id
+      val project = Project().apply {
+        this.name = name
+        this.description = description
+        this.version = version
+        this.licenses = licenses
+        this.url = url
+        this.developers = developers
+        this.year = inceptionYear
+        this.gav = "${module.group}:${module.name}:${module.version}"
+      }
+
+      projects.add(project)
+    }
+
+    // Sort POM information by name
+    projects.sortBy { it.name?.toLowerCase() }
+  }
 
   /**
    * Setup configurations to collect dependencies.
@@ -274,7 +333,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     }
   }
 
-  protected fun isUrlValid(licenseUrl: String): Boolean {
+  private fun isUrlValid(licenseUrl: String): Boolean {
     var url: URL? = null
     try {
       url = URL(licenseUrl)
@@ -284,7 +343,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return url != null
   }
 
-  protected fun findVersion(pomFile: File?): String {
+  private fun findVersion(pomFile: File?): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
@@ -307,7 +366,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return ""
   }
 
-  protected fun findLicenses(pomFile: File?): List<License> {
+  private fun findLicenses(pomFile: File?): List<License> {
     if (pomFile.isNullOrEmpty()) {
       return arrayListOf()
     }
@@ -345,7 +404,7 @@ abstract class LicenseReportTaskKt : DefaultTask() {
     return arrayListOf()
   }
 
-  protected fun getName(node: Node): String {
+  private fun getName(node: Node): String {
     return if (node.getAt("name").text().isNotEmpty()) {
       node.getAt("name").text()
     } else {
