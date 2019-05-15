@@ -23,7 +23,7 @@ import java.io.File
 
 class HtmlReport(private val projects: List<Project>) {
   companion object {
-    const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
+    const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
     const val NO_LIBRARIES = "None"
     const val NO_LICENSE = "No license found"
