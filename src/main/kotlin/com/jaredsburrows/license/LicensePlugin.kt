@@ -17,6 +17,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 import java.io.File
 
+/** A [Plugin] which grabs the POM.xml files from maven dependencies. */
 class LicensePlugin : Plugin<Project> {
   override fun apply(project: Project) {
     project.plugins.all { plugin ->
@@ -31,9 +32,7 @@ class LicensePlugin : Plugin<Project> {
     }
   }
 
-  /**
-   * Configure for Java projects.
-   */
+  /** Configure for Java projects. */
   private fun configureJavaProject(project: Project) {
     val taskName = "licenseReport"
     val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
@@ -54,9 +53,7 @@ class LicensePlugin : Plugin<Project> {
     }
   }
 
-  /**
-   * Configure for Android projects.
-   */
+  /** Configure for Android projects. */
   private fun configureAndroidProject(project: Project) {
     val variants = getAndroidVariant(project)
     val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)

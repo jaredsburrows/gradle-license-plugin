@@ -23,14 +23,10 @@ class JsonReport(private val projects: List<Project>) {
       .create()
   }
 
-  /**
-   * Return Json as a String.
-   */
+  /**  Return Json as a String. */
   fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
 
-  /**
-   * Json report when there are open source licenses.
-   */
+  /** Json report when there are open source licenses. */
   private fun json(): String {
     val reportList = projects.map { project ->
       // Handle multiple licenses

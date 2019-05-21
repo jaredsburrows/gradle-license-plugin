@@ -1,12 +1,8 @@
 package com.jaredsburrows.license
 
-/**
- * Configuration options for the gradle license plugin.
- */
+/** Configuration options for the gradle license plugin. */
 open class LicenseReportExtension { // extensions can't be final
-  /**
-   * Whether or not the HTML report should be generated.
-   */
+  /** Whether or not the HTML report should be generated. */
   var generateHtmlReport = true
 
   /**
@@ -15,9 +11,7 @@ open class LicenseReportExtension { // extensions can't be final
    */
   var copyHtmlReportToAssets = true
 
-  /**
-   * Whether or not the JSON report should be generated.
-   */
+  /** Whether or not the JSON report should be generated. */
   var generateJsonReport = true
 
   /**

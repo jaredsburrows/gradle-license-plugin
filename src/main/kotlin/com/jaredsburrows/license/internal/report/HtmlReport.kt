@@ -30,14 +30,10 @@ class HtmlReport(private val projects: List<Project>) {
     const val NOTICE_LIBRARIES = "Notice for packages:"
   }
 
-  /**
-   * Return Html as a String.
-   */
+  /** Return Html as a String. */
   fun string(): String = if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
 
-  /**
-   * Html report when there are open source licenses.
-   */
+  /** Html report when there are open source licenses. */
   private fun openSourceHtml(): String {
     val projectsMap = hashMapOf<String?, List<Project>>()
     val licenseMap = LicenseHelper.licenseMap
@@ -84,7 +80,9 @@ class HtmlReport(private val projects: List<Project>) {
           }
           ul {
             projectsMap.entries.forEach { entry ->
-              val sortedProjects = entry.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+              val sortedProjects = entry.value.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+              )
 
               var currentProject: Project? = null
               var currentLicense: Int? = null
@@ -113,7 +111,7 @@ class HtmlReport(private val projects: List<Project>) {
                   unsafe { +getLicenseText(entry.key!!) }
                 }
               } else {
-                // if not found in the map, just display the info from the POM.xml -  name along with the url
+                // if not found in the map, just display the info from the POM.xml
                 val currentLicenseName = currentProject?.licenses?.first()?.name?.trim()
                 val currentUrl = currentProject?.licenses?.first()?.url?.trim()
 
@@ -134,9 +132,7 @@ class HtmlReport(private val projects: List<Project>) {
       .toString()
   }
 
-  /**
-   * Html report when there are no open source licenses.
-   */
+  /** Html report when there are no open source licenses. */
   private fun noOpenSourceHtml(): String = StringBuilder()
     .appendHTML()
     .html {

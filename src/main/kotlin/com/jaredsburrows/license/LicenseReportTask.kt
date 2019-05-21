@@ -11,6 +11,7 @@ import groovy.util.NodeList
 import groovy.util.XmlParser
 import groovy.xml.QName
 import org.gradle.api.DefaultTask
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
@@ -23,6 +24,9 @@ import java.net.URI
 import java.net.URL
 import java.util.UUID
 
+/**
+ * A [Task] that creates HTML and JSON reports of the current projects dependencies.
+ */
 open class LicenseReportTask : DefaultTask() { // tasks can't be final
   companion object {
     private val xmlParser = XmlParser(false, false)
@@ -48,8 +52,8 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @Optional @Internal var productFlavors = listOf<ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
-  private var POM_CONFIGURATION = "poms"
-  private var TEMP_POM_CONFIGURATION = "tempPoms"
+  private var pomConfiguration = "poms"
+  private var tempPomConfiguration = "tempPoms"
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -75,9 +79,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
   }
 
-  /**
-   * Iterate through all configurations and collect dependencies.
-   */
+  /** Iterate through all configurations and collect dependencies. */
   private fun initDependencies() {
     // Add POM information to our POM configuration
     val configurationSet = linkedSetOf<Configuration>()
@@ -132,22 +134,20 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
         set.resolvedConfiguration.lenientConfiguration.artifacts.forEach { artifact ->
           val id = artifact.moduleVersion.id
           val gav = "${id.group}:${id.name}:${id.version}@pom"
-          configurations.getByName(POM_CONFIGURATION).dependencies.add(
-            project.dependencies.add(POM_CONFIGURATION, gav)
+          configurations.getByName(pomConfiguration).dependencies.add(
+            project.dependencies.add(pomConfiguration, gav)
           )
         }
       }
     }
   }
 
-  /**
-   * Get POM information from the dependency artifacts.
-   */
+  /** Get POM information from the dependency artifacts. */
   private fun generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     project
       .configurations
-      .getByName(POM_CONFIGURATION)
+      .getByName(pomConfiguration)
       .resolvedConfiguration
       .lenientConfiguration
       .artifacts.forEach { resolvedArtifact ->
@@ -201,16 +201,14 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     projects.sortBy { it.name.toLowerCase() }
   }
 
-  /**
-   * Setup configurations to collect dependencies.
-   */
+  /** Setup configurations to collect dependencies. */
   private fun setupEnvironment() {
-    POM_CONFIGURATION += variantName.orEmpty() + UUID.randomUUID()
-    TEMP_POM_CONFIGURATION += variantName.orEmpty() + UUID.randomUUID()
+    pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
+    tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
     project.configurations.apply {
-      create(POM_CONFIGURATION)
+      create(pomConfiguration)
 
       forEach { configuration ->
         try {
@@ -221,9 +219,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
   }
 
-  /**
-   * Use Parent POM information when individual dependency license information is missing.
-   */
+  /** Use Parent POM information when individual dependency license information is missing. */
   protected open fun getParentPomFile(node: Node?): File? {
     // Get parent POM information
     val parent = node?.getAt("parent")
@@ -234,23 +230,21 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
     // Add dependency to temporary configuration
     val configurations = project.configurations
-    configurations.create(TEMP_POM_CONFIGURATION)
-    configurations.getByName(TEMP_POM_CONFIGURATION).dependencies.add(
-      project.dependencies.add(TEMP_POM_CONFIGURATION, dependency)
+    configurations.create(tempPomConfiguration)
+    configurations.getByName(tempPomConfiguration).dependencies.add(
+      project.dependencies.add(tempPomConfiguration, dependency)
     )
 
-    val pomFile = project.configurations.getByName(TEMP_POM_CONFIGURATION)
+    val pomFile = project.configurations.getByName(tempPomConfiguration)
       .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
 
     // Reset dependencies in temporary configuration
-    project.configurations.remove(project.configurations.getByName(TEMP_POM_CONFIGURATION))
+    project.configurations.remove(project.configurations.getByName(tempPomConfiguration))
 
     return pomFile
   }
 
-  /**
-   * Generated HTML report.
-   */
+  /** Generated HTML report. */
   private fun createHtmlReport() {
     // Remove existing file
     htmlFile.apply {
@@ -269,9 +263,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
   }
 
-  /**
-   * Generated JSON report.
-   */
+  /** Generated JSON report. */
   private fun createJsonReport() {
     jsonFile.apply {
       // Remove existing file
