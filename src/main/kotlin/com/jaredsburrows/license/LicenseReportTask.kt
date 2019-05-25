@@ -295,7 +295,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
         createNewFile()
 
         // Copy HTML file to the assets directory
-        licenseFile.bufferedWriter().use { it.write(htmlFile.readText()) }
+        bufferedWriter().use { it.write(htmlFile.readText()) }
       }
 
       // Log output directory for user
@@ -317,7 +317,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
         createNewFile()
 
         // Copy JSON file to the assets directory
-        licenseFile.bufferedWriter().use { it.write(jsonFile.readText()) }
+        bufferedWriter().use { it.write(jsonFile.readText()) }
       }
 
       // Log output directory for user
@@ -326,13 +326,13 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   }
 
   private fun isUrlValid(licenseUrl: String): Boolean {
-    var url: URL? = null
+    var uri: URI? = null
     try {
-      url = URL(licenseUrl)
+      uri = URL(licenseUrl).toURI()
     } catch (ignored: Exception) {
       logger.log(LogLevel.WARN, "$name dependency has an invalid license URL; skipping license")
     }
-    return url != null
+    return uri != null
   }
 
   private fun findVersion(pomFile: File?): String {
