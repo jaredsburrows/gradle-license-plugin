@@ -20,23 +20,24 @@ import java.io.File
 /** A [Plugin] which grabs the POM.xml files from maven dependencies. */
 class LicensePlugin : Plugin<Project> {
   override fun apply(project: Project) {
+    val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
+
     project.plugins.all { plugin ->
       when (plugin) {
-        is JavaPlugin -> configureJavaProject(project)
+        is JavaPlugin -> configureJavaProject(project, extension)
         is AppPlugin,
         is FeaturePlugin,
         is LibraryPlugin,
         is InstantAppPlugin,
-        is TestPlugin -> configureAndroidProject(project)
+        is TestPlugin -> configureAndroidProject(project, extension)
       }
     }
   }
 
   /** Configure for Java projects. */
-  private fun configureJavaProject(project: Project) {
+  private fun configureJavaProject(project: Project, extension: LicenseReportExtension) {
     val taskName = "licenseReport"
     val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
-    val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
 
     // Create tasks
     project.tasks.create(taskName, LicenseReportTask::class.java).apply {
@@ -54,9 +55,8 @@ class LicensePlugin : Plugin<Project> {
   }
 
   /** Configure for Android projects. */
-  private fun configureAndroidProject(project: Project) {
+  private fun configureAndroidProject(project: Project, extension: LicenseReportExtension) {
     val variants = getAndroidVariant(project)
-    val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
 
     // Configure tasks for all variants
     variants?.all { variant ->
