@@ -21,6 +21,11 @@ import kotlinx.html.unsafe
 import kotlinx.html.visit
 import java.io.File
 
+/**
+ * Generates HTML report of projects dependencies.
+ *
+ * @property projects list of [Project]s for thr HTML report.
+ */
 class HtmlReport(private val projects: List<Project>) {
   companion object {
     const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"

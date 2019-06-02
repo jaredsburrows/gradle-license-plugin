@@ -4,6 +4,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.jaredsburrows.license.internal.pom.Project
 
+/**
+ * Generates JSON report of projects dependencies.
+ *
+ * @property projects list of [Project]s for thr JSON report.
+ */
 class JsonReport(private val projects: List<Project>) {
   companion object {
     private const val PROJECT = "project"
@@ -23,7 +28,7 @@ class JsonReport(private val projects: List<Project>) {
       .create()
   }
 
-  /**  Return Json as a String. */
+  /** Return Json as a [String]. */
   fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
 
   /** Json report when there are open source licenses. */
@@ -38,18 +43,16 @@ class JsonReport(private val projects: List<Project>) {
       }
 
       // Handle multiple developer
-      val developerNames = project.developers.map { developer ->
-        developer.name
-      }
+      val developerNames = project.developers.map { it.name }
 
       // Build the report
       linkedMapOf(
-        PROJECT to if (!project.name.isEmpty()) project.name else null,
-        DESCRIPTION to if (!project.description.isEmpty()) project.description else null,
-        VERSION to if (!project.version.isEmpty()) project.version else null,
+        PROJECT to if (project.name.isNotEmpty()) project.name else null,
+        DESCRIPTION to if (project.description.isNotEmpty()) project.description else null,
+        VERSION to if (project.version.isNotEmpty()) project.version else null,
         DEVELOPERS to developerNames,
-        URL to if (!project.url.isEmpty()) project.url else null,
-        YEAR to if (!project.year.isEmpty()) project.year else null,
+        URL to if (project.url.isNotEmpty()) project.url else null,
+        YEAR to if (project.year.isNotEmpty()) project.year else null,
         LICENSES to licensesJson,
         DEPENDENCY to project.gav
       )

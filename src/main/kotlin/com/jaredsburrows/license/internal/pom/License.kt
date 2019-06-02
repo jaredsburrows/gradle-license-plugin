@@ -1,11 +1,11 @@
 package com.jaredsburrows.license.internal.pom
 
 /**
- * Represents license information in a POM file.
- * See: https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+ * Represents license information in a
+ * [POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html) file.
  *
- * @param name Name of the License in the POM.
- * @param url URL of the License in the POM.
+ * @property name name of the [License] in the POM.
+ * @property url url of the [License] in the POM.
  */
 data class License(
   var name: String = "",
