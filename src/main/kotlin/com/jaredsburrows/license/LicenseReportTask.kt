@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import com.android.builder.model.ProductFlavor
+import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
@@ -260,7 +261,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${getClickableFileUrl(htmlFile)}.")
+    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${ConsoleRenderer().asClickableFileUrl(htmlFile)}.")
   }
 
   /** Generated JSON report. */
@@ -278,7 +279,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${getClickableFileUrl(jsonFile)}.")
+    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}.")
   }
 
   private fun copyHtmlReport() {
@@ -299,7 +300,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
       // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, "Copied HTML report to ${getClickableFileUrl(licenseFile)}.")
+      logger.log(LogLevel.LIFECYCLE, "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
     }
   }
 
@@ -321,7 +322,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
       // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${getClickableFileUrl(licenseFile)}.")
+      logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
     }
   }
 
