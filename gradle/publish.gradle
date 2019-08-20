@@ -37,28 +37,28 @@ def pomConfig = {
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
   group = 'Publications'
   description = 'Create javadoc jar of Groovy documentation.'
-  classifier = 'groovydoc'
+  archiveClassifier = 'groovydoc'
   from groovydoc.destinationDir
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
   group = 'Publications'
   description = 'Create jar of the sources.'
-  classifier = 'sources'
+  archiveClassifier = 'sources'
   from sourceSets.main.allSource
 }
 
 task testsJar(type: Jar) {
   group = 'Publications'
   description = 'Create jar of all tests.'
-  classifier = 'tests'
+  archiveClassifier = 'tests'
   from sourceSets.test.output
 }
 
 task reportsZip(type: Zip, dependsOn: check) {
   group = 'Publications'
   description = 'Create a zip of all reports.'
-  classifier = 'reports'
+  archiveClassifier = 'reports'
   from reporting.baseDir
 }
 
@@ -81,11 +81,6 @@ publishing {
       version VERSION_NAME
 
       pom.withXml {
-        // All dependencies should use the default scope 'compile' not 'runtime'
-        asNode().dependencies.dependency.each { dep ->
-          if (dep.scope.text() == 'runtime') dep.remove(dep.scope)
-        }
-
         // Add parent POM information
         asNode().children().first() + pomConfig
       }
