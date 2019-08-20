@@ -80,3 +80,9 @@ apply from: 'gradle/scan.gradle'
 apply from: 'gradle/compile.gradle'
 apply from: 'gradle/plugin.gradle'
 apply from: 'gradle/publish.gradle'
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = rootProject.versions.java
+  }
+}
