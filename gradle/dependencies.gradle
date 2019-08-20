@@ -11,7 +11,6 @@ ext.deps = [
     'gradle' : [
       'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     ],
-    'reflect': "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
   ],
   'kotlinx': [
     'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.12',
