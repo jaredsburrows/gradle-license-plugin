@@ -37,9 +37,6 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
-
-    private fun getClickableFileUrl(file: File): String =
-      URI("file", "", file.toURI().path, null, null).toString()
   }
 
   @Internal var projects = arrayListOf<Project>()
@@ -55,6 +52,11 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @OutputFile lateinit var jsonFile: File
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
+
+  init {
+    // Make sure update on each run
+    outputs.upToDateWhen { false }
+  }
 
   @TaskAction fun licenseReport() {
     setupEnvironment()

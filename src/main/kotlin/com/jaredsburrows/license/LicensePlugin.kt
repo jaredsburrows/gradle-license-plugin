@@ -49,8 +49,6 @@ class LicensePlugin : Plugin<Project> {
       generateJsonReport = extension.generateJsonReport
       copyHtmlReportToAssets = false
       copyJsonReportToAssets = false
-      // Make sure update on each run
-      outputs.upToDateWhen { false }
     }
   }
 
@@ -85,8 +83,6 @@ class LicensePlugin : Plugin<Project> {
         buildType = variant.buildType.name
         variantName = variant.name
         productFlavors = variant.productFlavors
-        // Make sure update on each run
-        outputs.upToDateWhen { false }
       }
     }
   }
