@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 0.8.6 (2019-10-14)
+ * Finished converting plugin to Kotlin
+ * [#99](https://github.com/jaredsburrows/gradle-license-plugin/pull/99) Make sure to use correct Path.Separator
+ * [#102](https://github.com/jaredsburrows/gradle-license-plugin/pull/102) Initiate extension earlier in setup process
+ * [#103](https://github.com/jaredsburrows/gradle-license-plugin/pull/103) Use Console Renderer to handle cross platform terminal printing
+
 ## Version 0.8.5 (2019-04-23)
  
  * Converted many files to Kotlin
