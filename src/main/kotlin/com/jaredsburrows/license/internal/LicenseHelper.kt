@@ -80,6 +80,7 @@ object LicenseHelper {
     "MIT License" to "mit.txt",
     "http://opensource.org/licenses/MIT" to "mit.txt",
     "https://opensource.org/licenses/MIT" to "mit.txt",
+    "http://www.opensource.org/licenses/mit-license.php" to "mit.txt",
 
     // Mozilla Public License 2.0
     // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/mpl-2.0.txt
