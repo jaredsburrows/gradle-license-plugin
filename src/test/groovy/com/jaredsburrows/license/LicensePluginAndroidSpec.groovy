@@ -843,14 +843,14 @@ final class LicensePluginAndroidSpec extends Specification {
       
       dependencies {
         api project(':subproject')
-        implementation 'group:name:1.0.0'
+        implementation 'androidx.annotation:annotation:1.0.0'
       }
       
       project(':subproject') {
         apply plugin: 'java-library'
       
         dependencies {
-          implementation 'com.android.support:design:26.1.0'
+          implementation 'group:name:1.0.0'
         }
       }
       """
@@ -872,7 +872,7 @@ final class LicensePluginAndroidSpec extends Specification {
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#314129783">design</a>
+              <a href="#314129783">Android Support Library Annotations</a>
             </li>
             <a name="314129783" />
             <pre>${getLicenseText('apache-2.0.txt')}</pre>
@@ -891,19 +891,21 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       [
         {
-          "project":"design",
-          "description":null,
-          "version":"26.1.0",
-          "developers":[],
-          "url":null,
-          "year":null,
+          "project":"Android Support Library Annotations",
+          "description":"The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs.",
+          "version":"1.0.0",
+          "developers":[
+            "The Android Open Source Project"
+          ],
+          "url":"http://developer.android.com/tools/extras/support-library.html",
+          "year":"2013",
           "licenses":[
             {
-              "license":"The Apache Software License",
+              "license": "The Apache Software License, Version 2.0",
               "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
           ],
-          "dependency":"com.android.support:design:26.1.0"
+          "dependency":"androidx.annotation:annotation:1.0.0"
         },
         {
           "project":"Fake dependency name",
