@@ -20,7 +20,7 @@ ext.deps = [
   'android': [
     'tools': [
       'build': [
-        'gradle': 'com.android.tools.build:gradle:3.4.0',
+        'gradle': 'com.android.tools.build:gradle:3.5.1',
       ]
     ]
   ],

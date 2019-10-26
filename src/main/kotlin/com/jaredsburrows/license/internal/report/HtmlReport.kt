@@ -203,7 +203,6 @@ class HtmlReport(private val projects: List<Project>) {
       else -> license.url
     } as String
   }
-}
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.a(
