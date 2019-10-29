@@ -38,6 +38,8 @@ final class TestUtils {
     text = text.replaceAll('<br>', '<br/>')
     text = text.replaceAll('<hr>', '<hr/>')
     text = text.replaceAll('&copy;', '(c)')
+    // Unicode code points being transformed strangely - normalize
+    text = text.replaceAll('Karol Wr.*niak', 'Karol WrXXniak')
     return text
   }
 

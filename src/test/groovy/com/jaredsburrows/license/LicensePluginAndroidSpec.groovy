@@ -678,7 +678,7 @@ final class LicensePluginAndroidSpec extends Specification {
             <hr>
             <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
               <dl>
-                <dt>Copyright &copy; 20xx Karol Wr\u00c3\u0192\u00c2\u00b3tniak</dt>
+                <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
               </dl>
             </li>
       <a name="1783810846"></a>
