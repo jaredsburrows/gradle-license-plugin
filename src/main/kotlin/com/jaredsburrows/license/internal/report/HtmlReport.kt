@@ -186,11 +186,6 @@ class HtmlReport(private val projects: List<Project>) {
       }
     }.toString()
 
-  private fun getLicenseText(fileName: String): String {
-    val resource = HtmlReport::class.java.getResource("/license/$fileName")
-    return (resource?.readText() ?: MISSING_LICENSE + fileName)
-  }
-
   private fun getLicenseKey(license: License): String {
     // See if the license is in our list of known licenses (which coalesces differing URLs to the same license text)
     // If not, use the URL if present. Else "".
@@ -203,6 +198,12 @@ class HtmlReport(private val projects: List<Project>) {
       else -> license.url
     } as String
   }
+}
+
+fun getLicenseText(fileName: String): String {
+  val resource = HtmlReport::class.java.getResource("/license/$fileName")
+  return (resource?.readText() ?: HtmlReport.MISSING_LICENSE + fileName)
+}
 
 @HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.a(

@@ -3,7 +3,7 @@ package com.jaredsburrows.license
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
-import static test.TestUtils.getLicenseText
+import static test.TestUtils.myGetLicenseText
 import static test.TestUtils.gradleWithCommand
 
 import org.gradle.testkit.runner.GradleRunner
@@ -36,8 +36,9 @@ final class LicensePluginAndroidSpec extends Specification {
       .join(", ")
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
-    reportFolder = "${testProjectDir.root.path}/build/reports/licenses"
-    assetsFolder = "${testProjectDir.root.path}/src/main/assets"
+    // In case we're on Windows, fix the \s in the string containing the name
+    reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
+    assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
   }
 
   @Ignore("Jcenter 502 errors")
@@ -196,23 +197,26 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#314129783">appcompat-v7</a>
+            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <li>
-              <a href="#314129783">design</a>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <a name="314129783" />
-            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
           </ul>
         </body>
       </html>
@@ -312,23 +316,26 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#314129783">appcompat-v7</a>
+            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <li>
-              <a href="#314129783">design</a>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <a name="314129783" />
-            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
           </ul>
         </body>
       </html>
@@ -442,29 +449,36 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#314129783">appcompat-v7</a>
+            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <li>
-              <a href="#314129783">design</a>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <li>
-              <a href="#314129783">support-annotations</a>
+            <li><a href="#1934118923">support-annotations (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <li>
-              <a href="#314129783">support-v4</a>
+            <li><a href="#1934118923">support-v4 (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <a name="314129783" />
-            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
           </ul>
         </body>
       </html>
@@ -647,25 +661,30 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#1068328410">Android GIF Drawable Library</a>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <a name="1068328410" />
-            <pre>${getLicenseText('mit.txt')}</pre>
-            <li>
-              <a href="#314129783">design</a>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
+            <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx Karol Wr\u00c3\u0192\u00c2\u00b3tniak</dt>
+              </dl>
             </li>
-            <a name="314129783" />
-            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+      <a name="1783810846"></a>
+            <pre>${myGetLicenseText('mit.txt')}</pre>
+      <br>
+            <hr>
           </ul>
         </body>
       </html>
@@ -759,20 +778,20 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#0">Fake dependency name</a>
+            <li><a href="#0">Fake dependency name (1.0.0)</a>
+              <dl>
+                <dt>Copyright &copy; 2017 name</dt>
+              </dl>
             </li>
-            <a name="0" />
+      <a name="0"></a>
             <pre>No license found</pre>
+            <hr>
           </ul>
         </body>
       </html>
@@ -862,26 +881,31 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li>
-              <a href="#314129783">design</a>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
             </li>
-            <a name="314129783" />
-            <pre>${getLicenseText('apache-2.0.txt')}</pre>
-            <li>
-              <a href="#755498312">Fake dependency name</a>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
+            <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
+              <dl>
+                <dt>Copyright &copy; 2017 name</dt>
+              </dl>
             </li>
-            <a name="755498312" />
+      <a name="-296292112"></a>
             <pre>Some license
-            <a href="http://website.tld/">http://website.tld/</a></pre>
+      <a href="http://website.tld/">http://website.tld/</a></pre>
+      <br>
+            <hr>
           </ul>
         </body>
       </html>
