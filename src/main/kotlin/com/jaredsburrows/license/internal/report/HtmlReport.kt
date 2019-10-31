@@ -3,8 +3,28 @@ package com.jaredsburrows.license.internal.report
 import com.jaredsburrows.license.internal.LicenseHelper
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
-import kotlinx.html.*
+import kotlinx.html.A
+import kotlinx.html.Entities
+import kotlinx.html.FlowOrInteractiveOrPhrasingContent
+import kotlinx.html.HtmlTagMarker
+import kotlinx.html.a
+import kotlinx.html.attributesMapOf
+import kotlinx.html.br
+import kotlinx.html.body
+import kotlinx.html.dl
+import kotlinx.html.dt
+import kotlinx.html.h3
+import kotlinx.html.head
+import kotlinx.html.html
+import kotlinx.html.hr
+import kotlinx.html.li
+import kotlinx.html.pre
 import kotlinx.html.stream.appendHTML
+import kotlinx.html.style
+import kotlinx.html.title
+import kotlinx.html.ul
+import kotlinx.html.unsafe
+import kotlinx.html.visit
 
 /**
  * Generates HTML report of projects dependencies.
@@ -35,7 +55,7 @@ class HtmlReport(private val projects: List<Project>) {
     // Store packages by licenses: build a composite key of all the licenses, sorted in the (probably vain)
     // hope that there's more than one project with the same set of multiple licenses.
     projects.forEach { project ->
-      val keys: MutableList<String> = mutableListOf()
+      val keys = mutableListOf<String>()
 
       // first check to see if the project's license is in our list of known licenses.
       if (!project.licenses.isNullOrEmpty()) {
@@ -46,7 +66,7 @@ class HtmlReport(private val projects: List<Project>) {
 
       keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
       var key = ""
-      if (keys.size > 0) {
+      if (keys.isNotEmpty()) {
         // No Licenses -> empty key, sort first
         key = keys.toString()
       }
@@ -202,7 +222,7 @@ class HtmlReport(private val projects: List<Project>) {
 
 fun getLicenseText(fileName: String): String {
   val resource = HtmlReport::class.java.getResource("/license/$fileName")
-  return (resource?.readText() ?: HtmlReport.MISSING_LICENSE + fileName)
+  return resource?.readText() ?: HtmlReport.MISSING_LICENSE + fileName
 }
 
 @HtmlTagMarker
