@@ -69,33 +69,49 @@ dependencies {
 ```html
 <html>
   <head>
-    <style>
-      body { font-family: sans-serif } 
-      pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-    </style>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
     <title>Open source licenses</title>
   </head>
   <body>
     <h3>Notice for packages:</h3>
     <ul>
       <li>
-        <a href="#76480">WSDL4J</a>
+        <a href="#0">WSDL4J (1.5.1)</a>
+        <dl>
+          <dt>Copyright &copy; 20xx The original author or authors</dt>
+        </dl>
       </li>
+<a name="0"></a>
       <pre>No license found</pre>
-      <li>
-        <a href="#1068328410">Android GIF Drawable Library</a>
+<br>
+      <hr>
+      <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+        <dl>
+          <dt>Copyright &copy; 20xx Karol Wrótniak</dt>
+        </dl>
       </li>
-      <a name="1068328410" />
+<a name="1783810846"></a>
       <pre>mit.txt here</pre>
-      <li>
-        <a href="#314129783">Design</a>
+<br>
+      <hr>
+      <li><a href="#1934118923">Design (26.1.0)</a>
+        <dl>
+          <dt>Copyright &copy; 20xx The original author or authors</dt>
+        </dl>
       </li>
-      <a name="314129783" />
+<a name="1934118923"></a>
       <pre>apache-2.0.txt here</pre>
+<br>
+      <hr>
     </ul>
   </body>
 </html>
 ```
+Note, if no license information is found in the POM for a project, "No License Found" will be used. 
+Those will be listed first.
+Other missing information is provided as default values that can be corrected from other sources.
+Projects are grouped by license name - the licence text is only provided once. 
+Projects with multiple licenses are grouped as if those licenses were a single combined license.
 
 **JSON:**
 ```json
