@@ -21,7 +21,7 @@ final class HtmlReportSpec extends Specification {
         <head>
           <style>
             body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }
           </style>
           <title>Open source licenses</title>
         </head>
@@ -66,7 +66,7 @@ final class HtmlReportSpec extends Specification {
         <head>
           <style>
             body { font-family: sans-serif } 
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
+            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }
           </style>
           <title>Open source licenses</title>
         </head>
