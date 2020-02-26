@@ -9,14 +9,14 @@ import kotlinx.html.FlowOrInteractiveOrPhrasingContent
 import kotlinx.html.HtmlTagMarker
 import kotlinx.html.a
 import kotlinx.html.attributesMapOf
-import kotlinx.html.br
 import kotlinx.html.body
+import kotlinx.html.br
 import kotlinx.html.dl
 import kotlinx.html.dt
 import kotlinx.html.h3
 import kotlinx.html.head
-import kotlinx.html.html
 import kotlinx.html.hr
+import kotlinx.html.html
 import kotlinx.html.li
 import kotlinx.html.pre
 import kotlinx.html.stream.appendHTML
@@ -32,17 +32,6 @@ import kotlinx.html.visit
  * @property projects list of [Project]s for thr HTML report.
  */
 class HtmlReport(private val projects: List<Project>) {
-  companion object {
-    const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
-    const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
-    const val NO_LIBRARIES = "None"
-    const val NO_LICENSE = "No license found"
-    const val NOTICE_LIBRARIES = "Notice for packages:"
-    const val COPYRIGHT = "Copyright "
-    const val DEFAULT_AUTHOR = "The original author or authors"
-    const val DEFAULT_YEAR = "20xx"
-    const val MISSING_LICENSE = "Missing standard license text for: "
-  }
 
   /** Return Html as a String. */
   fun string(): String = if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
@@ -218,6 +207,18 @@ class HtmlReport(private val projects: List<Project>) {
       else -> license.url
     } as String
   }
+
+  companion object {
+    const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
+    const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
+    const val NO_LIBRARIES = "None"
+    const val NO_LICENSE = "No license found"
+    const val NOTICE_LIBRARIES = "Notice for packages:"
+    const val COPYRIGHT = "Copyright "
+    const val DEFAULT_AUTHOR = "The original author or authors"
+    const val DEFAULT_YEAR = "20xx"
+    const val MISSING_LICENSE = "Missing standard license text for: "
+  }
 }
 
 fun getLicenseText(fileName: String): String {
@@ -232,9 +233,13 @@ fun FlowOrInteractiveOrPhrasingContent.a(
   classes: String? = null,
   name: String? = null,
   block: A.() -> Unit = {}
-): Unit = A(attributesMapOf(
-  "href", href,
-  "target", target,
-  "class", classes,
-  "name", name), consumer)
+): Unit = A(
+  attributesMapOf(
+    "href", href,
+    "target", target,
+    "class", classes,
+    "name", name
+  ),
+  consumer
+)
   .visit(block)
