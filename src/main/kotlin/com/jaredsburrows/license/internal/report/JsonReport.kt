@@ -10,23 +10,6 @@ import com.jaredsburrows.license.internal.pom.Project
  * @property projects list of [Project]s for thr JSON report.
  */
 class JsonReport(private val projects: List<Project>) {
-  companion object {
-    private const val PROJECT = "project"
-    private const val DESCRIPTION = "description"
-    private const val VERSION = "version"
-    private const val DEVELOPERS = "developers"
-    private const val URL = "url"
-    private const val YEAR = "year"
-    private const val LICENSES = "licenses"
-    private const val LICENSE = "license"
-    private const val LICENSE_URL = "license_url"
-    private const val EMPTY_JSON = "[]"
-    private const val DEPENDENCY = "dependency"
-    private val gson = GsonBuilder()
-      .setPrettyPrinting()
-      .serializeNulls()
-      .create()
-  }
 
   /** Return Json as a [String]. */
   fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
@@ -59,5 +42,23 @@ class JsonReport(private val projects: List<Project>) {
     }
 
     return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)
+  }
+
+  companion object {
+    private const val PROJECT = "project"
+    private const val DESCRIPTION = "description"
+    private const val VERSION = "version"
+    private const val DEVELOPERS = "developers"
+    private const val URL = "url"
+    private const val YEAR = "year"
+    private const val LICENSES = "licenses"
+    private const val LICENSE = "license"
+    private const val LICENSE_URL = "license_url"
+    private const val EMPTY_JSON = "[]"
+    private const val DEPENDENCY = "dependency"
+    private val gson = GsonBuilder()
+      .setPrettyPrinting()
+      .serializeNulls()
+      .create()
   }
 }

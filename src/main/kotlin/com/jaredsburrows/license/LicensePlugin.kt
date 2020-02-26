@@ -11,11 +11,11 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.api.BaseVariant
+import java.io.File
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
-import java.io.File
 
 /** A [Plugin] which grabs the POM.xml files from maven dependencies. */
 class LicensePlugin : Plugin<Project> {
@@ -72,9 +72,11 @@ class LicensePlugin : Plugin<Project> {
         generateJsonReport = extension.generateJsonReport
         copyHtmlReportToAssets = extension.copyHtmlReportToAssets
         copyJsonReportToAssets = extension.copyJsonReportToAssets
-        assetDirs = (project
-          .extensions
-          .getByName("android") as BaseExtension)
+        assetDirs = (
+          project
+            .extensions
+            .getByName("android") as BaseExtension
+          )
           .sourceSets
           .getByName("main")
           .assets
@@ -95,18 +97,22 @@ class LicensePlugin : Plugin<Project> {
     val plugins = project.plugins
     val extensions = project.extensions
     return when {
-      plugins.hasPlugin(AppPlugin::class.java) -> extensions
-        .findByType(AppExtension::class.java)
-        ?.applicationVariants
-      plugins.hasPlugin(FeaturePlugin::class.java) -> extensions
-        .findByType(FeatureExtension::class.java)
-        ?.featureVariants
-      plugins.hasPlugin(LibraryPlugin::class.java) -> extensions
-        .findByType(LibraryExtension::class.java)
-        ?.libraryVariants
-      plugins.hasPlugin(TestPlugin::class.java) -> extensions
-        .findByType(TestExtension::class.java)
-        ?.applicationVariants
+      plugins.hasPlugin(AppPlugin::class.java) ->
+        extensions
+          .findByType(AppExtension::class.java)
+          ?.applicationVariants
+      plugins.hasPlugin(FeaturePlugin::class.java) ->
+        extensions
+          .findByType(FeatureExtension::class.java)
+          ?.featureVariants
+      plugins.hasPlugin(LibraryPlugin::class.java) ->
+        extensions
+          .findByType(LibraryExtension::class.java)
+          ?.libraryVariants
+      plugins.hasPlugin(TestPlugin::class.java) ->
+        extensions
+          .findByType(TestExtension::class.java)
+          ?.applicationVariants
       else -> throw IllegalArgumentException("Missing the Android Gradle Plugin.")
     }
   }

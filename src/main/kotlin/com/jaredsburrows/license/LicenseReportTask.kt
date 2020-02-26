@@ -11,6 +11,10 @@ import groovy.util.Node
 import groovy.util.NodeList
 import groovy.util.XmlParser
 import groovy.xml.QName
+import java.io.File
+import java.net.URI
+import java.net.URL
+import java.util.UUID
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
@@ -20,34 +24,23 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-import java.net.URI
-import java.net.URL
-import java.util.UUID
 
 /**
  * A [Task] that creates HTML and JSON reports of the current projects dependencies.
  */
 open class LicenseReportTask : DefaultTask() { // tasks can't be final
-  companion object {
-    private val xmlParser = XmlParser(false, false)
-    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    private const val APACHE_LICENSE_NAME = "The Apache Software License"
-    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
-    const val HTML_EXT = ".html"
-    const val JSON_EXT = ".json"
-  }
 
   @Internal var projects = arrayListOf<Project>()
-  @Optional @Input var assetDirs = listOf<File>()
-  @Optional @Input var generateHtmlReport = false
-  @Optional @Input var generateJsonReport = false
-  @Optional @Input var copyHtmlReportToAssets = false
-  @Optional @Input var copyJsonReportToAssets = false
-  @Optional @Input var buildType: String? = null
-  @Optional @Input var variantName: String? = null
-  @Optional @Internal var productFlavors = listOf<ProductFlavor>()
+  @Input var assetDirs = listOf<File>()
+  @Input var generateHtmlReport = false
+  @Input var generateJsonReport = false
+  @Input var copyHtmlReportToAssets = false
+  @Input var copyJsonReportToAssets = false
+  @Optional @Input
+  var buildType: String? = null
+  @Optional @Input
+  var variantName: String? = null
+  @Internal var productFlavors = listOf<ProductFlavor>()
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
   private var pomConfiguration = "poms"
@@ -155,50 +148,50 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .lenientConfiguration
       .artifacts.forEach { resolvedArtifact ->
 
-      val pomFile = resolvedArtifact.file
-      val node = xmlParser.parse(pomFile)
+        val pomFile = resolvedArtifact.file
+        val node = xmlParser.parse(pomFile)
 
-      // License information
-      val name = getName(node).trim()
-      var version = node.getAt("version").text().trim()
-      val description = node.getAt("description").text().trim()
-      val developers = arrayListOf<Developer>()
-      if (node.getAt("developers").isNotEmpty()) {
-        node.getAt("developers").getAt("developer").forEach { developer ->
-          developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+        // License information
+        val name = getName(node).trim()
+        var version = node.getAt("version").text().trim()
+        val description = node.getAt("description").text().trim()
+        val developers = arrayListOf<Developer>()
+        if (node.getAt("developers").isNotEmpty()) {
+          node.getAt("developers").getAt("developer").forEach { developer ->
+            developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+          }
         }
+
+        val url = node.getAt("url").text().trim()
+        val inceptionYear = node.getAt("inceptionYear").text().trim()
+
+        // Search for licenses
+        var licenses = findLicenses(pomFile)
+        if (licenses.isEmpty()) {
+          logger.log(LogLevel.WARN, "$name dependency does not have a license.")
+          licenses = arrayListOf()
+        }
+
+        // Search for version
+        if (version.isEmpty()) {
+          version = findVersion(pomFile)
+        }
+
+        // Store the information that we need
+        val module = resolvedArtifact.moduleVersion.id
+        val project = Project().apply {
+          this.name = name
+          this.description = description
+          this.version = version
+          this.licenses = licenses
+          this.url = url
+          this.developers = developers
+          this.year = inceptionYear
+          this.gav = "${module.group}:${module.name}:${module.version}"
+        }
+
+        projects.add(project)
       }
-
-      val url = node.getAt("url").text().trim()
-      val inceptionYear = node.getAt("inceptionYear").text().trim()
-
-      // Search for licenses
-      var licenses = findLicenses(pomFile)
-      if (licenses.isEmpty()) {
-        logger.log(LogLevel.WARN, "$name dependency does not have a license.")
-        licenses = arrayListOf()
-      }
-
-      // Search for version
-      if (version.isEmpty()) {
-        version = findVersion(pomFile)
-      }
-
-      // Store the information that we need
-      val module = resolvedArtifact.moduleVersion.id
-      val project = Project().apply {
-        this.name = name
-        this.description = description
-        this.version = version
-        this.licenses = licenses
-        this.url = url
-        this.developers = developers
-        this.year = inceptionYear
-        this.gav = "${module.group}:${module.name}:${module.version}"
-      }
-
-      projects.add(project)
-    }
 
     // Sort POM information by name
     projects.sortBy { it.name.toLowerCase() }
@@ -405,6 +398,16 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     } else {
       node.getAt("artifactId").text()
     }.trim()
+  }
+
+  companion object {
+    private val xmlParser = XmlParser(false, false)
+    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+    private const val APACHE_LICENSE_NAME = "The Apache Software License"
+    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    const val HTML_EXT = ".html"
+    const val JSON_EXT = ".json"
   }
 }
 
