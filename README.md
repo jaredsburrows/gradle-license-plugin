@@ -22,7 +22,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.6'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.7'
   }
 }
 
@@ -39,7 +39,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.7-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.8-SNAPSHOT'
   }
 }
 
@@ -200,7 +200,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class OpenSourceLicensesDialog extends DialogFragment {
+public final class OpenSourceLicensesDialog extends DialogFragment {
 
   public OpenSourceLicensesDialog() {
   }
