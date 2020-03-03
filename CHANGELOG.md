@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.8.70  (2020-03-03)
+ * Fix bad versioning - 0.8.7 -> 0.8.70, new snapshot is 0.8.80-SNAPSHOT
+
+  Many thanks to
+  [@PaulWoitaschek](https://github.com/PaulWoitaschek)
+  for the code contributions!
+
 ## Version 0.8.7  (2020-03-01)
  * [#112](https://github.com/jaredsburrows/gradle-license-plugin/pull/112) Fix windows file path
  * [#114](https://github.com/jaredsburrows/gradle-license-plugin/pull/114) Include Copyright owner/date in HTML license report; show multiple licenses
