@@ -1,5 +1,4 @@
 def pomConfig = {
-  //noinspection UnnecessaryQualifiedReference
   resolveStrategy = Closure.DELEGATE_FIRST
   name POM_ARTIFACT_ID
   description POM_DESCRIPTION
@@ -33,32 +32,31 @@ def pomConfig = {
   }
 }
 
-
-task groovydocJar(type: Jar, dependsOn: groovydoc) {
+task docsJar(type: Jar, dependsOn: dokka) {
   group = 'Publications'
-  description = 'Create javadoc jar of Groovy documentation.'
-  classifier = 'groovydoc'
-  from groovydoc.destinationDir
+  description = 'Create jar of documentation.'
+  archiveClassifier = 'docs'
+  from dokka.outputDirectory
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
   group = 'Publications'
-  description = 'Create jar of the sources.'
-  classifier = 'sources'
+  description = 'Create jar of sources.'
+  archiveClassifier = 'sources'
   from sourceSets.main.allSource
 }
 
 task testsJar(type: Jar) {
   group = 'Publications'
-  description = 'Create jar of all tests.'
-  classifier = 'tests'
+  description = 'Create jar of tests.'
+  archiveClassifier = 'tests'
   from sourceSets.test.output
 }
 
 task reportsZip(type: Zip, dependsOn: check) {
   group = 'Publications'
   description = 'Create a zip of all reports.'
-  classifier = 'reports'
+  archiveClassifier = 'reports'
   from reporting.baseDir
 }
 
@@ -71,7 +69,7 @@ publishing {
   publications {
     maven(MavenPublication) {
       from components.java // includes main 'artifact jar'
-      artifact groovydocJar
+      artifact docsJar
       artifact sourcesJar
       artifact testsJar
       artifact reportsZip
@@ -81,18 +79,13 @@ publishing {
       version VERSION_NAME
 
       pom.withXml {
-        // All dependencies should use the default scope 'compile' not 'runtime'
-        asNode().dependencies.dependency.each { dep ->
-          if (dep.scope.text() == 'runtime') dep.remove(dep.scope)
-        }
-
         // Add parent POM information
         asNode().children().first() + pomConfig
       }
     }
   }
 }
-publish.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+publish.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
 publish.dependsOn 'generatePomFileForMavenPublication'
 
 // Snapshots published to JFrog Artifactory repository
@@ -117,7 +110,7 @@ artifactory {
     }
   }
 }
-artifactoryPublish.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+artifactoryPublish.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
 artifactoryPublish.dependsOn 'generatePomFileForMavenPublication'
 
 // Publishes to JFrog Bintray's JCenter repository
@@ -153,10 +146,18 @@ bintray {
     }
   }
 }
-bintrayUpload.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+bintrayUpload.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
 bintrayUpload.dependsOn 'generatePomFileForMavenPublication'
 
-// Publishes to JFrog Bintray's JCenter repository
+// Publishes to Gradle plugins repository
+gradlePlugin {
+  plugins {
+    licensePlugin {
+      id = PLUGIN_NAME
+      implementationClass = PLUGIN_NAME_CLASS
+    }
+  }
+}
 pluginBundle {
   website = POM_URL
   vcsUrl = POM_URL
@@ -169,7 +170,7 @@ pluginBundle {
     }
   }
 }
-publishPlugins.dependsOn jar, groovydocJar, sourcesJar, testsJar, reportsZip
+publishPlugins.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
 publishPlugins.dependsOn 'generatePomFileForMavenPublication'
 
 // Publish to both Bintray and Gradle repositories

@@ -1,9 +1,11 @@
 plugins {
-  id 'com.gradle.build-scan' version '1.16'
-  id 'com.jfrog.artifactory' version '4.8.1'
+  id 'com.jfrog.artifactory' version '4.13.0'
   id 'com.jfrog.bintray' version '1.8.4'
-  id 'com.github.ben-manes.versions' version '0.20.0'
-  id 'com.gradle.plugin-publish' version '0.10.0'
+  id 'com.github.ben-manes.versions' version '0.28.0'
+  id 'com.gradle.plugin-publish' version '0.10.1'
+  id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+  id 'org.jetbrains.dokka' version '0.10.1'
+  id 'org.jlleitschuh.gradle.ktlint' version '9.2.1'
   id 'java-gradle-plugin'
   id 'groovy'
   id 'maven-publish'
@@ -27,7 +29,7 @@ jar {
   manifest {
     attributes(
       'Implementation-Title': POM_NAME,
-      'Implementation-Version': version,
+      'Implementation-Version': archiveVersion,
       'Built-By': System.getProperty('user.name'),
       'Built-Date': new Date(),
       'Built-JDK': System.getProperty('java.version'),
@@ -43,23 +45,40 @@ task createClasspathManifest() {
 
   doLast {
     outputDir.mkdirs()
-    file("$outputDir/main-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n')
-    file("$outputDir/main-test-plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') + '\n' + sourceSets.test.runtimeClasspath.join('\n')
+    // Combine both main and test plugin classpaths
+    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') + '\n' + sourceSets.test.runtimeClasspath.join('\n')
+  }
+}
+
+configurations.all {
+  resolutionStrategy {
+    eachDependency { details ->
+      if (details.requested.group == 'org.jetbrains.kotlin') {
+        details.useVersion versions.kotlin
+      }
+    }
   }
 }
 
 dependencies {
   implementation localGroovy()
+  implementation deps.kotlin.stdlib.jdk
+  implementation deps.kotlinx.html
+  implementation deps.gson
+  implementation deps.android.tools.build.gradle
 
-  compileOnly deps.android.tools.build.gradle
+  testRuntimeOnly files(createClasspathManifest)
 
-  testRuntime files(createClasspathManifest)
-
-  testImplementation deps.android.tools.build.gradle
+  testImplementation localGroovy()
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation deps.xmlunit.matchers
 }
 
-apply from: 'gradle/scan.gradle'
 apply from: 'gradle/compile.gradle'
-apply from: 'gradle/plugin.gradle'
 apply from: 'gradle/publish.gradle'
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = rootProject.versions.java
+  }
+}
