@@ -176,11 +176,11 @@ apply plugin: "com.jaredsburrows.license"
 licenseReport {
   generateHtmlReport = false
   generateJsonReport = true
-  useVariantSpecificAssetDirs = false
   
   // These options are ignored for Java projects
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
+  useVariantSpecificAssetDirs = false
 }
 ```
 
