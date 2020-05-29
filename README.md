@@ -19,6 +19,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 buildscript {
   repositories {
     jcenter()
+    google()
   }
 
   dependencies {
@@ -36,6 +37,7 @@ Release versions are available in the [JFrog Bintray repository](https://jcenter
 buildscript {
   repositories {
     maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    google()
   }
 
   dependencies {
