@@ -50,13 +50,9 @@ final class LicensePluginJavaSpec extends Specification {
 
     where:
     gradleVersion << [
-      '3.5',
-      '4.0',
-      '4.5',
-      '4.10',
-      '5.0',
-      '5.1',
-      '5.2'
+      '5.4.1',
+      '5.6.4',
+      '6.1.1'
     ]
   }
 
@@ -78,7 +74,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html>
         <head>
           <style>
-            body { font-family: sans-serif } 
+            body { font-family: sans-serif }
             pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
           </style>
           <title>Open source licenses</title>
@@ -110,13 +106,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'com.google.firebase:firebase-core:10.0.1'
       }
@@ -180,13 +176,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -278,13 +274,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'group:name3:1.0.0'
       }
@@ -298,7 +294,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html>
         <head>
           <style>
-            body { font-family: sans-serif } 
+            body { font-family: sans-serif }
             pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
           </style>
           <title>Open source licenses</title>
@@ -330,13 +326,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'group:name:1.0.0'
       }
@@ -409,13 +405,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'group:name2:1.0.0'
       }
@@ -495,13 +491,13 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       dependencies {
         implementation 'group:child:1.0.0'
         implementation 'com.squareup.retrofit2:retrofit:2.3.0'
@@ -604,7 +600,7 @@ final class LicensePluginJavaSpec extends Specification {
         id 'java-library'
         id 'com.jaredsburrows.license'
       }
-      
+
       allprojects {
         repositories {
           maven {
@@ -612,15 +608,15 @@ final class LicensePluginJavaSpec extends Specification {
           }
         }
       }
-      
+
       dependencies {
         implementation project(':subproject')
         implementation 'com.android.support:appcompat-v7:26.1.0'
       }
-      
+
       project(':subproject') {
         apply plugin: 'java-library'
-      
+
         dependencies {
           implementation 'com.android.support:design:26.1.0'
         }
@@ -731,7 +727,7 @@ final class LicensePluginJavaSpec extends Specification {
 
       project(':subproject') {
         apply plugin: 'java-library'
-      
+
         dependencies {
           implementation 'com.android.support:design:26.1.0'
         }
