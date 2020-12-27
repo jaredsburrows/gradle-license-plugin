@@ -30,13 +30,13 @@ import kotlinx.html.visit
  *
  * @property projects list of [Project]s for thr HTML report.
  */
-class HtmlReport(private val projects: List<Project>) {
+class HtmlReport(private val projects: List<Project>) : Report {
 
-  /** Return Html as a String. */
-  fun string(): String = if (projects.isEmpty()) noOpenSourceHtml() else openSourceHtml()
+  override fun toString(): String = report()
 
-  /** Html report when there are open source licenses. */
-  private fun openSourceHtml(): String {
+  override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
+
+  override fun fullReport(): String {
     val projectsMap = hashMapOf<String?, List<Project>>()
     val licenseMap = LicenseHelper.licenseMap
 
@@ -173,8 +173,7 @@ class HtmlReport(private val projects: List<Project>) {
       }.toString()
   }
 
-  /** Html report when there are no open source licenses. */
-  private fun noOpenSourceHtml(): String = StringBuilder()
+  override fun emptyReport(): String = StringBuilder()
     .appendHTML()
     .html {
       head {
@@ -204,8 +203,7 @@ class HtmlReport(private val projects: List<Project>) {
     } as String
   }
 
-  @HtmlTagMarker
-  private fun FlowOrInteractiveOrPhrasingContent.a(
+  @HtmlTagMarker private fun FlowOrInteractiveOrPhrasingContent.a(
     href: String? = null,
     target: String? = null,
     classes: String? = null,

@@ -9,13 +9,13 @@ import com.jaredsburrows.license.internal.pom.Project
  *
  * @property projects list of [Project]s for thr JSON report.
  */
-class JsonReport(private val projects: List<Project>) {
+class JsonReport(private val projects: List<Project>) : Report {
 
-  /** Return Json as a [String]. */
-  fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
+  override fun toString(): String = report()
 
-  /** Json report when there are open source licenses. */
-  private fun json(): String {
+  override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
+
+  override fun fullReport(): String {
     val reportList = projects.map { project ->
       // Handle multiple licenses
       val licensesJson = project.licenses.map { license ->
@@ -43,6 +43,8 @@ class JsonReport(private val projects: List<Project>) {
 
     return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)
   }
+
+  override fun emptyReport(): String = EMPTY_JSON
 
   companion object {
     private const val PROJECT = "project"

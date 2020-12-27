@@ -254,7 +254,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { it.write(HtmlReport(projects).string()) }
+      bufferedWriter().use { it.write(HtmlReport(projects).toString()) }
     }
 
     // Log output directory for user
@@ -272,7 +272,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { it.write(JsonReport(projects).string()) }
+      bufferedWriter().use { it.write(JsonReport(projects).toString()) }
     }
 
     // Log output directory for user

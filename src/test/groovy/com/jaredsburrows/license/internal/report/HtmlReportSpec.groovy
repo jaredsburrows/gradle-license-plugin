@@ -14,13 +14,13 @@ final class HtmlReportSpec extends Specification {
     def report = new HtmlReport(projects)
 
     when:
-    def actual = report.string()
+    def actual = report.toString()
     def expected =
       """
       <html>
         <head>
           <style>
-            body { font-family: sans-serif } 
+            body { font-family: sans-serif }
             pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
           </style>
           <title>Open source licenses</title>
@@ -59,7 +59,7 @@ final class HtmlReportSpec extends Specification {
     def sut = new HtmlReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       <html>
