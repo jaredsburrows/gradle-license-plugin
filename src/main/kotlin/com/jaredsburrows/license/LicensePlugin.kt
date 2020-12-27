@@ -8,13 +8,13 @@ import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
-import java.io.File
-import kotlin.reflect.KClass
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.JavaPlugin
+import java.io.File
+import kotlin.reflect.KClass
 
 /** A [Plugin] which grabs the POM.xml files from maven dependencies. */
 class LicensePlugin : Plugin<Project> {

@@ -11,10 +11,6 @@ import groovy.util.Node
 import groovy.util.NodeList
 import groovy.util.XmlParser
 import groovy.xml.QName
-import java.io.File
-import java.net.URI
-import java.net.URL
-import java.util.UUID
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
@@ -24,6 +20,10 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.net.URI
+import java.net.URL
+import java.util.UUID
 
 /**
  * A [Task] that creates HTML and JSON reports of the current projects dependencies.
@@ -36,8 +36,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @Input var generateJsonReport = false
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
+
   @Optional @Input
   var buildType: String? = null
+
   @Optional @Input
   var variantName: String? = null
   @Internal var productFlavors = listOf<ProductFlavor>()

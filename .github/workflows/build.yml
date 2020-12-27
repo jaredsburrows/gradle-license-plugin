@@ -36,7 +36,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: Run Build
-        run: ./gradlew clean build jar docsJar sourcesJar testsJar reportsZip generatePomFileForMavenPublication -s --scan
+        run: ./gradlew clean ktlintCheck build jar docsJar sourcesJar testsJar reportsZip generatePomFileForMavenPublication -s --scan
 
       - name: Upload Artifacts to Github
         uses: actions/upload-artifact@v2
