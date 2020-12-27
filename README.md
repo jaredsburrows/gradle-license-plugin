@@ -1,7 +1,7 @@
 # Gradle License Plugin
 
 [![License](https://img.shields.io/badge/license-apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Build Status](https://travis-ci.org/jaredsburrows/gradle-license-plugin.svg?branch=master)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
+[![Build](https://github.com/jaredsburrows/gradle-license-plugin/workflows/build/badge.svg)](https://github.com/jaredsburrows/gradle-license-plugin/actions)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
 This plugin provides a task to generate a HTML license report based on the 
@@ -30,7 +30,7 @@ buildscript {
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/).
+Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/com/jaredsburrows/gradle-license-plugin/).
 
 **Snapshot:**
 ```groovy
@@ -48,7 +48,7 @@ buildscript {
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/).
+Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/com/jaredsburrows/gradle-license-plugin/).
 
 ## Tasks
 
