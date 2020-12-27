@@ -19,10 +19,7 @@ class JsonReport(private val projects: List<Project>) : Report {
     val reportList = projects.map { project ->
       // Handle multiple licenses
       val licensesJson = project.licenses.map { license ->
-        linkedMapOf(
-          LICENSE to license.name,
-          LICENSE_URL to license.url
-        )
+        linkedMapOf(LICENSE to license.name, LICENSE_URL to license.url)
       }
 
       // Handle multiple developer
@@ -30,12 +27,12 @@ class JsonReport(private val projects: List<Project>) : Report {
 
       // Build the report
       linkedMapOf(
-        PROJECT to if (project.name.isNotEmpty()) project.name else null,
-        DESCRIPTION to if (project.description.isNotEmpty()) project.description else null,
-        VERSION to if (project.version.isNotEmpty()) project.version else null,
+        PROJECT to project.name.valueOrNull(),
+        DESCRIPTION to project.description.valueOrNull(),
+        VERSION to project.version.valueOrNull(),
         DEVELOPERS to developerNames,
-        URL to if (project.url.isNotEmpty()) project.url else null,
-        YEAR to if (project.year.isNotEmpty()) project.year else null,
+        URL to project.url.valueOrNull(),
+        YEAR to project.year.valueOrNull(),
         LICENSES to licensesJson,
         DEPENDENCY to project.gav
       )
@@ -56,8 +53,8 @@ class JsonReport(private val projects: List<Project>) : Report {
     private const val LICENSES = "licenses"
     private const val LICENSE = "license"
     private const val LICENSE_URL = "license_url"
-    private const val EMPTY_JSON = "[]"
     private const val DEPENDENCY = "dependency"
+    private const val EMPTY_JSON = "[]"
     private val gson = GsonBuilder()
       .setPrettyPrinting()
       .serializeNulls()

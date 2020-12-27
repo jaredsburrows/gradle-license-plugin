@@ -2,13 +2,12 @@ package test
 
 import com.google.gson.JsonParser
 import com.jaredsburrows.license.internal.report.HtmlReport
+import org.apache.commons.csv.CSVFormat
 import org.gradle.testkit.runner.GradleRunner
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
 
 final class TestUtils {
-  private static def parser = new JsonParser()
-
   private TestUtils() {
     throw new AssertionError('No instances')
   }
@@ -26,7 +25,14 @@ final class TestUtils {
   }
 
   static def assertJson(def expected, def actual) {
-    return parser.parse(actual) == parser.parse(expected)
+    def parser = new JsonParser()
+    return parser.parseString(actual).toString() == parser.parseString(expected).toString()
+  }
+
+  static def assertCsv(def expected, def actual) {
+    def left = CSVFormat.DEFAULT.parse(new StringReader(actual)).records.collect { it.toString() }
+    def right = CSVFormat.DEFAULT.parse(new StringReader(expected)).records.collect { it.toString() }
+    return left == right
   }
 
   static def htmlToXml(String text) {
@@ -42,10 +48,10 @@ final class TestUtils {
   }
 
   static def assertHtml(def expected, def actual) {
-    expected = htmlToXml(expected)
-    actual = htmlToXml(actual)
-    return !DiffBuilder.compare(Input.fromString(actual).build())
-      .withTest(Input.fromString(expected).build())
+    def left = htmlToXml(expected)
+    def right = htmlToXml(actual)
+    return !DiffBuilder.compare(Input.fromString(right).build())
+      .withTest(Input.fromString(left).build())
       .normalizeWhitespace()
       .ignoreWhitespace()
       .build()

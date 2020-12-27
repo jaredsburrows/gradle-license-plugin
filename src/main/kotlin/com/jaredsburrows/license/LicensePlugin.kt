@@ -53,10 +53,13 @@ class LicensePlugin : Plugin<Project> {
     project.tasks.create(taskName, LicenseReportTask::class.java).apply {
       description = "Outputs licenses report."
       group = "Reporting"
+      csvFile = File(path + LicenseReportTask.CSV_EXT)
       htmlFile = File(path + LicenseReportTask.HTML_EXT)
       jsonFile = File(path + LicenseReportTask.JSON_EXT)
+      generateCsvReport = extension.generateCsvReport
       generateHtmlReport = extension.generateHtmlReport
       generateJsonReport = extension.generateJsonReport
+      copyCsvReportToAssets = false
       copyHtmlReportToAssets = false
       copyJsonReportToAssets = false
     }
@@ -78,10 +81,13 @@ class LicensePlugin : Plugin<Project> {
       project.tasks.create(taskName, LicenseReportTask::class.java).apply {
         description = "Outputs licenses report for $name variant."
         group = "Reporting"
+        csvFile = File(path + LicenseReportTask.CSV_EXT)
         htmlFile = File(path + LicenseReportTask.HTML_EXT)
         jsonFile = File(path + LicenseReportTask.JSON_EXT)
+        generateCsvReport = extension.generateCsvReport
         generateHtmlReport = extension.generateHtmlReport
         generateJsonReport = extension.generateJsonReport
+        copyCsvReportToAssets = extension.copyCsvReportToAssets
         copyHtmlReportToAssets = extension.copyHtmlReportToAssets
         copyJsonReportToAssets = extension.copyJsonReportToAssets
         assetDirs = (

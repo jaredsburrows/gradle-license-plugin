@@ -72,6 +72,7 @@ dependencies {
   testImplementation localGroovy()
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
   testImplementation deps.xmlunit.matchers
+  testImplementation deps.commons.csv
 }
 
 apply from: 'gradle/compile.gradle'
