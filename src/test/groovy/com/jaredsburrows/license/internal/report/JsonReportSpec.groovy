@@ -14,7 +14,7 @@ final class JsonReportSpec extends Specification {
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       []
@@ -35,7 +35,7 @@ final class JsonReportSpec extends Specification {
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       [
@@ -88,7 +88,7 @@ final class JsonReportSpec extends Specification {
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       [
