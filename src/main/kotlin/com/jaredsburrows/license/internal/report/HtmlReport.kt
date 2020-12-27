@@ -235,10 +235,14 @@ fun FlowOrInteractiveOrPhrasingContent.a(
   block: A.() -> Unit = {}
 ): Unit = A(
   attributesMapOf(
-    "href", href,
-    "target", target,
-    "class", classes,
-    "name", name
+    "href",
+    href,
+    "target",
+    target,
+    "class",
+    classes,
+    "name",
+    name
   ),
   consumer
 )
