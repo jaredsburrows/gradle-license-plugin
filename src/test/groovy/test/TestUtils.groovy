@@ -1,13 +1,10 @@
 package test
 
 import com.google.gson.JsonParser
-import com.jaredsburrows.license.LicenseReportTask
 import com.jaredsburrows.license.internal.report.HtmlReport
 import org.gradle.testkit.runner.GradleRunner
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
-
-import static com.jaredsburrows.license.internal.report.HtmlReportKt.getLicenseText
 
 final class TestUtils {
   private static def parser = new JsonParser()
@@ -23,8 +20,9 @@ final class TestUtils {
       .withPluginClasspath()
       .build()
   }
+
   static def myGetLicenseText(String fileName) {
-    return getLicenseText(fileName)
+    return HtmlReport.getLicenseText(fileName)
   }
 
   static def assertJson(def expected, def actual) {
