@@ -7,7 +7,6 @@ import kotlinx.html.A
 import kotlinx.html.Entities
 import kotlinx.html.FlowOrInteractiveOrPhrasingContent
 import kotlinx.html.HtmlTagMarker
-import kotlinx.html.a
 import kotlinx.html.attributesMapOf
 import kotlinx.html.body
 import kotlinx.html.br
@@ -171,8 +170,7 @@ class HtmlReport(private val projects: List<Project>) {
             }
           }
         }
-      }
-      .toString()
+      }.toString()
   }
 
   /** Html report when there are no open source licenses. */
@@ -183,9 +181,7 @@ class HtmlReport(private val projects: List<Project>) {
         style {
           unsafe { +CSS_STYLE }
         }
-        title {
-          +OPEN_SOURCE_LIBRARIES
-        }
+        title { +OPEN_SOURCE_LIBRARIES }
       }
 
       body {
@@ -208,6 +204,27 @@ class HtmlReport(private val projects: List<Project>) {
     } as String
   }
 
+  @HtmlTagMarker
+  private fun FlowOrInteractiveOrPhrasingContent.a(
+    href: String? = null,
+    target: String? = null,
+    classes: String? = null,
+    name: String? = null,
+    block: A.() -> Unit = {}
+  ): Unit = A(
+    attributesMapOf(
+      "href",
+      href,
+      "target",
+      target,
+      "class",
+      classes,
+      "name",
+      name
+    ),
+    consumer
+  ).visit(block)
+
   companion object {
     const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
@@ -217,33 +234,12 @@ class HtmlReport(private val projects: List<Project>) {
     const val COPYRIGHT = "Copyright "
     const val DEFAULT_AUTHOR = "The original author or authors"
     const val DEFAULT_YEAR = "20xx"
-    const val MISSING_LICENSE = "Missing standard license text for: "
+    private const val MISSING_LICENSE = "Missing standard license text for: "
+
+    @JvmStatic fun getLicenseText(fileName: String): String {
+      return HtmlReport::class.java.getResource("/license/$fileName")
+        ?.readText()
+        ?: MISSING_LICENSE + fileName
+    }
   }
 }
-
-fun getLicenseText(fileName: String): String {
-  val resource = HtmlReport::class.java.getResource("/license/$fileName")
-  return resource?.readText() ?: HtmlReport.MISSING_LICENSE + fileName
-}
-
-@HtmlTagMarker
-fun FlowOrInteractiveOrPhrasingContent.a(
-  href: String? = null,
-  target: String? = null,
-  classes: String? = null,
-  name: String? = null,
-  block: A.() -> Unit = {}
-): Unit = A(
-  attributesMapOf(
-    "href",
-    href,
-    "target",
-    target,
-    "class",
-    classes,
-    "name",
-    name
-  ),
-  consumer
-)
-  .visit(block)
