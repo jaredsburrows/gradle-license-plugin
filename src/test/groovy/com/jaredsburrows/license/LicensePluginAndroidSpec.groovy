@@ -51,19 +51,19 @@ final class LicensePluginAndroidSpec extends Specification {
           jcenter()
           google()
         }
-      
+
         dependencies {
           classpath "com.android.tools.build:gradle:${agpVersion}"
           classpath files($classpathString)
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -85,15 +85,14 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     [gradleVersion, agpVersion] << [
       [
-        '4.6',
-        '4.10',
-        '5.0',
-        '5.2'
+        '5.4.1',
+        '5.6.4',
+        '6.1.1'
       ],
       [
-        '3.1.0',
-        '3.2.0',
-        '3.3.0'
+        '3.5.0',
+        '3.6.0',
+        '4.0.0'
       ]
     ].combinations()
   }
@@ -107,13 +106,13 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -128,7 +127,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html>
         <head>
           <style>
-            body { font-family: sans-serif } 
+            body { font-family: sans-serif }
             pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
           </style>
           <title>Open source licenses</title>
@@ -164,24 +163,24 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
       }
-      
+
       dependencies {
         // Handles duplicates
         implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -278,32 +277,32 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
-      
+
         buildTypes {
           debug {}
           release {}
         }
       }
-      
+
       dependencies {
         implementation 'com.android.support:appcompat-v7:26.1.0'
-      
+
         debugImplementation 'com.android.support:design:26.1.0'
         releaseImplementation 'com.android.support:design:26.1.0'
       }
@@ -397,30 +396,30 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
-      
+
         buildTypes {
           debug {}
           release {}
         }
-      
+
         flavorDimensions 'a', 'b'
-      
+
         productFlavors {
           flavor1 { dimension 'a' }
           flavor2 { dimension 'a' }
@@ -428,13 +427,13 @@ final class LicensePluginAndroidSpec extends Specification {
           flavor4 { dimension 'b' }
         }
       }
-      
+
       dependencies {
         implementation 'com.android.support:appcompat-v7:26.1.0'
-      
+
         debugImplementation 'com.android.support:design:26.1.0'
         releaseImplementation 'com.android.support:design:26.1.0'
-      
+
         flavor1Implementation 'com.android.support:support-v4:26.1.0'
         flavor2Implementation 'com.android.support:support-v4:26.1.0'
         flavor3Implementation 'com.android.support:support-annotations:26.1.0'
@@ -628,24 +627,24 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       repositories {
         maven {
           url '${mavenRepoUrl}'
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
       }
-      
+
       dependencies {
         debugImplementation 'com.android.support:design:26.1.0'
         debugImplementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
@@ -748,24 +747,24 @@ final class LicensePluginAndroidSpec extends Specification {
             classpath files($classpathString)
           }
         }
-      
+
         repositories {
           maven {
             url '${mavenRepoUrl}'
           }
         }
-      
+
         apply plugin: 'com.android.application'
         apply plugin: 'com.jaredsburrows.license'
-      
+
         android {
           compileSdkVersion 28
-      
+
           defaultConfig {
             applicationId 'com.example'
           }
         }
-      
+
         dependencies {
           implementation 'group:name4:1.0.0'
         }
@@ -840,7 +839,7 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       allprojects {
         repositories {
           maven {
@@ -848,26 +847,26 @@ final class LicensePluginAndroidSpec extends Specification {
           }
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
       }
-      
+
       dependencies {
         api project(':subproject')
         implementation 'group:name:1.0.0'
       }
-      
+
       project(':subproject') {
         apply plugin: 'java-library'
-      
+
         dependencies {
           implementation 'com.android.support:design:26.1.0'
         }
@@ -969,24 +968,24 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
       }
-      
+
       dependencies {
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:design:26.1.0'
       }
-      
+
       licenseReport {
         generateHtmlReport = true
         generateJsonReport = true
@@ -1019,24 +1018,24 @@ final class LicensePluginAndroidSpec extends Specification {
           classpath files($classpathString)
         }
       }
-      
+
       apply plugin: 'com.android.application'
       apply plugin: 'com.jaredsburrows.license'
-      
+
       android {
         compileSdkVersion 28
-      
+
         defaultConfig {
           applicationId 'com.example'
         }
       }
-      
+
       dependencies {
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:appcompat-v7:26.1.0'
         implementation 'com.android.support:design:26.1.0'
       }
-      
+
       licenseReport {
         generateHtmlReport = false
         generateJsonReport = false
