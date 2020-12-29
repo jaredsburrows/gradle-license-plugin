@@ -5,6 +5,7 @@ import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
+import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import groovy.util.Node
@@ -25,15 +26,15 @@ import java.net.URI
 import java.net.URL
 import java.util.UUID
 
-/**
- * A [Task] that creates HTML and JSON reports of the current projects dependencies.
- */
+/** A [Task] that creates HTML and JSON reports of the current projects dependencies. */
 open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
   @Internal var projects = arrayListOf<Project>()
   @Input var assetDirs = listOf<File>()
+  @Input var generateCsvReport = false
   @Input var generateHtmlReport = false
   @Input var generateJsonReport = false
+  @Input var copyCsvReportToAssets = false
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
 
@@ -43,6 +44,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @Optional @Input
   var variantName: String? = null
   @Internal var productFlavors = listOf<ProductFlavor>()
+  @OutputFile lateinit var csvFile: File
   @OutputFile lateinit var htmlFile: File
   @OutputFile lateinit var jsonFile: File
   private var pomConfiguration = "poms"
@@ -58,10 +60,19 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     initDependencies()
     generatePOMInfo()
 
+    if (generateCsvReport) {
+      createCsvReport()
+
+      // If android project and copy enabled, copy to asset directory
+      if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
+        copyCsvReport()
+      }
+    }
+
     if (generateHtmlReport) {
       createHtmlReport()
 
-      // If Android project and copy enabled, copy to asset directory
+      // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
         copyHtmlReport()
       }
@@ -70,7 +81,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     if (generateJsonReport) {
       createJsonReport()
 
-      // If Android project and copy enabled, copy to asset directory
+      // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
         copyJsonReport()
       }
@@ -243,6 +254,47 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   }
 
   /** Generated HTML report. */
+  private fun createCsvReport() {
+    // Remove existing file
+    csvFile.apply {
+      // Remove existing file
+      delete()
+
+      // Create directories
+      parentFile.mkdirs()
+      createNewFile()
+
+      // Write report for file
+      bufferedWriter().use { it.write(CsvReport(projects).toString()) }
+    }
+
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, "Wrote CSV report to ${ConsoleRenderer().asClickableFileUrl(csvFile)}.")
+  }
+
+  private fun copyCsvReport() {
+    // Iterate through all asset directories
+    assetDirs.forEach { directory ->
+      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + CSV_EXT)
+
+      licenseFile.apply {
+        // Remove existing file
+        delete()
+
+        // Create new file
+        parentFile.mkdirs()
+        createNewFile()
+
+        // Copy HTML file to the assets directory
+        bufferedWriter().use { it.write(csvFile.readText()) }
+      }
+
+      // Log output directory for user
+      logger.log(LogLevel.LIFECYCLE, "Copied CSV report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
+    }
+  }
+
+  /** Generated HTML report. */
   private fun createHtmlReport() {
     // Remove existing file
     htmlFile.apply {
@@ -259,24 +311,6 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
     // Log output directory for user
     logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${ConsoleRenderer().asClickableFileUrl(htmlFile)}.")
-  }
-
-  /** Generated JSON report. */
-  private fun createJsonReport() {
-    jsonFile.apply {
-      // Remove existing file
-      delete()
-
-      // Create directories
-      parentFile.mkdirs()
-      createNewFile()
-
-      // Write report for file
-      bufferedWriter().use { it.write(JsonReport(projects).toString()) }
-    }
-
-    // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}.")
   }
 
   private fun copyHtmlReport() {
@@ -299,6 +333,24 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       // Log output directory for user
       logger.log(LogLevel.LIFECYCLE, "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
     }
+  }
+
+  /** Generated JSON report. */
+  private fun createJsonReport() {
+    jsonFile.apply {
+      // Remove existing file
+      delete()
+
+      // Create directories
+      parentFile.mkdirs()
+      createNewFile()
+
+      // Write report for file
+      bufferedWriter().use { it.write(JsonReport(projects).toString()) }
+    }
+
+    // Log output directory for user
+    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}.")
   }
 
   private fun copyJsonReport() {
@@ -402,36 +454,37 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }.trim()
   }
 
+  private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
+
+  private fun Node.getAt(name: String): NodeList {
+    val answer = NodeList()
+    val var3 = this.children().iterator()
+
+    while (var3.hasNext()) {
+      val child = var3.next()
+      if (child is Node) {
+        val childNodeName = child.name()
+        if (childNodeName is QName) {
+          if (childNodeName.matches(name)) {
+            answer.add(child)
+          }
+        } else if (name == childNodeName) {
+          answer.add(child)
+        }
+      }
+    }
+
+    return answer
+  }
+
   companion object {
     private val xmlParser = XmlParser(false, false)
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
     private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    const val CSV_EXT = ".csv"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
   }
-}
-
-private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
-
-private fun Node.getAt(name: String): NodeList {
-  val answer = NodeList()
-  val var3 = this.children().iterator()
-
-  while (var3.hasNext()) {
-    val child = var3.next()
-    if (child is Node) {
-      val childNodeName = child.name()
-      if (childNodeName is QName) {
-        if (childNodeName.matches(name)) {
-          answer.add(child)
-        }
-      } else if (name == childNodeName) {
-        answer.add(child)
-      }
-    }
-  }
-
-  return answer
 }

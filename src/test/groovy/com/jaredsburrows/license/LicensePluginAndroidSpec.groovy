@@ -3,13 +3,12 @@ package com.jaredsburrows.license
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
-import static test.TestUtils.myGetLicenseText
 import static test.TestUtils.gradleWithCommand
+import static test.TestUtils.myGetLicenseText
 
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -23,7 +22,7 @@ final class LicensePluginAndroidSpec extends Specification {
   private String assetsFolder
 
   def 'setup'() {
-    def pluginClasspathResource = getClass().classLoader.findResource('plugin-classpath.txt')
+    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
     if (pluginClasspathResource == null) {
       throw new IllegalStateException(
         'Did not find plugin classpath resource, run `testClasses` build task.')
@@ -41,7 +40,6 @@ final class LicensePluginAndroidSpec extends Specification {
     assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
   }
 
-  @Ignore("Jcenter 502 errors")
   @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
     given:
     buildFile <<
@@ -79,13 +77,13 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(':licenseDebugReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
 
     where:
     [gradleVersion, agpVersion] << [
       [
-        '5.4.1',
         '5.6.4',
         '6.1.1'
       ],
@@ -145,6 +143,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -259,6 +258,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -378,6 +378,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -551,6 +552,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -729,6 +731,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -816,6 +819,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -950,6 +954,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -999,6 +1004,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
@@ -1049,6 +1055,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     !result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     !result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")

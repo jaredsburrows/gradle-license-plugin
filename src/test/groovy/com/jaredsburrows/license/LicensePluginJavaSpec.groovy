@@ -45,6 +45,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
 
@@ -92,6 +93,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -162,6 +164,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -260,6 +263,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -312,6 +316,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -391,6 +396,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -477,6 +483,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -581,6 +588,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -692,6 +700,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
@@ -803,6 +812,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)

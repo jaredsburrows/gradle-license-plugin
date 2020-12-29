@@ -47,9 +47,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
 
       // first check to see if the project's license is in our list of known licenses.
       if (!project.licenses.isNullOrEmpty()) {
-        project.licenses.forEach { license ->
-          keys.add(getLicenseKey(license))
-        }
+        project.licenses.forEach { license -> keys.add(getLicenseKey(license)) }
       }
 
       keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
@@ -190,9 +188,11 @@ class HtmlReport(private val projects: List<Project>) : Report {
       }
     }.toString()
 
+  /**
+   * See if the license is in our list of known licenses (which coalesces differing URLs to the
+   * same license text). If not, use the URL if present. Else "".
+   */
   private fun getLicenseKey(license: License): String {
-    // See if the license is in our list of known licenses (which coalesces differing URLs to the same license text)
-    // If not, use the URL if present. Else "".
     return when {
       // look up by url
       LicenseHelper.licenseMap.containsKey(license.url) -> LicenseHelper.licenseMap[license.url]
