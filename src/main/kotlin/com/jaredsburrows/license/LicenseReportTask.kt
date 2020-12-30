@@ -15,6 +15,8 @@ import groovy.xml.QName
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
@@ -109,38 +111,16 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
     // If Android project, add extra configurations
     variantName?.let { variant ->
-      // Add buildType configurations
-      configurations.find { it.name == "compile" }?.let {
-        configurationSet.add(configurations.getByName("${buildType}Compile"))
-      }
-      configurations.find { it.name == "api" }?.let {
-        configurationSet.add(configurations.getByName("${buildType}Api"))
-      }
-      configurations.find { it.name == "implementation" }?.let {
-        configurationSet.add(configurations.getByName("${buildType}Implementation"))
-      }
-
-      // Add productFlavors configurations
-      productFlavors.forEach { flavor ->
-        // Works for productFlavors and productFlavors with dimensions
-        if (variant.capitalize().contains(flavor.name.capitalize())) {
-          configurations.find { it.name == "compile" }?.let {
-            configurationSet.add(configurations.getByName("${flavor.name}Compile"))
-          }
-          configurations.find { it.name == "api" }?.let {
-            configurationSet.add(configurations.getByName("${flavor.name}Api"))
-          }
-          configurations.find { it.name == "implementation" }?.let {
-            configurationSet.add(configurations.getByName("${flavor.name}Implementation"))
-          }
-        }
+      configurations.find { it.name == "${variant}RuntimeClasspath" }?.also {
+        configurationSet.add(it)
       }
     }
 
     // Iterate through all the configurations's dependencies
-    configurationSet.forEach { set ->
-      if (set.isCanBeResolved) {
-        set.resolvedConfiguration.lenientConfiguration.artifacts.forEach { artifact ->
+    configurationSet.forEach { configuration ->
+      if (configuration.isCanBeResolved) {
+        val allDeps = configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies
+        getResolvedArtifactsFromResolvedDependencies(allDeps).forEach { artifact ->
           val id = artifact.moduleVersion.id
           val gav = "${id.group}:${id.name}:${id.version}@pom"
           configurations.getByName(pomConfiguration).dependencies.add(
@@ -149,6 +129,32 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
         }
       }
     }
+  }
+
+  private fun getResolvedArtifactsFromResolvedDependencies(
+    resolvedDependencies: Set<ResolvedDependency>
+  ): Set<ResolvedArtifact> {
+    val resolvedArtifacts = hashSetOf<ResolvedArtifact>()
+    for (resolvedDependency in resolvedDependencies) {
+      try {
+        if (resolvedDependency.moduleVersion == "unspecified") {
+          /**
+           * Attempting to getAllModuleArtifacts on a local library project will result
+           * in AmbiguousVariantSelectionException as there are not enough criteria
+           * to match a specific variant of the library project. Instead we skip the
+           * the library project itself and enumerate its dependencies.
+           */
+          resolvedArtifacts.addAll(
+            getResolvedArtifactsFromResolvedDependencies(resolvedDependency.children)
+          )
+        } else {
+          resolvedArtifacts.addAll(resolvedDependency.allModuleArtifacts)
+        }
+      } catch (e: Exception) {
+        logger.warn("Failed to process $resolvedDependency.name", e)
+      }
+    }
+    return resolvedArtifacts
   }
 
   /** Get POM information from the dependency artifacts. */

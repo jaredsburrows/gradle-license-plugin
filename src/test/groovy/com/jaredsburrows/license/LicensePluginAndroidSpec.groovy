@@ -964,6 +964,144 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
+  @Unroll def '#taskName with default buildTypes, multi module and android and android'() {
+    given:
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'subproject'
+      """
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion 28
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        api project(':subproject')
+        implementation 'group:name:1.0.0'
+      }
+
+      project(':subproject') {
+        apply plugin: 'com.android.library'
+
+        android {
+          compileSdkVersion 28
+        }
+
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File("${reportFolder}/${taskName}.html").text
+    def expectedHtml =
+      """
+      <html>
+        <head>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+      <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+      <br>
+            <hr>
+            <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
+              <dl>
+                <dt>Copyright &copy; 2017 name</dt>
+              </dl>
+            </li>
+      <a name="-296292112"></a>
+            <pre>Some license
+      <a href="http://website.tld/">http://website.tld/</a></pre>
+      <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File("${reportFolder}/${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        },
+        {
+          "project":"Fake dependency name",
+          "description":"Fake dependency description",
+          "version":"1.0.0",
+          "developers":[
+            "name"
+          ],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:name:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
   @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
     given:
     buildFile <<
