@@ -2,6 +2,9 @@ name: build
 
 on: [push, pull_request]
 
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
 jobs:
   jvm:
     runs-on: ubuntu-latest
@@ -38,13 +41,16 @@ jobs:
       - name: Run Build
         run: ./gradlew clean ktlintCheck build jar docsJar sourcesJar testsJar reportsZip generatePomFileForMavenPublication -s --scan
 
-      - name: Upload Artifacts to Github
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: gradle-license-plugin-${{ github.workflow }}-${{ github.run_id }}
           path: |
+            build/libs
             build/outputs
+            build/publications
+            build/distributions
             build/reports
             build/test-results
           if-no-files-found: warn
