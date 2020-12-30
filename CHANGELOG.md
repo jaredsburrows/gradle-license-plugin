@@ -1,5 +1,13 @@
 # Change Log
 
+## Version 0.8.90  (2020-12-30)
+ * [#140](https://github.com/jaredsburrows/gradle-license-plugin/pull/140) Added CSV report support
+ * [#134](https://github.com/jaredsburrows/gradle-license-plugin/pull/134) Add android library subproject dependencies to the report
+
+  Many thanks to
+  [@mkubiczek](https://github.com/mkubiczek)
+  for the code contributions!
+
 ## Version 0.8.80  (2020-05-29)
  * [#127](https://github.com/jaredsburrows/gradle-license-plugin/pull/127) Remove instant app plugin, support feature, library and application
 
