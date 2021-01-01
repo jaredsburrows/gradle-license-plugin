@@ -74,7 +74,7 @@ jobs:
           java-version: 1.8
 
       - name: Publish
-        run: ./gradlew clean artifactoryPublish -x test -s --scan
+        run: ./gradlew clean artifactoryPublish -s --scan
         env:
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
