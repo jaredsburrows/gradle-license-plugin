@@ -52,11 +52,6 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
-  init {
-    // Make sure update on each run
-    outputs.upToDateWhen { false }
-  }
-
   @TaskAction fun licenseReport() {
     setupEnvironment()
     initDependencies()
