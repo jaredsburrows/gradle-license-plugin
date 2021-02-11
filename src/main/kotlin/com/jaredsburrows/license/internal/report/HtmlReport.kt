@@ -99,7 +99,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
                     +project.name
                     +" (${project.version})"
                   }
-                  val copyrightYear = if (project.year.isEmpty()) DEFAULT_YEAR else project.year
+                  val copyrightYear = project.year.ifEmpty { DEFAULT_YEAR }
                   dl {
                     if (project.developers.isNotEmpty()) {
                       project.developers.forEach { developer ->
@@ -223,8 +223,9 @@ class HtmlReport(private val projects: List<Project>) : Report {
     consumer
   ).visit(block)
 
-  companion object {
-    const val CSS_STYLE = "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
+  private companion object {
+    const val CSS_STYLE =
+      "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
     const val NO_LIBRARIES = "None"
     const val NO_LICENSE = "No license found"

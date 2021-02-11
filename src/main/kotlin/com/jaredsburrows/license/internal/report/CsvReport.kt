@@ -14,11 +14,11 @@ class CsvReport(private val projects: List<Project>) : Report {
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
-    val projectInfoList = arrayListOf<String>()
+    val projectInfoList = mutableListOf<String>()
     projectInfoList.add(COLUMNS)
 
     projects.map { project ->
-      val projectInfo = arrayListOf<String?>().apply {
+      val projectInfo = mutableListOf<String?>().apply {
         // Project Name
         addCsvString(project.name)
 
@@ -58,32 +58,33 @@ class CsvReport(private val projects: List<Project>) : Report {
   override fun emptyReport(): String = EMPTY_CSV
 
   /** Convert list of elements to comma separated list. */
-  private fun ArrayList<String?>.toCsv(): String = this.joinToString(separator = ",")
+  private fun MutableList<String?>.toCsv(): String = this.joinToString(separator = ",")
 
   /** Add elements to Csv. */
-  private fun ArrayList<String?>.addCsvString(element: String): Boolean {
+  private fun MutableList<String?>.addCsvString(element: String): Boolean {
     return this.add(element.valueOrNull())
   }
 
   /** Add List of elements to Csv as comma separated list with quotes. */
-  private fun <T> ArrayList<String?>.addCsvList(
+  private fun <T> MutableList<String?>.addCsvList(
     elements: List<T>,
     transform: ((T) -> CharSequence)? = null
   ): Boolean {
     return when {
       elements.isEmpty() -> this.add(null)
       else -> {
-        val blah = elements.joinToString(separator = ",", transform = transform)
+        val element = elements.joinToString(separator = ",", transform = transform)
         when (elements.size) {
-          1 -> this.add(blah)
-          else -> this.add("\"${blah}\"")
+          1 -> this.add(element)
+          else -> this.add("\"${element}\"")
         }
       }
     }
   }
 
-  companion object {
-    private const val COLUMNS = "project,description,version,developers,url,year,licenses,license urls,dependency"
+  private companion object {
+    private const val COLUMNS =
+      "project,description,version,developers,url,year,licenses,license urls,dependency"
     private const val EMPTY_CSV = ""
   }
 }

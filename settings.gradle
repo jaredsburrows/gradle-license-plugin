@@ -1,12 +1,13 @@
 plugins {
-  id "com.gradle.enterprise" version "3.4.1"
+  id "com.gradle.enterprise" version "3.6.4"
 }
-
-rootProject.name = 'gradle-license-plugin'
 
 gradleEnterprise {
   buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
+    publishAlways()
   }
 }
+
+rootProject.name = 'gradle-license-plugin'

@@ -14,5 +14,5 @@ interface Report {
   /** Return the empty report if no open source licenses are found. */
   fun emptyReport(): String
 
-  fun String.valueOrNull(): String? = if (this.isNotEmpty()) this else null
+  fun String.valueOrNull(): String? = this.ifEmpty { null }
 }

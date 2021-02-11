@@ -43,7 +43,7 @@ class JsonReport(private val projects: List<Project>) : Report {
 
   override fun emptyReport(): String = EMPTY_JSON
 
-  companion object {
+  private companion object {
     private const val PROJECT = "project"
     private const val DESCRIPTION = "description"
     private const val VERSION = "version"

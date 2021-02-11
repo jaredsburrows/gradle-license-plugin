@@ -46,7 +46,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       buildscript {
         repositories {
-          jcenter()
+          mavenCentral()
           google()
         }
 
@@ -84,13 +84,16 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     [gradleVersion, agpVersion] << [
       [
-        '5.6.4',
-        '6.1.1'
+        '7.0.2',
+        '7.1.1',
+        '7.2'
       ],
       [
-        '3.5.0',
-        '3.6.0',
-        '4.0.0'
+        '3.5.4',
+        '3.6.4',
+        '4.0.2',
+        '4.1.3',
+        '4.2.2'
       ]
     ].combinations()
   }
