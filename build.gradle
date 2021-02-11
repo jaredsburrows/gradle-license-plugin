@@ -1,18 +1,18 @@
 plugins {
-  id 'com.jfrog.artifactory' version '4.18.2'
-  id 'com.jfrog.bintray' version '1.8.5'
   id 'com.github.ben-manes.versions' version '0.36.0'
   id 'com.gradle.plugin-publish' version '0.12.0'
   id 'org.jetbrains.kotlin.jvm' version '1.4.10'
   id 'org.jetbrains.dokka' version '0.10.1'
   id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
-  id 'java-gradle-plugin'
   id 'groovy'
+  id 'java-gradle-plugin'
   id 'maven-publish'
+  id 'signing'
 }
 
 repositories {
-  jcenter()
+  mavenCentral()
+  jcenter() // Remove when https://github.com/Kotlin/kotlinx.html/issues/173 is fixed
   google()
 }
 

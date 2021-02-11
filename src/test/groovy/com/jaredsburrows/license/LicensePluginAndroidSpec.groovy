@@ -46,7 +46,8 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       buildscript {
         repositories {
-          jcenter()
+          mavenCentral()
+          jcenter() // Remove when https://github.com/Kotlin/kotlinx.html/issues/173 is fixed
           google()
         }
 

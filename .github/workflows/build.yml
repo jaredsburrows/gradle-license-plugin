@@ -74,9 +74,9 @@ jobs:
           java-version: 1.8
 
       - name: Publish
-        run: ./gradlew clean artifactoryPublish -s --scan
+        run: ./gradlew clean publishMavenPublicationToMavenRepository -s --scan
         env:
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           GRADLE_KEY: ${{ secrets.GRADLE_KEY }}
           GRADLE_SECRET: ${{ secrets.GRADLE_SECRET }}

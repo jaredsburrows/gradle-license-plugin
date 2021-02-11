@@ -1,35 +1,5 @@
-def pomConfig = {
-  resolveStrategy = Closure.DELEGATE_FIRST
-  name POM_ARTIFACT_ID
-  description POM_DESCRIPTION
-  url POM_URL
-
-  issueManagement {
-    system POM_ISSUE_SYSTEM
-    url POM_ISSUE_URL
-  }
-
-  scm {
-    url POM_SCM_URL
-    connection POM_SCM_CONNECTION
-    developerConnection POM_SCM_DEV_CONNECTION
-  }
-
-  licenses {
-    license {
-      name POM_LICENCE_NAME
-      url POM_LICENCE_URL
-      distribution POM_LICENCE_DIST
-    }
-  }
-
-  developers {
-    developer {
-      id POM_DEVELOPER_ID
-      name POM_DEVELOPER_NAME
-      email POM_DEVELOPER_EMAIL
-    }
-  }
+def isReleaseBuild() {
+  return !VERSION_NAME.contains('SNAPSHOT')
 }
 
 task docsJar(type: Jar, dependsOn: dokka) {
@@ -60,10 +30,22 @@ task reportsZip(type: Zip, dependsOn: check) {
   from reporting.baseDir
 }
 
-// Local published to ~/.m2 - mavenLocal()
 publishing {
   repositories {
     mavenLocal()
+
+    maven {
+      credentials {
+        username project.properties['SONATYPE_USERNAME'] ?: System.getenv('SONATYPE_USERNAME')
+        password project.properties['SONATYPE_PASSWORD'] ?: System.getenv('SONATYPE_PASSWORD')
+      }
+
+      if (isReleaseBuild()) {
+        url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+      } else {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+      }
+    }
   }
 
   publications {
@@ -78,76 +60,47 @@ publishing {
       artifactId POM_ARTIFACT_ID
       version VERSION_NAME
 
-      pom.withXml {
-        // Add parent POM information
-        asNode().children().first() + pomConfig
+      pom {
+        name = POM_ARTIFACT_ID
+        packaging = POM_PACKAGING
+        description = POM_DESCRIPTION
+        url = POM_URL
+
+        licenses {
+          license {
+            name = POM_LICENCE_NAME
+            url = POM_LICENCE_URL
+            distribution = POM_LICENCE_DIST
+          }
+        }
+
+        developers {
+          developer {
+            id = POM_DEVELOPER_ID
+            name = POM_DEVELOPER_NAME
+            email = POM_DEVELOPER_EMAIL
+          }
+        }
+
+        scm {
+          url = POM_SCM_URL
+          connection = POM_SCM_CONNECTION
+          developerConnection = POM_SCM_DEV_CONNECTION
+        }
+
+        issueManagement {
+          system = POM_ISSUE_SYSTEM
+          url = POM_ISSUE_URL
+        }
       }
     }
   }
 }
-publish.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
-publish.dependsOn 'generatePomFileForMavenPublication'
 
-// Snapshots published to JFrog Artifactory repository
-artifactory {
-  contextUrl = 'https://oss.jfrog.org'
-
-  publish {
-    repository {
-      repoKey = 'oss-snapshot-local'
-      username = project.properties['BINTRAY_USERNAME'] ?: System.getenv('BINTRAY_USERNAME')
-      password = project.properties['BINTRAY_API_KEY'] ?: System.getenv('BINTRAY_API_KEY')
-    }
-
-    defaults {
-      publications 'maven'
-    }
-  }
-
-  resolve {
-    repository {
-      repoKey = 'libs-release'
-    }
-  }
+signing {
+  required { isReleaseBuild() && gradle.taskGraph.hasTask("release") }
+  sign publishing.publications.maven
 }
-artifactoryPublish.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
-artifactoryPublish.dependsOn 'generatePomFileForMavenPublication'
-
-// Publishes to JFrog Bintray's JCenter repository
-bintray {
-  user = project.properties['BINTRAY_USERNAME'] ?: System.getenv('BINTRAY_USERNAME')
-  key = project.properties['BINTRAY_API_KEY'] ?: System.getenv('BINTRAY_API_KEY')
-  publications = ['maven']
-  publish = true
-
-  pkg {
-    repo = 'maven'
-    name = POM_ARTIFACT_ID
-    desc = POM_DESCRIPTION
-    websiteUrl = POM_URL
-    issueTrackerUrl = POM_ISSUE_URL
-    vcsUrl = POM_URL
-    labels = ['gradle', 'plugin', 'license']
-    githubRepo = BINTRAY_GITHUB_REPO
-    githubReleaseNotesFile = 'README.md'
-
-    version {
-      name = VERSION_NAME
-      desc = POM_DESCRIPTION
-      released = new Date()
-      vcsTag = VERSION_NAME
-
-      mavenCentralSync {
-        sync = false
-        user = project.properties['SONATYPE_USERNAME'] ?: System.getenv('SONATYPE_USERNAME')
-        password = project.properties['SONATYPE_PASSWORD'] ?: System.getenv('SONATYPE_PASSWORD')
-        close = '1'
-      }
-    }
-  }
-}
-bintrayUpload.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
-bintrayUpload.dependsOn 'generatePomFileForMavenPublication'
 
 // Publishes to Gradle plugins repository
 gradlePlugin {
@@ -162,7 +115,6 @@ pluginBundle {
   website = POM_URL
   vcsUrl = POM_URL
   description = POM_DESCRIPTION
-  tags = bintray.pkg.labels
 
   plugins {
     licensePlugin {
@@ -170,11 +122,9 @@ pluginBundle {
     }
   }
 }
-publishPlugins.dependsOn jar, docsJar, sourcesJar, testsJar, reportsZip
-publishPlugins.dependsOn 'generatePomFileForMavenPublication'
 
-// Publish to both Bintray and Gradle repositories
-task release(dependsOn: [bintrayUpload, publishPlugins]) {
+// Publish to both Maven Central and Gradle repositories
+task release(dependsOn: [publishMavenPublicationToMavenRepository, publishPlugins]) {
   group = 'Publishing'
-  description = 'Publish to JFrog Jcenter\'s Brintray and Gradle Plugins Repositories.'
+  description = 'Publish to Maven Central and Gradle Plugins Repositories.'
 }
