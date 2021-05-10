@@ -76,6 +76,8 @@ class LicensePlugin : Plugin<Project> {
       val name = variant.name.capitalize()
       val taskName = "license${name}Report"
       val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
+      val androidExtension = project.extensions.getByName("android") as BaseExtension
+      val sourceSetName = if (extension.useVariantSpecificAssetDirs) variant.name else "main"
 
       // Create tasks based on variant
       project.tasks.create(taskName, LicenseReportTask::class.java).apply {
@@ -90,16 +92,7 @@ class LicensePlugin : Plugin<Project> {
         copyCsvReportToAssets = extension.copyCsvReportToAssets
         copyHtmlReportToAssets = extension.copyHtmlReportToAssets
         copyJsonReportToAssets = extension.copyJsonReportToAssets
-        assetDirs = (
-          project
-            .extensions
-            .getByName("android") as BaseExtension
-          )
-          .sourceSets
-          .getByName("main")
-          .assets
-          .srcDirs
-          .toList()
+        assetDirs = androidExtension.sourceSets.getByName(sourceSetName).assets.srcDirs.toList()
         buildType = variant.buildType.name
         variantName = variant.name
         productFlavors = variant.productFlavors

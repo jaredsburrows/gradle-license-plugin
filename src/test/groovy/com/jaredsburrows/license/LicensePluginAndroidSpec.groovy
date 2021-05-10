@@ -19,7 +19,8 @@ final class LicensePluginAndroidSpec extends Specification {
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
-  private String assetsFolder
+  private String srcFolder
+  private String mainAssetsFolder
 
   def 'setup'() {
     def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
@@ -37,7 +38,8 @@ final class LicensePluginAndroidSpec extends Specification {
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
     reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
-    assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
+    srcFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src"
+    mainAssetsFolder = "${srcFolder}/main/assets"
   }
 
   @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
@@ -1145,8 +1147,8 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-    result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-    result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+    result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
+    result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -1196,11 +1198,77 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     !result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     !result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-    !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-    !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+    !result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
+    !result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
     copyEnabled << [true, false]
+  }
+
+  @Unroll def "android project running #taskName with variant-specific report copy enabled"() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion 28
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+
+        flavorDimensions 'version'
+        productFlavors {
+          paid {
+            dimension "version"
+          }
+          free {
+            dimension "version"
+          }
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
+
+      licenseReport {
+        generateHtmlReport = true
+        generateJsonReport = true
+        copyHtmlReportToAssets = true
+        copyJsonReportToAssets = true
+        useVariantSpecificAssetDirs = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    def variantName = taskName.replaceFirst(/^license/, '')
+                              .replaceFirst(/Report$/, '')
+                              .uncapitalize()
+    result.output.find("Copied HTML report to .*${srcFolder}/${variantName}/assets/open_source_licenses.html.")
+    result.output.find("Copied JSON report to .*${srcFolder}/${variantName}/assets/open_source_licenses.json.")
+
+    where:
+    taskName << [
+      "licensePaidDebugReport",
+      "licensePaidReleaseReport",
+      "licenseFreeDebugReport",
+      "licenseFreeReleaseReport"
+    ]
   }
 }
