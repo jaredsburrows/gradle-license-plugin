@@ -1,10 +1,10 @@
 package com.jaredsburrows.license.internal
 
+import org.gradle.api.UncheckedIOException
 import java.io.File
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
-import org.gradle.api.UncheckedIOException
 
 /**
  * Renders information in a format suitable for logging to the console.

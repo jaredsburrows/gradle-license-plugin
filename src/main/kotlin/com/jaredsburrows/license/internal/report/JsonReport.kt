@@ -9,20 +9,17 @@ import com.jaredsburrows.license.internal.pom.Project
  *
  * @property projects list of [Project]s for thr JSON report.
  */
-class JsonReport(private val projects: List<Project>) {
+class JsonReport(private val projects: List<Project>) : Report {
 
-  /** Return Json as a [String]. */
-  fun string(): String = if (projects.isEmpty()) EMPTY_JSON else json()
+  override fun toString(): String = report()
 
-  /** Json report when there are open source licenses. */
-  private fun json(): String {
+  override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
+
+  override fun fullReport(): String {
     val reportList = projects.map { project ->
       // Handle multiple licenses
       val licensesJson = project.licenses.map { license ->
-        linkedMapOf(
-          LICENSE to license.name,
-          LICENSE_URL to license.url
-        )
+        linkedMapOf(LICENSE to license.name, LICENSE_URL to license.url)
       }
 
       // Handle multiple developer
@@ -30,12 +27,12 @@ class JsonReport(private val projects: List<Project>) {
 
       // Build the report
       linkedMapOf(
-        PROJECT to if (project.name.isNotEmpty()) project.name else null,
-        DESCRIPTION to if (project.description.isNotEmpty()) project.description else null,
-        VERSION to if (project.version.isNotEmpty()) project.version else null,
+        PROJECT to project.name.valueOrNull(),
+        DESCRIPTION to project.description.valueOrNull(),
+        VERSION to project.version.valueOrNull(),
         DEVELOPERS to developerNames,
-        URL to if (project.url.isNotEmpty()) project.url else null,
-        YEAR to if (project.year.isNotEmpty()) project.year else null,
+        URL to project.url.valueOrNull(),
+        YEAR to project.year.valueOrNull(),
         LICENSES to licensesJson,
         DEPENDENCY to project.gav
       )
@@ -43,6 +40,8 @@ class JsonReport(private val projects: List<Project>) {
 
     return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)
   }
+
+  override fun emptyReport(): String = EMPTY_JSON
 
   companion object {
     private const val PROJECT = "project"
@@ -54,8 +53,8 @@ class JsonReport(private val projects: List<Project>) {
     private const val LICENSES = "licenses"
     private const val LICENSE = "license"
     private const val LICENSE_URL = "license_url"
-    private const val EMPTY_JSON = "[]"
     private const val DEPENDENCY = "dependency"
+    private const val EMPTY_JSON = "[]"
     private val gson = GsonBuilder()
       .setPrettyPrinting()
       .serializeNulls()

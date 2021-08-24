@@ -1,13 +1,13 @@
 # Gradle License Plugin
 
 [![License](https://img.shields.io/badge/license-apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Build Status](https://travis-ci.org/jaredsburrows/gradle-license-plugin.svg?branch=master)](https://travis-ci.org/jaredsburrows/gradle-license-plugin)
+[![Build](https://github.com/jaredsburrows/gradle-license-plugin/workflows/build/badge.svg)](https://github.com/jaredsburrows/gradle-license-plugin/actions)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
 This plugin provides a task to generate a HTML license report based on the 
 configuration. (eg. `licenseDebugReport` for all debug dependencies in an Android project).
 
-Applying this to an Android or Java project will generate a the license 
+Applying this to an Android or Java project will generate the license 
 file(`open_source_licenses.html`) in the `<project>/build/reports/licenses/`.
 
 Also, for Android projects the license HTML file will be copied to `<project>/src/main/assets/`.
@@ -19,34 +19,36 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 buildscript {
   repositories {
     jcenter()
+    google()
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.70'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.90'
   }
 }
 
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/).
+Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/com/jaredsburrows/gradle-license-plugin/).
 
 **Snapshot:**
 ```groovy
 buildscript {
   repositories {
     maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    google()
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.80-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.91-SNAPSHOT'
   }
 }
 
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/).
+Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/com/jaredsburrows/gradle-license-plugin/).
 
 ## Tasks
 
@@ -65,7 +67,13 @@ dependencies {
 }
 ```
 
-**HTML:**
+**CSV (minimized example):**
+```csv
+project,description,version,developers,url,year,licenses,license urls,dependency
+Design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.org/licenses/LICENSE-2.0.txt,com.android.support:design:26.1.0
+```
+
+**HTML (minimized example):**
 ```html
 <html>
   <head>
@@ -110,10 +118,10 @@ dependencies {
 Note, if no license information is found in the POM for a project, "No License Found" will be used. 
 Those will be listed first.
 Other missing information is provided as default values that can be corrected from other sources.
-Projects are grouped by license name - the licence text is only provided once. 
+Projects are grouped by license name and the licence text is only provided once. 
 Projects with multiple licenses are grouped as if those licenses were a single combined license.
 
-**JSON:**
+**JSON (full example):**
 ```json
 [
   {
@@ -165,8 +173,8 @@ Note, if no license information is found for a component, the `licenses` element
 
 ## Configuration
 The plugin can be configured to generate specific reports and automatically copy the reports to the assets directory (Android projects only). The default behaviours are: 
-- Java projects: Generate both the HTML report and the JSON report.
-- Android projects: Generate both the HTML report and the JSON report, and copy the HTML report to the assets directory.
+- Java projects: Generate HTML, JSON and CSV reports.
+- Android projects: Generate HTML, JSON and CSV reports, and copy the HTML report to the assets directory.
 
 To override the defaults, add the `licenseReport` configuration closure to the build script.
 
@@ -174,10 +182,12 @@ To override the defaults, add the `licenseReport` configuration closure to the b
 apply plugin: "com.jaredsburrows.license"
 
 licenseReport {
+  generateCsvReport = false
   generateHtmlReport = false
   generateJsonReport = true
   
   // These options are ignored for Java projects
+  copyHtmlReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
   useVariantSpecificAssetDirs = false

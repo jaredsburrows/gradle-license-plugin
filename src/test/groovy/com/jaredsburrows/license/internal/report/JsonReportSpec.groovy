@@ -14,7 +14,7 @@ final class JsonReportSpec extends Specification {
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       []
@@ -26,16 +26,22 @@ final class JsonReportSpec extends Specification {
 
   def 'open source json - missing values'() {
     given:
-    def project = new Project(
+    def developer = new Developer(name: 'name')
+    def project1 = new Project(
       name: 'name',
       developers: [],
       gav: 'foo:bar:1.2.3'
     )
-    def projects = [project, project]
+    def project2 = new Project(
+      name: 'name',
+      developers: [developer, developer],
+      gav: 'foo:bar:1.2.3'
+    )
+    def projects = [project1, project2]
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       [
@@ -53,7 +59,10 @@ final class JsonReportSpec extends Specification {
           "project": "name",
           "description": null,
           "version": null,
-          "developers": [],
+          "developers": [
+            "name",
+            "name"
+          ],
           "url": null,
           "year": null,
           "licenses": [],
@@ -88,7 +97,7 @@ final class JsonReportSpec extends Specification {
     def sut = new JsonReport(projects)
 
     when:
-    def actual = sut.string()
+    def actual = sut.toString()
     def expected =
       """
       [

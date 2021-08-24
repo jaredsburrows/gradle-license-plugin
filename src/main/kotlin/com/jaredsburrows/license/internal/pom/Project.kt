@@ -1,7 +1,7 @@
 package com.jaredsburrows.license.internal.pom
 
 /**
- * Represents the information that is used to make HTML and JSON reports.
+ * Represents the information that is used to make reports.
  *
  * @property name name of the library in the POM.
  * @property description description of the library in the POM.

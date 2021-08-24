@@ -5,31 +5,41 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.FeaturePlugin
-import com.android.build.gradle.InstantAppPlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.TestExtension
-import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.api.BaseVariant
-import java.io.File
-import org.gradle.api.DomainObjectCollection
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.JavaPlugin
+import java.io.File
+import kotlin.reflect.KClass
 
 /** A [Plugin] which grabs the POM.xml files from maven dependencies. */
 class LicensePlugin : Plugin<Project> {
   override fun apply(project: Project) {
     val extension = project.extensions.create("licenseReport", LicenseReportExtension::class.java)
 
-    project.plugins.all { plugin ->
-      when (plugin) {
+    project.plugins.all {
+      when (it) {
         is JavaPlugin -> configureJavaProject(project, extension)
-        is AppPlugin,
-        is FeaturePlugin,
-        is LibraryPlugin,
-        is InstantAppPlugin,
-        is TestPlugin -> configureAndroidProject(project, extension)
+        is FeaturePlugin -> {
+          project.extensions[FeatureExtension::class].run {
+            configureAndroidProject(project, extension, featureVariants)
+            configureAndroidProject(project, extension, libraryVariants)
+          }
+        }
+        is LibraryPlugin -> {
+          project.extensions[LibraryExtension::class].run {
+            configureAndroidProject(project, extension, libraryVariants)
+          }
+        }
+        is AppPlugin -> {
+          project.extensions[AppExtension::class].run {
+            configureAndroidProject(project, extension, applicationVariants)
+          }
+        }
       }
     }
   }
@@ -43,19 +53,24 @@ class LicensePlugin : Plugin<Project> {
     project.tasks.create(taskName, LicenseReportTask::class.java).apply {
       description = "Outputs licenses report."
       group = "Reporting"
+      csvFile = File(path + LicenseReportTask.CSV_EXT)
       htmlFile = File(path + LicenseReportTask.HTML_EXT)
       jsonFile = File(path + LicenseReportTask.JSON_EXT)
+      generateCsvReport = extension.generateCsvReport
       generateHtmlReport = extension.generateHtmlReport
       generateJsonReport = extension.generateJsonReport
+      copyCsvReportToAssets = false
       copyHtmlReportToAssets = false
       copyJsonReportToAssets = false
     }
   }
 
   /** Configure for Android projects. */
-  private fun configureAndroidProject(project: Project, extension: LicenseReportExtension) {
-    val variants = getAndroidVariant(project)
-
+  private fun configureAndroidProject(
+    project: Project,
+    extension: LicenseReportExtension,
+    variants: DomainObjectSet<out BaseVariant>? = null
+  ) {
     // Configure tasks for all variants
     variants?.all { variant ->
       val name = variant.name.capitalize()
@@ -68,10 +83,13 @@ class LicensePlugin : Plugin<Project> {
       project.tasks.create(taskName, LicenseReportTask::class.java).apply {
         description = "Outputs licenses report for $name variant."
         group = "Reporting"
+        csvFile = File(path + LicenseReportTask.CSV_EXT)
         htmlFile = File(path + LicenseReportTask.HTML_EXT)
         jsonFile = File(path + LicenseReportTask.JSON_EXT)
+        generateCsvReport = extension.generateCsvReport
         generateHtmlReport = extension.generateHtmlReport
         generateJsonReport = extension.generateJsonReport
+        copyCsvReportToAssets = extension.copyCsvReportToAssets
         copyHtmlReportToAssets = extension.copyHtmlReportToAssets
         copyJsonReportToAssets = extension.copyJsonReportToAssets
         assetDirs = androidExtension.sourceSets.getByName(sourceSetName).assets.srcDirs.toList()
@@ -82,31 +100,7 @@ class LicensePlugin : Plugin<Project> {
     }
   }
 
-  /**
-   * Check for the android library plugin, default to application variants for applications and
-   * test plugin.
-   */
-  private fun getAndroidVariant(project: Project): DomainObjectCollection<out BaseVariant>? {
-    val plugins = project.plugins
-    val extensions = project.extensions
-    return when {
-      plugins.hasPlugin(AppPlugin::class.java) ->
-        extensions
-          .findByType(AppExtension::class.java)
-          ?.applicationVariants
-      plugins.hasPlugin(FeaturePlugin::class.java) ->
-        extensions
-          .findByType(FeatureExtension::class.java)
-          ?.featureVariants
-      plugins.hasPlugin(LibraryPlugin::class.java) ->
-        extensions
-          .findByType(LibraryExtension::class.java)
-          ?.libraryVariants
-      plugins.hasPlugin(TestPlugin::class.java) ->
-        extensions
-          .findByType(TestExtension::class.java)
-          ?.applicationVariants
-      else -> throw IllegalArgumentException("Missing the Android Gradle Plugin.")
-    }
+  private operator fun <T : Any> ExtensionContainer.get(type: KClass<T>): T {
+    return getByType(type.java)
   }
 }
