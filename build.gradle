@@ -1,7 +1,7 @@
 plugins {
   id 'com.jfrog.artifactory' version '4.18.2'
   id 'com.jfrog.bintray' version '1.8.5'
-  id 'com.github.ben-manes.versions' version '0.36.0'
+  id 'com.github.ben-manes.versions' version '0.39.0'
   id 'com.gradle.plugin-publish' version '0.12.0'
   id 'org.jetbrains.kotlin.jvm' version '1.4.10'
   id 'org.jetbrains.dokka' version '0.10.1'
