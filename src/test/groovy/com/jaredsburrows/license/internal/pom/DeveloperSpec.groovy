@@ -3,7 +3,7 @@ package com.jaredsburrows.license.internal.pom
 import spock.lang.Specification
 
 final class DeveloperSpec extends Specification {
-  def sut = new Developer(
+  private def sut = new Developer(
     name: 'name'
   )
 
