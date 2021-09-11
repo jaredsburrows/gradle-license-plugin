@@ -28,6 +28,6 @@ ext.deps = [
     'matchers': 'org.xmlunit:xmlunit-matchers:2.8.2',
   ],
   'commons': [
-    'csv': 'org.apache.commons:commons-csv:1.8',
+    'csv': 'org.apache.commons:commons-csv:1.9.0',
   ],
 ]
