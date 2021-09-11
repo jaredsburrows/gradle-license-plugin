@@ -1,6 +1,6 @@
 ext.versions = [
   'java'  : '1.8',
-  'kotlin': '1.4.10',
+  'kotlin': '1.5.30',
 ]
 
 ext.deps = [
