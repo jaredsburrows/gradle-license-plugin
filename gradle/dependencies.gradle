@@ -1,6 +1,6 @@
 ext.versions = [
   'java'  : '1.8',
-  'kotlin': '1.4.10',
+  'kotlin': '1.5.30',
 ]
 
 ext.deps = [
@@ -15,7 +15,7 @@ ext.deps = [
   'kotlinx': [
     'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2',
   ],
-  'gson'   : 'com.google.code.gson:gson:2.8.6',
+  'gson'   : 'com.google.code.gson:gson:2.8.8',
   'android': [
     'tools': [
       'build': [
@@ -28,6 +28,6 @@ ext.deps = [
     'matchers': 'org.xmlunit:xmlunit-matchers:2.8.2',
   ],
   'commons': [
-    'csv': 'org.apache.commons:commons-csv:1.8',
+    'csv': 'org.apache.commons:commons-csv:1.9.0',
   ],
 ]
