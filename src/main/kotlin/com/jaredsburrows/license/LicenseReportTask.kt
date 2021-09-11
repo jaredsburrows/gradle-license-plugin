@@ -26,6 +26,7 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
 import java.net.URL
+import java.util.Locale
 import java.util.UUID
 
 /** A [Task] that creates HTML and JSON reports of the current projects dependencies. */
@@ -208,7 +209,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
     // Sort POM information by name
-    projects.sortBy { it.name.toLowerCase() }
+    projects.sortBy { it.name.lowercase(Locale.getDefault()) }
   }
 
   /** Setup configurations to collect dependencies. */
@@ -270,7 +271,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote CSV report to ${ConsoleRenderer().asClickableFileUrl(csvFile)}.")
+    logger.log(
+      LogLevel.LIFECYCLE,
+      "Wrote CSV report to ${ConsoleRenderer().asClickableFileUrl(csvFile)}."
+    )
   }
 
   private fun copyCsvReport() {
@@ -291,7 +295,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
       // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, "Copied CSV report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
+      logger.log(
+        LogLevel.LIFECYCLE,
+        "Copied CSV report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+      )
     }
   }
 
@@ -311,7 +318,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote HTML report to ${ConsoleRenderer().asClickableFileUrl(htmlFile)}.")
+    logger.log(
+      LogLevel.LIFECYCLE,
+      "Wrote HTML report to ${ConsoleRenderer().asClickableFileUrl(htmlFile)}."
+    )
   }
 
   private fun copyHtmlReport() {
@@ -332,7 +342,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
       // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
+      logger.log(
+        LogLevel.LIFECYCLE,
+        "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+      )
     }
   }
 
@@ -351,7 +364,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     }
 
     // Log output directory for user
-    logger.log(LogLevel.LIFECYCLE, "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}.")
+    logger.log(
+      LogLevel.LIFECYCLE,
+      "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}."
+    )
   }
 
   private fun copyJsonReport() {
@@ -372,7 +388,10 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
 
       // Log output directory for user
-      logger.log(LogLevel.LIFECYCLE, "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.")
+      logger.log(
+        LogLevel.LIFECYCLE,
+        "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+      )
     }
   }
 

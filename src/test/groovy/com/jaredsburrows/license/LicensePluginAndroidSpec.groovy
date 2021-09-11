@@ -40,7 +40,8 @@ final class LicensePluginAndroidSpec extends Specification {
     assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
   }
 
-  @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
+  @Unroll
+  def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
     given:
     buildFile <<
       """
@@ -84,13 +85,16 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     [gradleVersion, agpVersion] << [
       [
-        '5.6.4',
-        '6.1.1'
+        '7.0.2',
+        '7.1.1',
+        '7.2'
       ],
       [
-        '3.5.0',
-        '3.6.0',
-        '4.0.0'
+        '3.5.4',
+        '3.6.4',
+        '4.0.2',
+        '4.1.3',
+        '4.2.2'
       ]
     ].combinations()
   }

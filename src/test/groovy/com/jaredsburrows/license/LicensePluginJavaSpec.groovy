@@ -3,8 +3,8 @@ package com.jaredsburrows.license
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
-import static test.TestUtils.myGetLicenseText
 import static test.TestUtils.gradleWithCommand
+import static test.TestUtils.myGetLicenseText
 
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
@@ -22,7 +22,7 @@ final class LicensePluginJavaSpec extends Specification {
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
-    reportFolder = "${testProjectDir.root.path.replaceAll("\\\\",'/')}/build/reports/licenses"
+    reportFolder = "${testProjectDir.root.path.replaceAll("\\\\", '/')}/build/reports/licenses"
   }
 
   @Unroll def 'licenseReport using with gradle #gradleVersion'() {
@@ -51,9 +51,9 @@ final class LicensePluginJavaSpec extends Specification {
 
     where:
     gradleVersion << [
-      '5.4.1',
-      '5.6.4',
-      '6.1.1'
+      '7.0.2',
+      '7.1.1',
+      '7.2'
     ]
   }
 

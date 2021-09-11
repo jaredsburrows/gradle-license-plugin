@@ -37,6 +37,10 @@ jar {
   }
 }
 
+test {
+  useJUnitPlatform()
+}
+
 task createClasspathManifest() {
   def outputDir = file("$buildDir/$name")
 
