@@ -13,7 +13,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 final class LicensePluginAndroidSpec extends Specification {
-  @Rule public TemporaryFolder testProjectDir = new TemporaryFolder()
+  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private List<File> pluginClasspath
   private String classpathString
   private String mavenRepoUrl
