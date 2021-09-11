@@ -15,7 +15,7 @@ ext.deps = [
   'kotlinx': [
     'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2',
   ],
-  'gson'   : 'com.google.code.gson:gson:2.8.6',
+  'gson'   : 'com.google.code.gson:gson:2.8.8',
   'android': [
     'tools': [
       'build': [
