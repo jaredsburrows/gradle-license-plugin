@@ -30,7 +30,7 @@ import java.util.Locale
 import java.util.UUID
 
 /** A [Task] that creates HTML and JSON reports of the current projects dependencies. */
-open class LicenseReportTask : DefaultTask() { // tasks can't be final
+internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
   @Internal var projects = arrayListOf<Project>()
   @Input var assetDirs = listOf<File>()
@@ -495,7 +495,7 @@ open class LicenseReportTask : DefaultTask() { // tasks can't be final
     return answer
   }
 
-  companion object {
+  internal companion object {
     private val xmlParser = XmlParser(false, false)
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"

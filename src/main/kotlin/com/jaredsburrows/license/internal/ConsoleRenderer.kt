@@ -31,7 +31,7 @@ class ConsoleRenderer {
  *
  * Taken from: https://github.com/gradle/gradle/blob/master/subprojects/base-services/src/main/java/org/gradle/internal/UncheckedException.java
  */
-class UncheckedException : RuntimeException {
+private class UncheckedException : RuntimeException {
   constructor(cause: Throwable) : super(cause)
   constructor(message: String, cause: Throwable) : super(message, cause)
 
