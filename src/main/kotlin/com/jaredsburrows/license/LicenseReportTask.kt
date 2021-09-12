@@ -8,10 +8,10 @@ import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
+import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
-import groovy.util.XmlParser
-import groovy.xml.QName
+import groovy.xml.XmlParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
