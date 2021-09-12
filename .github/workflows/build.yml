@@ -43,7 +43,7 @@ jobs:
         run: ./gradlew clean ktlintCheck build jar docsJar sourcesJar testsJar reportsZip publishMavenPublicationToMavenLocal -s
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: gradle-license-plugin-${{ github.workflow }}-${{ github.run_id }}
