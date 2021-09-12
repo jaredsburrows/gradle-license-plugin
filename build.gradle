@@ -1,18 +1,17 @@
 plugins {
-  id 'com.jfrog.artifactory' version '4.24.16'
-  id 'com.jfrog.bintray' version '1.8.5'
-  id 'com.github.ben-manes.versions' version '0.39.0'
-  id 'com.gradle.plugin-publish' version '0.15.0'
   id 'org.jetbrains.kotlin.jvm' version '1.5.30'
-  id 'org.jetbrains.dokka' version '0.10.1'
+  id 'org.jetbrains.dokka' version '1.5.0'
+  id 'com.gradle.plugin-publish' version '0.15.0'
   id 'org.jlleitschuh.gradle.ktlint' version '10.2.0'
-  id 'java-gradle-plugin'
+  id 'com.github.ben-manes.versions' version '0.39.0'
   id 'groovy'
+  id 'java-gradle-plugin'
   id 'maven-publish'
+  id 'signing'
 }
 
 repositories {
-  jcenter()
+  mavenCentral()
   google()
 }
 
@@ -50,7 +49,7 @@ task createClasspathManifest() {
   }
 }
 
-configurations.all {
+configurations.configureEach {
   resolutionStrategy {
     eachDependency { details ->
       if (details.requested.group == 'org.jetbrains.kotlin') {
@@ -61,7 +60,6 @@ configurations.all {
 }
 
 dependencies {
-  implementation localGroovy()
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlinx.html
   implementation deps.gson
@@ -75,11 +73,48 @@ dependencies {
   testImplementation deps.commons.csv
 }
 
-apply from: 'gradle/compile.gradle'
 apply from: 'gradle/publish.gradle'
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
   kotlinOptions {
     jvmTarget = rootProject.versions.java
   }
 }
+
+tasks.withType(JavaCompile).configureEach {
+  sourceCompatibility = rootProject.versions.java
+  targetCompatibility = rootProject.versions.java
+
+  // Show all warnings except boot classpath
+  configure(options) {
+    compilerArgs << '-Xlint:all'            // Turn on all warnings
+    compilerArgs << '-Werror'               // Turn warnings into errors
+    encoding = 'utf-8'
+  }
+}
+
+tasks.withType(GroovyCompile).configureEach {
+  sourceCompatibility = rootProject.versions.java
+  targetCompatibility = rootProject.versions.java
+
+  // Show all warnings except boot classpath
+  configure(options) {
+    compilerArgs << '-Xlint:all'            // Turn on all warnings
+    compilerArgs << '-Werror'               // Turn warnings into errors
+    encoding = 'utf-8'
+  }
+}
+
+tasks.withType(Test).configureEach {
+  useJUnitPlatform()
+
+  // Turn on logging for all tests, filter to show failures/skips only
+  testLogging {
+    exceptionFormat 'full'
+    showCauses true
+    showExceptions true
+    showStackTraces true
+    events 'failed', 'skipped'
+  }
+}
+

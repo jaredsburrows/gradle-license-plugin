@@ -18,7 +18,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 ```groovy
 buildscript {
   repositories {
-    jcenter()
+    mavenCentral()
     google()
   }
 
@@ -30,13 +30,13 @@ buildscript {
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Release versions are available in the [JFrog Bintray repository](https://jcenter.bintray.com/com/jaredsburrows/gradle-license-plugin/).
+Release versions are available in the [Sonatype's release repository](https://repo1.maven.org/maven2/com/jaredsburrows/gradle-license-plugin/).
 
 **Snapshot:**
 ```groovy
 buildscript {
   repositories {
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     google()
   }
 
@@ -48,7 +48,7 @@ buildscript {
 apply plugin: 'com.android.application' // or 'java-library'
 apply plugin: 'com.jaredsburrows.license'
 ```
-Snapshot versions are available in the [JFrog Artifactory repository](https://oss.jfrog.org/artifactory/libs-snapshot/com/jaredsburrows/gradle-license-plugin/).
+Snapshot versions are available in the [Sonatype's snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/com/jaredsburrows/gradle-license-plugin/).
 
 ## Tasks
 
@@ -89,27 +89,27 @@ Design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
           <dt>Copyright &copy; 20xx The original author or authors</dt>
         </dl>
       </li>
-<a name="0"></a>
-      <pre>No license found</pre>
-<br>
+      <a name="0"></a>
+        <pre>No license found</pre>
+      <br>
       <hr>
       <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
         <dl>
           <dt>Copyright &copy; 20xx Karol Wrótniak</dt>
         </dl>
       </li>
-<a name="1783810846"></a>
-      <pre>mit.txt here</pre>
-<br>
+      <a name="1783810846"></a>
+        <pre>mit.txt here</pre>
+      <br>
       <hr>
       <li><a href="#1934118923">Design (26.1.0)</a>
         <dl>
           <dt>Copyright &copy; 20xx The original author or authors</dt>
         </dl>
       </li>
-<a name="1934118923"></a>
-      <pre>apache-2.0.txt here</pre>
-<br>
+      <a name="1934118923"></a>
+        <pre>apache-2.0.txt here</pre>
+      <br>
       <hr>
     </ul>
   </body>

@@ -51,9 +51,9 @@ final class LicensePluginJavaSpec extends Specification {
 
     where:
     gradleVersion << [
-      '5.4.1',
-      '5.6.4',
-      '6.1.1'
+      '7.0.2',
+      '7.1.1',
+      '7.2'
     ]
   }
 

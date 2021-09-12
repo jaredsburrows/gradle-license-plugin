@@ -14,6 +14,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.JavaPlugin
 import java.io.File
+import java.util.Locale
 import kotlin.reflect.KClass
 
 /** A [Plugin] which grabs the POM.xml files from maven dependencies. */
@@ -73,7 +74,13 @@ class LicensePlugin : Plugin<Project> {
   ) {
     // Configure tasks for all variants
     variants?.all { variant ->
-      val name = variant.name.capitalize()
+      val name = variant.name.replaceFirstChar {
+        if (it.isLowerCase()) {
+          it.titlecase(Locale.getDefault())
+        } else {
+          it.toString()
+        }
+      }
       val taskName = "license${name}Report"
       val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
 
