@@ -69,7 +69,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -85,7 +85,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       []
@@ -122,7 +122,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -146,7 +146,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -196,7 +196,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -227,7 +227,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -295,7 +295,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -311,7 +311,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       []
@@ -348,7 +348,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -374,7 +374,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -429,7 +429,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -458,7 +458,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -518,7 +518,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -554,7 +554,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -639,7 +639,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -670,7 +670,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [
@@ -753,7 +753,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualHtml = new File("${reportFolder}/licenseReport.html").text
+    def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
       <html>
@@ -784,7 +784,7 @@ final class LicensePluginJavaSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File("${reportFolder}/licenseReport.json").text
+    def actualJson = new File(reportFolder, 'licenseReport.json').text
     def expectedJson =
       """
       [

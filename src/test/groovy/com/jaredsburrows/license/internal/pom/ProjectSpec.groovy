@@ -3,11 +3,11 @@ package com.jaredsburrows.license.internal.pom
 import spock.lang.Specification
 
 final class ProjectSpec extends Specification {
-  private def developer = new Developer(
+  private final def developer = new Developer(
     name: 'name'
   )
-  private def developers = [developer, developer]
-  private def licenses = [new License(
+  private final def developers = [developer, developer]
+  private final def licenses = [new License(
     name: 'name',
     url: 'url'
   )]
