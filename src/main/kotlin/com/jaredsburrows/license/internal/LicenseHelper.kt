@@ -8,7 +8,7 @@ package com.jaredsburrows.license.internal
  * License text from: https://github.com/github/choosealicense.com/blob/gh-pages/_licenses.
  */
 object LicenseHelper {
-  @JvmStatic val licenseMap: Map<String, String>
+  val licenseMap: Map<String, String>
 
   init {
     licenseMap = linkedMapOf(
