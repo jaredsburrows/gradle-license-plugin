@@ -204,19 +204,21 @@ final class LicensePluginAndroidSpec extends Specification {
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+            <li>
+              <a href="#1934118923">appcompat-v7 (26.1.0)</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
           </ul>
         </body>
@@ -324,19 +326,21 @@ final class LicensePluginAndroidSpec extends Specification {
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+            <li>
+              <a href="#1934118923">appcompat-v7 (26.1.0)</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
           </ul>
         </body>
@@ -478,9 +482,9 @@ final class LicensePluginAndroidSpec extends Specification {
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
           </ul>
         </body>
@@ -676,18 +680,18 @@ final class LicensePluginAndroidSpec extends Specification {
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
             <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
               </dl>
             </li>
-      <a name="1783810846"></a>
+            <a name="1783810846"></a>
             <pre>${myGetLicenseText('mit.txt')}</pre>
-      <br>
+            <br>
             <hr>
           </ul>
         </body>
@@ -794,7 +798,7 @@ final class LicensePluginAndroidSpec extends Specification {
                 <dt>Copyright &copy; 2017 name</dt>
               </dl>
             </li>
-      <a name="0"></a>
+            <a name="0"></a>
             <pre>No license found</pre>
             <hr>
           </ul>
@@ -898,19 +902,19 @@ final class LicensePluginAndroidSpec extends Specification {
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
             <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
               <dl>
                 <dt>Copyright &copy; 2017 name</dt>
               </dl>
             </li>
-      <a name="-296292112"></a>
+            <a name="-296292112"></a>
             <pre>Some license
-      <a href="http://website.tld/">http://website.tld/</a></pre>
-      <br>
+            <a href="http://website.tld/">http://website.tld/</a></pre>
+            <br>
             <hr>
           </ul>
         </body>
@@ -1032,24 +1036,26 @@ final class LicensePluginAndroidSpec extends Specification {
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
             </li>
-      <a name="1934118923"></a>
+            <a name="1934118923"></a>
             <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-      <br>
+            <br>
             <hr>
-            <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
+            <li>
+              <a href="#-296292112">Fake dependency name (1.0.0)</a>
               <dl>
                 <dt>Copyright &copy; 2017 name</dt>
               </dl>
             </li>
-      <a name="-296292112"></a>
+            <a name="-296292112"></a>
             <pre>Some license
-      <a href="http://website.tld/">http://website.tld/</a></pre>
-      <br>
+                  <a href="http://website.tld/">http://website.tld/</a></pre>
+            <br>
             <hr>
           </ul>
         </body>

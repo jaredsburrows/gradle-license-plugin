@@ -37,7 +37,7 @@ private class UncheckedException : RuntimeException {
 
   companion object {
     /** Always throws the failure in some form. The return value is to keep the compiler happy. */
-    @JvmOverloads fun throwAsUncheckedException(
+    fun throwAsUncheckedException(
       t: Throwable,
       preserveMessage: Boolean = false
     ): RuntimeException {
