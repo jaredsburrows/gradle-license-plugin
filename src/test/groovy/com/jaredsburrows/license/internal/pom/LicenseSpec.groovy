@@ -3,7 +3,7 @@ package com.jaredsburrows.license.internal.pom
 import spock.lang.Specification
 
 final class LicenseSpec extends Specification {
-  private def sut = new License(
+  private final def sut = new License(
     name: 'name',
     url: 'url'
   )
