@@ -73,7 +73,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -152,7 +152,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -285,7 +285,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -432,7 +432,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -656,7 +656,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -797,7 +797,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -912,7 +912,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -1062,7 +1062,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -1347,7 +1347,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap;  word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -1458,7 +1458,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>

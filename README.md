@@ -78,7 +78,7 @@ design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
 ```html
 <html>
   <head>
-    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+    <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
     <title>Open source licenses</title>
   </head>
   <body>
