@@ -32,8 +32,8 @@ import java.util.UUID
 /** A [Task] that creates HTML and JSON reports of the current projects dependencies. */
 internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
-  @Internal var projects = arrayListOf<Project>()
-  @Input var assetDirs = listOf<File>()
+  @Internal var projects = mutableListOf<Project>()
+  @Input var assetDirs = emptyList<File>()
   @Input var generateCsvReport = false
   @Input var generateHtmlReport = false
   @Input var generateJsonReport = false
@@ -101,6 +101,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     configurations.find { it.name == "api" }?.let {
       configurationSet.add(configurations.getByName("api"))
     }
+
     configurations.find { it.name == "implementation" }?.let {
       configurationSet.add(configurations.getByName("implementation"))
     }
@@ -170,7 +171,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         val name = getName(node).trim()
         var version = node.getAt("version").text().trim()
         val description = node.getAt("description").text().trim()
-        val developers = arrayListOf<Developer>()
+        val developers = mutableListOf<Developer>()
         if (node.getAt("developers").isNotEmpty()) {
           node.getAt("developers").getAt("developer").forEach { developer ->
             developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
@@ -184,7 +185,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         var licenses = findLicenses(pomFile)
         if (licenses.isEmpty()) {
           logger.log(LogLevel.WARN, "$name dependency does not have a license.")
-          licenses = arrayListOf()
+          licenses = mutableListOf()
         }
 
         // Search for version
@@ -430,7 +431,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
   private fun findLicenses(pomFile: File?): List<License> {
     if (pomFile.isNullOrEmpty()) {
-      return arrayListOf()
+      return mutableListOf()
     }
     val node = xmlParser.parse(pomFile)
 
@@ -438,7 +439,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     val name = getName(node)
     if (name.isEmpty()) {
       logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
-      return arrayListOf()
+      return mutableListOf()
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
@@ -447,7 +448,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
     // License information found
     if (node.getAt("licenses").isNotEmpty()) {
-      val licenses = arrayListOf<License>()
+      val licenses = mutableListOf<License>()
       (node.getAt("licenses")[0] as Node).getAt("license").forEach { license ->
         val licenseName = (license as Node).getAt("name").text().trim()
         val licenseUrl = license.getAt("url").text().trim()
@@ -463,7 +464,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     if (!node.getAt("parent").isEmpty()) {
       return findLicenses(getParentPomFile(node))
     }
-    return arrayListOf()
+    return mutableListOf()
   }
 
   private fun getName(node: Node): String {

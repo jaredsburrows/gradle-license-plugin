@@ -16,9 +16,9 @@ data class Project(
   var name: String = "",
   var description: String = "",
   var version: String = "",
-  var licenses: List<License> = listOf(),
+  var licenses: List<License> = emptyList(),
   var url: String = "",
-  var developers: List<Developer> = listOf(),
+  var developers: List<Developer> = emptyList(),
   var year: String = "",
   var gav: String = "" // group/artifact/version
 )
