@@ -118,7 +118,7 @@ Design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
 Note, if no license information is found in the POM for a project, "No License Found" will be used. 
 Those will be listed first.
 Other missing information is provided as default values that can be corrected from other sources.
-Projects are grouped by license name and the licence text is only provided once. 
+Projects are grouped by license name and the license text is only provided once. 
 Projects with multiple licenses are grouped as if those licenses were a single combined license.
 
 **JSON (full example):**
