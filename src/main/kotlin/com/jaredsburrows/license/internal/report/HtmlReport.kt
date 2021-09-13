@@ -58,10 +58,10 @@ class HtmlReport(private val projects: List<Project>) : Report {
       }
 
       if (!projectsMap.containsKey(key)) {
-        projectsMap[key] = arrayListOf()
+        projectsMap[key] = mutableListOf()
       }
 
-      (projectsMap[key] as ArrayList).add(project)
+      (projectsMap[key] as MutableList).add(project)
     }
 
     return StringBuilder()
