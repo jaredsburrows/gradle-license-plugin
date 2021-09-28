@@ -63,6 +63,7 @@ class LicensePlugin : Plugin<Project> {
       copyCsvReportToAssets = false
       copyHtmlReportToAssets = false
       copyJsonReportToAssets = false
+      ignoredGroupIds = extension.ignoredGroupIds
     }
   }
 
@@ -97,6 +98,7 @@ class LicensePlugin : Plugin<Project> {
         copyCsvReportToAssets = extension.copyCsvReportToAssets
         copyHtmlReportToAssets = extension.copyHtmlReportToAssets
         copyJsonReportToAssets = extension.copyJsonReportToAssets
+        ignoredGroupIds = extension.ignoredGroupIds
         assetDirs = (
           project
             .extensions

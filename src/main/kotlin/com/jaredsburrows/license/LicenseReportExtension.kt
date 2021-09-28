@@ -28,4 +28,7 @@ open class LicenseReportExtension { // extensions can't be final
    * project is not an Android project. Has no effect if the JSON report is disabled.
    */
   var copyJsonReportToAssets = false
+
+  /** Set of group IDs to ignore while generating the reports. Empty by default. */
+  var ignoredGroupIds = setOf<String>()
 }

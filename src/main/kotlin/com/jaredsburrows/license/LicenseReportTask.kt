@@ -40,6 +40,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @Input var copyCsvReportToAssets = false
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
+  @Input var ignoredGroupIds: Set<String> = setOf()
 
   @Optional @Input
   var buildType: String? = null
@@ -166,6 +167,12 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
         val pomFile = resolvedArtifact.file
         val node = xmlParser.parse(pomFile)
+
+        // If group ID is part of ignored groups, skip this artifact
+        val groupId = node.getAt("groupId").text().trim()
+        if (groupId in ignoredGroupIds) {
+          return@forEach
+        }
 
         // License information
         val name = getName(node).trim()
