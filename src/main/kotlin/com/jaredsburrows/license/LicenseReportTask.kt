@@ -40,7 +40,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   @Input var copyCsvReportToAssets = false
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
-  @Input var ignoredGroupIds: Set<String> = setOf()
+  @Input var ignoredGroupIds = setOf<String>()
 
   @Optional @Input
   var buildType: String? = null
