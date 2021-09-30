@@ -163,16 +163,13 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .getByName(pomConfiguration)
       .resolvedConfiguration
       .lenientConfiguration
-      .artifacts.forEach { resolvedArtifact ->
+      .artifacts
+      // Filter out artifacts for ignored group IDs
+      .filter { it.moduleVersion.id.group !in ignoredGroupIds }
+      .forEach { resolvedArtifact ->
 
         val pomFile = resolvedArtifact.file
         val node = xmlParser.parse(pomFile)
-
-        // If group ID is part of ignored groups, skip this artifact
-        val groupId = node.getAt("groupId").text().trim()
-        if (groupId in ignoredGroupIds) {
-          return@forEach
-        }
 
         // License information
         val name = getName(node).trim()
