@@ -1212,4 +1212,204 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
     copyEnabled << [true, false]
   }
+
+  @Unroll def '#taskName with android gradle plugin version < 7.1.0 (7.0.4)'() {
+    given:
+    def androidGradlePluginVersion = '7.0.4'
+    buildFile <<
+      """
+      buildscript {
+        repositories {
+          mavenCentral()
+          google()
+        }
+
+        dependencies {
+          classpath files($classpathString)
+          classpath 'com.android.tools.build:gradle:${androidGradlePluginVersion}'
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion 28
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedHtml =
+      """
+      <html>
+      <head>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <title>Open source licenses</title>
+      </head>
+      <body>
+      <h3>Notice for packages:</h3>
+      <ul>
+          <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                  <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+          </li>
+          <a name="1934118923"></a>
+          <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+          <br>
+          <hr>
+      </ul>
+      </body>
+      </html>
+      """
+    def expectedJson =
+      """
+      [
+        {
+          "project": "design",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:design:26.1.0"
+        }
+      ]
+      """
+
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+ @Unroll def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
+   given:
+   def androidGradlePluginVersion = '7.1.1'
+   buildFile <<
+     """
+      buildscript {
+        repositories {
+          mavenCentral()
+          google()
+        }
+
+        dependencies {
+          classpath files($classpathString)
+          classpath 'com.android.tools.build:gradle:${androidGradlePluginVersion}'
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion 28
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+   when:
+   def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+   def actualHtml = new File(reportFolder, "${taskName}.html").text
+   def actualJson = new File(reportFolder, "${taskName}.json").text
+   def expectedHtml =
+     """
+      <html>
+      <head>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
+          <title>Open source licenses</title>
+      </head>
+      <body>
+      <h3>Notice for packages:</h3>
+      <ul>
+          <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                  <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+          </li>
+          <a name="1934118923"></a>
+          <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+          <br>
+          <hr>
+      </ul>
+      </body>
+      </html>
+      """
+   def expectedJson =
+     """
+      [
+        {
+          "project": "design",
+          "description": null,
+          "version": "26.1.0",
+          "developers": [],
+          "url": null,
+          "year": null,
+          "licenses": [
+            {
+              "license": "The Apache Software License",
+              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency": "com.android.support:design:26.1.0"
+        }
+      ]
+      """
+
+
+   then:
+   result.task(":${taskName}").outcome == SUCCESS
+   result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+   result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+   result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+   assertHtml(expectedHtml, actualHtml)
+   assertJson(expectedJson, actualJson)
+
+   where:
+   taskName << ['licenseDebugReport', 'licenseReleaseReport']
+ }
 }

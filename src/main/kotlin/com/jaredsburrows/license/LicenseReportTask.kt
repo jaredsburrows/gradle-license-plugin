@@ -164,6 +164,11 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .lenientConfiguration
       .artifacts.forEach { resolvedArtifact ->
 
+        // Skip artifact processing for non-pom type artifacts
+        if (resolvedArtifact.type != "pom") {
+          return@forEach
+        }
+
         val pomFile = resolvedArtifact.file
         val node = xmlParser.parse(pomFile)
 
