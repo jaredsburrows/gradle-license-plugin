@@ -86,14 +86,15 @@ final class LicensePluginAndroidSpec extends Specification {
       [
         '7.0.2',
         '7.1.1',
-        '7.2'
+        '7.2',
+        '7.4.2' // Always have latest
       ],
       [
         '3.5.4',
         '3.6.4',
         '4.0.2',
         '4.1.3',
-        '4.2.2'
+        '4.2.2' // Always have latest
       ]
     ].combinations()
   }

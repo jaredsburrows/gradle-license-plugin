@@ -53,7 +53,8 @@ final class LicensePluginJavaSpec extends Specification {
     gradleVersion << [
       '7.0.2',
       '7.1.1',
-      '7.2'
+      '7.2',
+      '7.4.2' // Always have latest
     ]
   }
 
