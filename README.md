@@ -23,7 +23,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.90'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.91'
   }
 }
 
@@ -41,7 +41,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.91-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.0-SNAPSHOT'
   }
 }
 

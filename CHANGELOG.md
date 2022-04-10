@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.8.91  (2022-04-10)
+* [#172](https://github.com/jaredsburrows/gradle-license-plugin/pull/172) Avoid processing *.aar dependencies which can not be parsed and cause gradle failures
+
+Many thanks to
+[@flobetz](https://github.com/flobetz)
+for the code contributions!
+
 ## Version 0.8.90  (2020-12-30)
  * [#140](https://github.com/jaredsburrows/gradle-license-plugin/pull/140) Added CSV report support
  * [#134](https://github.com/jaredsburrows/gradle-license-plugin/pull/134) Add android library subproject dependencies to the report
