@@ -51,18 +51,18 @@ class LicensePlugin : Plugin<Project> {
     val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
 
     // Create tasks
-    project.tasks.create(taskName, LicenseReportTask::class.java).apply {
-      description = "Outputs licenses report."
-      group = "Reporting"
-      csvFile = File(path + LicenseReportTask.CSV_EXT)
-      htmlFile = File(path + LicenseReportTask.HTML_EXT)
-      jsonFile = File(path + LicenseReportTask.JSON_EXT)
-      generateCsvReport = extension.generateCsvReport
-      generateHtmlReport = extension.generateHtmlReport
-      generateJsonReport = extension.generateJsonReport
-      copyCsvReportToAssets = false
-      copyHtmlReportToAssets = false
-      copyJsonReportToAssets = false
+    project.tasks.register(taskName, LicenseReportTask::class.java) {
+      it.description = "Outputs licenses report."
+      it.group = "Reporting"
+      it.csvFile = File(path + LicenseReportTask.CSV_EXT)
+      it.htmlFile = File(path + LicenseReportTask.HTML_EXT)
+      it.jsonFile = File(path + LicenseReportTask.JSON_EXT)
+      it.generateCsvReport = extension.generateCsvReport
+      it.generateHtmlReport = extension.generateHtmlReport
+      it.generateJsonReport = extension.generateJsonReport
+      it.copyCsvReportToAssets = false
+      it.copyHtmlReportToAssets = false
+      it.copyJsonReportToAssets = false
     }
   }
 
@@ -85,31 +85,27 @@ class LicensePlugin : Plugin<Project> {
       val path = "${project.buildDir}/reports/licenses/$taskName".replace('/', File.separatorChar)
 
       // Create tasks based on variant
-      project.tasks.create(taskName, LicenseReportTask::class.java).apply {
-        description = "Outputs licenses report for $name variant."
-        group = "Reporting"
-        csvFile = File(path + LicenseReportTask.CSV_EXT)
-        htmlFile = File(path + LicenseReportTask.HTML_EXT)
-        jsonFile = File(path + LicenseReportTask.JSON_EXT)
-        generateCsvReport = extension.generateCsvReport
-        generateHtmlReport = extension.generateHtmlReport
-        generateJsonReport = extension.generateJsonReport
-        copyCsvReportToAssets = extension.copyCsvReportToAssets
-        copyHtmlReportToAssets = extension.copyHtmlReportToAssets
-        copyJsonReportToAssets = extension.copyJsonReportToAssets
-        assetDirs = (
-          project
-            .extensions
-            .getByName("android") as BaseExtension
-          )
+      project.tasks.register(taskName, LicenseReportTask::class.java) {
+        it.description = "Outputs licenses report for $name variant."
+        it.group = "Reporting"
+        it.csvFile = File(path + LicenseReportTask.CSV_EXT)
+        it.htmlFile = File(path + LicenseReportTask.HTML_EXT)
+        it.jsonFile = File(path + LicenseReportTask.JSON_EXT)
+        it.generateCsvReport = extension.generateCsvReport
+        it.generateHtmlReport = extension.generateHtmlReport
+        it.generateJsonReport = extension.generateJsonReport
+        it.copyCsvReportToAssets = extension.copyCsvReportToAssets
+        it.copyHtmlReportToAssets = extension.copyHtmlReportToAssets
+        it.copyJsonReportToAssets = extension.copyJsonReportToAssets
+        it.assetDirs = (project.extensions.getByName("android") as BaseExtension)
           .sourceSets
           .getByName("main")
           .assets
           .srcDirs
           .toList()
-        buildType = variant.buildType.name
-        variantName = variant.name
-        productFlavors = variant.productFlavors
+        it.buildType = variant.buildType.name
+        it.variantName = variant.name
+        it.productFlavors = variant.productFlavors
       }
     }
   }
