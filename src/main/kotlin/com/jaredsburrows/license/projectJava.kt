@@ -4,7 +4,15 @@ import org.gradle.api.Project
 
 /** Returns true if Java Gradle project */
 internal fun Project.isJavaProject(): Boolean {
-  return project.plugins.hasPlugin("java")
+  return hasPlugin(
+    listOf(
+      "application", // JavaApplicationPlugin
+      "groovy", // GroovyPlugin
+      "java", // JavaPlugin, also applies JavaBasePlugin
+      "java-library", // JavaLibraryPlugin, also applies JavaPlugin
+      "scala", // ScalaPlugin
+    )
+  )
 }
 
 /**
