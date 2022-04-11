@@ -41,9 +41,9 @@ open class BaseLicenseReportTask : DefaultTask() {
     copyJsonReportToAssets = extension.copyJsonReportToAssets
   }
 
-  internal companion object {
-    const val CSV_EXT = ".csv"
-    const val HTML_EXT = ".html"
-    const val JSON_EXT = ".json"
+  companion object {
+    internal const val CSV_EXT = ".csv"
+    internal const val HTML_EXT = ".html"
+    internal const val JSON_EXT = ".json"
   }
 }
