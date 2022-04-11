@@ -7,6 +7,8 @@ import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.TestExtension
+import com.android.build.gradle.TestPlugin
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
@@ -14,7 +16,20 @@ import java.util.Locale
 
 /** Returns true if Android Gradle project */
 internal fun Project.isAndroidProject(): Boolean {
-  return project.plugins.hasPlugin("android")
+  return hasPlugin(
+    listOf(
+      // AppPlugin
+      "android",
+      "com.android.application",
+      // FeaturePlugin
+      "com.android.feature",
+      // LibraryPlugin
+      "android-library",
+      "com.android.library",
+      // TestPlugin
+      "com.android.test",
+    )
+  )
 }
 
 /**
@@ -23,6 +38,7 @@ internal fun Project.isAndroidProject(): Boolean {
  * AppPlugin - "android", "com.android.application"
  * FeaturePlugin - "com.android.feature"
  * LibraryPlugin - "android-library", "com.android.library"
+ * TestPlugin - "com.android.test"
  */
 internal fun Project.configureAndroidProject() {
   project.plugins.all {
@@ -41,6 +57,11 @@ internal fun Project.configureAndroidProject() {
       is LibraryPlugin -> {
         project.extensions.getByType(LibraryExtension::class.java).run {
           configureVariant(libraryVariants)
+        }
+      }
+      is TestPlugin -> {
+        project.extensions.getByType(TestExtension::class.java).run {
+          configureVariant(applicationVariants)
         }
       }
     }
