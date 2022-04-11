@@ -67,13 +67,14 @@ dependencies {
 }
 ```
 
-**CSV (minimized example):**
+**CSV Example (full):**
 ```csv
 project,description,version,developers,url,year,licenses,license urls,dependency
-Design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.org/licenses/LICENSE-2.0.txt,com.android.support:design:26.1.0
+Android GIF Drawable Library,Views and Drawable for displaying animated GIFs for Android,1.2.3,Karol WrÃ³tniak,https://github.com/koral--/android-gif-drawable,null,The MIT License,http://opensource.org/licenses/MIT,pl.droidsonroids.gif:android-gif-drawable:1.2.3
+design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.org/licenses/LICENSE-2.0.txt,com.android.support:design:26.1.0
 ```
 
-**HTML (minimized example):**
+**HTML Example (license descriptions are minimized):**
 ```html
 <html>
   <head>
@@ -121,7 +122,7 @@ Other missing information is provided as default values that can be corrected fr
 Projects are grouped by license name and the license text is only provided once. 
 Projects with multiple licenses are grouped as if those licenses were a single combined license.
 
-**JSON (full example):**
+**JSON Example (full):**
 ```json
 [
   {
