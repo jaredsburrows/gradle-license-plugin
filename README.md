@@ -19,7 +19,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 buildscript {
   repositories {
     mavenCentral()
-    google()
+    google() // For Android projects
   }
 
   dependencies {
@@ -37,7 +37,7 @@ Release versions are available in the [Sonatype's release repository](https://re
 buildscript {
   repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    google()
+    google() // For Android projects
   }
 
   dependencies {
