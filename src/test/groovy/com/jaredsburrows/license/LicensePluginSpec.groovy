@@ -94,6 +94,7 @@ final class LicensePluginSpec extends Specification {
       'application', // JavaApplicationPlugin
       'groovy', // GroovyPlugin
       'java', // JavaPlugin
+      'java-gradle-plugin', // JavaGradlePluginPlugin
       'java-library', // JavaLibraryPlugin
       'scala', // ScalaPlugin
     ]

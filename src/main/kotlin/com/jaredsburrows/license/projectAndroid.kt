@@ -46,17 +46,23 @@ internal fun Project.configureAndroidProject() {
       is AppPlugin -> {
         project.extensions.getByType(AppExtension::class.java).run {
           configureVariant(applicationVariants)
+          configureVariant(testVariants)
+          configureVariant(unitTestVariants)
         }
       }
       is FeaturePlugin -> {
         project.extensions.getByType(FeatureExtension::class.java).run {
           configureVariant(featureVariants)
           configureVariant(libraryVariants)
+          configureVariant(testVariants)
+          configureVariant(unitTestVariants)
         }
       }
       is LibraryPlugin -> {
         project.extensions.getByType(LibraryExtension::class.java).run {
           configureVariant(libraryVariants)
+          configureVariant(testVariants)
+          configureVariant(unitTestVariants)
         }
       }
       is TestPlugin -> {

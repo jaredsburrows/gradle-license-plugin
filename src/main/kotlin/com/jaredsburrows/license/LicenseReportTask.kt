@@ -36,8 +36,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
-  @TaskAction
-  fun licenseReport() {
+  @TaskAction fun licenseReport() {
     setupEnvironment()
     initDependencies()
     generatePOMInfo()
