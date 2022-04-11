@@ -1,6 +1,5 @@
 package com.jaredsburrows.license
 
-import com.android.builder.model.ProductFlavor
 import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.pom.Developer
 import com.jaredsburrows.license.internal.pom.License
@@ -12,8 +11,6 @@ import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import groovy.xml.XmlParser
-import org.gradle.api.DefaultTask
-import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
@@ -21,7 +18,6 @@ import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
@@ -29,31 +25,19 @@ import java.net.URL
 import java.util.Locale
 import java.util.UUID
 
-/** A [Task] that creates HTML and JSON reports of the current projects dependencies. */
-internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
+/** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
+internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
 
   @Internal var projects = mutableListOf<Project>()
   @Input var assetDirs = emptyList<File>()
-  @Input var generateCsvReport = false
-  @Input var generateHtmlReport = false
-  @Input var generateJsonReport = false
-  @Input var copyCsvReportToAssets = false
-  @Input var copyHtmlReportToAssets = false
-  @Input var copyJsonReportToAssets = false
-
-  @Optional @Input
-  var buildType: String? = null
 
   @Optional @Input
   var variantName: String? = null
-  @Internal var productFlavors = listOf<ProductFlavor>()
-  @OutputFile lateinit var csvFile: File
-  @OutputFile lateinit var htmlFile: File
-  @OutputFile lateinit var jsonFile: File
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
-  @TaskAction fun licenseReport() {
+  @TaskAction
+  fun licenseReport() {
     setupEnvironment()
     initDependencies()
     generatePOMInfo()
@@ -113,7 +97,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       }
     }
 
-    // Iterate through all the configurations's dependencies
+    // Iterate through all the configuration's dependencies
     configurationSet.forEach { configuration ->
       if (configuration.isCanBeResolved) {
         val allDeps = configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies
@@ -507,8 +491,5 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
     private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
-    const val CSV_EXT = ".csv"
-    const val HTML_EXT = ".html"
-    const val JSON_EXT = ".json"
   }
 }
