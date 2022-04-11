@@ -15,9 +15,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.net.URI
@@ -25,86 +23,60 @@ import java.net.URL
 import java.util.Locale
 import java.util.UUID
 
-/** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
-internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
+/** A [org.gradle.api.Task] that Java portion of license reports */
+internal open class JavaLicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
 
+  // Add POM information to our POM configuration
+  @Internal val configurationSet = linkedSetOf<Configuration>()
   @Internal var projects = mutableListOf<Project>()
-  @Input var assetDirs = emptyList<File>()
 
-  @Optional @Input
-  var variantName: String? = null
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
   @TaskAction
-  fun licenseReport() {
+  open fun licenseReport() {
     setupEnvironment()
     initDependencies()
     generatePOMInfo()
 
     if (generateCsvReport) {
       createCsvReport()
-
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
-        copyCsvReport()
-      }
     }
 
     if (generateHtmlReport) {
       createHtmlReport()
-
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
-        copyHtmlReport()
-      }
     }
 
     if (generateJsonReport) {
       createJsonReport()
-
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
-        copyJsonReport()
-      }
     }
   }
 
   /** Iterate through all configurations and collect dependencies. */
-  private fun initDependencies() {
-    // Add POM information to our POM configuration
-    val configurationSet = linkedSetOf<Configuration>()
-    val configurations = project.configurations
-
+  internal fun initDependencies() {
     // Add "compile" configuration older java and android gradle plugins
-    configurations.find { it.name == "compile" }?.let {
-      configurationSet.add(configurations.getByName("compile"))
+    project.configurations.find { it.name == "compile" }?.let {
+      configurationSet.add(project.configurations.getByName("compile"))
     }
 
     // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    configurations.find { it.name == "api" }?.let {
-      configurationSet.add(configurations.getByName("api"))
+    project.configurations.find { it.name == "api" }?.let {
+      configurationSet.add(project.configurations.getByName("api"))
     }
 
-    configurations.find { it.name == "implementation" }?.let {
-      configurationSet.add(configurations.getByName("implementation"))
-    }
-
-    // If Android project, add extra configurations
-    variantName?.let { variant ->
-      configurations.find { it.name == "${variant}RuntimeClasspath" }?.also {
-        configurationSet.add(it)
-      }
+    project.configurations.find { it.name == "implementation" }?.let {
+      configurationSet.add(project.configurations.getByName("implementation"))
     }
 
     // Iterate through all the configuration's dependencies
     configurationSet.forEach { configuration ->
       if (configuration.isCanBeResolved) {
-        val allDeps = configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies
-        getResolvedArtifactsFromResolvedDependencies(allDeps).forEach { artifact ->
+        val dependencies =
+          configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies
+        getResolvedArtifactsFromResolvedDependencies(dependencies).forEach { artifact ->
           val id = artifact.moduleVersion.id
           val gav = "${id.group}:${id.name}:${id.version}@pom"
-          configurations.getByName(pomConfiguration).dependencies.add(
+          project.configurations.getByName(pomConfiguration).dependencies.add(
             project.dependencies.add(pomConfiguration, gav)
           )
         }
@@ -139,7 +111,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Get POM information from the dependency artifacts. */
-  private fun generatePOMInfo() {
+  internal fun generatePOMInfo() {
     // Iterate through all POMs in order from our custom POM configuration
     project
       .configurations
@@ -203,9 +175,9 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Setup configurations to collect dependencies. */
-  private fun setupEnvironment() {
-    pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
-    tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
+  internal fun setupEnvironment(name: String = "") {
+    pomConfiguration += name + UUID.randomUUID()
+    tempPomConfiguration += name + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
     project.configurations.apply {
@@ -246,7 +218,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Generated HTML report. */
-  private fun createCsvReport() {
+  internal fun createCsvReport() {
     // Remove existing file
     csvFile.apply {
       // Remove existing file
@@ -267,33 +239,8 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     )
   }
 
-  private fun copyCsvReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + CSV_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy HTML file to the assets directory
-        bufferedWriter().use { it.write(csvFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied CSV report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
-  }
-
   /** Generated HTML report. */
-  private fun createHtmlReport() {
+  internal fun createHtmlReport() {
     // Remove existing file
     htmlFile.apply {
       // Remove existing file
@@ -314,33 +261,8 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     )
   }
 
-  private fun copyHtmlReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy HTML file to the assets directory
-        bufferedWriter().use { it.write(htmlFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
-  }
-
   /** Generated JSON report. */
-  private fun createJsonReport() {
+  internal fun createJsonReport() {
     jsonFile.apply {
       // Remove existing file
       delete()
@@ -358,31 +280,6 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       LogLevel.LIFECYCLE,
       "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}."
     )
-  }
-
-  private fun copyJsonReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy JSON file to the assets directory
-        bufferedWriter().use { it.write(jsonFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
   }
 
   private fun isUrlValid(licenseUrl: String): Boolean {
@@ -485,11 +382,11 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return answer
   }
 
-  internal companion object {
+  companion object {
     private val xmlParser = XmlParser(false, false)
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    internal const val OPEN_SOURCE_LICENSES = "open_source_licenses"
   }
 }

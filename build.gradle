@@ -53,14 +53,18 @@ task createClasspathManifest() {
 }
 
 dependencies {
+  compileOnly gradleApi()
+  compileOnly deps.android.tools.build.gradle
+
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlinx.html
   implementation deps.gson
-  implementation deps.android.tools.build.gradle
 
   testRuntimeOnly files(createClasspathManifest)
+  testRuntimeOnly deps.android.tools.build.gradle
 
   testImplementation localGroovy()
+  testImplementation gradleTestKit()
   testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
   testImplementation deps.xmlunit.matchers
   testImplementation deps.commons.csv
