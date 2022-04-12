@@ -1,13 +1,13 @@
 package com.jaredsburrows.license.internal.report
 
-import com.jaredsburrows.license.internal.pom.Project
+import org.apache.maven.model.Model
 
 /**
  * Generates CSV report of projects dependencies.
  *
- * @property projects list of [Project]s for thr CSV report.
+ * @property projects list of [Model]s for thr CSV report.
  */
-class CsvReport(private val projects: List<Project>) : Report {
+class CsvReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
@@ -29,13 +29,13 @@ class CsvReport(private val projects: List<Project>) : Report {
         addCsvString(project.version)
 
         // Project Developers
-        addCsvList(project.developers) { it.name }
+        addCsvList(project.developers) { it.id }
 
         // Project Url
         addCsvString(project.url)
 
         // Project Year
-        addCsvString(project.year)
+        addCsvString(project.inceptionYear)
 
         // Project License Names
         addCsvList(project.licenses) { it.name }
@@ -44,7 +44,7 @@ class CsvReport(private val projects: List<Project>) : Report {
         addCsvList(project.licenses) { it.url }
 
         // Project Dependency
-        addCsvString(project.gav)
+        addCsvString("${project.groupId}:${project.artifactId}:${project.version}")
       }
 
       // Add each row to the list
