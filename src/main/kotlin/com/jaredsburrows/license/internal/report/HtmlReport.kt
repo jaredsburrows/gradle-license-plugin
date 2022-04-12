@@ -46,7 +46,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
       val keys = mutableListOf<String>()
 
       // first check to see if the project's license is in our list of known licenses.
-      if (!project.licenses.isNullOrEmpty()) {
+      if (project.licenses.isNotEmpty()) {
         project.licenses.forEach { license -> keys.add(getLicenseKey(license)) }
       }
 
@@ -237,8 +237,8 @@ class HtmlReport(private val projects: List<Project>) : Report {
 
     @JvmStatic fun getLicenseText(fileName: String): String {
       return HtmlReport::class.java.getResource("/license/$fileName")
-        ?.readText()
-        ?: MISSING_LICENSE + fileName
+               ?.readText()
+             ?: (MISSING_LICENSE + fileName)
     }
   }
 }

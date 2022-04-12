@@ -8,7 +8,7 @@ import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 final class JsonReportSpec extends Specification {
-  def 'no open source json'() {
+  def 'no open source'() {
     given:
     def projects = []
     def sut = new JsonReport(projects)
@@ -24,7 +24,7 @@ final class JsonReportSpec extends Specification {
     assertJson(expected, actual)
   }
 
-  def 'open source json - missing values'() {
+  def 'open source - missing values'() {
     given:
     def developer = new Developer(name: 'name')
     def project1 = new Project(
@@ -75,7 +75,7 @@ final class JsonReportSpec extends Specification {
     assertJson(expected, actual)
   }
 
-  def 'open source json - all values'() {
+  def 'open source - all values'() {
     given:
     def developer = new Developer(name: 'name')
     def developers = [developer, developer]

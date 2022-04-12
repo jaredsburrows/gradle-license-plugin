@@ -5,20 +5,18 @@ import com.jaredsburrows.license.internal.pom.License
 import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
-import static test.TestUtils.assertCsv
-
-final class CsvReportSpec extends Specification {
+final class TextReportSpec extends Specification {
   def 'no open source'() {
     given:
     def projects = []
-    def sut = new CsvReport(projects)
+    def sut = new TextReport(projects)
 
     when:
     def actual = sut.toString()
     def expected = ""
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 
   def 'open source - missing values'() {
@@ -35,19 +33,23 @@ final class CsvReportSpec extends Specification {
       gav: 'foo:bar:1.2.3'
     )
     def projects = [project1, project2]
-    def sut = new CsvReport(projects)
+    def sut = new TextReport(projects)
 
     when:
     def actual = sut.toString().stripIndent().trim()
     def expected =
       """
-      project,description,version,developers,url,year,licenses,license urls,dependency
-      project-name,null,null,null,null,null,null,null,foo:bar:1.2.3
-      project-name,null,null,\"developer-name,developer-name\",null,null,null,null,foo:bar:1.2.3
+      Notice for packages
+
+
+      project-name
+
+
+      project-name
       """.stripIndent().trim()
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 
   def 'open source - all values'() {
@@ -69,18 +71,25 @@ final class CsvReportSpec extends Specification {
       gav: 'foo:bar:1.2.3'
     )
     def projects = [project, project]
-    def sut = new CsvReport(projects)
+    def sut = new TextReport(projects)
 
     when:
     def actual = sut.toString().stripIndent().trim()
     def expected =
       """
-      project,description,version,developers,url,year,licenses,license urls,dependency
-      project-name,project-description,1.0.0,\"developer-name,developer-name\",project-url,project-year,license-name,license-url,foo:bar:1.2.3
-      project-name,project-description,1.0.0,\"developer-name,developer-name\",project-url,project-year,license-name,license-url,foo:bar:1.2.3
+      Notice for packages
+
+
+      project-name (1.0.0) - license-name
+      project-description
+      project-url
+
+      project-name (1.0.0) - license-name
+      project-description
+      project-url
       """.stripIndent().trim()
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 }

@@ -8,7 +8,7 @@ import com.jaredsburrows.license.internal.pom.Project
 import spock.lang.Specification
 
 final class HtmlReportSpec extends Specification {
-  def 'no open source html'() {
+  def 'no open source'() {
     given:
     def projects = []
     def report = new HtmlReport(projects)
@@ -35,7 +35,7 @@ final class HtmlReportSpec extends Specification {
     assertHtml(expected, actual)
   }
 
-  def 'open source html'() {
+  def 'open source'() {
     given:
     def developer = new Developer(name: 'name')
     def developers = [developer, developer]

@@ -111,7 +111,7 @@ final class LicensePluginSpec extends Specification {
 
     testProjectDir.newFile('subproject/build.gradle') <<
       """
-     buildscript {
+      buildscript {
         repositories {
           mavenCentral()
           google()
