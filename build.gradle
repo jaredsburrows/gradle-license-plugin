@@ -58,6 +58,7 @@ dependencies {
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlinx.html
   implementation deps.gson
+  implementation 'com.squareup.tools.build:maven-archeologist:0.0.10'
 
   testRuntimeOnly files(createClasspathManifest)
   testRuntimeOnly deps.android.tools.build.gradle

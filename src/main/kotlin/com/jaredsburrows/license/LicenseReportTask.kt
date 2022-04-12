@@ -7,11 +7,13 @@ import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
+import com.squareup.tools.maven.resolution.ArtifactResolver
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import groovy.xml.XmlParser
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.logging.LogLevel
@@ -24,6 +26,7 @@ import java.net.URI
 import java.net.URL
 import java.util.Locale
 import java.util.UUID
+import kotlin.io.path.name
 
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
 internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
@@ -147,58 +150,86 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       .lenientConfiguration
       .artifacts.forEach { resolvedArtifact ->
 
-        // Skip artifact processing for non-pom type artifacts
-        if (resolvedArtifact.type != "pom") {
-          return@forEach
-        }
+//        // Skip artifact processing for non-pom type artifacts
+//        if (resolvedArtifact.type != "pom") {
+//          return@forEach
+//        }
+//
+//        val pomFile = resolvedArtifact.file
+//        val node = xmlParser.parse(pomFile)
+//
+//        // License information
+//        val name = getName(node).trim()
+//        var version = node.getAt("version").text().trim()
+//        val description = node.getAt("description").text().trim()
+//        val developers = mutableListOf<Developer>()
+//        if (node.getAt("developers").isNotEmpty()) {
+//          node.getAt("developers").getAt("developer").forEach { developer ->
+//            developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+//          }
+//        }
+//
+//        val url = node.getAt("url").text().trim()
+//        val inceptionYear = node.getAt("inceptionYear").text().trim()
+//
+//        // Search for licenses
+//        var licenses = findLicenses(pomFile)
+//        if (licenses.isEmpty()) {
+//          logger.log(LogLevel.WARN, "$name dependency does not have a license.")
+//          licenses = mutableListOf()
+//        }
+//
+//        // Search for version
+//        if (version.isEmpty()) {
+//          version = findVersion(pomFile)
+//        }
+//
+//        // Store the information that we need
+//        val module = resolvedArtifact.moduleVersion.id
+//        val project = Project().apply {
+//          this.name = name
+//          this.description = description
+//          this.version = version
+//          this.licenses = licenses
+//          this.url = url
+//          this.developers = developers
+//          this.year = inceptionYear
+//          this.gav = "${module.group}:${module.name}:${module.version}"
+//        }
 
-        val pomFile = resolvedArtifact.file
-        val node = xmlParser.parse(pomFile)
-
-        // License information
-        val name = getName(node).trim()
-        var version = node.getAt("version").text().trim()
-        val description = node.getAt("description").text().trim()
-        val developers = mutableListOf<Developer>()
-        if (node.getAt("developers").isNotEmpty()) {
-          node.getAt("developers").getAt("developer").forEach { developer ->
-            developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
-          }
-        }
-
-        val url = node.getAt("url").text().trim()
-        val inceptionYear = node.getAt("inceptionYear").text().trim()
-
-        // Search for licenses
-        var licenses = findLicenses(pomFile)
-        if (licenses.isEmpty()) {
-          logger.log(LogLevel.WARN, "$name dependency does not have a license.")
-          licenses = mutableListOf()
-        }
-
-        // Search for version
-        if (version.isEmpty()) {
-          version = findVersion(pomFile)
-        }
-
-        // Store the information that we need
         val module = resolvedArtifact.moduleVersion.id
-        val project = Project().apply {
-          this.name = name
-          this.description = description
-          this.version = version
-          this.licenses = licenses
-          this.url = url
-          this.developers = developers
-          this.year = inceptionYear
-          this.gav = "${module.group}:${module.name}:${module.version}"
-        }
+        val resolver = ArtifactResolver() // creates a resolver with repo list defaulting to Maven Central.
+        val artifact = resolver.artifactFor("${module.group}:${module.name}:${module.version}") // returns Artifact
+        val resolvedArtifact = resolver.resolve(artifact) // returns ResolvedArtifact
+//        val dependencies: List<Dependency> = resolvedArtifact.artifact.model.dependencies
+        val blah = resolvedArtifact.artifact?.model
 
-        projects.add(project)
+        blah?.let {
+          val project = Project().apply {
+            this.name = blah.name
+            this.description = blah.description
+            this.version = blah.version
+            this.licenses = blah.licenses.toLicenses()
+            this.url = blah.url
+            this.developers = blah.developers.toDevelopers()
+            this.year = blah.inceptionYear
+            this.gav = blah.id
+          }
+
+          projects.add(project)
+        }
       }
 
     // Sort POM information by name
     projects.sortBy { it.name.lowercase(Locale.getDefault()) }
+  }
+
+  private fun <E> List<E>.toLicenses(): List<License> {
+    return emptyList()
+  }
+
+  private fun <E> List<E>.toDevelopers(): List<Developer> {
+    return emptyList()
   }
 
   /** Setup configurations to collect dependencies. */
