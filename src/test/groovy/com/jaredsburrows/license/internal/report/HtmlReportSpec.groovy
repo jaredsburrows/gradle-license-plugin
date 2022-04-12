@@ -2,9 +2,9 @@ package com.jaredsburrows.license.internal.report
 
 import static test.TestUtils.assertHtml
 
-import com.jaredsburrows.license.internal.pom.Developer
-import com.jaredsburrows.license.internal.pom.License
-import com.jaredsburrows.license.internal.pom.Project
+import org.apache.maven.model.Developer
+import org.apache.maven.model.License
+import org.apache.maven.model.Model
 import spock.lang.Specification
 
 final class HtmlReportSpec extends Specification {
@@ -37,23 +37,33 @@ final class HtmlReportSpec extends Specification {
 
   def 'open source html'() {
     given:
-    def developer = new Developer(name: 'name')
+    def developer = new Developer(id: 'name')
     def developers = [developer, developer]
     def license = new License(
-      name: 'name', url: 'url'
-    )
-    def project = new Project(
       name: 'name',
+      url: 'url'
+    )
+    def project = new Model(
+      name: 'name',
+      description: 'description',
       licenses: [license],
       url: 'url',
       developers: developers,
-      year: 'year'
+      inceptionYear: 'year',
+      groupId: 'foo',
+      artifactId: 'bar',
+      version: '1.2.3',
     )
-    def missingLicensesProject = new Project(
+    def missingLicensesProject = new Model(
       name: 'name',
-      url: 'url',
-      developers: developers,
-      year: 'year'
+      description: '',
+      licenses: [],
+      url: '',
+      developers: [developer, developer],
+      inceptionYear: '',
+      groupId: 'foo',
+      artifactId: 'bar',
+      version: '1.2.3',
     )
     def projects = [project, project, missingLicensesProject]
     def sut = new HtmlReport(projects)
@@ -70,13 +80,13 @@ final class HtmlReportSpec extends Specification {
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#87638953">name ()</a>
+            <li><a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
                 <dt>Copyright &copy; year name</dt>
               </dl>
             </li>
-            <li><a href="#87638953">name ()</a>
+            <li><a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
                 <dt>Copyright &copy; year name</dt>
@@ -87,10 +97,10 @@ final class HtmlReportSpec extends Specification {
       <a href="url">url</a></pre>
       <br>
             <hr>
-            <li><a href="#0">name ()</a>
+            <li><a href="#0">name (1.2.3)</a>
               <dl>
-                <dt>Copyright &copy; year name</dt>
-                <dt>Copyright &copy; year name</dt>
+                <dt>Copyright &copy; 20xx name</dt>
+                <dt>Copyright &copy; 20xx name</dt>
               </dl>
             </li>
       <a name="0"></a>

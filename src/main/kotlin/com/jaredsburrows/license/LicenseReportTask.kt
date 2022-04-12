@@ -1,9 +1,6 @@
 package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.ConsoleRenderer
-import com.jaredsburrows.license.internal.pom.Developer
-import com.jaredsburrows.license.internal.pom.License
-import com.jaredsburrows.license.internal.pom.Project
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
@@ -11,6 +8,9 @@ import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import groovy.xml.XmlParser
+import org.apache.maven.model.Developer
+import org.apache.maven.model.License
+import org.apache.maven.model.Model
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
@@ -28,7 +28,7 @@ import java.util.UUID
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
 internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
 
-  @Internal var projects = mutableListOf<Project>()
+  @Internal var projects = mutableListOf<Model>()
   @Input var assetDirs = emptyList<File>()
 
   @Optional @Input
@@ -152,17 +152,22 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
           return@forEach
         }
 
+        // POM of artifact
         val pomFile = resolvedArtifact.file
         val node = xmlParser.parse(pomFile)
 
         // License information
         val name = getName(node).trim()
-        var version = node.getAt("version").text().trim()
         val description = node.getAt("description").text().trim()
+        var version = node.getAt("version").text().trim()
         val developers = mutableListOf<Developer>()
         if (node.getAt("developers").isNotEmpty()) {
           node.getAt("developers").getAt("developer").forEach { developer ->
-            developers.add(Developer(name = (developer as Node).getAt("name").text().trim()))
+            developers.add(
+              Developer().apply {
+                id = (developer as Node).getAt("name").text().trim()
+              }
+            )
           }
         }
 
@@ -183,15 +188,16 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
         // Store the information that we need
         val module = resolvedArtifact.moduleVersion.id
-        val project = Project().apply {
+        val project = Model().apply {
           this.name = name
           this.description = description
-          this.version = version
           this.licenses = licenses
           this.url = url
           this.developers = developers
-          this.year = inceptionYear
-          this.gav = "${module.group}:${module.name}:${module.version}"
+          this.inceptionYear = inceptionYear
+          this.groupId = module.group
+          this.artifactId = module.name
+          this.version = version
         }
 
         projects.add(project)
@@ -431,7 +437,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
 
     if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
-      return listOf(License(name = APACHE_LICENSE_NAME, url = APACHE_LICENSE_URL))
+      return listOf(
+        License().apply {
+          this.name = APACHE_LICENSE_NAME
+          url = APACHE_LICENSE_URL
+        }
+      )
     }
 
     // License information found
@@ -441,7 +452,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         val licenseName = (license as Node).getAt("name").text().trim()
         val licenseUrl = license.getAt("url").text().trim()
         if (isUrlValid(licenseUrl)) {
-          licenses.add(License(name = licenseName, url = licenseUrl))
+          licenses.add(
+            License().apply {
+              this.name = licenseName
+              url = licenseUrl
+            }
+          )
         }
       }
       return licenses
@@ -456,7 +472,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   private fun getName(node: Node): String {
-    return node.getAt("name").text().ifEmpty {
+    return node.getAt("name").text().trim().ifEmpty {
       node.getAt("artifactId").text()
     }.trim()
   }

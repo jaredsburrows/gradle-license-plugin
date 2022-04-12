@@ -58,6 +58,7 @@ dependencies {
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlinx.html
   implementation deps.gson
+  implementation deps.maven
 
   testRuntimeOnly files(createClasspathManifest)
   testRuntimeOnly deps.android.tools.build.gradle

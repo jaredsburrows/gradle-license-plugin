@@ -2,14 +2,14 @@ package com.jaredsburrows.license.internal.report
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.jaredsburrows.license.internal.pom.Project
+import org.apache.maven.model.Model
 
 /**
  * Generates JSON report of projects dependencies.
  *
- * @property projects list of [Project]s for thr JSON report.
+ * @property projects list of [Model]s for thr JSON report.
  */
-class JsonReport(private val projects: List<Project>) : Report {
+class JsonReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
@@ -23,7 +23,7 @@ class JsonReport(private val projects: List<Project>) : Report {
       }
 
       // Handle multiple developer
-      val developerNames = project.developers.map { it.name }
+      val developerNames = project.developers.map { it.id }
 
       // Build the report
       linkedMapOf(
@@ -32,9 +32,9 @@ class JsonReport(private val projects: List<Project>) : Report {
         VERSION to project.version.valueOrNull(),
         DEVELOPERS to developerNames,
         URL to project.url.valueOrNull(),
-        YEAR to project.year.valueOrNull(),
+        YEAR to project.inceptionYear.valueOrNull(),
         LICENSES to licensesJson,
-        DEPENDENCY to project.gav
+        DEPENDENCY to "${project.groupId}:${project.artifactId}:${project.version}"
       )
     }
 

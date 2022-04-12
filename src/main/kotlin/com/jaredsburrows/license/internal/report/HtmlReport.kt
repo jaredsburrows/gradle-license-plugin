@@ -1,8 +1,6 @@
 package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.LicenseHelper
-import com.jaredsburrows.license.internal.pom.License
-import com.jaredsburrows.license.internal.pom.Project
 import kotlinx.html.A
 import kotlinx.html.Entities
 import kotlinx.html.FlowOrInteractiveOrPhrasingContent
@@ -24,20 +22,22 @@ import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
 import kotlinx.html.visit
+import org.apache.maven.model.License
+import org.apache.maven.model.Model
 
 /**
  * Generates HTML report of projects dependencies.
  *
- * @property projects list of [Project]s for thr HTML report.
+ * @property projects list of [Model]s for thr HTML report.
  */
-class HtmlReport(private val projects: List<Project>) : Report {
+class HtmlReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
-    val projectsMap = hashMapOf<String?, List<Project>>()
+    val projectsMap = hashMapOf<String?, List<Model>>()
     val licenseMap = LicenseHelper.licenseMap
 
     // Store packages by licenses: build a composite key of all the licenses, sorted in the (probably vain)
@@ -46,7 +46,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
       val keys = mutableListOf<String>()
 
       // first check to see if the project's license is in our list of known licenses.
-      if (!project.licenses.isNullOrEmpty()) {
+      if (project.licenses.isNotEmpty()) {
         project.licenses.forEach { license -> keys.add(getLicenseKey(license)) }
       }
 
@@ -86,7 +86,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
                 compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
               )
 
-              var currentProject: Project? = null
+              var currentProject: Model? = null
               var currentLicense: Int? = null
 
               sortedProjects.forEach { project ->
@@ -99,14 +99,14 @@ class HtmlReport(private val projects: List<Project>) : Report {
                     +project.name
                     +" (${project.version})"
                   }
-                  val copyrightYear = project.year.ifEmpty { DEFAULT_YEAR }
+                  val copyrightYear = project.inceptionYear.ifEmpty { DEFAULT_YEAR }
                   dl {
                     if (project.developers.isNotEmpty()) {
                       project.developers.forEach { developer ->
                         dt {
                           +COPYRIGHT
                           +Entities.copy
-                          +" $copyrightYear ${developer.name}"
+                          +" $copyrightYear ${developer.id}"
                         }
                       }
                     } else {
@@ -238,7 +238,7 @@ class HtmlReport(private val projects: List<Project>) : Report {
     @JvmStatic fun getLicenseText(fileName: String): String {
       return HtmlReport::class.java.getResource("/license/$fileName")
         ?.readText()
-        ?: MISSING_LICENSE + fileName
+        ?: (MISSING_LICENSE + fileName)
     }
   }
 }

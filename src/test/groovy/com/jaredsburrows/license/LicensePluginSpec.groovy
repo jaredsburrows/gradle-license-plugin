@@ -1,6 +1,5 @@
 package com.jaredsburrows.license
 
-
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
