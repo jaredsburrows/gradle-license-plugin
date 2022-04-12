@@ -501,7 +501,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
       plugins {
-        id 'java-library'
+        id 'java'
         id 'com.jaredsburrows.license'
       }
 

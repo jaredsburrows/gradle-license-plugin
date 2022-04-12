@@ -115,6 +115,7 @@ tasks.withType(JavaCompile).configureEach {
     compilerArgs << '-Xlint:all'
     compilerArgs << '-Xlint:-options'
     encoding = 'utf-8'
+    fork = true
   }
 }
 
@@ -126,6 +127,7 @@ tasks.withType(GroovyCompile).configureEach {
     compilerArgs << '-Xlint:all'
     compilerArgs << '-Xlint:-options'
     encoding = 'utf-8'
+    fork = true
   }
 }
 
@@ -139,5 +141,7 @@ tasks.withType(Test).configureEach {
     showStackTraces true
     events 'failed', 'skipped'
   }
-}
 
+  def maxWorkerCount = gradle.startParameter.maxWorkerCount
+  maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+}
