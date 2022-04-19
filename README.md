@@ -188,7 +188,7 @@ licenseReport {
   generateJsonReport = true
   
   // These options are ignored for Java projects
-  copyHtmlReportToAssets = false
+  copyCsvReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
 }
