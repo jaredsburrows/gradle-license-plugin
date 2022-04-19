@@ -35,6 +35,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   var variantName: String? = null
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
+
+  /** 
+   * Use a non-static parser instance to avoid errors with concurrent licenseReport tasks 
+   * in multi-project setups. See https://github.com/jaredsburrows/gradle-license-plugin/pull/191 
+   * for additional details.
+   */
   private var xmlParser = XmlParser(false, false)
 
   @TaskAction fun licenseReport() {
