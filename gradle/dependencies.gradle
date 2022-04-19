@@ -1,5 +1,6 @@
 ext.versions = [
   'kotlin': '1.6.21',
+  'groovy': '3.0.9',
 ]
 
 ext.deps = [
@@ -14,6 +15,7 @@ ext.deps = [
   'kotlinx': [
     'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.5',
   ],
+  'groovy' : "org.codehaus.groovy:groovy-all:$versions.groovy",
   'gson'   : 'com.google.code.gson:gson:2.9.0',
   'maven'  : 'org.apache.maven:maven-model:3.8.5',
   'android': [
@@ -23,7 +25,7 @@ ext.deps = [
       ]
     ]
   ],
-  'spock'  : 'org.spockframework:spock-junit4:2.0-groovy-3.0',
+  'spock'  : 'org.spockframework:spock-junit4:2.0-groovy-3.0', // 2.1-M2-groovy-3.0
   'xmlunit': [
     'matchers': 'org.xmlunit:xmlunit-matchers:2.9.0',
   ],

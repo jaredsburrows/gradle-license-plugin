@@ -1,12 +1,12 @@
 package com.jaredsburrows.license
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.gradleWithCommand
+
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static test.TestUtils.gradleWithCommand
 
 final class LicensePluginSpec extends Specification {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
