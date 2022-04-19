@@ -35,6 +35,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   var variantName: String? = null
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
+  private var xmlParser = XmlParser(false, false)
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -501,7 +502,6 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   internal companion object {
-    private val xmlParser = XmlParser(false, false)
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
