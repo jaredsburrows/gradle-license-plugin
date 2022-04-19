@@ -55,6 +55,7 @@ dependencies {
   compileOnly gradleApi()
   compileOnly deps.android.tools.build.gradle
 
+  implementation localGroovy()
   implementation deps.kotlin.stdlib.jdk
   implementation deps.kotlinx.html
   implementation deps.gson

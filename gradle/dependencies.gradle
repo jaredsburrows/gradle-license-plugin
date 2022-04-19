@@ -25,7 +25,7 @@ ext.deps = [
       ]
     ]
   ],
-  'spock'  : 'org.spockframework:spock-junit4:2.0-groovy-3.0', // 2.1-M2-groovy-3.0
+  'spock'  : 'org.spockframework:spock-junit4:2.1-M2-groovy-3.0',
   'xmlunit': [
     'matchers': 'org.xmlunit:xmlunit-matchers:2.9.0',
   ],

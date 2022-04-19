@@ -110,6 +110,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 5.6.4+, 3.6.0-3.6.4
     [gradleVersion, agpVersion] << [
       [
         '7.0.2',
@@ -168,6 +169,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 6.1.1+, 4.0.0+
     [gradleVersion, agpVersion] << [
       [
         '7.0.2',
@@ -226,6 +228,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 6.5+, 4.1.0+
     [gradleVersion, agpVersion] << [
       [
         '7.0.2',
@@ -284,6 +287,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 6.7.1+, 4.2.0+
     [gradleVersion, agpVersion] << [
       [
         '7.0.2',
@@ -342,6 +346,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 7.0+, 7.0
     [gradleVersion, agpVersion] << [
       [
         '7.0.2',
@@ -400,6 +405,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 7.2+, 7.1
     [gradleVersion, agpVersion] << [
       [
         '7.2',
@@ -457,6 +463,7 @@ final class LicensePluginVersionSpec extends Specification {
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
     // https://developer.android.com/studio/releases/gradle-plugin
+    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
