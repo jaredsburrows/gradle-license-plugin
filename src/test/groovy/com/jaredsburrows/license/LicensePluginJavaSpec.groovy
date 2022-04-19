@@ -3,14 +3,12 @@ package com.jaredsburrows.license
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
-import static test.TestUtils.myGetLicenseText
 import static test.TestUtils.gradleWithCommand
+import static test.TestUtils.myGetLicenseText
 
-import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-import spock.lang.Unroll
 
 final class LicensePluginJavaSpec extends Specification {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -22,40 +20,7 @@ final class LicensePluginJavaSpec extends Specification {
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
-    reportFolder = "${testProjectDir.root.path.replaceAll("\\\\",'/')}/build/reports/licenses"
-  }
-
-  @Unroll def 'licenseReport using with gradle #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      plugins {
-        id 'java'
-        id 'com.jaredsburrows.license'
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseReport', '-s')
-      .withPluginClasspath()
-      .build()
-
-    then:
-    result.task(':licenseReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
-
-    where:
-    gradleVersion << [
-      '7.0.2',
-      '7.1.1',
-      '7.2',
-      '7.4.2' // Always have latest
-    ]
+    reportFolder = "${testProjectDir.root.path.replaceAll("\\\\", '/')}/build/reports/licenses"
   }
 
   def 'licenseReport with no dependencies'() {

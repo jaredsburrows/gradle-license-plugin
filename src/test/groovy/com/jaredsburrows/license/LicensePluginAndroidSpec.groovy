@@ -6,7 +6,6 @@ import static test.TestUtils.assertJson
 import static test.TestUtils.gradleWithCommand
 import static test.TestUtils.myGetLicenseText
 
-import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -38,65 +37,6 @@ final class LicensePluginAndroidSpec extends Specification {
     // In case we're on Windows, fix the \s in the string containing the name
     reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
     assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
-  }
-
-  @Unroll def 'licenseDebugReport with gradle #gradleVersion and android gradle plugin #agpVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion 28
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.0.2',
-        '7.1.1',
-        '7.2',
-        '7.4.2' // Always have latest
-      ],
-      [
-        '3.5.4',
-        '3.6.4',
-        '4.0.2',
-        '4.1.3',
-        '4.2.2' // Always have latest
-      ]
-    ].combinations()
   }
 
   @Unroll def '#taskName that has no dependencies'() {
@@ -1314,11 +1254,11 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
- @Unroll def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
-   given:
-   def androidGradlePluginVersion = '7.1.1'
-   buildFile <<
-     """
+  @Unroll def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
+    given:
+    def androidGradlePluginVersion = '7.1.1'
+    buildFile <<
+      """
       buildscript {
         repositories {
           mavenCentral()
@@ -1353,12 +1293,12 @@ final class LicensePluginAndroidSpec extends Specification {
       }
       """
 
-   when:
-   def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-   def actualHtml = new File(reportFolder, "${taskName}.html").text
-   def actualJson = new File(reportFolder, "${taskName}.json").text
-   def expectedHtml =
-     """
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedHtml =
+      """
       <html>
       <head>
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
@@ -1380,8 +1320,8 @@ final class LicensePluginAndroidSpec extends Specification {
       </body>
       </html>
       """
-   def expectedJson =
-     """
+    def expectedJson =
+      """
       [
         {
           "project": "design",
@@ -1402,15 +1342,15 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
 
-   then:
-   result.task(":${taskName}").outcome == SUCCESS
-   result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
-   result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
-   result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-   assertHtml(expectedHtml, actualHtml)
-   assertJson(expectedJson, actualJson)
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
 
-   where:
-   taskName << ['licenseDebugReport', 'licenseReleaseReport']
- }
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
 }
