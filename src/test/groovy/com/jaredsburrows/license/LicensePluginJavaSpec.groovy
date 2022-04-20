@@ -38,8 +38,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -88,8 +90,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -162,8 +166,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -261,8 +267,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -311,8 +319,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -393,8 +403,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -484,8 +496,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -606,8 +620,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -720,8 +736,10 @@ final class LicensePluginJavaSpec extends Specification {
     def actualHtml = new File(reportFolder, 'licenseReport.html').text
     def expectedHtml =
       """
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
