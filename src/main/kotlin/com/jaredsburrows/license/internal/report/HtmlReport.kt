@@ -4,16 +4,20 @@ import com.jaredsburrows.license.internal.LicenseHelper
 import kotlinx.html.A
 import kotlinx.html.Entities
 import kotlinx.html.FlowOrInteractiveOrPhrasingContent
+import kotlinx.html.HTML
 import kotlinx.html.HtmlTagMarker
+import kotlinx.html.TagConsumer
 import kotlinx.html.attributesMapOf
 import kotlinx.html.body
 import kotlinx.html.br
 import kotlinx.html.dl
+import kotlinx.html.dom.createHTMLDocument
+import kotlinx.html.dom.serialize
+import kotlinx.html.dom.write
 import kotlinx.html.dt
 import kotlinx.html.h3
 import kotlinx.html.head
 import kotlinx.html.hr
-import kotlinx.html.html
 import kotlinx.html.li
 import kotlinx.html.pre
 import kotlinx.html.stream.appendHTML
@@ -22,8 +26,12 @@ import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
 import kotlinx.html.visit
+import kotlinx.html.visitAndFinalize
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
+import org.w3c.dom.Document
+import java.io.StringReader
+import java.io.StringWriter
 
 /**
  * Generates HTML report of projects dependencies.
@@ -64,9 +72,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
       (projectsMap[key] as MutableList).add(project)
     }
 
-    return StringBuilder()
-      .appendHTML()
-      .html {
+    return createHTMLDocument().html(lang = "en") {
         head {
           style {
             unsafe { +CSS_STYLE }
@@ -168,12 +174,10 @@ class HtmlReport(private val projects: List<Model>) : Report {
             }
           }
         }
-      }.toString()
+      }.serialize(prettyPrint = true)
   }
 
-  override fun emptyReport(): String = StringBuilder()
-    .appendHTML()
-    .html {
+  override fun emptyReport(): String = createHTMLDocument().html(lang = "en") {
       head {
         style {
           unsafe { +CSS_STYLE }
@@ -186,7 +190,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
           unsafe { +NO_LIBRARIES }
         }
       }
-    }.toString()
+    }.serialize(prettyPrint = true)
 
   /**
    * See if the license is in our list of known licenses (which coalesces differing URLs to the
@@ -202,6 +206,14 @@ class HtmlReport(private val projects: List<Model>) : Report {
       else -> license.url
     } as String
   }
+
+  @HtmlTagMarker private inline fun <T, C : TagConsumer<T>> C.html(
+    lang: String,
+    namespace: String? = null,
+    crossinline block: HTML.() -> Unit = {}
+  ): T = HTML(
+    mapOf("lang" to lang), this, namespace
+  ).visitAndFinalize(this, block)
 
   @HtmlTagMarker private fun FlowOrInteractiveOrPhrasingContent.a(
     href: String? = null,
@@ -237,8 +249,8 @@ class HtmlReport(private val projects: List<Model>) : Report {
 
     @JvmStatic fun getLicenseText(fileName: String): String {
       return HtmlReport::class.java.getResource("/license/$fileName")
-        ?.readText()
-        ?: (MISSING_LICENSE + fileName)
+               ?.readText()
+             ?: (MISSING_LICENSE + fileName)
     }
   }
 }
