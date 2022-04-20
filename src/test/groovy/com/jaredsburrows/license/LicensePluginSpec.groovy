@@ -4,7 +4,6 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.gradleWithCommand
 import static test.TestUtils.gradleWithCommandWithFail
 
-import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
