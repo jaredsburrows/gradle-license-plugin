@@ -50,7 +50,7 @@ final class TestUtils {
       .buildAndFail()
   }
 
-  static def myGetLicenseText(String fileName) {
+  static def getLicenseText(String fileName) {
     return HtmlReport.getLicenseText(fileName)
   }
 

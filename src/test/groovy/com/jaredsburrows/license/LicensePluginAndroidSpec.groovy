@@ -4,7 +4,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
 import static test.TestUtils.gradleWithCommand
-import static test.TestUtils.myGetLicenseText
+import static test.TestUtils.getLicenseText
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -89,6 +89,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -159,7 +160,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -208,6 +209,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -283,7 +285,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -332,6 +334,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -429,7 +432,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -508,6 +511,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -629,7 +633,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
             <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
@@ -638,7 +642,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1783810846"></a>
-            <pre>${myGetLicenseText('mit.txt')}</pre>
+            <pre>${getLicenseText('mit.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -683,14 +687,28 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt").text.stripIndent().trim()
+    def expectedText =
+      """
+      Notice for packages
+
+
+      Android GIF Drawable Library (1.2.3) - The MIT License
+      Views and Drawable for displaying animated GIFs for Android
+      https://github.com/koral--/android-gif-drawable
+
+      design (26.1.0) - The Apache Software License
+      """.stripIndent().trim()
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
+    expectedText == actualText
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -779,6 +797,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -855,7 +874,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
             <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
@@ -916,6 +935,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -997,7 +1017,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
             <li>
@@ -1057,8 +1077,10 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -1106,7 +1128,6 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
@@ -1230,7 +1251,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -1263,6 +1284,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 
@@ -1332,7 +1354,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -1365,6 +1387,7 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
 

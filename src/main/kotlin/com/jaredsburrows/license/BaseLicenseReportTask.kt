@@ -12,12 +12,15 @@ open class BaseLicenseReportTask : DefaultTask() {
   @OutputFile var csvFile: File
   @OutputFile var htmlFile: File
   @OutputFile var jsonFile: File
+  @OutputFile var textFile: File
   @Input var generateCsvReport = false
   @Input var generateHtmlReport = false
   @Input var generateJsonReport = false
+  @Input var generateTextReport = false
   @Input var copyCsvReportToAssets = false
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
+  @Input var copyTextReportToAssets = false
   private var outputPath: String
 
   init {
@@ -30,20 +33,24 @@ open class BaseLicenseReportTask : DefaultTask() {
     csvFile = File(outputPath, "$name$CSV_EXT")
     htmlFile = File(outputPath, "$name$HTML_EXT")
     jsonFile = File(outputPath, "$name$JSON_EXT")
+    textFile = File(outputPath, "$name$TEXT_EXT")
 
     // Customizing internal task options from extension
     val extension = project.extensions.getByType(LicenseReportExtension::class.java)
     generateCsvReport = extension.generateCsvReport
     generateHtmlReport = extension.generateHtmlReport
     generateJsonReport = extension.generateJsonReport
+    generateTextReport = extension.generateTextReport
     copyCsvReportToAssets = extension.copyCsvReportToAssets
     copyHtmlReportToAssets = extension.copyHtmlReportToAssets
     copyJsonReportToAssets = extension.copyJsonReportToAssets
+    copyTextReportToAssets = extension.copyTextReportToAssets
   }
 
   internal companion object {
     const val CSV_EXT = ".csv"
     const val HTML_EXT = ".html"
     const val JSON_EXT = ".json"
+    const val TEXT_EXT = ".txt"
   }
 }
