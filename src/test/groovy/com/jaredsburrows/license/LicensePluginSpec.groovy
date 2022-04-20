@@ -2,7 +2,9 @@ package com.jaredsburrows.license
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.gradleWithCommand
+import static test.TestUtils.gradleWithCommandWithFail
 
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -72,6 +74,46 @@ final class LicensePluginSpec extends Specification {
     result.task(':licenseReport').outcome == SUCCESS
   }
 
+  def 'apply with no plugins'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'com.jaredsburrows.license'
+      }
+      """
+
+    when:
+    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    result.output.contains("'com.jaredsburrows.license' requires Java or Android Gradle Plugins.")
+  }
+
+  @Unroll def 'apply with non java or agp plugins: #plugin'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id '${plugin}'
+        id 'com.jaredsburrows.license'
+      }
+      """
+
+    when:
+    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    result.output.contains("'com.jaredsburrows.license' requires Java or Android Gradle Plugins.")
+
+    where:
+    plugin << [
+      'c', // CPlugin
+      'cpp', // CppPlugin
+      'cpp-library', // CppLibraryPlugin
+    ]
+  }
+
   @Unroll def 'apply with allowed java plugins: #javaPlugin'() {
     given:
     buildFile <<
@@ -89,13 +131,17 @@ final class LicensePluginSpec extends Specification {
     result.task(':licenseReport').outcome == SUCCESS
 
     where:
+    // https://github.com/gradle/gradle/find/master, search for gradle-plugins
     javaPlugin << [
-      'application', // JavaApplicationPlugin
-      'groovy', // GroovyPlugin
-      'java', // JavaPlugin
-      'java-gradle-plugin', // JavaGradlePluginPlugin
-      'java-library', // JavaLibraryPlugin
-      'scala', // ScalaPlugin
+      'application', // JavaApplicationPlugin, applies JavaPlugin
+      'groovy', // GroovyPlugin, applies JavaPlugin
+      'java', // JavaPlugin, applies JavaBasePlugin
+      'java-gradle-plugin', // JavaGradlePluginPlugin, applies JavaLibraryPlugin, JavaPlugin
+      'java-library', // JavaLibraryPlugin, applies JavaPlugin
+      'java-library-distribution', // JavaLibraryDistributionPlugin, applies JavaPlugin
+      'java-platform', // JavaPlatformPlugin, can't use with JavaPlugin
+      'scala', // ScalaPlugin, applies JavaPlugin
+      'war', // WarPlugin, applies JavaPlugin
     ]
   }
 

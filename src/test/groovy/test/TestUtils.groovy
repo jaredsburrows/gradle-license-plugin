@@ -42,6 +42,14 @@ final class TestUtils {
       .build()
   }
 
+  static def gradleWithCommandWithFail(def file, String... commands) {
+    return GradleRunner.create()
+      .withProjectDir(file)
+      .withArguments(commands)
+      .withPluginClasspath()
+      .buildAndFail()
+  }
+
   static def myGetLicenseText(String fileName) {
     return HtmlReport.getLicenseText(fileName)
   }

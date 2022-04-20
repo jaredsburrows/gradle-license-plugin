@@ -40,10 +40,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif }
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -266,10 +263,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif }
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -333,7 +327,8 @@ final class LicensePluginJavaSpec extends Specification {
             </li>
             <a name="-296292112"></a>
             <pre>Some license
-                  <a href="http://website.tld/">http://website.tld/</a></pre>
+              <a href="http://website.tld/">http://website.tld/</a>
+            </pre>
             <br>
             <hr>
           </ul>
@@ -414,10 +409,12 @@ final class LicensePluginJavaSpec extends Specification {
             </li>
             <a name="1195092182"></a>
             <pre>Some license
-            <a href="http://website.tld/">http://website.tld/</a></pre>
+              <a href="http://website.tld/">http://website.tld/</a>
+            </pre>
             <br>
             <pre>Some license
-            <a href="http://website.tld/">http://website.tld/</a></pre>
+              <a href="http://website.tld/">http://website.tld/</a>
+            </pre>
             <br>
             <hr>
           </ul>
@@ -513,7 +510,8 @@ final class LicensePluginJavaSpec extends Specification {
             </li>
             <a name="-296292112"></a>
             <pre>Some license
-                  <a href="http://website.tld/">http://website.tld/</a></pre>
+              <a href="http://website.tld/">http://website.tld/</a>
+            </pre>
             <br>
             <hr>
           </ul>
