@@ -68,10 +68,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif }
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -995,7 +992,8 @@ final class LicensePluginAndroidSpec extends Specification {
             </li>
             <a name="-296292112"></a>
             <pre>Some license
-                  <a href="http://website.tld/">http://website.tld/</a></pre>
+              <a href="http://website.tld/">http://website.tld/</a>
+            </pre>
             <br>
             <hr>
           </ul>
@@ -1200,24 +1198,25 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedHtml =
       """
       <html>
-      <head>
+        <head>
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
-      </head>
-      <body>
-      <h3>Notice for packages:</h3>
-      <ul>
-          <li><a href="#1934118923">design (26.1.0)</a>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
               <dl>
-                  <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
-          </li>
-          <a name="1934118923"></a>
-          <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-          <br>
-          <hr>
-      </ul>
-      </body>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
       </html>
       """
     def expectedJson =
@@ -1240,7 +1239,6 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1300,24 +1298,25 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedHtml =
       """
       <html>
-      <head>
+        <head>
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
-      </head>
-      <body>
-      <h3>Notice for packages:</h3>
-      <ul>
-          <li><a href="#1934118923">design (26.1.0)</a>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
               <dl>
-                  <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
               </dl>
-          </li>
-          <a name="1934118923"></a>
-          <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
-          <br>
-          <hr>
-      </ul>
-      </body>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
       </html>
       """
     def expectedJson =
@@ -1340,7 +1339,6 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-
 
     then:
     result.task(":${taskName}").outcome == SUCCESS

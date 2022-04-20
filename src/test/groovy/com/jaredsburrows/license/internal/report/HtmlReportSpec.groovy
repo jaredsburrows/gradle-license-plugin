@@ -19,10 +19,7 @@ final class HtmlReportSpec extends Specification {
       """
       <html>
         <head>
-          <style>
-            body { font-family: sans-serif }
-            pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }
-          </style>
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -80,30 +77,33 @@ final class HtmlReportSpec extends Specification {
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#87638953">name (1.2.3)</a>
+            <li>
+              <a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
                 <dt>Copyright &copy; year name</dt>
               </dl>
             </li>
-            <li><a href="#87638953">name (1.2.3)</a>
+            <li>
+              <a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
                 <dt>Copyright &copy; year name</dt>
               </dl>
             </li>
-      <a name="87638953"></a>
+            <a name="87638953"></a>
             <pre>name
-      <a href="url">url</a></pre>
-      <br>
+            <a href="url">url</a></pre>
+            <br>
             <hr>
-            <li><a href="#0">name (1.2.3)</a>
+            <li>
+              <a href="#0">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; 20xx name</dt>
                 <dt>Copyright &copy; 20xx name</dt>
               </dl>
             </li>
-      <a name="0"></a>
+            <a name="0"></a>
             <pre>No license found</pre>
             <hr>
           </ul>
