@@ -13,6 +13,10 @@ class JsonReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
+  override fun name(): String = JSON_NAME
+
+  override fun extension(): String = JSON_EXTENSION
+
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
@@ -44,6 +48,8 @@ class JsonReport(private val projects: List<Model>) : Report {
   override fun emptyReport(): String = EMPTY_JSON
 
   private companion object {
+    private const val JSON_EXTENSION = "json"
+    private const val JSON_NAME = "JSON"
     private const val PROJECT = "project"
     private const val DESCRIPTION = "description"
     private const val VERSION = "version"

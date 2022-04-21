@@ -1102,7 +1102,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion 32
 
         defaultConfig {
           applicationId 'com.example'
@@ -1116,10 +1116,15 @@ final class LicensePluginAndroidSpec extends Specification {
       }
 
       licenseReport {
+        generateCsvReport = true
         generateHtmlReport = true
         generateJsonReport = true
+        generateTextReport = true
+
+        copyCsvReportToAssets = "${copyEnabled}"
         copyHtmlReportToAssets = "${copyEnabled}"
         copyJsonReportToAssets = "${copyEnabled}"
+        copyTextReportToAssets = "${copyEnabled}"
       }
       """
 
@@ -1128,10 +1133,21 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-    result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-    result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
+    if (copyEnabled) {
+      result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
+      result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
+      result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+      result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
+    } else {
+      !result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
+      !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
+      !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+      !result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
+    }
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -1166,10 +1182,15 @@ final class LicensePluginAndroidSpec extends Specification {
       }
 
       licenseReport {
+        generateCsvReport = false
         generateHtmlReport = false
         generateJsonReport = false
+        generateTextReport = false
+
+        copyCsvReportToAssets = "${copyEnabled}"
         copyHtmlReportToAssets = "${copyEnabled}"
         copyJsonReportToAssets = "${copyEnabled}"
+        copyTextReportToAssets = "${copyEnabled}"
       }
       """
 
@@ -1178,11 +1199,14 @@ final class LicensePluginAndroidSpec extends Specification {
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    !result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
     !result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
     !result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    !result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
+    !result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
     !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
     !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
+    !result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
