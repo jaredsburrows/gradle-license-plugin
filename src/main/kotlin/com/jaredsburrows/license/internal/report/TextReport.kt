@@ -12,6 +12,10 @@ class TextReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
+  override fun name(): String = TEXT_NAME
+
+  override fun extension(): String = TEXT_EXTENSION
+
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
@@ -95,6 +99,8 @@ class TextReport(private val projects: List<Model>) : Report {
   }
 
   private companion object {
+    private const val TEXT_EXTENSION = "txt"
+    private const val TEXT_NAME = "Text"
     private const val EMPTY_TEXT = ""
   }
 }

@@ -36,6 +36,10 @@ class HtmlReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
+  override fun name(): String = HTML_NAME
+
+  override fun extension(): String = HTML_EXTENSION
+
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
@@ -238,6 +242,8 @@ class HtmlReport(private val projects: List<Model>) : Report {
   ).visit(block)
 
   private companion object {
+    private const val HTML_EXTENSION = "html"
+    private const val HTML_NAME = "HTML"
     const val DOCTYPE = "<!DOCTYPE html>"
     const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
     const val CSS_STYLE =

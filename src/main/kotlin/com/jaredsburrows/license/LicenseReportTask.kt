@@ -4,6 +4,7 @@ import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
+import com.jaredsburrows.license.internal.report.Report
 import com.jaredsburrows.license.internal.report.TextReport
 import groovy.namespace.QName
 import groovy.util.Node
@@ -49,39 +50,47 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     initDependencies()
     generatePOMInfo()
 
+    // Create CSV report
     if (generateCsvReport) {
-      createCsvReport()
+      val report = CsvReport(projects)
+      createReport(file = csvFile) { report }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
-        copyCsvReport()
+        copyReport(file = csvFile) { report }
       }
     }
 
+    // Create HTML report
     if (generateHtmlReport) {
-      createHtmlReport()
+      val report = HtmlReport(projects)
+      createReport(file = htmlFile) { report }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
-        copyHtmlReport()
+        copyReport(file = htmlFile) { report }
       }
     }
 
+    // Create JSON report
     if (generateJsonReport) {
-      createJsonReport()
+      val report = JsonReport(projects)
+      createReport(file = jsonFile) { report }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
-        copyJsonReport()
+        copyReport(file = jsonFile) { report }
       }
     }
 
+    // Create Text report
     if (generateTextReport) {
-      createTextReport()
+      val report = TextReport(projects)
+      createReport(file = textFile) { report }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyTextReportToAssets) {
-        copyTextReport()
+        copyReport(file = textFile) { report }
       }
     }
   }
@@ -267,10 +276,10 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return pomFile
   }
 
-  /** Generated HTML report. */
-  private fun createCsvReport() {
-    // Remove existing file
-    csvFile.apply {
+  private fun <T : Report> createReport(file: File, report: () -> T) {
+    val resolvedReport = report()
+
+    file.apply {
       // Remove existing file
       delete()
 
@@ -279,20 +288,22 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { it.write(CsvReport(projects).toString()) }
+      bufferedWriter().use { it.write(resolvedReport.toString()) }
     }
 
     // Log output directory for user
     logger.log(
       LogLevel.LIFECYCLE,
-      "Wrote CSV report to ${ConsoleRenderer().asClickableFileUrl(csvFile)}."
+      "Wrote ${resolvedReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}."
     )
   }
 
-  private fun copyCsvReport() {
+  private fun <T : Report> copyReport(file: File, report: () -> T) {
+    val resolvedReport = report()
+
     // Iterate through all asset directories
     assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + CSV_EXT)
+      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES${resolvedReport.extension()}")
 
       licenseFile.apply {
         // Remove existing file
@@ -302,154 +313,14 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         parentFile.mkdirs()
         createNewFile()
 
-        // Copy HTML file to the assets directory
-        bufferedWriter().use { it.write(csvFile.readText()) }
+        // Copy report file to the assets directory
+        bufferedWriter().use { it.write(file.readText()) }
       }
 
       // Log output directory for user
       logger.log(
         LogLevel.LIFECYCLE,
-        "Copied CSV report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
-  }
-
-  /** Generated HTML report. */
-  private fun createHtmlReport() {
-    // Remove existing file
-    htmlFile.apply {
-      // Remove existing file
-      delete()
-
-      // Create directories
-      parentFile.mkdirs()
-      createNewFile()
-
-      // Write report for file
-      bufferedWriter().use { it.write(HtmlReport(projects).toString()) }
-    }
-
-    // Log output directory for user
-    logger.log(
-      LogLevel.LIFECYCLE,
-      "Wrote HTML report to ${ConsoleRenderer().asClickableFileUrl(htmlFile)}."
-    )
-  }
-
-  private fun copyHtmlReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + HTML_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy HTML file to the assets directory
-        bufferedWriter().use { it.write(htmlFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied HTML report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
-  }
-
-  /** Generated JSON report. */
-  private fun createJsonReport() {
-    jsonFile.apply {
-      // Remove existing file
-      delete()
-
-      // Create directories
-      parentFile.mkdirs()
-      createNewFile()
-
-      // Write report for file
-      bufferedWriter().use { it.write(JsonReport(projects).toString()) }
-    }
-
-    // Log output directory for user
-    logger.log(
-      LogLevel.LIFECYCLE,
-      "Wrote JSON report to ${ConsoleRenderer().asClickableFileUrl(jsonFile)}."
-    )
-  }
-
-  private fun copyJsonReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + JSON_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy JSON file to the assets directory
-        bufferedWriter().use { it.write(jsonFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
-      )
-    }
-  }
-
-  /** Generated Text report. */
-  private fun createTextReport() {
-    // Remove existing file
-    textFile.apply {
-      // Remove existing file
-      delete()
-
-      // Create directories
-      parentFile.mkdirs()
-      createNewFile()
-
-      // Write report for file
-      bufferedWriter().use { it.write(TextReport(projects).toString()) }
-    }
-
-    // Log output directory for user
-    logger.log(
-      LogLevel.LIFECYCLE,
-      "Wrote Text report to ${ConsoleRenderer().asClickableFileUrl(textFile)}."
-    )
-  }
-
-  private fun copyTextReport() {
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + TEXT_EXT)
-
-      licenseFile.apply {
-        // Remove existing file
-        delete()
-
-        // Create new file
-        parentFile.mkdirs()
-        createNewFile()
-
-        // Copy HTML file to the assets directory
-        bufferedWriter().use { it.write(textFile.readText()) }
-      }
-
-      // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
-        "Copied Text report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+        "Copied ${resolvedReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
       )
     }
   }
