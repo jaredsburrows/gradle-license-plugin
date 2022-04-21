@@ -4,6 +4,7 @@ import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
+import com.jaredsburrows.license.internal.report.TextReport
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
@@ -72,6 +73,15 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
         copyJsonReport()
+      }
+    }
+
+    if (generateTextReport) {
+      createTextReport()
+
+      // If android project and copy enabled, copy to asset directory
+      if (!variantName.isNullOrEmpty() && copyTextReportToAssets) {
+        copyTextReport()
       }
     }
   }
@@ -393,6 +403,53 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       logger.log(
         LogLevel.LIFECYCLE,
         "Copied JSON report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+      )
+    }
+  }
+
+  /** Generated Text report. */
+  private fun createTextReport() {
+    // Remove existing file
+    textFile.apply {
+      // Remove existing file
+      delete()
+
+      // Create directories
+      parentFile.mkdirs()
+      createNewFile()
+
+      // Write report for file
+      bufferedWriter().use { it.write(TextReport(projects).toString()) }
+    }
+
+    // Log output directory for user
+    logger.log(
+      LogLevel.LIFECYCLE,
+      "Wrote Text report to ${ConsoleRenderer().asClickableFileUrl(textFile)}."
+    )
+  }
+
+  private fun copyTextReport() {
+    // Iterate through all asset directories
+    assetDirs.forEach { directory ->
+      val licenseFile = File(directory.path, OPEN_SOURCE_LICENSES + TEXT_EXT)
+
+      licenseFile.apply {
+        // Remove existing file
+        delete()
+
+        // Create new file
+        parentFile.mkdirs()
+        createNewFile()
+
+        // Copy HTML file to the assets directory
+        bufferedWriter().use { it.write(textFile.readText()) }
+      }
+
+      // Log output directory for user
+      logger.log(
+        LogLevel.LIFECYCLE,
+        "Copied Text report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
       )
     }
   }

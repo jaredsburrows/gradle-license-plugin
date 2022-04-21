@@ -172,6 +172,17 @@ Projects with multiple licenses are grouped as if those licenses were a single c
 
 Note, if no license information is found for a component, the `licenses` element in the JSON output will be an empty array.
 
+**Text Example (full):**
+```text
+Notice for packages
+
+Android GIF Drawable Library (1.2.3) - The MIT License
+Views and Drawable for displaying animated GIFs for Android
+https://github.com/koral--/android-gif-drawable
+
+design (26.1.0) - The Apache Software License
+```
+
 ## Configuration
 The plugin can be configured to generate specific reports and automatically copy the reports to the assets directory (Android projects only). The default behaviours are: 
 - Java projects: Generate HTML, JSON and CSV reports.
@@ -184,13 +195,15 @@ apply plugin: "com.jaredsburrows.license"
 
 licenseReport {
   generateCsvReport = false
-  generateHtmlReport = false
-  generateJsonReport = true
-  
+  generateHtmlReport = true
+  generateJsonReport = false
+  generateTextReport = false
+
   // These options are ignored for Java projects
   copyCsvReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
+  copyTextReportToAssets = false
 }
 ```
 

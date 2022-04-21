@@ -4,7 +4,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
 import static test.TestUtils.gradleWithCommand
-import static test.TestUtils.myGetLicenseText
+import static test.TestUtils.getLicenseText
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -61,6 +61,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -135,6 +136,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -189,7 +191,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -238,6 +240,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -290,6 +293,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -374,6 +378,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -466,6 +471,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -513,7 +519,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
             <li>
@@ -576,6 +582,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -643,7 +650,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -692,6 +699,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }
@@ -759,7 +767,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
             <a name="1934118923"></a>
-            <pre>${myGetLicenseText('apache-2.0.txt')}</pre>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
             <br>
             <hr>
           </ul>
@@ -808,6 +816,7 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
   }

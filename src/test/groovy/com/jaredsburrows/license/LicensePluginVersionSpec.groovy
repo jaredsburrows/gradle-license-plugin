@@ -184,7 +184,7 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'AGP version 4.1+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll def 'agp version 4.1+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -243,7 +243,7 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'AGP version 4.2+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll def 'agp version 4.2+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -302,7 +302,7 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'AGP version 7.0+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll def 'agp version 7.0+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -361,7 +361,7 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'AGP version 7.1+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll def 'agp version 7.1+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -419,7 +419,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
 
-  @Unroll def 'AGP version 7.2+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll def 'agp version 7.2+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -470,7 +470,7 @@ final class LicensePluginVersionSpec extends Specification {
         '7.4.2',
       ],
       [
-        '7.2.0-beta04',
+        '7.2.0-rc01',
       ]
     ].combinations()
   }
