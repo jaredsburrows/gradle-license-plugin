@@ -11,9 +11,9 @@ class CsvReport(private val projects: List<Model>) : Report {
 
   override fun toString(): String = report()
 
-  override fun name(): String = CSV_NAME
+  override fun name(): String = NAME
 
-  override fun extension(): String = CSV_EXTENSION
+  override fun extension(): String = EXTENSION
 
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
@@ -87,8 +87,8 @@ class CsvReport(private val projects: List<Model>) : Report {
   }
 
   private companion object {
-    private const val CSV_EXTENSION = "csv"
-    private const val CSV_NAME = "CSV"
+    private const val EXTENSION = "csv"
+    private const val NAME = "CSV"
     private const val COLUMNS =
       "project,description,version,developers,url,year,licenses,license urls,dependency"
     private const val EMPTY_CSV = ""

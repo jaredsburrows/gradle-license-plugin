@@ -108,10 +108,22 @@ final class LicensePluginSpec extends Specification {
     result.output.contains("'com.jaredsburrows.license' requires Java or Android Gradle Plugins.")
 
     where:
+    // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
     plugin << [
+      'assembler', // AssemblerPlugin
+      'assembler-lang', // AssemblerLangPlugin
       'c', // CPlugin
+      'c-lang', // CLangPlugin
       'cpp', // CppPlugin
+      'cpp-application', // CppApplicationPlugin
+      'cpp-lang', // CppLangPlugin
       'cpp-library', // CppLibraryPlugin
+      'objective-c', // ObjectiveCPlugin
+      'objective-c-lang', // ObjectiveCLangPlugin
+      'objective-cpp', // ObjectiveCppPlugin
+      'objective-cpp-lang', // ObjectiveCppLangPlugin
+      'swift-application', // SwiftApplicationPlugin
+      'swift-library', // SwiftLibraryPlugin
     ]
   }
 
@@ -132,15 +144,16 @@ final class LicensePluginSpec extends Specification {
     result.task(':licenseReport').outcome == SUCCESS
 
     where:
-    // https://github.com/gradle/gradle/find/master, search for gradle-plugins
+    // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
+    // Look into supporting java-platform, jvm-ecosystem
     javaPlugin << [
+      'antlr', // AntlrPlugin, applies JavaLibraryPlugin, JavaPlugin
       'application', // JavaApplicationPlugin, applies JavaPlugin
       'groovy', // GroovyPlugin, applies JavaPlugin
       'java', // JavaPlugin, applies JavaBasePlugin
       'java-gradle-plugin', // JavaGradlePluginPlugin, applies JavaLibraryPlugin, JavaPlugin
       'java-library', // JavaLibraryPlugin, applies JavaPlugin
       'java-library-distribution', // JavaLibraryDistributionPlugin, applies JavaPlugin
-      'java-platform', // JavaPlatformPlugin, can't use with JavaPlugin
       'scala', // ScalaPlugin, applies JavaPlugin
       'war', // WarPlugin, applies JavaPlugin
     ]
