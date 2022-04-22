@@ -13,6 +13,8 @@ import spock.lang.Unroll
 
 final class LicensePluginAndroidSpec extends Specification {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
+  private int compileSdkVersion = 32
+  private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString
   private String mavenRepoUrl
@@ -53,7 +55,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -117,7 +119,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -237,7 +239,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -362,7 +364,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -540,7 +542,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -597,7 +599,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -734,7 +736,7 @@ final class LicensePluginAndroidSpec extends Specification {
         apply plugin: 'com.jaredsburrows.license'
 
         android {
-          compileSdkVersion 28
+          compileSdkVersion $compileSdkVersion
 
           defaultConfig {
             applicationId 'com.example'
@@ -832,7 +834,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -970,7 +972,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -986,7 +988,7 @@ final class LicensePluginAndroidSpec extends Specification {
         apply plugin: 'com.android.library'
 
         android {
-          compileSdkVersion 28
+          compileSdkVersion $compileSdkVersion
         }
 
         dependencies {
@@ -1102,7 +1104,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 32
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -1168,7 +1170,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -1240,7 +1242,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
@@ -1343,7 +1345,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           applicationId 'com.example'
