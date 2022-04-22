@@ -8,8 +8,6 @@ internal fun Project.isJavaProject(): Boolean {
     listOf(
       // JavaPlugin
       "java",
-      // JavaPlatformPlugin
-      "java-platform"
     )
   )
 }

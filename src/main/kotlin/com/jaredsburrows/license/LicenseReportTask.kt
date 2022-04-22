@@ -18,7 +18,6 @@ import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -30,20 +29,18 @@ import java.util.UUID
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
 internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
 
-  @Internal var projects = mutableListOf<Model>()
   @Input var assetDirs = emptyList<File>()
-
-  @Optional @Input
-  var variantName: String? = null
-  private var pomConfiguration = "poms"
-  private var tempPomConfiguration = "tempPoms"
+  @Optional @Input var variantName: String? = null
 
   /**
    * Use a non-static parser instance to avoid errors with concurrent licenseReport tasks
    * in multi-project setups. See https://github.com/jaredsburrows/gradle-license-plugin/pull/191
    * for additional details.
    */
-  private var xmlParser = XmlParser(false, false)
+  private val xmlParser = XmlParser(false, false)
+  private val projects = mutableListOf<Model>()
+  private var pomConfiguration = "poms"
+  private var tempPomConfiguration = "tempPoms"
 
   @TaskAction fun licenseReport() {
     setupEnvironment()
@@ -52,45 +49,49 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
     // Create CSV report
     if (generateCsvReport) {
-      val report = CsvReport(projects)
-      createReport(file = csvFile) { report }
+      val csvReport = CsvReport(projects)
+      val csvFile = File(outputDir, "$name.${csvReport.extension()}")
+      createReport(file = csvFile) { csvReport }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
-        copyReport(file = csvFile) { report }
+        copyReport(file = csvFile) { csvReport }
       }
     }
 
     // Create HTML report
     if (generateHtmlReport) {
-      val report = HtmlReport(projects)
-      createReport(file = htmlFile) { report }
+      val htmlReport = HtmlReport(projects)
+      val htmlFile = File(outputDir, "$name.${htmlReport.extension()}")
+      createReport(file = htmlFile) { htmlReport }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
-        copyReport(file = htmlFile) { report }
+        copyReport(file = htmlFile) { htmlReport }
       }
     }
 
     // Create JSON report
     if (generateJsonReport) {
-      val report = JsonReport(projects)
-      createReport(file = jsonFile) { report }
+      val jsonReport = JsonReport(projects)
+      val jsonFile = File(outputDir, "$name.${jsonReport.extension()}")
+      createReport(file = jsonFile) { jsonReport }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
-        copyReport(file = jsonFile) { report }
+        copyReport(file = jsonFile) { jsonReport }
       }
     }
 
     // Create Text report
     if (generateTextReport) {
-      val report = TextReport(projects)
-      createReport(file = textFile) { report }
+      val textReport = TextReport(projects)
+      val textFile = File(outputDir, "$name.${textReport.extension()}")
+      createReport(file = textFile) { textReport }
 
       // If android project and copy enabled, copy to asset directory
       if (!variantName.isNullOrEmpty() && copyTextReportToAssets) {
-        copyReport(file = textFile) { report }
+        copyReport(file = textFile) { textReport }
       }
     }
   }
@@ -157,7 +158,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
           resolvedArtifacts.addAll(resolvedDependency.allModuleArtifacts)
         }
       } catch (e: Exception) {
-        logger.warn("Failed to process $resolvedDependency.name", e)
+        logger.warn("Failed to process ${resolvedDependency.name}", e)
       }
     }
     return resolvedArtifacts
@@ -277,7 +278,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   private fun <T : Report> createReport(file: File, report: () -> T) {
-    val resolvedReport = report()
+    val newReport = report()
 
     file.apply {
       // Remove existing file
@@ -288,22 +289,22 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       createNewFile()
 
       // Write report for file
-      bufferedWriter().use { it.write(resolvedReport.toString()) }
+      bufferedWriter().use { it.write(newReport.toString()) }
     }
 
     // Log output directory for user
     logger.log(
       LogLevel.LIFECYCLE,
-      "Wrote ${resolvedReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}."
+      "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}."
     )
   }
 
   private fun <T : Report> copyReport(file: File, report: () -> T) {
-    val resolvedReport = report()
+    val newReport = report()
 
     // Iterate through all asset directories
     assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES${resolvedReport.extension()}")
+      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES${newReport.extension()}")
 
       licenseFile.apply {
         // Remove existing file
@@ -320,7 +321,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       // Log output directory for user
       logger.log(
         LogLevel.LIFECYCLE,
-        "Copied ${resolvedReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+        "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
       )
     }
   }
@@ -435,7 +436,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return answer
   }
 
-  internal companion object {
+  private companion object {
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
