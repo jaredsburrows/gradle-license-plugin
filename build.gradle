@@ -2,12 +2,12 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.6.21'
-  id 'org.jetbrains.dokka' version '1.6.20'
-  id 'org.jlleitschuh.gradle.ktlint' version '10.2.1'
-  id 'com.vanniktech.maven.publish' version '0.19.0'
-  id 'com.gradle.plugin-publish' version '0.21.0'
-  id 'com.github.ben-manes.versions' version '0.42.0'
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.dokka)
+  alias(libs.plugins.ktlint)
+  alias(libs.plugins.maven.publish)
+  alias(libs.plugins.plugin.publish)
+  alias(libs.plugins.versions)
   id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
@@ -17,8 +17,6 @@ repositories {
   mavenCentral()
   google()
 }
-
-apply from: 'gradle/dependencies.gradle'
 
 group = GROUP
 version = VERSION_NAME
@@ -31,7 +29,7 @@ configurations.configureEach {
   resolutionStrategy {
     eachDependency { details ->
       if (details.requested.group == 'org.jetbrains.kotlin') {
-        details.useVersion versions.kotlin
+        details.useVersion libs.versions.kotlin.get()
       }
     }
   }
@@ -53,21 +51,22 @@ task createClasspathManifest() {
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly deps.android.tools.build.gradle
+  compileOnly libs.android.plugin
 
-  implementation deps.kotlin.stdlib.jdk
-  implementation deps.kotlinx.html
-  implementation deps.gson
-  implementation deps.maven
+  implementation(platform(libs.kotlin.bom))
+  implementation libs.kotlin.stdlib
+  implementation libs.kotlinx.html
+  implementation libs.gson
+  implementation libs.maven.model
 
   testRuntimeOnly files(createClasspathManifest)
-  testRuntimeOnly deps.android.tools.build.gradle
+  testRuntimeOnly libs.android.plugin
 
   testImplementation localGroovy()
   testImplementation gradleTestKit()
-  testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
-  testImplementation deps.xmlunit.matchers
-  testImplementation deps.commons.csv
+  testImplementation libs.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation libs.xmlunit
+  testImplementation libs.commons
 }
 
 gradlePlugin {
