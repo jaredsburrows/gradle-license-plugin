@@ -16,7 +16,6 @@ import org.apache.maven.model.Model
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
@@ -96,72 +95,57 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
   }
 
-  /** Iterate through all configurations and collect dependencies. */
-  private fun initDependencies() {
-    // Add POM information to our POM configuration
-    val configurationSet = linkedSetOf<Configuration>()
-    val configurations = project.configurations
+  /** Setup configurations to collect dependencies. */
+  private fun setupEnvironment() {
+    pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
+    tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
 
-    // Add "compile" configuration older java and android gradle plugins
-    configurations.find { it.name == "compile" }?.let {
-      configurationSet.add(configurations.getByName("compile"))
-    }
+    // Create temporary configuration in order to store POM information
+    project.configurations.apply {
+      create(pomConfiguration)
 
-    // Add "api" and "implementation" configurations for newer java-library and android gradle plugins
-    configurations.find { it.name == "api" }?.let {
-      configurationSet.add(configurations.getByName("api"))
-    }
-
-    configurations.find { it.name == "implementation" }?.let {
-      configurationSet.add(configurations.getByName("implementation"))
-    }
-
-    // If Android project, add extra configurations
-    variantName?.let { variant ->
-      configurations.find { it.name == "${variant}RuntimeClasspath" }?.also {
-        configurationSet.add(it)
-      }
-    }
-
-    // Iterate through all the configuration's dependencies
-    configurationSet.forEach { configuration ->
-      if (configuration.isCanBeResolved) {
-        val allDeps = configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies
-        getResolvedArtifactsFromResolvedDependencies(allDeps).forEach { artifact ->
-          val id = artifact.moduleVersion.id
-          val gav = "${id.group}:${id.name}:${id.version}@pom"
-          configurations.getByName(pomConfiguration).dependencies.add(
-            project.dependencies.add(pomConfiguration, gav)
-          )
+      forEach { configuration ->
+        try {
+          configuration.isCanBeResolved = true
+        } catch (e: Exception) {
+          logger.warn("Cannot resolve configuration ${configuration.name}", e)
         }
       }
     }
   }
 
-  private fun getResolvedArtifactsFromResolvedDependencies(
-    resolvedDependencies: Set<ResolvedDependency>
-  ): Set<ResolvedArtifact> {
-    val resolvedArtifacts = hashSetOf<ResolvedArtifact>()
-    for (resolvedDependency in resolvedDependencies) {
-      try {
-        if (resolvedDependency.moduleVersion == "unspecified") {
-          /**
-           * Attempting to getAllModuleArtifacts on a local library project will result
-           * in AmbiguousVariantSelectionException as there are not enough criteria
-           * to match a specific variant of the library project. Instead we skip the
-           * the library project itself and enumerate its dependencies.
-           */
-          resolvedArtifacts.addAll(
-            getResolvedArtifactsFromResolvedDependencies(resolvedDependency.children)
-          )
-        } else {
-          resolvedArtifacts.addAll(resolvedDependency.allModuleArtifacts)
-        }
-      } catch (e: Exception) {
-        logger.warn("Failed to process ${resolvedDependency.name}", e)
+  /** Iterate through all configurations and collect dependencies. */
+  private fun initDependencies() {
+    // Add POM information to our POM configuration
+    val configurationSet = linkedSetOf<Configuration>()
+    val configurationList = mutableListOf("api", "compile", "implementation")
+
+    // If Android project, add extra configurations
+    variantName?.let { variant ->
+      project.configurations.find { it.name == "${variant}RuntimeClasspath" }?.also {
+        configurationList.add(it.name)
       }
     }
-    return resolvedArtifacts
+
+    // Iterate through all the configuration's dependencies
+    project.configurations
+      .filter { configurationList.contains(it.name) }
+      .forEach { configurationSet.add(it) }
+
+    // Resolve the POM artifacts
+    configurationSet
+      .filter { it.isCanBeResolved }
+      .map { it.resolvedConfiguration }
+      .map { it.lenientConfiguration }
+      .map { it.allModuleDependencies }
+      .flatMap { getResolvedArtifactsFromResolvedDependencies(it) }
+      .forEach { artifact ->
+        val id = artifact.moduleVersion.id
+        val gav = "${id.group}:${id.name}:${id.version}@pom"
+        project.configurations.getByName(pomConfiguration).dependencies.add(
+          project.dependencies.add(pomConfiguration, gav)
+        )
+      }
   }
 
   /** Get POM information from the dependency artifacts. */
@@ -204,7 +188,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         // Search for licenses
         var licenses = findLicenses(pomFile)
         if (licenses.isEmpty()) {
-          logger.log(LogLevel.WARN, "$name dependency does not have a license.")
+          logger.warn("$name dependency does not have a license.")
           licenses = mutableListOf()
         }
 
@@ -234,26 +218,33 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     projects.sortBy { it.name.lowercase(Locale.getDefault()) }
   }
 
-  /** Setup configurations to collect dependencies. */
-  private fun setupEnvironment() {
-    pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
-    tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
-
-    // Create temporary configuration in order to store POM information
-    project.configurations.apply {
-      create(pomConfiguration)
-
-      forEach { configuration ->
-        try {
-          configuration.isCanBeResolved = true
-        } catch (ignored: Exception) {
+  private fun getResolvedArtifactsFromResolvedDependencies(
+    resolvedDependencies: Set<ResolvedDependency>
+  ): Set<ResolvedArtifact> {
+    val resolvedArtifacts = hashSetOf<ResolvedArtifact>()
+    resolvedDependencies.forEach { resolvedDependency ->
+      try {
+        when (resolvedDependency.moduleVersion) {
+          /**
+           * Attempting to getAllModuleArtifacts on a local library project will result
+           * in AmbiguousVariantSelectionException as there are not enough criteria
+           * to match a specific variant of the library project. Instead we skip the
+           * the library project itself and enumerate its dependencies.
+           */
+          "unspecified" -> resolvedArtifacts.addAll(
+            getResolvedArtifactsFromResolvedDependencies(resolvedDependency.children)
+          )
+          else -> resolvedArtifacts.addAll(resolvedDependency.allModuleArtifacts)
         }
+      } catch (e: Exception) {
+        logger.warn("Failed to process ${resolvedDependency.name}", e)
       }
     }
+    return resolvedArtifacts
   }
 
   /** Use Parent POM information when individual dependency license information is missing. */
-  protected open fun getParentPomFile(node: Node?): File? {
+  private fun getParentPomFile(node: Node?): File? {
     // Get parent POM information
     val parent = node?.getAt("parent")
     val groupId = parent?.getAt("groupId")?.text().orEmpty()
@@ -284,17 +275,13 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       // Remove existing file
       delete()
 
-      // Create directories
-      parentFile.mkdirs()
-      createNewFile()
-
       // Write report for file
-      bufferedWriter().use { it.write(newReport.toString()) }
+      parentFile.mkdirs()
+      writeText(newReport.toString())
     }
 
     // Log output directory for user
-    logger.log(
-      LogLevel.LIFECYCLE,
+    logger.lifecycle(
       "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}."
     )
   }
@@ -304,23 +291,19 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
     // Iterate through all asset directories
     assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES${newReport.extension()}")
+      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES.${newReport.extension()}")
 
       licenseFile.apply {
         // Remove existing file
         delete()
 
-        // Create new file
+        // Write report for file
         parentFile.mkdirs()
-        createNewFile()
-
-        // Copy report file to the assets directory
-        bufferedWriter().use { it.write(file.readText()) }
+        writeText(file.readText())
       }
 
       // Log output directory for user
-      logger.log(
-        LogLevel.LIFECYCLE,
+      logger.lifecycle(
         "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
       )
     }
@@ -330,8 +313,8 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     var uri: URI? = null
     try {
       uri = URL(licenseUrl).toURI()
-    } catch (ignored: Exception) {
-      logger.log(LogLevel.WARN, "$name dependency has an invalid license URL; skipping license")
+    } catch (e: Exception) {
+      logger.warn("$name dependency has an invalid license URL; skipping license", e)
     }
     return uri != null
   }
@@ -345,7 +328,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     // If the POM is missing a name, do not record it
     val name = getName(node)
     if (name.isEmpty()) {
-      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      logger.warn("POM file is missing a name: $pomFile")
       return ""
     }
 
@@ -368,7 +351,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     // If the POM is missing a name, do not record it
     val name = getName(node)
     if (name.isEmpty()) {
-      logger.log(LogLevel.WARN, "POM file is missing a name: $pomFile")
+      logger.warn("POM file is missing a name: $pomFile")
       return mutableListOf()
     }
 
@@ -399,7 +382,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       return licenses
     }
 
-    logger.log(LogLevel.INFO, "Project, $name, has no license in POM file.")
+    logger.info("Project, $name, has no license in POM file.")
 
     if (!node.getAt("parent").isEmpty()) {
       return findLicenses(getParentPomFile(node))

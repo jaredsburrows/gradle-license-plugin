@@ -14,7 +14,6 @@ import spock.lang.Unroll
 final class LicensePluginAndroidSpec extends Specification {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private int compileSdkVersion = 32
-  private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString
   private String mavenRepoUrl
@@ -65,7 +64,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -80,20 +81,26 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       []
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -136,7 +143,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -169,7 +178,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -205,15 +214,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -261,7 +276,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -294,7 +311,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -330,15 +347,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -400,7 +423,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -441,7 +466,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -507,15 +532,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseFlavor1Flavor3DebugReport', 'licenseFlavor1Flavor3ReleaseReport',
@@ -616,7 +647,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -651,7 +684,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -689,7 +722,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt").text.stripIndent().trim()
+    def actualText = new File(reportFolder, "${taskName}.txt")
     def expectedText =
       """
       Notice for packages
@@ -705,12 +738,17 @@ final class LicensePluginAndroidSpec extends Specification {
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
-    expectedText == actualText
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
+    expectedText == actualText.text.stripIndent().trim()
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -750,7 +788,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -775,7 +815,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -793,15 +833,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -857,7 +903,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -893,7 +941,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -931,15 +979,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -999,7 +1053,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1038,7 +1094,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -1076,15 +1132,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -1132,14 +1194,24 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def actualJson = new File(reportFolder, "${taskName}.json")
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
+    actualText.exists()
     if (copyEnabled) {
+      openSourceHtml.exists()
       result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
       result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
       result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
@@ -1198,13 +1270,23 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def actualJson = new File(reportFolder, "${taskName}.json")
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     !result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    !actualCsv.exists()
     !result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    !actualHtml.exists()
+    !openSourceHtml.exists()
     !result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    !actualJson.exists()
     !result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
+    !actualText.exists()
     !result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
     !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
     !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
@@ -1256,8 +1338,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1284,6 +1367,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -1304,15 +1388,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -1359,8 +1449,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def actualCsv = new File(reportFolder, "${taskName}.csv")
+    def actualHtml = new File(reportFolder, "${taskName}.html")
+    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1387,6 +1478,7 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
+    def actualJson = new File(reportFolder, "${taskName}.json")
     def expectedJson =
       """
       [
@@ -1407,15 +1499,21 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
+    def actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    actualCsv.exists()
     result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    actualHtml.exists()
+    openSourceHtml.exists()
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    actualJson.exists()
     result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    assertHtml(expectedHtml, actualHtml)
-    assertJson(expectedJson, actualJson)
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
