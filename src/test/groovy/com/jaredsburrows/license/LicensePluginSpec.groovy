@@ -11,6 +11,8 @@ import spock.lang.Unroll
 
 final class LicensePluginSpec extends Specification {
   @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
+  private int compileSdkVersion = 32
+  private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString
   private File buildFile
@@ -162,7 +164,7 @@ final class LicensePluginSpec extends Specification {
         }
 
         dependencies {
-          classpath "com.android.tools.build:gradle:3.6.4"
+          classpath "com.android.tools.build:gradle:$agpVersion"
           classpath files($classpathString)
         }
       }
@@ -171,7 +173,7 @@ final class LicensePluginSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           if (project.plugins.hasPlugin("com.android.application")) applicationId 'com.example'
@@ -189,7 +191,7 @@ final class LicensePluginSpec extends Specification {
         }
 
         dependencies {
-          classpath "com.android.tools.build:gradle:3.6.4"
+          classpath "com.android.tools.build:gradle:$agpVersion"
           classpath files($classpathString)
         }
       }
@@ -198,7 +200,7 @@ final class LicensePluginSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
 
       android {
-        compileSdkVersion 28
+        compileSdkVersion $compileSdkVersion
 
         defaultConfig {
           if (project.plugins.hasPlugin("com.android.application")) applicationId 'com.example'
