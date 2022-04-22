@@ -6,13 +6,10 @@ import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import com.jaredsburrows.license.internal.report.Report
 import com.jaredsburrows.license.internal.report.TextReport
-import groovy.namespace.QName
-import groovy.util.Node
-import groovy.util.NodeList
-import groovy.xml.XmlParser
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
@@ -20,6 +17,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.io.FileReader
 import java.net.URI
 import java.net.URL
 import java.util.Locale
@@ -31,20 +29,16 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   @Input var assetDirs = emptyList<File>()
   @Optional @Input var variantName: String? = null
 
-  /**
-   * Use a non-static parser instance to avoid errors with concurrent licenseReport tasks
-   * in multi-project setups. See https://github.com/jaredsburrows/gradle-license-plugin/pull/191
-   * for additional details.
-   */
-  private val xmlParser = XmlParser(false, false)
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
   @TaskAction fun licenseReport() {
+    val mavenReader = MavenXpp3Reader()
+
     setupEnvironment()
     initDependencies()
-    generatePOMInfo()
+    generatePOMInfo(mavenReader)
 
     // Create CSV report
     if (generateCsvReport) {
@@ -149,7 +143,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Get POM information from the dependency artifacts. */
-  private fun generatePOMInfo() {
+  private fun generatePOMInfo(mavenReader: MavenXpp3Reader) {
     // Iterate through all POMs in order from our custom POM configuration
     project
       .configurations
@@ -165,28 +159,28 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
         // POM of artifact
         val pomFile = resolvedArtifact.file
-        val node = xmlParser.parse(pomFile)
+        val model = mavenReader.read(FileReader(pomFile), false)
 
         // License information
-        val name = getName(node).trim()
-        val description = node.getAt("description").text().trim()
-        var version = node.getAt("version").text().trim()
+        val name = getName(model).trim()
+        val description = model.description.orEmpty().trim()
+        var version = model.version.orEmpty().trim()
         val developers = mutableListOf<Developer>()
-        if (node.getAt("developers").isNotEmpty()) {
-          node.getAt("developers").getAt("developer").forEach { developer ->
+        if (model.developers.orEmpty().isNotEmpty()) {
+          model.developers.orEmpty().forEach { developer ->
             developers.add(
               Developer().apply {
-                id = (developer as Node).getAt("name").text().trim()
+                id = developer.name.orEmpty().trim()
               }
             )
           }
         }
 
-        val url = node.getAt("url").text().trim()
-        val inceptionYear = node.getAt("inceptionYear").text().trim()
+        val url = model.url.orEmpty().trim()
+        val inceptionYear = model.inceptionYear.orEmpty().trim()
 
         // Search for licenses
-        var licenses = findLicenses(pomFile)
+        var licenses = findLicenses(mavenReader, pomFile)
         if (licenses.isEmpty()) {
           logger.warn("$name dependency does not have a license.")
           licenses = mutableListOf()
@@ -194,7 +188,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
         // Search for version
         if (version.isEmpty()) {
-          version = findVersion(pomFile)
+          version = findVersion(mavenReader, pomFile)
         }
 
         // Store the information that we need
@@ -206,8 +200,8 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
           this.url = url
           this.developers = developers
           this.inceptionYear = inceptionYear
-          this.groupId = module.group
-          this.artifactId = module.name
+          this.groupId = module.group.orEmpty().trim()
+          this.artifactId = module.name.orEmpty().trim()
           this.version = version
         }
 
@@ -244,12 +238,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Use Parent POM information when individual dependency license information is missing. */
-  private fun getParentPomFile(node: Node?): File? {
+  private fun getParentPomFile(model: Model): File? {
     // Get parent POM information
-    val parent = node?.getAt("parent")
-    val groupId = parent?.getAt("groupId")?.text().orEmpty()
-    val artifactId = parent?.getAt("artifactId")?.text().orEmpty()
-    val version = parent?.getAt("version")?.text().orEmpty()
+    val parent = model.parent
+    val groupId = parent?.groupId.orEmpty()
+    val artifactId = parent?.artifactId.orEmpty()
+    val version = parent?.version.orEmpty()
     val dependency = "$groupId:$artifactId:$version@pom"
 
     // Add dependency to temporary configuration
@@ -319,43 +313,44 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return uri != null
   }
 
-  private fun findVersion(pomFile: File?): String {
+  private fun findVersion(mavenReader: MavenXpp3Reader, pomFile: File?): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
-    val node = xmlParser.parse(pomFile)
+    val model = mavenReader.read(FileReader(pomFile!!), false)
 
     // If the POM is missing a name, do not record it
-    val name = getName(node)
+    val name = getName(model)
     if (name.isEmpty()) {
       logger.warn("POM file is missing a name: $pomFile")
       return ""
     }
 
-    if (node.getAt("version").isNotEmpty()) {
-      return node.getAt("version").text().trim()
+    val version = model.version.orEmpty().trim()
+    if (version.isNotEmpty()) {
+      return version.trim()
     }
 
-    if (node.getAt("parent").isNotEmpty()) {
-      return findVersion(getParentPomFile(node))
+    if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
+      return findVersion(mavenReader, getParentPomFile(model))
     }
     return ""
   }
 
-  private fun findLicenses(pomFile: File?): List<License> {
+  private fun findLicenses(mavenReader: MavenXpp3Reader, pomFile: File?): List<License> {
     if (pomFile.isNullOrEmpty()) {
       return mutableListOf()
     }
-    val node = xmlParser.parse(pomFile)
+    val model = mavenReader.read(FileReader(pomFile!!), false)
 
     // If the POM is missing a name, do not record it
-    val name = getName(node)
+    val name = getName(model)
     if (name.isEmpty()) {
       logger.warn("POM file is missing a name: $pomFile")
       return mutableListOf()
     }
 
-    if (ANDROID_SUPPORT_GROUP_ID == node.getAt("groupId").text()) {
+    if (ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
       return listOf(
         License().apply {
           this.name = APACHE_LICENSE_NAME
@@ -365,11 +360,11 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
 
     // License information found
-    if (node.getAt("licenses").isNotEmpty()) {
+    if (model.licenses.orEmpty().isNotEmpty()) {
       val licenses = mutableListOf<License>()
-      (node.getAt("licenses")[0] as Node).getAt("license").forEach { license ->
-        val licenseName = (license as Node).getAt("name").text().trim()
-        val licenseUrl = license.getAt("url").text().trim()
+      model.licenses.orEmpty().forEach { license ->
+        val licenseName = license.name.orEmpty().trim()
+        val licenseUrl = license.url.orEmpty().trim()
         if (isUrlValid(licenseUrl)) {
           licenses.add(
             License().apply {
@@ -384,40 +379,17 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
     logger.info("Project, $name, has no license in POM file.")
 
-    if (!node.getAt("parent").isEmpty()) {
-      return findLicenses(getParentPomFile(node))
+    if (model.parent?.artifactId.orEmpty().trim().isNotEmpty()) {
+      return findLicenses(mavenReader, getParentPomFile(model))
     }
     return mutableListOf()
   }
 
-  private fun getName(node: Node): String {
-    return node.getAt("name").text().trim().ifEmpty {
-      node.getAt("artifactId").text()
-    }.trim()
+  private fun getName(model: Model): String {
+    return model.name.orEmpty().trim().ifEmpty { model.artifactId.orEmpty().trim() }
   }
 
   private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
-
-  private fun Node.getAt(name: String): NodeList {
-    val answer = NodeList()
-    val var3 = this.children().iterator()
-
-    while (var3.hasNext()) {
-      val child = var3.next()
-      if (child is Node) {
-        val childNodeName = child.name()
-        if (childNodeName is QName) {
-          if (childNodeName.matches(name)) {
-            answer.add(child)
-          }
-        } else if (name == childNodeName) {
-          answer.add(child)
-        }
-      }
-    }
-
-    return answer
-  }
 
   private companion object {
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"

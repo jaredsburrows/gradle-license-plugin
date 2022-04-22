@@ -1,6 +1,5 @@
 ext.versions = [
   'kotlin': '1.6.21',
-  'groovy': '3.0.9',
 ]
 
 ext.deps = [
@@ -8,14 +7,10 @@ ext.deps = [
     'stdlib': [
       'jdk': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
     ],
-    'gradle': [
-      'plugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
-    ],
   ],
   'kotlinx': [
     'html': 'org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.5',
   ],
-  'groovy' : "org.codehaus.groovy:groovy-all:$versions.groovy",
   'gson'   : 'com.google.code.gson:gson:2.9.0',
   'maven'  : 'org.apache.maven:maven-model:3.8.5',
   'android': [
