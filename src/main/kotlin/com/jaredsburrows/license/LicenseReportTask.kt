@@ -145,20 +145,15 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   /** Get POM information from the dependency artifacts. */
   private fun generatePOMInfo(mavenReader: MavenXpp3Reader) {
     // Iterate through all POMs in order from our custom POM configuration
-    project
-      .configurations
+    project.configurations
       .getByName(pomConfiguration)
       .resolvedConfiguration
       .lenientConfiguration
-      .artifacts.forEach { resolvedArtifact ->
-
-        // Skip artifact processing for non-pom type artifacts
-        if (resolvedArtifact.type != "pom") {
-          return@forEach
-        }
-
+      .artifacts
+      .filter { it.type == "pom" }
+      .map { artifact ->
         // POM of artifact
-        val pomFile = resolvedArtifact.file
+        val pomFile = artifact.file
         val model = mavenReader.read(FileReader(pomFile), false)
 
         // License information
@@ -166,16 +161,13 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         val description = model.description.orEmpty().trim()
         var version = model.version.orEmpty().trim()
         val developers = mutableListOf<Developer>()
-        if (model.developers.orEmpty().isNotEmpty()) {
-          model.developers.orEmpty().forEach { developer ->
-            developers.add(
-              Developer().apply {
-                id = developer.name.orEmpty().trim()
-              }
-            )
-          }
+        model.developers.orEmpty().forEach { developer ->
+          developers.add(
+            Developer().apply {
+              id = developer.name.orEmpty().trim()
+            }
+          )
         }
-
         val url = model.url.orEmpty().trim()
         val inceptionYear = model.inceptionYear.orEmpty().trim()
 
@@ -192,7 +184,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         }
 
         // Store the information that we need
-        val module = resolvedArtifact.moduleVersion.id
+        val module = artifact.moduleVersion.id
         val project = Model().apply {
           this.name = name
           this.description = description
