@@ -1,7 +1,8 @@
 package test
 
-import com.google.gson.JsonParser
 import com.jaredsburrows.license.internal.report.HtmlReport
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import org.apache.commons.csv.CSVFormat
 import org.gradle.testkit.runner.GradleRunner
 import org.xmlunit.builder.DiffBuilder
@@ -30,8 +31,9 @@ final class TestUtils {
   }
 
   static def assertJson(def expected, def actual) {
-    def parser = new JsonParser()
-    return parser.parseString(actual).toString() == parser.parseString(expected).toString()
+    def moshi = new Moshi.Builder().build()
+    def jsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, Map.class, String.class, Object.class))
+    return jsonAdapter.fromJson(expected) == jsonAdapter.fromJson(actual)
   }
 
   static def gradleWithCommand(def file, String... commands) {

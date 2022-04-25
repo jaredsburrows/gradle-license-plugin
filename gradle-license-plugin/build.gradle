@@ -31,7 +31,7 @@ dependencies {
   implementation(platform(libs.kotlin.bom))
   implementation libs.kotlin.stdlib
   implementation libs.kotlinx.html
-  implementation libs.gson
+  implementation libs.moshi
   implementation libs.maven.model
 
   testRuntimeOnly files(createClasspathManifest)

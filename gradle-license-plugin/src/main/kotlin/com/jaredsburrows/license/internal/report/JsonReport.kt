@@ -1,7 +1,7 @@
 package com.jaredsburrows.license.internal.report
 
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import org.apache.maven.model.Model
 
 /**
@@ -42,7 +42,14 @@ class JsonReport(private val projects: List<Model>) : Report {
       )
     }
 
-    return gson.toJson(reportList, object : TypeToken<MutableList<Map<String, Any?>>>() {}.type)
+    return moshi.adapter<List<Map<String, Any?>>>(
+      Types.newParameterizedType(
+        List::class.java,
+        Map::class.java,
+        String::class.java,
+        Any::class.java
+      )
+    ).serializeNulls().toJson(reportList)
   }
 
   override fun emptyReport(): String = EMPTY_JSON
@@ -61,9 +68,6 @@ class JsonReport(private val projects: List<Model>) : Report {
     private const val LICENSE_URL = "license_url"
     private const val DEPENDENCY = "dependency"
     private const val EMPTY_JSON = "[]"
-    private val gson = GsonBuilder()
-      .setPrettyPrinting()
-      .serializeNulls()
-      .create()
+    private val moshi = Moshi.Builder().build()
   }
 }
