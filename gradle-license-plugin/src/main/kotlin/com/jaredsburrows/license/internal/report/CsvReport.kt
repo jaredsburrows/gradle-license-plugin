@@ -19,7 +19,7 @@ class CsvReport(private val projects: List<Model>) : Report {
 
   override fun fullReport(): String {
     val projectInfoList = mutableListOf<String>()
-    projectInfoList.add(COLUMNS)
+    projectInfoList += COLUMNS
 
     projects.map { project ->
       val projectInfo = mutableListOf<String?>().apply {
@@ -52,7 +52,7 @@ class CsvReport(private val projects: List<Model>) : Report {
       }
 
       // Add each row to the list
-      projectInfoList.add(projectInfo.toCsv())
+      projectInfoList += projectInfo.toCsv()
     }
 
     // Separate each record with a new line

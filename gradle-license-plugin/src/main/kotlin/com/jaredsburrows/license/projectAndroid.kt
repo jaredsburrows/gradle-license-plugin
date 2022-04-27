@@ -45,36 +45,39 @@ internal fun Project.configureAndroidProject() {
     when (it) {
       is AppPlugin -> {
         project.extensions.getByType(AppExtension::class.java).run {
-          configureVariant(applicationVariants)
-          configureVariant(testVariants)
-          configureVariant(unitTestVariants)
+          configureVariant(this, applicationVariants)
+          configureVariant(this, testVariants)
+          configureVariant(this, unitTestVariants)
         }
       }
       is FeaturePlugin -> {
         project.extensions.getByType(FeatureExtension::class.java).run {
-          configureVariant(featureVariants)
-          configureVariant(libraryVariants)
-          configureVariant(testVariants)
-          configureVariant(unitTestVariants)
+          configureVariant(this, featureVariants)
+          configureVariant(this, libraryVariants)
+          configureVariant(this, testVariants)
+          configureVariant(this, unitTestVariants)
         }
       }
       is LibraryPlugin -> {
         project.extensions.getByType(LibraryExtension::class.java).run {
-          configureVariant(libraryVariants)
-          configureVariant(testVariants)
-          configureVariant(unitTestVariants)
+          configureVariant(this, libraryVariants)
+          configureVariant(this, testVariants)
+          configureVariant(this, unitTestVariants)
         }
       }
       is TestPlugin -> {
         project.extensions.getByType(TestExtension::class.java).run {
-          configureVariant(applicationVariants)
+          configureVariant(this, applicationVariants)
         }
       }
     }
   }
 }
 
-private fun Project.configureVariant(variants: DomainObjectSet<out BaseVariant>? = null) {
+private fun Project.configureVariant(
+  baseExtension: BaseExtension,
+  variants: DomainObjectSet<out BaseVariant>? = null
+) {
   // Configure tasks for all variants
   variants?.all { variant ->
     val name = variant.name.replaceFirstChar {
@@ -86,7 +89,7 @@ private fun Project.configureVariant(variants: DomainObjectSet<out BaseVariant>?
     }
 
     tasks.register("license${name}Report", LicenseReportTask::class.java) {
-      it.assetDirs = (extensions.getByName("android") as BaseExtension)
+      it.assetDirs = baseExtension
         .sourceSets
         .getByName("main")
         .assets
