@@ -20,8 +20,8 @@ class TextReport(private val projects: List<Model>) : Report {
 
   override fun fullReport(): String {
     val projectInfoList = mutableListOf<String>()
-    projectInfoList.add("Notice for packages")
-    projectInfoList.add("\n")
+    projectInfoList += "Notice for packages"
+    projectInfoList += "\n"
 
     projects.map { project ->
       val projectInfo = mutableListOf<String>()
@@ -82,10 +82,10 @@ class TextReport(private val projects: List<Model>) : Report {
           """
       }.trimIndent()
 
-      projectInfo.add(text)
+      projectInfo += text
 
       // Add each license to the list
-      projectInfoList.add(projectInfo.joinToString(separator = ""))
+      projectInfoList += projectInfo.joinToString(separator = "")
     }
 
     // Separate each record with a new line

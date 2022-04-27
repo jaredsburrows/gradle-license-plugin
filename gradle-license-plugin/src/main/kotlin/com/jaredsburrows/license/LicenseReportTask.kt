@@ -116,15 +116,15 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
     // If Android project, add extra configurations
     variantName?.let { variant ->
-      project.configurations.find { it.name == "${variant}RuntimeClasspath" }?.also {
-        configurationList.add(it.name)
-      }
+      project.configurations
+        .find { it.name == "${variant}RuntimeClasspath" }
+        ?.also { configurationList += it.name }
     }
 
     // Iterate through all the configuration's dependencies
     project.configurations
       .filter { configurationList.contains(it.name) }
-      .forEach { configurationSet.add(it) }
+      .forEach { configurationSet += it }
 
     // Resolve the POM artifacts
     configurationSet
@@ -136,9 +136,9 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       .forEach { artifact ->
         val id = artifact.moduleVersion.id
         val gav = "${id.group}:${id.name}:${id.version}@pom"
-        project.configurations.getByName(pomConfiguration).dependencies.add(
-          project.dependencies.add(pomConfiguration, gav)
-        )
+        project.configurations
+          .getByName(pomConfiguration)
+          .dependencies += project.dependencies.add(pomConfiguration, gav)
       }
   }
 
@@ -156,21 +156,6 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         val pomFile = artifact.file
         val model = mavenReader.read(FileReader(pomFile), false)
 
-        // License information
-        val name = getName(model).trim()
-        val description = model.description.orEmpty().trim()
-        var version = model.version.orEmpty().trim()
-        val developers = mutableListOf<Developer>()
-        model.developers.orEmpty().forEach { developer ->
-          developers.add(
-            Developer().apply {
-              id = developer.name.orEmpty().trim()
-            }
-          )
-        }
-        val url = model.url.orEmpty().trim()
-        val inceptionYear = model.inceptionYear.orEmpty().trim()
-
         // Search for licenses
         var licenses = findLicenses(mavenReader, pomFile)
         if (licenses.isEmpty()) {
@@ -178,26 +163,21 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
           licenses = mutableListOf()
         }
 
-        // Search for version
-        if (version.isEmpty()) {
-          version = findVersion(mavenReader, pomFile)
-        }
-
         // Store the information that we need
         val module = artifact.moduleVersion.id
         val project = Model().apply {
-          this.name = name
-          this.description = description
-          this.licenses = licenses
-          this.url = url
-          this.developers = developers
-          this.inceptionYear = inceptionYear
           this.groupId = module.group.orEmpty().trim()
           this.artifactId = module.name.orEmpty().trim()
-          this.version = version
+          this.version = model.pomVersion(mavenReader, pomFile)
+          this.name = model.pomName()
+          this.description = model.pomDescription()
+          this.url = model.pomUrl()
+          this.inceptionYear = model.pomInceptionYear()
+          this.licenses = licenses
+          this.developers = model.pomDevelopers()
         }
 
-        projects.add(project)
+        projects += project
       }
 
     // Sort POM information by name
@@ -217,10 +197,10 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
            * to match a specific variant of the library project. Instead we skip the
            * the library project itself and enumerate its dependencies.
            */
-          "unspecified" -> resolvedArtifacts.addAll(
-            getResolvedArtifactsFromResolvedDependencies(resolvedDependency.children)
+          "unspecified" -> resolvedArtifacts += getResolvedArtifactsFromResolvedDependencies(
+            resolvedDependency.children
           )
-          else -> resolvedArtifacts.addAll(resolvedDependency.allModuleArtifacts)
+          else -> resolvedArtifacts += resolvedDependency.allModuleArtifacts
         }
       } catch (e: Exception) {
         logger.warn("Failed to process ${resolvedDependency.name}", e)
@@ -241,9 +221,9 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     // Add dependency to temporary configuration
     val configurations = project.configurations
     configurations.create(tempPomConfiguration)
-    configurations.getByName(tempPomConfiguration).dependencies.add(
-      project.dependencies.add(tempPomConfiguration, dependency)
-    )
+    configurations
+      .getByName(tempPomConfiguration)
+      .dependencies += project.dependencies.add(tempPomConfiguration, dependency)
 
     val pomFile = project.configurations.getByName(tempPomConfiguration)
       .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
@@ -295,16 +275,6 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
   }
 
-  private fun isUrlValid(licenseUrl: String): Boolean {
-    var uri: URI? = null
-    try {
-      uri = URL(licenseUrl).toURI()
-    } catch (e: Exception) {
-      logger.warn("$name dependency has an invalid license URL; skipping license", e)
-    }
-    return uri != null
-  }
-
   private fun findVersion(mavenReader: MavenXpp3Reader, pomFile: File?): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
@@ -312,7 +282,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     val model = mavenReader.read(FileReader(pomFile!!), false)
 
     // If the POM is missing a name, do not record it
-    val name = getName(model)
+    val name = model.pomName()
     if (name.isEmpty()) {
       logger.warn("POM file is missing a name: $pomFile")
       return ""
@@ -336,7 +306,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     val model = mavenReader.read(FileReader(pomFile!!), false)
 
     // If the POM is missing a name, do not record it
-    val name = getName(model)
+    val name = model.pomName()
     if (name.isEmpty()) {
       logger.warn("POM file is missing a name: $pomFile")
       return mutableListOf()
@@ -357,13 +327,11 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       model.licenses.orEmpty().forEach { license ->
         val licenseName = license.name.orEmpty().trim()
         val licenseUrl = license.url.orEmpty().trim()
-        if (isUrlValid(licenseUrl)) {
-          licenses.add(
-            License().apply {
-              this.name = licenseName
-              url = licenseUrl
-            }
-          )
+        if (licenseUrl.isUrlValid()) {
+          licenses += License().apply {
+            this.name = licenseName
+            url = licenseUrl
+          }
         }
       }
       return licenses
@@ -377,8 +345,44 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return mutableListOf()
   }
 
-  private fun getName(model: Model): String {
-    return model.name.orEmpty().trim().ifEmpty { model.artifactId.orEmpty().trim() }
+  private fun String.isUrlValid(): Boolean {
+    var uri: URI? = null
+    try {
+      uri = URL(this).toURI()
+    } catch (e: Exception) {
+      logger.warn("$this dependency has an invalid license URL; skipping license", e)
+    }
+    return uri != null
+  }
+
+  private fun Model.pomVersion(mavenReader: MavenXpp3Reader, pomFile: File?): String {
+    return version.orEmpty().trim().ifEmpty { findVersion(mavenReader, pomFile) }
+  }
+
+  private fun Model.pomName(): String {
+    return name.orEmpty().trim().ifEmpty { artifactId.orEmpty().trim() }
+  }
+
+  private fun Model.pomDescription(): String {
+    return description.orEmpty().trim()
+  }
+
+  private fun Model.pomUrl(): String {
+    return url.orEmpty().trim()
+  }
+
+  private fun Model.pomInceptionYear(): String {
+    return inceptionYear.orEmpty().trim()
+  }
+
+  private fun Model.pomDevelopers(): List<Developer> {
+    val developers = mutableListOf<Developer>()
+    this.developers.orEmpty().forEach { developer ->
+      developers += Developer().apply {
+        id = developer.name.orEmpty().trim()
+      }
+    }
+    return developers
   }
 
   private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L

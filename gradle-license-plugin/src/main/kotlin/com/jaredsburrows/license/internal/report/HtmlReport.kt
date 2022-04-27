@@ -53,7 +53,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
 
       // first check to see if the project's license is in our list of known licenses.
       if (project.licenses.isNotEmpty()) {
-        project.licenses.forEach { license -> keys.add(getLicenseKey(license)) }
+        project.licenses.forEach { license -> keys += getLicenseKey(license) }
       }
 
       keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
