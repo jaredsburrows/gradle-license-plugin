@@ -19,8 +19,15 @@ task createClasspathManifest() {
   doLast {
     outputDir.mkdirs()
     // Combine both main and test plugin classpaths
-    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') +
-      '\n' + sourceSets.test.runtimeClasspath.join('\n')
+    def set = new HashSet<String>()
+    sourceSets.main.runtimeClasspath.files.forEach {
+      set.add(it.path)
+    }
+    sourceSets.test.runtimeClasspath.files.forEach {
+      set.add(it.path)
+    }
+    def list = new ArrayList<String>(set)
+    file("$outputDir/plugin-classpath.txt").text = String.join("\n", list)
   }
 }
 
@@ -44,6 +51,18 @@ dependencies {
   testImplementation libs.commons
 }
 
+pluginBundle {
+  website = POM_URL
+  vcsUrl = POM_SCM_URL
+  description = POM_DESCRIPTION
+  tags = ['license']
+
+  plugins {
+    licensePlugin {
+      displayName = POM_NAME
+    }
+  }
+}
 gradlePlugin {
   plugins {
     licensePlugin {

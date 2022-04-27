@@ -13,11 +13,6 @@ plugins {
   id 'groovy'
 }
 
-repositories {
-  mavenCentral()
-  google()
-}
-
 configurations.configureEach {
   resolutionStrategy {
     eachDependency { details ->
@@ -30,8 +25,9 @@ configurations.configureEach {
 
 subprojects {
   repositories {
-    mavenCentral()
+    gradlePluginPortal()
     google()
+    mavenCentral()
   }
 
   tasks.withType(Jar).configureEach {
