@@ -3,8 +3,6 @@ package com.jaredsburrows.license
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.FeatureExtension
-import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.TestExtension
@@ -21,8 +19,6 @@ internal fun Project.isAndroidProject(): Boolean {
       // AppPlugin
       "android",
       "com.android.application",
-      // FeaturePlugin
-      "com.android.feature",
       // LibraryPlugin
       "android-library",
       "com.android.library",
@@ -46,14 +42,6 @@ internal fun Project.configureAndroidProject() {
       is AppPlugin -> {
         project.extensions.getByType(AppExtension::class.java).run {
           configureVariant(this, applicationVariants)
-          configureVariant(this, testVariants)
-          configureVariant(this, unitTestVariants)
-        }
-      }
-      is FeaturePlugin -> {
-        project.extensions.getByType(FeatureExtension::class.java).run {
-          configureVariant(this, featureVariants)
-          configureVariant(this, libraryVariants)
           configureVariant(this, testVariants)
           configureVariant(this, unitTestVariants)
         }
