@@ -11,8 +11,10 @@ import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
@@ -35,10 +37,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
   @TaskAction fun licenseReport() {
     val mavenReader = MavenXpp3Reader()
+    val configurations: ConfigurationContainer = project.configurations
+    val dependencies: DependencyHandler = project.dependencies
 
-    setupEnvironment()
-    initDependencies()
-    generatePOMInfo(mavenReader)
+    setupEnvironment(configurations)
+    initDependencies(configurations)
+    generatePOMInfo(mavenReader, configurations, dependencies)
 
     // Create CSV report
     if (generateCsvReport) {
@@ -90,12 +94,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Setup configurations to collect dependencies. */
-  private fun setupEnvironment() {
+  private fun setupEnvironment(configurations: ConfigurationContainer) {
     pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
     tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
-    project.configurations.apply {
+    configurations.apply {
       create(pomConfiguration)
 
       forEach { configuration ->
@@ -109,20 +113,20 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Iterate through all configurations and collect dependencies. */
-  private fun initDependencies() {
+  private fun initDependencies(configurations: ConfigurationContainer) {
     // Add POM information to our POM configuration
     val configurationSet = linkedSetOf<Configuration>()
     val configurationList = mutableListOf("api", "compile", "implementation")
 
     // If Android project, add extra configurations
     variantName?.let { variant ->
-      project.configurations
+      configurations
         .find { it.name == "${variant}RuntimeClasspath" }
         ?.also { configurationList += it.name }
     }
 
     // Iterate through all the configuration's dependencies
-    project.configurations
+    configurations
       .filter { configurationList.contains(it.name) }
       .forEach { configurationSet += it }
 
@@ -136,16 +140,20 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
       .forEach { artifact ->
         val id = artifact.moduleVersion.id
         val gav = "${id.group}:${id.name}:${id.version}@pom"
-        project.configurations
+        configurations
           .getByName(pomConfiguration)
           .dependencies += project.dependencies.add(pomConfiguration, gav)
       }
   }
 
   /** Get POM information from the dependency artifacts. */
-  private fun generatePOMInfo(mavenReader: MavenXpp3Reader) {
+  private fun generatePOMInfo(
+    mavenReader: MavenXpp3Reader,
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler
+  ) {
     // Iterate through all POMs in order from our custom POM configuration
-    project.configurations
+    configurations
       .getByName(pomConfiguration)
       .resolvedConfiguration
       .lenientConfiguration
@@ -157,7 +165,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         val model = mavenReader.read(FileReader(pomFile), false)
 
         // Search for licenses
-        var licenses = findLicenses(mavenReader, pomFile)
+        var licenses = findLicenses(mavenReader, pomFile, configurations, dependencies)
         if (licenses.isEmpty()) {
           logger.warn("$name dependency does not have a license.")
           licenses = mutableListOf()
@@ -168,7 +176,7 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
         val project = Model().apply {
           this.groupId = module.group.orEmpty().trim()
           this.artifactId = module.name.orEmpty().trim()
-          this.version = model.pomVersion(mavenReader, pomFile)
+          this.version = model.pomVersion(mavenReader, pomFile, configurations, dependencies)
           this.name = model.pomName()
           this.description = model.pomDescription()
           this.url = model.pomUrl()
@@ -210,7 +218,11 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
   }
 
   /** Use Parent POM information when individual dependency license information is missing. */
-  private fun getParentPomFile(model: Model): File? {
+  private fun getParentPomFile(
+    model: Model,
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler
+  ): File? {
     // Get parent POM information
     val parent = model.parent
     val groupId = parent?.groupId.orEmpty()
@@ -219,17 +231,21 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     val dependency = "$groupId:$artifactId:$version@pom"
 
     // Add dependency to temporary configuration
-    val configurations = project.configurations
     configurations.create(tempPomConfiguration)
     configurations
       .getByName(tempPomConfiguration)
-      .dependencies += project.dependencies.add(tempPomConfiguration, dependency)
+      .dependencies += dependencies.add(tempPomConfiguration, dependency)
 
-    val pomFile = project.configurations.getByName(tempPomConfiguration)
-      .resolvedConfiguration.lenientConfiguration.artifacts.firstOrNull()?.file
+    val pomFile = configurations
+      .getByName(tempPomConfiguration)
+      .resolvedConfiguration
+      .lenientConfiguration
+      .artifacts
+      .firstOrNull { it.type == "pom" }
+      ?.file
 
     // Reset dependencies in temporary configuration
-    project.configurations.remove(project.configurations.getByName(tempPomConfiguration))
+    configurations.remove(configurations.getByName(tempPomConfiguration))
 
     return pomFile
   }
@@ -275,7 +291,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
   }
 
-  private fun findVersion(mavenReader: MavenXpp3Reader, pomFile: File?): String {
+  private fun findVersion(
+    mavenReader: MavenXpp3Reader,
+    pomFile: File?,
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler
+  ): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
@@ -294,12 +315,22 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     }
 
     if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
-      return findVersion(mavenReader, getParentPomFile(model))
+      return findVersion(
+        mavenReader,
+        getParentPomFile(model, configurations, dependencies),
+        configurations,
+        dependencies
+      )
     }
     return ""
   }
 
-  private fun findLicenses(mavenReader: MavenXpp3Reader, pomFile: File?): List<License> {
+  private fun findLicenses(
+    mavenReader: MavenXpp3Reader,
+    pomFile: File?,
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler
+  ): List<License> {
     if (pomFile.isNullOrEmpty()) {
       return mutableListOf()
     }
@@ -340,7 +371,12 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     logger.info("Project, $name, has no license in POM file.")
 
     if (model.parent?.artifactId.orEmpty().trim().isNotEmpty()) {
-      return findLicenses(mavenReader, getParentPomFile(model))
+      return findLicenses(
+        mavenReader,
+        getParentPomFile(model, configurations, dependencies),
+        configurations,
+        dependencies
+      )
     }
     return mutableListOf()
   }
@@ -355,8 +391,14 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
     return uri != null
   }
 
-  private fun Model.pomVersion(mavenReader: MavenXpp3Reader, pomFile: File?): String {
-    return version.orEmpty().trim().ifEmpty { findVersion(mavenReader, pomFile) }
+  private fun Model.pomVersion(
+    mavenReader: MavenXpp3Reader,
+    pomFile: File?,
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler
+  ): String {
+    return version.orEmpty().trim()
+      .ifEmpty { findVersion(mavenReader, pomFile, configurations, dependencies) }
   }
 
   private fun Model.pomName(): String {
