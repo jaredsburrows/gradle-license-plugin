@@ -18,5 +18,7 @@ internal fun Project.isJavaProject(): Boolean {
  * All of these plugins will apply the JavaPlugin(relies on JavaBasePlugin) or JavaPlatformPlugin.
  */
 internal fun Project.configureJavaProject() {
-  tasks.register("licenseReport", LicenseReportTask::class.java)
+  tasks.register("licenseReport", LicenseReportTask::class.java) {
+    it.buildFile = buildFile
+  }
 }

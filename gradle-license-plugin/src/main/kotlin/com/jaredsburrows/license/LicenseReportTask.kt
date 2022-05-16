@@ -16,6 +16,7 @@ import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -30,6 +31,10 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
 
   @Input var assetDirs = emptyList<File>()
   @Optional @Input var variantName: String? = null
+  // This input is used by the task indirectly via some project properties (such as "configurations" and "dependencies")
+  // that affect the task's outcome. When the mentioned project properties change the task should re-run the next time
+  // it is requested and should *not* be marked as UP-TO-DATE.
+  @InputFile var buildFile: File? = null
 
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"

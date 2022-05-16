@@ -234,6 +234,81 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
+  @Unroll def 'not UP-TO-DATE when dependencies change'() {
+    given:
+    def originalBuildFile = """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      }
+      """
+    def modifiedBuildFile = """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        // This is a new dependency
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    buildFile << originalBuildFile
+    def result1 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    buildFile << modifiedBuildFile
+    def result2 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+
+    then:
+    result1.task(":${taskName}").outcome == SUCCESS
+    result2.task(":${taskName}").outcome == SUCCESS
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
   @Unroll def '#taskName with buildTypes'() {
     given:
     buildFile <<

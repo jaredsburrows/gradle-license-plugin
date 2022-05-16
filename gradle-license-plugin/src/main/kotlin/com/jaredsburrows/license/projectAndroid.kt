@@ -96,6 +96,7 @@ private fun Project.configureVariant(
         .srcDirs
         .toList()
       it.variantName = variant.name
+      it.buildFile = buildFile
     }
   }
 }
