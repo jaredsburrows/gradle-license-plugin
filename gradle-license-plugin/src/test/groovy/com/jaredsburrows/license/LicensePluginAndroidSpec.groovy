@@ -19,7 +19,8 @@ final class LicensePluginAndroidSpec extends Specification {
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
-  private String assetsFolder
+  private String srcFolder
+  private String mainAssetsFolder
 
   def 'setup'() {
     def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
@@ -37,7 +38,8 @@ final class LicensePluginAndroidSpec extends Specification {
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
     reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
-    assetsFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src/main/assets"
+    srcFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src"
+    mainAssetsFolder = "${srcFolder}/main/assets"
   }
 
   @Unroll def '#taskName that has no dependencies'() {
@@ -66,7 +68,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -145,7 +147,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -353,7 +355,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -500,7 +502,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -724,7 +726,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -865,7 +867,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -980,7 +982,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1130,7 +1132,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1271,7 +1273,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def actualJson = new File(reportFolder, "${taskName}.json")
     def actualText = new File(reportFolder, "${taskName}.txt")
 
@@ -1287,15 +1289,15 @@ final class LicensePluginAndroidSpec extends Specification {
     actualText.exists()
     if (copyEnabled) {
       openSourceHtml.exists()
-      result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
-      result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-      result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
-      result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
+      result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
+      result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
+      result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
+      result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
     } else {
-      !result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
-      !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-      !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
-      !result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
+      !result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
+      !result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
+      !result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
+      !result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
     }
 
     where:
@@ -1347,7 +1349,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def actualJson = new File(reportFolder, "${taskName}.json")
     def actualText = new File(reportFolder, "${taskName}.txt")
 
@@ -1362,14 +1364,109 @@ final class LicensePluginAndroidSpec extends Specification {
     !actualJson.exists()
     !result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     !actualText.exists()
-    !result.output.find("Copied CSV report to .*${assetsFolder}/open_source_licenses.csv.")
-    !result.output.find("Copied HTML report to .*${assetsFolder}/open_source_licenses.html.")
-    !result.output.find("Copied JSON report to .*${assetsFolder}/open_source_licenses.json.")
-    !result.output.find("Copied Text report to .*${assetsFolder}/open_source_licenses.txt.")
+    !result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
+    !result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
+    !result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
+    !result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
     copyEnabled << [true, false]
+  }
+
+  @Unroll def '#taskName with variant-specific report'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+
+        buildTypes {
+          debug {}
+          release {}
+        }
+
+        flavorDimensions 'version'
+        productFlavors {
+          paid {
+            dimension "version"
+          }
+          free {
+            dimension "version"
+          }
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+
+        debugImplementation 'com.android.support:design:26.1.0'
+        releaseImplementation 'com.android.support:design:26.1.0'
+      }
+
+      licenseReport {
+        generateCsvReport = true
+        generateHtmlReport = true
+        generateJsonReport = true
+        generateTextReport = true
+
+        copyCsvReportToAssets = true
+        copyHtmlReportToAssets = true
+        copyJsonReportToAssets = true
+        copyTextReportToAssets = true
+
+        useVariantSpecificAssetDirs = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def variantName = taskName.replaceFirst(/^license/, '')
+      .replaceFirst(/Report$/, '')
+      .uncapitalize()
+    def variantAssetFolder = "${srcFolder}/${variantName}/assets"
+    def copiedCsv = new File(variantAssetFolder, "open_source_licenses.csv")
+    def copiedHtml = new File(variantAssetFolder, "open_source_licenses.html")
+    def copiedJson = new File(variantAssetFolder, "open_source_licenses.json")
+    def copiedText = new File(variantAssetFolder, "open_source_licenses.txt")
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    copiedCsv.exists()
+    result.output.find("Copied CSV report to .*${variantAssetFolder}/open_source_licenses.csv.")
+    copiedHtml.exists()
+    result.output.find("Copied HTML report to .*${variantAssetFolder}/open_source_licenses.html.")
+    copiedJson.exists()
+    result.output.find("Copied JSON report to .*${variantAssetFolder}/open_source_licenses.json.")
+    copiedText.exists()
+    result.output.find("Copied Text report to .*${variantAssetFolder}/open_source_licenses.txt.")
+
+    where:
+    taskName << [
+      "licensePaidDebugReport",
+      "licensePaidReleaseReport",
+      "licenseFreeDebugReport",
+      "licenseFreeReleaseReport"
+    ]
   }
 
   @Unroll def '#taskName with android gradle plugin version < 7.1.0 (7.0.4)'() {
@@ -1415,7 +1512,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>
@@ -1526,7 +1623,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(assetsFolder, "open_source_licenses.html")
+    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
     def expectedHtml =
       """
       <!DOCTYPE html>

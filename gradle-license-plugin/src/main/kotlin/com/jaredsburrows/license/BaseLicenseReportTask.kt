@@ -19,6 +19,7 @@ open class BaseLicenseReportTask : DefaultTask() {
   @Input var copyHtmlReportToAssets = false
   @Input var copyJsonReportToAssets = false
   @Input var copyTextReportToAssets = false
+  @Input var useVariantSpecificAssetDirs = false
 
   init {
     // From DefaultTask
@@ -38,5 +39,6 @@ open class BaseLicenseReportTask : DefaultTask() {
     copyHtmlReportToAssets = extension.copyHtmlReportToAssets
     copyJsonReportToAssets = extension.copyJsonReportToAssets
     copyTextReportToAssets = extension.copyTextReportToAssets
+    useVariantSpecificAssetDirs = extension.useVariantSpecificAssetDirs
   }
 }

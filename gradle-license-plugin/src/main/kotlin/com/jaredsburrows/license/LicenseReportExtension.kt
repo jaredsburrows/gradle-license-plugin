@@ -33,6 +33,12 @@ open class LicenseReportExtension { // extensions can't be final
   var copyJsonReportToAssets = false
 
   /**
+   * Wheither when copying reports to the Android assets directory, it uses the variant-specific
+   * asset directory instead of main. Defaults to false.
+   */
+  var useVariantSpecificAssetDirs = false
+
+  /**
    * Whether or not the Text report should be copied to the Android assets directory. Ignored if the
    * project is not an Android project. Has no effect if the Text report is disabled.
    */

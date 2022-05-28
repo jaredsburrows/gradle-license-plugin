@@ -89,9 +89,10 @@ private fun Project.configureVariant(
     }
 
     tasks.register("license${name}Report", LicenseReportTask::class.java) {
+      val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
       it.assetDirs = baseExtension
         .sourceSets
-        .getByName("main")
+        .getByName(sourceSetName)
         .assets
         .srcDirs
         .toList()
