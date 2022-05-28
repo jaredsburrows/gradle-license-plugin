@@ -1,0 +1,73 @@
+plugins {
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.dokka)
+  alias(libs.plugins.ktlint)
+  alias(libs.plugins.maven.publish)
+  alias(libs.plugins.plugin.publish)
+  alias(libs.plugins.versions)
+  id 'java-gradle-plugin'
+  id 'java-library'
+  id 'groovy'
+}
+
+task createClasspathManifest() {
+  def outputDir = new File(buildDir, name)
+
+  inputs.files sourceSets.main.runtimeClasspath
+  outputs.dir outputDir
+
+  doLast {
+    outputDir.mkdirs()
+    // Combine both main and test plugin classpaths
+    def set = new HashSet<String>()
+    sourceSets.main.runtimeClasspath.files.forEach {
+      set.add(it.path)
+    }
+    sourceSets.test.runtimeClasspath.files.forEach {
+      set.add(it.path)
+    }
+    def list = new ArrayList<String>(set)
+    file("$outputDir/plugin-classpath.txt").text = String.join("\n", list)
+  }
+}
+
+dependencies {
+  compileOnly gradleApi()
+  compileOnly libs.android.plugin
+
+  implementation(platform(libs.kotlin.bom))
+  implementation libs.kotlin.stdlib
+  implementation libs.kotlinx.html
+  implementation libs.moshi
+  implementation libs.maven.model
+
+  testRuntimeOnly files(createClasspathManifest)
+  testRuntimeOnly libs.android.plugin
+
+  testImplementation localGroovy()
+  testImplementation gradleTestKit()
+  testImplementation libs.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation libs.xmlunit
+  testImplementation libs.commons
+}
+
+pluginBundle {
+  website = POM_URL
+  vcsUrl = POM_SCM_URL
+  description = POM_DESCRIPTION
+  tags = ['license']
+
+  plugins {
+    licensePlugin {
+      displayName = POM_NAME
+    }
+  }
+}
+gradlePlugin {
+  plugins {
+    licensePlugin {
+      id = PLUGIN_NAME
+      implementationClass = PLUGIN_NAME_CLASS
+    }
+  }
+}

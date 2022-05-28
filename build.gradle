@@ -1,85 +1,99 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
-  id 'com.jfrog.artifactory' version '4.18.2'
-  id 'com.jfrog.bintray' version '1.8.5'
-  id 'com.github.ben-manes.versions' version '0.36.0'
-  id 'com.gradle.plugin-publish' version '0.12.0'
-  id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-  id 'org.jetbrains.dokka' version '0.10.1'
-  id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.dokka) apply false
+  alias(libs.plugins.ktlint) apply false
+  alias(libs.plugins.maven.publish) apply false
+  alias(libs.plugins.plugin.publish) apply false
+  alias(libs.plugins.versions)
   id 'java-gradle-plugin'
+  id 'java-library'
   id 'groovy'
-  id 'maven-publish'
 }
 
-repositories {
-  jcenter()
-  google()
-}
-
-apply from: 'gradle/dependencies.gradle'
-
-group = GROUP
-version = VERSION_NAME
-description = POM_DESCRIPTION
-
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
-
-jar {
-  manifest {
-    attributes(
-      'Implementation-Title': POM_NAME,
-      'Implementation-Version': archiveVersion,
-      'Built-By': System.getProperty('user.name'),
-      'Built-Date': new Date(),
-      'Built-JDK': System.getProperty('java.version'),
-      'Built-Gradle': gradle.gradleVersion)
-  }
-}
-
-task createClasspathManifest() {
-  def outputDir = file("$buildDir/$name")
-
-  inputs.files sourceSets.main.runtimeClasspath
-  outputs.dir outputDir
-
-  doLast {
-    outputDir.mkdirs()
-    // Combine both main and test plugin classpaths
-    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') + '\n' + sourceSets.test.runtimeClasspath.join('\n')
-  }
-}
-
-configurations.all {
+configurations.configureEach {
   resolutionStrategy {
     eachDependency { details ->
       if (details.requested.group == 'org.jetbrains.kotlin') {
-        details.useVersion versions.kotlin
+        details.useVersion libs.versions.kotlin.get()
       }
     }
   }
 }
 
-dependencies {
-  implementation localGroovy()
-  implementation deps.kotlin.stdlib.jdk
-  implementation deps.kotlinx.html
-  implementation deps.gson
-  implementation deps.android.tools.build.gradle
+subprojects {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
 
-  testRuntimeOnly files(createClasspathManifest)
+  tasks.withType(Jar).configureEach {
+    def dateFile = new File(buildDir, 'jar-manifest-date.txt')
+    if (!dateFile.exists()) {
+      def date = DateTimeFormatter.ofPattern('EEE MMM dd HH:mm:ss zzz yyyy').
+        format(ZonedDateTime.now())
+      dateFile.parentFile.mkdirs()
+      dateFile.text = date.trim()
+    }
 
-  testImplementation localGroovy()
-  testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
-  testImplementation deps.xmlunit.matchers
-  testImplementation deps.commons.csv
-}
+    manifest {
+      attributes(
+        'Created-By': POM_DEVELOPER_NAME,
+        'Implementation-Title': POM_NAME,
+        'Implementation-Version': VERSION_NAME,
+        'Implementation-Vendor': POM_DEVELOPER_NAME,
+        'Built-By': System.getProperty('user.name'),
+        'Built-Date': dateFile.text.trim(),
+        'Built-JDK': System.getProperty('java.version'),
+        'Built-Gradle': gradle.gradleVersion)
+    }
+  }
 
-apply from: 'gradle/compile.gradle'
-apply from: 'gradle/publish.gradle'
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+      jvmTarget = JavaVersion.VERSION_1_8
+    }
+  }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-  kotlinOptions {
-    jvmTarget = rootProject.versions.java
+  tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    configure(options) {
+      compilerArgs << '-Xlint:all'
+      compilerArgs << '-Xlint:-options'
+      encoding = 'utf-8'
+      fork = true
+    }
+  }
+
+  tasks.withType(GroovyCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    configure(options) {
+      compilerArgs << '-Xlint:all'
+      compilerArgs << '-Xlint:-options'
+      encoding = 'utf-8'
+      fork = true
+    }
+  }
+
+  tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+
+    testLogging {
+      exceptionFormat 'full'
+      showCauses true
+      showExceptions true
+      showStackTraces true
+      events 'failed', 'skipped'
+    }
+
+    def maxWorkerCount = gradle.startParameter.maxWorkerCount
+    maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
   }
 }
