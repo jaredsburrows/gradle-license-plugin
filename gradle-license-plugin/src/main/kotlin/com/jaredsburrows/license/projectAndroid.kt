@@ -14,7 +14,7 @@ import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 import java.util.Locale
 
-/** Returns true if Android Gradle project */
+/** Returns true if Android Gradle project. */
 internal fun Project.isAndroidProject(): Boolean {
   return hasPlugin(
     listOf(
@@ -41,17 +41,17 @@ internal fun Project.isAndroidProject(): Boolean {
  * TestPlugin - "com.android.test"
  */
 internal fun Project.configureAndroidProject() {
-  project.plugins.all {
+  plugins.all {
     when (it) {
       is AppPlugin -> {
-        project.extensions.getByType(AppExtension::class.java).run {
+        extensions.getByType(AppExtension::class.java).run {
           configureVariant(this, applicationVariants)
           configureVariant(this, testVariants)
           configureVariant(this, unitTestVariants)
         }
       }
       is FeaturePlugin -> {
-        project.extensions.getByType(FeatureExtension::class.java).run {
+        extensions.getByType(FeatureExtension::class.java).run {
           configureVariant(this, featureVariants)
           configureVariant(this, libraryVariants)
           configureVariant(this, testVariants)
@@ -59,14 +59,14 @@ internal fun Project.configureAndroidProject() {
         }
       }
       is LibraryPlugin -> {
-        project.extensions.getByType(LibraryExtension::class.java).run {
+        extensions.getByType(LibraryExtension::class.java).run {
           configureVariant(this, libraryVariants)
           configureVariant(this, testVariants)
           configureVariant(this, unitTestVariants)
         }
       }
       is TestPlugin -> {
-        project.extensions.getByType(TestExtension::class.java).run {
+        extensions.getByType(TestExtension::class.java).run {
           configureVariant(this, applicationVariants)
         }
       }
@@ -89,6 +89,10 @@ private fun Project.configureVariant(
     }
 
     tasks.register("license${name}Report", LicenseReportTask::class.java) {
+      // Apply common task configuration first
+      configureCommon(it)
+
+      // Custom for Android tasks
       val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
       it.assetDirs = baseExtension
         .sourceSets
@@ -97,7 +101,6 @@ private fun Project.configureVariant(
         .srcDirs
         .toList()
       it.variantName = variant.name
-      it.buildFile = buildFile
     }
   }
 }

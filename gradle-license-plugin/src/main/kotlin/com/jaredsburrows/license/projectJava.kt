@@ -2,7 +2,7 @@ package com.jaredsburrows.license
 
 import org.gradle.api.Project
 
-/** Returns true if Java Gradle project */
+/** Returns true if Java Gradle project. */
 internal fun Project.isJavaProject(): Boolean {
   return hasPlugin(
     listOf(
@@ -15,10 +15,11 @@ internal fun Project.isJavaProject(): Boolean {
 /**
  * Configure for Java projects.
  *
- * All of these plugins will apply the JavaPlugin(relies on JavaBasePlugin) or JavaPlatformPlugin.
+ * All of these plugins will apply the JavaPlugin(relies on JavaBasePlugin).
  */
 internal fun Project.configureJavaProject() {
   tasks.register("licenseReport", LicenseReportTask::class.java) {
-    it.buildFile = buildFile
+    // Apply common task configuration first
+    configureCommon(it)
   }
 }
