@@ -92,7 +92,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     val dependencies: DependencyHandler = project.dependencies
 
     setupEnvironment(configurations)
-    initDependencies(configurations)
+    initDependencies(configurations, dependencies)
     generatePOMInfo(mavenReader, configurations, dependencies)
 
     // Create CSV report
@@ -164,7 +164,10 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   }
 
   /** Iterate through all configurations and collect dependencies. */
-  private fun initDependencies(configurations: ConfigurationContainer) {
+  private fun initDependencies(
+    configurations: ConfigurationContainer,
+    dependencies: DependencyHandler,
+  ) {
     // Add POM information to our POM configuration
     val configurationSet = linkedSetOf<Configuration>()
     val configurationList = mutableListOf("api", "compile", "implementation")
@@ -193,7 +196,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         val gav = "${id.group}:${id.name}:${id.version}@pom"
         configurations
           .getByName(pomConfiguration)
-          .dependencies += project.dependencies.add(pomConfiguration, gav)
+          .dependencies += dependencies.add(pomConfiguration, gav)
       }
   }
 
@@ -272,7 +275,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   private fun getParentPomFile(
     model: Model,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ): File? {
     // Get parent POM information
     val parent = model.parent
