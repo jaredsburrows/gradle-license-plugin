@@ -10,6 +10,7 @@ import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
+import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
@@ -18,6 +19,7 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileReader
@@ -27,20 +29,64 @@ import java.util.Locale
 import java.util.UUID
 
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
-internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't be final
+internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
-  @Input var assetDirs = emptyList<File>()
-  @Optional @Input var variantName: String? = null
+  @Input
+  var assetDirs = emptyList<File>()
+
+  @Optional
+  @Input
+  var variantName: String? = null
+
   // This input is used by the task indirectly via some project properties (such as "configurations" and "dependencies")
   // that affect the task's outcome. When the mentioned project properties change the task should re-run the next time
   // it is requested and should *not* be marked as UP-TO-DATE.
-  @InputFile var buildFile: File? = null
+  @InputFile
+  var buildFile: File? = null
+
+  // Task annotations cannot be internal
+  @get:OutputDirectory
+  lateinit var outputDir: File
+
+  @Input
+  var generateCsvReport = false
+
+  @Input
+  var generateHtmlReport = false
+
+  @Input
+  var generateJsonReport = false
+
+  @Input
+  var generateTextReport = false
+
+  @Input
+  var copyCsvReportToAssets = false
+
+  @Input
+  var copyHtmlReportToAssets = false
+
+  @Input
+  var copyJsonReportToAssets = false
+
+  @Input
+  var copyTextReportToAssets = false
+
+  @Input
+  var useVariantSpecificAssetDirs = false
 
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"
   private var tempPomConfiguration = "tempPoms"
 
-  @TaskAction fun licenseReport() {
+  init {
+    // From DefaultTask
+    description = "Outputs licenses report for $name."
+    group = "Reporting"
+  }
+
+  @TaskAction
+  fun licenseReport() {
     val mavenReader = MavenXpp3Reader()
     val configurations: ConfigurationContainer = project.configurations
     val dependencies: DependencyHandler = project.dependencies
@@ -207,8 +253,8 @@ internal open class LicenseReportTask : BaseLicenseReportTask() { // tasks can't
           /**
            * Attempting to getAllModuleArtifacts on a local library project will result
            * in AmbiguousVariantSelectionException as there are not enough criteria
-           * to match a specific variant of the library project. Instead we skip the
-           * the library project itself and enumerate its dependencies.
+           * to match a specific variant of the library project. Instead, we skip the
+           * library project itself and enumerate its dependencies.
            */
           "unspecified" -> resolvedArtifacts += getResolvedArtifactsFromResolvedDependencies(
             resolvedDependency.children

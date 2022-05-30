@@ -471,7 +471,7 @@ final class LicensePluginVersionSpec extends Specification {
         '7.4.2',
       ],
       [
-        '7.2.0-rc01',
+        '7.2.1',
       ]
     ].combinations()
   }
