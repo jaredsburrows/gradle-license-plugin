@@ -26,4 +26,5 @@ internal fun Project.configureCommon(task: LicenseReportTask) {
   task.copyJsonReportToAssets = extension.copyJsonReportToAssets
   task.copyTextReportToAssets = extension.copyTextReportToAssets
   task.useVariantSpecificAssetDirs = extension.useVariantSpecificAssetDirs
+  task.ignoredGroupIds = extension.ignoredGroupIds
 }

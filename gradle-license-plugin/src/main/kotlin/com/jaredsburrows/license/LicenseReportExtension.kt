@@ -43,4 +43,7 @@ open class LicenseReportExtension { // extensions can't be final
    * project is not an Android project. Has no effect if the Text report is disabled.
    */
   var copyTextReportToAssets = false
+
+  /** Set of group IDs to ignore while generating the reports. Empty by default. */
+  var ignoredGroupIds = setOf<String>()
 }
