@@ -1,5 +1,23 @@
 # Change Log
 
+## Version 0.9.0  (2022-04-22)
+* Use Maven APIs
+* [#191](https://github.com/jaredsburrows/gradle-license-plugin/pull/191) Fix license report task in multi-project setups
+* [#190](https://github.com/jaredsburrows/gradle-license-plugin/pull/190) Fix copyCsvReportToAssets in README.md
+* [#184](https://github.com/jaredsburrows/gradle-license-plugin/pull/184) Plugin cannot be used in non-Android application projects
+
+Many thanks to
+[@flobetz](https://github.com/fllink)
+[@Bradan](https://github.com/Bradan)
+for the code contributions!
+
+## Version 0.8.91  (2022-04-10)
+* [#172](https://github.com/jaredsburrows/gradle-license-plugin/pull/172) Avoid processing *.aar dependencies which can not be parsed and cause gradle failures
+
+Many thanks to
+[@flobetz](https://github.com/flobetz)
+for the code contributions!
+
 ## Version 0.8.90  (2020-12-30)
  * [#140](https://github.com/jaredsburrows/gradle-license-plugin/pull/140) Added CSV report support
  * [#134](https://github.com/jaredsburrows/gradle-license-plugin/pull/134) Add android library subproject dependencies to the report

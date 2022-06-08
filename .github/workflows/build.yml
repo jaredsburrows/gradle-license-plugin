@@ -1,6 +1,11 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [ opened, labeled, unlabeled, synchronize ]
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
@@ -17,8 +22,14 @@ jobs:
           - 11
 
     steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1.0.4
+
       - name: Cache Gradle dependencies
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -27,23 +38,17 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Checkout Project
-        uses: actions/checkout@v2
-
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1.0.4
-
       - name: Configure JDK
-        uses: actions/setup-java@v2.3.0
+        uses: actions/setup-java@v3.3.0
         with:
-          distribution: 'adopt'
+          distribution: temurin
           java-version: ${{ matrix.java-version }}
 
       - name: Run Build
-        run: ./gradlew clean ktlintCheck build jar docsJar sourcesJar testsJar reportsZip publishMavenPublicationToMavenLocal -s
+        run: ./gradlew clean ktlintCheck build -s
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3.1.0
         if: always()
         with:
           name: gradle-license-plugin-${{ github.workflow }}-${{ github.run_id }}
@@ -64,19 +69,19 @@ jobs:
 
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.4
 
       - name: Configure JDK
-        uses: actions/setup-java@v2.3.0
+        uses: actions/setup-java@v3.3.0
         with:
-          distribution: 'adopt'
+          distribution: temurin
           java-version: 8
 
       - name: Publish
-        run: ./gradlew clean publishMavenPublicationToMavenRepository -s
+        run: ./gradlew clean publish -s
         env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}

@@ -2,133 +2,98 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.5.30'
-  id 'org.jetbrains.dokka' version '1.5.0'
-  id 'com.gradle.plugin-publish' version '0.15.0'
-  id 'org.jlleitschuh.gradle.ktlint' version '10.2.0'
-  id 'com.github.ben-manes.versions' version '0.39.0'
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.dokka) apply false
+  alias(libs.plugins.ktlint) apply false
+  alias(libs.plugins.maven.publish) apply false
+  alias(libs.plugins.plugin.publish) apply false
+  alias(libs.plugins.versions)
   id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
-  id 'maven-publish'
-  id 'signing'
 }
-
-repositories {
-  mavenCentral()
-  google()
-}
-
-apply from: 'gradle/dependencies.gradle'
-
-group = GROUP
-version = VERSION_NAME
-description = POM_DESCRIPTION
-
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
 
 configurations.configureEach {
   resolutionStrategy {
     eachDependency { details ->
       if (details.requested.group == 'org.jetbrains.kotlin') {
-        details.useVersion versions.kotlin
+        details.useVersion libs.versions.kotlin.get()
       }
     }
   }
 }
 
-task createClasspathManifest() {
-  def outputDir = new File(buildDir, name)
-
-  inputs.files sourceSets.main.runtimeClasspath
-  outputs.dir outputDir
-
-  doLast {
-    outputDir.mkdirs()
-    // Combine both main and test plugin classpaths
-    file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join('\n') +
-      '\n' +
-      sourceSets.test.runtimeClasspath.join('\n')
-  }
-}
-
-dependencies {
-  implementation deps.kotlin.stdlib.jdk
-  implementation deps.kotlinx.html
-  implementation deps.gson
-  implementation deps.android.tools.build.gradle
-
-  testRuntimeOnly files(createClasspathManifest)
-
-  testImplementation localGroovy()
-  testImplementation deps.spock, { exclude module: 'groovy-all' } // Use localGroovy()
-  testImplementation deps.xmlunit.matchers
-  testImplementation deps.commons.csv
-}
-
-apply from: 'gradle/publish.gradle'
-
-tasks.withType(Jar).configureEach {
-  def dateFile = new File(buildDir, 'jar-manifest-date.txt')
-  if (!dateFile.exists()) {
-    def date = DateTimeFormatter.ofPattern('EEE MMM dd HH:mm:ss zzz yyyy').
-      format(ZonedDateTime.now())
-    dateFile.parentFile.mkdirs()
-    dateFile.text = date.trim()
+subprojects {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
   }
 
-  manifest {
-    attributes(
-      'Created-By': POM_DEVELOPER_NAME,
-      'Implementation-Title': POM_NAME,
-      'Implementation-Version': VERSION_NAME,
-      'Implementation-Vendor': POM_DEVELOPER_NAME,
-      'Built-By': System.getProperty('user.name'),
-      'Built-Date': dateFile.text.trim(),
-      'Built-JDK': System.getProperty('java.version'),
-      'Built-Gradle': gradle.gradleVersion)
+  tasks.withType(Jar).configureEach {
+    def dateFile = new File(buildDir, 'jar-manifest-date.txt')
+    if (!dateFile.exists()) {
+      def date = DateTimeFormatter.ofPattern('EEE MMM dd HH:mm:ss zzz yyyy').
+        format(ZonedDateTime.now())
+      dateFile.parentFile.mkdirs()
+      dateFile.text = date.trim()
+    }
+
+    manifest {
+      attributes(
+        'Created-By': POM_DEVELOPER_NAME,
+        'Implementation-Title': POM_NAME,
+        'Implementation-Version': VERSION_NAME,
+        'Implementation-Vendor': POM_DEVELOPER_NAME,
+        'Built-By': System.getProperty('user.name'),
+        'Built-Date': dateFile.text.trim(),
+        'Built-JDK': System.getProperty('java.version'),
+        'Built-Gradle': gradle.gradleVersion)
+    }
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+      jvmTarget = JavaVersion.VERSION_1_8
+    }
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    configure(options) {
+      compilerArgs << '-Xlint:all'
+      compilerArgs << '-Xlint:-options'
+      encoding = 'utf-8'
+      fork = true
+    }
+  }
+
+  tasks.withType(GroovyCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    configure(options) {
+      compilerArgs << '-Xlint:all'
+      compilerArgs << '-Xlint:-options'
+      encoding = 'utf-8'
+      fork = true
+    }
+  }
+
+  tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+
+    testLogging {
+      exceptionFormat 'full'
+      showCauses true
+      showExceptions true
+      showStackTraces true
+      events 'failed', 'skipped'
+    }
+
+    def maxWorkerCount = gradle.startParameter.maxWorkerCount
+    maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
   }
 }
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-  kotlinOptions {
-    jvmTarget = rootProject.versions.java
-  }
-}
-
-tasks.withType(JavaCompile).configureEach {
-  sourceCompatibility = rootProject.versions.java
-  targetCompatibility = rootProject.versions.java
-
-  configure(options) {
-    compilerArgs << '-Xlint:all' // Turn on all warnings
-    compilerArgs << '-Werror' // Turn warnings into errors
-    encoding = 'utf-8'
-  }
-}
-
-tasks.withType(GroovyCompile).configureEach {
-  sourceCompatibility = rootProject.versions.java
-  targetCompatibility = rootProject.versions.java
-
-  configure(options) {
-    compilerArgs << '-Xlint:all' // Turn on all warnings
-    compilerArgs << '-Werror' // Turn warnings into errors
-    encoding = 'utf-8'
-  }
-}
-
-tasks.withType(Test).configureEach {
-  useJUnitPlatform()
-
-  // Turn on logging for all tests, filter to show failures/skips only
-  testLogging {
-    exceptionFormat 'full'
-    showCauses true
-    showExceptions true
-    showStackTraces true
-    events 'failed', 'skipped'
-  }
-}
-
