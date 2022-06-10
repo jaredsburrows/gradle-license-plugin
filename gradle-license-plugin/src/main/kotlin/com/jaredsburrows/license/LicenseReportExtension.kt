@@ -44,6 +44,6 @@ open class LicenseReportExtension { // extensions can't be final
    */
   var copyTextReportToAssets = false
 
-  /** Set of group IDs to ignore while generating the reports. Empty by default. */
-  var ignoredGroupIds = setOf<String>()
+  /** Set of patterns to ignore while generating the reports. Empty by default. */
+  var ignoredPatterns = setOf<String>()
 }

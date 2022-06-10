@@ -235,6 +235,8 @@ The plugin can be configured to generate specific reports and automatically copy
 - Java projects: Generate HTML, JSON and CSV reports.
 - Android projects: Generate HTML, JSON and CSV reports, and copy the HTML report to the assets directory.
 
+The plugin can be configured to ignore licenses for certain artifact patterns. The default is that nothing is ignored.
+
 To override the defaults, add the `licenseReport` configuration closure to the build script.
 
 ```groovy
@@ -245,6 +247,7 @@ licenseReport {
   generateHtmlReport = true
   generateJsonReport = false
   generateTextReport = false
+  ignoredPatterns = []
 
   // These options are ignored for Java projects
   copyCsvReportToAssets = false
@@ -258,6 +261,18 @@ licenseReport {
 The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
 
 The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant. For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`. They are copied into `src/main/assets` by default.
+
+The `ignoredPatterns` allows for ignoring artifact patterns. These can be partial or full patterns.
+
+```groovy
+apply plugin: "com.jaredsburrows.license"
+
+licenseReport {
+  ignoredPatterns = ["com.some.group"] // Ignores all artifacts of the given group
+  ignoredPatterns = ["com.some.group:some.name"] // Ignores the given artifact regardless of version
+  ignoredPatterns = ["com.some.group:some.name:1.2.3"] // Ignores the given artifact with the given version
+}
+```
 
 ## Usage Example
 
