@@ -76,7 +76,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   var useVariantSpecificAssetDirs = false
 
   @Input
-  var ignoredGroupIds = setOf<String>()
+  var ignoredPatterns = setOf<String>()
 
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"
@@ -213,8 +213,11 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .lenientConfiguration
       .artifacts
       .filter { it.type == "pom" }
-      // Filter out artifacts for ignored group IDs
-      .filter { it.moduleVersion.id.group !in ignoredGroupIds }
+      // Filter out artifacts for ignored patterns
+      .filter { artifact ->
+        val depString = with(artifact.moduleVersion.id) { "$group:$name:$version" }
+        ignoredPatterns.none { depString.contains(it) }
+      }
       .map { artifact ->
         // POM of artifact
         val pomFile = artifact.file

@@ -1691,7 +1691,7 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring one group ID'() {
+  @Unroll def '#taskName ignoring one group ID pattern'() {
     given:
     buildFile <<
       """
@@ -1718,7 +1718,7 @@ final class LicensePluginAndroidSpec extends Specification {
         implementation 'com.android.support:design:26.1.0'
       }
       licenseReport {
-        ignoredGroupIds = ["pl.droidsonroids.gif"]
+        ignoredPatterns = ["pl.droidsonroids.gif"]
       }
       """
 
@@ -1783,7 +1783,7 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring all group IDs'() {
+  @Unroll def '#taskName ignoring all group ID patterns'() {
     given:
     buildFile <<
       """
@@ -1810,7 +1810,7 @@ final class LicensePluginAndroidSpec extends Specification {
         implementation 'com.android.support:design:26.1.0'
       }
       licenseReport {
-        ignoredGroupIds = ["pl.droidsonroids.gif", "com.android.support"]
+        ignoredPatterns = ["pl.droidsonroids.gif", "com.android.support"]
       }
       """
 
@@ -1834,6 +1834,440 @@ final class LicensePluginAndroidSpec extends Specification {
     def expectedJson =
       """
       []
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll def '#taskName ignoring one artifact ID pattern'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion 28
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      licenseReport {
+        ignoredPatterns = ["android-gif-drawable"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll def '#taskName ignoring all artifact ID patterns'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion 28
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      licenseReport {
+        ignoredPatterns = ["android-gif-drawable", "design"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>None</h3>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      []
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll def '#taskName ignoring multiple artifacts by group ID'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion 28
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      licenseReport {
+        ignoredPatterns = ["com.android.support"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
+              </dl>
+            </li>
+            <a name="1783810846"></a>
+            <pre>${getLicenseText('mit.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Android GIF Drawable Library",
+          "description":"Views and Drawable for displaying animated GIFs for Android",
+          "version":"1.2.3",
+          "developers":[
+            "Karol Wr\\u00c3\\u00b3tniak"
+          ],
+          "url":"https://github.com/koral--/android-gif-drawable",
+          "year":null,
+          "licenses":[
+            {
+              "license":"The MIT License",
+              "license_url":"http://opensource.org/licenses/MIT"
+            }
+          ],
+          "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+        }
+      ]
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+  @Unroll def '#taskName ignoring specific artifact via group and artifact IDs'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion 28
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      licenseReport {
+        ignoredPatterns = ["pl.droidsonroids.gif:android-gif-drawable"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+  @Unroll def '#taskName ignoring artifact via version'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion 28
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      licenseReport {
+        ignoredPatterns = ["1.2.3"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        }
+      ]
       """
 
     then:
