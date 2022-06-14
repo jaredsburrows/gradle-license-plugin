@@ -1,0 +1,13 @@
+# These are supported funding model platforms
+
+github: jaredsburrows
+patreon: jaredsburrows
+open_collective: jaredsburrows
+ko_fi: jaredsburrows
+tidelift: # Replace with a single Tidelift platform-name/package-name e.g., npm/babel - requires suscription
+community_bridge: # Replace with a single Community Bridge project-name e.g., cloud-foundry - pending approval, LFX Mentorship (formerly CommunityBridge)
+liberapay: jaredsburrows
+issuehunt: # Replace with a single IssueHunt username - github login required
+otechie: # Replace with a single Otechie username - costs money
+lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name e.g., cloud-foundry - pending approval, LFX Mentorship (formerly CommunityBridge)
+custom: ["https://paypal.me/jaredsburrows", "https://venmo.com/jaredsburrows", "https://cash.app/$jaredburrows", "https://buymeacoffee.com/jaredsburrows"]
