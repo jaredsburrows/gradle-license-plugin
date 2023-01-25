@@ -88,7 +88,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
   }
 
   @Unroll def 'apply with non java or agp plugins: #plugin'() {
@@ -105,7 +105,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
 
     where:
     // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"

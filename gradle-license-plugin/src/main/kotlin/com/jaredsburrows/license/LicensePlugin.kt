@@ -13,7 +13,7 @@ class LicensePlugin : Plugin<Project> {
         project.isAndroidProject() -> project.configureAndroidProject()
         project.isJavaProject() -> project.configureJavaProject()
         else -> throw UnsupportedOperationException(
-          "'com.jaredsburrows.license' requires Java or Android Gradle Plugins."
+          "'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins."
         )
       }
     }
