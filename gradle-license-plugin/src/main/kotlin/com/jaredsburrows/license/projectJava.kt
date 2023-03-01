@@ -8,6 +8,8 @@ internal fun Project.isJavaProject(): Boolean {
     listOf(
       // JavaPlugin
       "java",
+      // KotlinJvmPlugin
+      "org.jetbrains.kotlin.jvm",
     )
   )
 }
