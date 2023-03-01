@@ -53,8 +53,8 @@ final class CsvReportSpec extends Specification {
     def actual = sut.toString()
     def expected =
       "project,description,version,developers,url,year,licenses,license urls,dependency\n" +
-        "name,null,1.2.3,null,null,null,null,null,foo:bar:1.2.3\n" +
-        "name,null,1.2.3,\"name,name\",null,null,null,null,foo:bar:1.2.3"
+        "name,,1.2.3,,,,,,foo:bar:1.2.3\n" +
+        "name,,1.2.3,\"name,name\",,,,,foo:bar:1.2.3"
 
     then:
     assertCsv(expected, actual)

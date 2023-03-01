@@ -62,7 +62,7 @@ class CsvReport(private val projects: List<Model>) : Report {
   override fun emptyReport(): String = EMPTY_CSV
 
   /** Convert list of elements to comma separated list. */
-  private fun MutableList<String?>.toCsv(): String = this.joinToString(separator = ",")
+  private fun MutableList<String?>.toCsv(): String = this.joinToString(separator = ",") { it ?: "" }
 
   /** Add elements to Csv. */
   private fun MutableList<String?>.addCsvString(element: String): Boolean {
