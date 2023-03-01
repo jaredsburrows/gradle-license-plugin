@@ -28,21 +28,14 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.6
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper/
-            ~/.android/build-cache
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-
-      - name: Configure JDK
+      - name: Setup Java ${{ matrix.java-version }}
         uses: actions/setup-java@v3.10.0
         with:
           distribution: temurin
           java-version: ${{ matrix.java-version }}
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2.4.0
 
       - name: Run Build
         run: ./gradlew clean ktlintCheck build -s
@@ -79,6 +72,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 8
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2.4.0
 
       - name: Publish
         run: ./gradlew clean publish -s
