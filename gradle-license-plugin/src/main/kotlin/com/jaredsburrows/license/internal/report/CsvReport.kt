@@ -66,7 +66,21 @@ class CsvReport(private val projects: List<Model>) : Report {
 
   /** Add elements to Csv. */
   private fun MutableList<String?>.addCsvString(element: String): Boolean {
-    return this.add(element.valueOrNull())
+    val escaped = element.valueOrNull()
+      ?.replace("\"", "\"\"")
+      ?.let { el ->
+        when {
+          el.contains(",") ||
+            el.contains("\n") ||
+            el.contains("'") ||
+            el.contains("\\") ||
+            el.contains("\"")
+          -> "\"$el\""
+
+          else -> el
+        }
+      }
+    return this.add(escaped)
   }
 
   /** Add List of elements to Csv as comma separated list with quotes. */
@@ -76,13 +90,7 @@ class CsvReport(private val projects: List<Model>) : Report {
   ): Boolean {
     return when {
       elements.isEmpty() -> this.add(null)
-      else -> {
-        val element = elements.joinToString(separator = ",", transform = transform)
-        when (elements.size) {
-          1 -> this.add(element)
-          else -> this.add("\"${element}\"")
-        }
-      }
+      else -> addCsvString(elements.joinToString(separator = ",", transform = transform))
     }
   }
 
