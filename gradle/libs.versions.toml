@@ -16,7 +16,7 @@ commons = { module = "org.apache.commons:commons-csv", version = "1.9.0" }
 moshi = { module = "com.squareup.moshi:moshi", version = "1.13.0" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.7.5" }
+kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.8.0" }
 maven-model = { module = "org.apache.maven:maven-model", version = "3.8.5" }
 spock = { module = "org.spockframework:spock-junit4", version = "2.1-M2-groovy-3.0" }
 xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.9.0" }
