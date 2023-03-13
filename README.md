@@ -1,9 +1,9 @@
 # Gradle License Plugin
 
-[![License](https://img.shields.io/github/license/jaredsburrows/gradle-license-plugin?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Maven](https://img.shields.io/maven-central/v/com.jaredsburrows/gradle-license-plugin?label=maven&style=flat)](https://search.maven.org/artifact/com.jaredsburrows/gradle-license-plugin)
 [![Build](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml)
-[![Twitter](https://img.shields.io/twitter/follow/jaredsburrows?label=follow%20%40jaredsburrows&style=flat)](https://twitter.com/jaredsburrows)
+[![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
 This plugin provides a task to generate a HTML license report based on the 
 configuration. (eg. `licenseDebugReport` for all debug dependencies in an Android project).
