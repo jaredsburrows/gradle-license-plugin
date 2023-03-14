@@ -12,7 +12,7 @@ versions = { id = "com.github.ben-manes.versions", version = "0.46.0" }
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "3.6.4" }
-commons = { module = "org.apache.commons:commons-csv", version = "1.9.0" }
+commons = { module = "org.apache.commons:commons-csv", version = "1.10.0" }
 moshi = { module = "com.squareup.moshi:moshi", version = "1.14.0" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
