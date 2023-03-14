@@ -51,23 +51,16 @@ dependencies {
   testImplementation libs.commons
 }
 
-pluginBundle {
+gradlePlugin {
   website = POM_URL
   vcsUrl = POM_SCM_URL
-  description = POM_DESCRIPTION
-  tags = ['license']
-
-  plugins {
-    licensePlugin {
-      displayName = POM_NAME
-    }
-  }
-}
-gradlePlugin {
   plugins {
     licensePlugin {
       id = PLUGIN_NAME
       implementationClass = PLUGIN_NAME_CLASS
+      displayName = POM_NAME
+      description = POM_DESCRIPTION
+      tags.set(['license'])
     }
   }
 }
