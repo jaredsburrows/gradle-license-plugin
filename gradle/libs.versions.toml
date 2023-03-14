@@ -8,7 +8,7 @@ dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.2.1" }
 maven-publish = { id = "com.vanniktech.maven.publish", version = "0.24.0" }
 plugin-publish = { id = "com.gradle.plugin-publish", version = "0.21.0" }
-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
+versions = { id = "com.github.ben-manes.versions", version = "0.46.0" }
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "3.6.4" }
