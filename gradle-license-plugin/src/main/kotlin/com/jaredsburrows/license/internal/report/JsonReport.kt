@@ -38,7 +38,7 @@ class JsonReport(private val projects: List<Model>) : Report {
         URL to project.url.valueOrNull(),
         YEAR to project.inceptionYear.valueOrNull(),
         LICENSES to licensesJson,
-        DEPENDENCY to "${project.groupId}:${project.artifactId}:${project.version}"
+        DEPENDENCY to "${project.groupId}:${project.artifactId}:${project.version}",
       )
     }
 
@@ -47,8 +47,8 @@ class JsonReport(private val projects: List<Model>) : Report {
         List::class.java,
         Map::class.java,
         String::class.java,
-        Any::class.java
-      )
+        Any::class.java,
+      ),
     ).serializeNulls().toJson(reportList)
   }
 
