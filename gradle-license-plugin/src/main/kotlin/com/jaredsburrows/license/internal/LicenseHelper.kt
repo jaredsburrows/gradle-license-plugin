@@ -88,7 +88,7 @@ object LicenseHelper {
       "http://www.mozilla.org/media/MPL/2.0/index.txt" to "mpl-2.0.txt",
       "https://www.mozilla.org/media/MPL/2.0/index.txt" to "mpl-2.0.txt",
       "http://opensource.org/licenses/MPL-2.0" to "mpl-2.0.txt",
-      "https://opensource.org/licenses/MPL-2.0" to "mpl-2.0.txt"
+      "https://opensource.org/licenses/MPL-2.0" to "mpl-2.0.txt",
     )
   }
 }
