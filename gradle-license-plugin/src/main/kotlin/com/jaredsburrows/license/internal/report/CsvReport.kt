@@ -86,7 +86,7 @@ class CsvReport(private val projects: List<Model>) : Report {
   /** Add List of elements to Csv as comma separated list with quotes. */
   private fun <T> MutableList<String?>.addCsvList(
     elements: List<T>,
-    transform: ((T) -> CharSequence)? = null
+    transform: ((T) -> CharSequence)? = null,
   ): Boolean {
     return when {
       elements.isEmpty() -> this.add(null)

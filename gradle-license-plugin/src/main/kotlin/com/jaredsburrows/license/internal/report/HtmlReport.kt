@@ -89,7 +89,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
             ul {
               projectsMap.entries.forEach { entry ->
                 val sortedProjects = entry.value.sortedWith(
-                  compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                  compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
                 )
 
                 var currentProject: Model? = null
@@ -213,20 +213,24 @@ class HtmlReport(private val projects: List<Model>) : Report {
     } as String
   }
 
-  @HtmlTagMarker private inline fun <T, C : TagConsumer<T>> C.html(
+  @HtmlTagMarker
+  private inline fun <T, C : TagConsumer<T>> C.html(
     lang: String,
     namespace: String? = null,
-    crossinline block: HTML.() -> Unit = {}
+    crossinline block: HTML.() -> Unit = {},
   ): T = HTML(
-    mapOf("lang" to lang), this, namespace
+    mapOf("lang" to lang),
+    this,
+    namespace,
   ).visitAndFinalize(this, block)
 
-  @HtmlTagMarker private fun FlowOrInteractiveOrPhrasingContent.a(
+  @HtmlTagMarker
+  private fun FlowOrInteractiveOrPhrasingContent.a(
     href: String? = null,
     target: String? = null,
     classes: String? = null,
     name: String? = null,
-    block: A.() -> Unit = {}
+    block: A.() -> Unit = {},
   ): Unit = A(
     attributesMapOf(
       "href",
@@ -236,9 +240,9 @@ class HtmlReport(private val projects: List<Model>) : Report {
       "class",
       classes,
       "name",
-      name
+      name,
     ),
-    consumer
+    consumer,
   ).visit(block)
 
   private companion object {
@@ -257,7 +261,8 @@ class HtmlReport(private val projects: List<Model>) : Report {
     const val DEFAULT_YEAR = "20xx"
     private const val MISSING_LICENSE = "Missing standard license text for: "
 
-    @JvmStatic fun getLicenseText(fileName: String): String {
+    @JvmStatic
+    fun getLicenseText(fileName: String): String {
       return HtmlReport::class.java
         .getResource("/license/$fileName")
         ?.readText()
