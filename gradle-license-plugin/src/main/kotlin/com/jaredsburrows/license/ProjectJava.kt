@@ -10,7 +10,7 @@ internal fun Project.isJavaProject(): Boolean {
       "java",
       // KotlinJvmPlugin
       "org.jetbrains.kotlin.jvm",
-    )
+    ),
   )
 }
 

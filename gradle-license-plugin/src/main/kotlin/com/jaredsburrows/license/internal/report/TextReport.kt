@@ -33,12 +33,16 @@ class TextReport(private val projects: List<Model>) : Report {
       val firstLine = when {
         project.name.isNotEmpty() && project.version.isNotEmpty() && project.licenses.isNotEmpty() ->
           "${project.name} (${project.version}) - ${project.licenses.licenseNames()}"
+
         project.name.isNotEmpty() && project.licenses.isNotEmpty() ->
           "${project.name} - ${project.licenses.licenseNames()}"
+
         project.name.isNotEmpty() && project.version.isNotEmpty() ->
           "${project.name} (${project.version})"
+
         project.name.isNotEmpty() ->
           project.name
+
         else -> return@map
       }
 
@@ -63,18 +67,21 @@ class TextReport(private val projects: List<Model>) : Report {
           $thirdLine
 
           """
+
         firstLine.isNotEmpty() && secondLine.isNotEmpty() ->
           """
           $firstLine
           $secondLine
 
           """
+
         firstLine.isNotEmpty() && thirdLine.isNotEmpty() ->
           """
           $firstLine
           $thirdLine
 
           """
+
         else ->
           """
           $firstLine

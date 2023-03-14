@@ -39,7 +39,7 @@ private class UncheckedException : RuntimeException {
     /** Always throws the failure in some form. The return value is to keep the compiler happy. */
     fun throwAsUncheckedException(
       t: Throwable,
-      preserveMessage: Boolean = false
+      preserveMessage: Boolean = false,
     ): RuntimeException {
       if (t is RuntimeException) {
         throw t

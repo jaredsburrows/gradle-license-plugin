@@ -204,7 +204,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   private fun generatePOMInfo(
     mavenReader: MavenXpp3Reader,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ) {
     // Iterate through all POMs in order from our custom POM configuration
     configurations
@@ -252,7 +252,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   }
 
   private fun getResolvedArtifactsFromResolvedDependencies(
-    resolvedDependencies: Set<ResolvedDependency>
+    resolvedDependencies: Set<ResolvedDependency>,
   ): Set<ResolvedArtifact> {
     val resolvedArtifacts = hashSetOf<ResolvedArtifact>()
     resolvedDependencies.forEach { resolvedDependency ->
@@ -265,8 +265,9 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
            * library project itself and enumerate its dependencies.
            */
           "unspecified" -> resolvedArtifacts += getResolvedArtifactsFromResolvedDependencies(
-            resolvedDependency.children
+            resolvedDependency.children,
           )
+
           else -> resolvedArtifacts += resolvedDependency.allModuleArtifacts
         }
       } catch (e: Exception) {
@@ -280,7 +281,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   private fun getParentPomFile(
     model: Model,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ): File? {
     // Get parent POM information
     val parent = model.parent
@@ -323,7 +324,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
     // Log output directory for user
     logger.lifecycle(
-      "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}."
+      "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}.",
     )
   }
 
@@ -345,7 +346,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
       // Log output directory for user
       logger.lifecycle(
-        "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}."
+        "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.",
       )
     }
   }
@@ -354,7 +355,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ): String {
     if (pomFile.isNullOrEmpty()) {
       return ""
@@ -378,7 +379,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         mavenReader,
         getParentPomFile(model, configurations, dependencies),
         configurations,
-        dependencies
+        dependencies,
       )
     }
     return ""
@@ -388,7 +389,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ): List<License> {
     if (pomFile.isNullOrEmpty()) {
       return mutableListOf()
@@ -407,7 +408,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         License().apply {
           this.name = APACHE_LICENSE_NAME
           url = APACHE_LICENSE_URL
-        }
+        },
       )
     }
 
@@ -434,7 +435,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         mavenReader,
         getParentPomFile(model, configurations, dependencies),
         configurations,
-        dependencies
+        dependencies,
       )
     }
     return mutableListOf()
@@ -454,7 +455,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
     configurations: ConfigurationContainer,
-    dependencies: DependencyHandler
+    dependencies: DependencyHandler,
   ): String {
     return version.orEmpty().trim()
       .ifEmpty { findVersion(mavenReader, pomFile, configurations, dependencies) }

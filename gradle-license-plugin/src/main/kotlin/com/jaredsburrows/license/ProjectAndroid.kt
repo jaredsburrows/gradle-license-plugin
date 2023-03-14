@@ -28,7 +28,7 @@ internal fun Project.isAndroidProject(): Boolean {
       "com.android.library",
       // TestPlugin
       "com.android.test",
-    )
+    ),
   )
 }
 
@@ -50,6 +50,7 @@ internal fun Project.configureAndroidProject() {
           configureVariant(this, unitTestVariants)
         }
       }
+
       is FeaturePlugin -> {
         extensions.getByType(FeatureExtension::class.java).run {
           configureVariant(this, featureVariants)
@@ -58,6 +59,7 @@ internal fun Project.configureAndroidProject() {
           configureVariant(this, unitTestVariants)
         }
       }
+
       is LibraryPlugin -> {
         extensions.getByType(LibraryExtension::class.java).run {
           configureVariant(this, libraryVariants)
@@ -65,6 +67,7 @@ internal fun Project.configureAndroidProject() {
           configureVariant(this, unitTestVariants)
         }
       }
+
       is TestPlugin -> {
         extensions.getByType(TestExtension::class.java).run {
           configureVariant(this, applicationVariants)
@@ -76,7 +79,7 @@ internal fun Project.configureAndroidProject() {
 
 private fun Project.configureVariant(
   baseExtension: BaseExtension,
-  variants: DomainObjectSet<out BaseVariant>? = null
+  variants: DomainObjectSet<out BaseVariant>? = null,
 ) {
   // Configure tasks for all variants
   variants?.all { variant ->
