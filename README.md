@@ -22,7 +22,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.0"
+  id("com.jaredsburrows.license") version "0.9.2"
 }
 ```
 </details>
@@ -39,7 +39,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.0'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.2'
   }
 }
 
@@ -56,7 +56,7 @@ Release versions are available in the [Sonatype's release repository](https://re
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.1-SNAPSHOT"
+  id("com.jaredsburrows.license") version "0.9.3-SNAPSHOT"
 }
 ```
 </details>
@@ -72,7 +72,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.1-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.3-SNAPSHOT'
   }
 }
 

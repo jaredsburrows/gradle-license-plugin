@@ -37,7 +37,7 @@ jobs:
       - name: Run Build
         uses: gradle/gradle-build-action@v2.4.0
         with:
-          arguments: clean ktlintCheck build -s
+          arguments: ktlintCheck build -s
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3.1.2
@@ -75,7 +75,9 @@ jobs:
       - name: Publish
         uses: gradle/gradle-build-action@v2.4.0
         with:
-          arguments: clean publish -s
+          arguments: publish -s
         env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
