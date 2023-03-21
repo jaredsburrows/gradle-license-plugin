@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Maven](https://img.shields.io/maven-central/v/com.jaredsburrows/gradle-license-plugin?label=maven&style=flat)](https://search.maven.org/artifact/com.jaredsburrows/gradle-license-plugin)
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/com.jaredsburrows.license)](https://plugins.gradle.org/plugin/com.jaredsburrows.license)
 [![Build](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
 
