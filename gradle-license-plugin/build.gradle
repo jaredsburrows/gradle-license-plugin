@@ -10,7 +10,7 @@ plugins {
   id 'groovy'
 }
 
-task createClasspathManifest() {
+tasks.register('createClasspathManifest') {
   def outputDir = new File(buildDir, name)
 
   inputs.files sourceSets.main.runtimeClasspath
