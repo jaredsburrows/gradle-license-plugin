@@ -51,18 +51,6 @@ dependencies {
   testImplementation libs.commons
 }
 
-pluginBundle {
-  website = POM_URL
-  vcsUrl = POM_SCM_URL
-  description = POM_DESCRIPTION
-  tags = ['license']
-
-  plugins {
-    licensePlugin {
-      displayName = POM_NAME
-    }
-  }
-}
 gradlePlugin {
   website = POM_URL
   vcsUrl = POM_SCM_URL
