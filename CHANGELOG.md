@@ -1,6 +1,6 @@
 # Change Log
 
-## Version 0.9.1 *(2023-03-20)*
+## Version 0.9.2 *(2023-03-20)*
  * [#247](https://github.com/jaredsburrows/gradle-license-plugin/pull/247) CsvReport: missing values converted to empty strings
  * [#245](https://github.com/jaredsburrows/gradle-license-plugin/pull/245) CsvReport: escape special characters
  * [#242](https://github.com/jaredsburrows/gradle-license-plugin/pull/242) Support plain-Kotlin Gradle projects
