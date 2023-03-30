@@ -12,7 +12,8 @@ env:
   JAVA_VERSION: 19
 
 jobs:
-  jvm:
+  build:
+    name: Build with JDK ${{ env.JAVA_VERSION }}
     runs-on: ubuntu-latest
 
     steps:
@@ -54,10 +55,11 @@ jobs:
             build/test-results
 
   publish:
+    name: Publish Snapshot
     runs-on: ubuntu-latest
     if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
     needs:
-      - jvm
+      - build
 
     steps:
       - name: Checkout Project
