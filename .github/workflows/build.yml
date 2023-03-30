@@ -9,16 +9,15 @@ on:
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  JAVA_VERSION: 11
 
 jobs:
-  jvm:
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        java-version:
-          - 11
 
     steps:
       - name: Checkout Project
@@ -27,11 +26,11 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.6
 
-      - name: Setup Java ${{ matrix.java-version }}
+      - name: Configure JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3.11.0
         with:
           distribution: temurin
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
       - name: Run Build
@@ -59,10 +58,11 @@ jobs:
             build/test-results
 
   publish:
+    name: Publish Snapshot
     runs-on: ubuntu-latest
     if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
     needs:
-      - jvm
+      - build
 
     steps:
       - name: Checkout Project
@@ -71,11 +71,11 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.6
 
-      - name: Configure JDK
+      - name: Configure JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3.11.0
         with:
           distribution: temurin
-          java-version: 11
+          java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
       - name: Publish
