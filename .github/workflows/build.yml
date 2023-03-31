@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew ktlintCheck build -s
 
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2.6.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.6.1
         if: success() || failure()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
