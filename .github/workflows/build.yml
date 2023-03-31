@@ -36,7 +36,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.4.0
 
-      - name: Run Analyzer
+      - name: Run Build
         run: ./gradlew ktlintCheck build -s
 
       - name: Publish Test Report
