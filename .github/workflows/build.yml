@@ -33,13 +33,14 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
-      - name: Run Build
+      - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.4.0
-        with:
-          arguments: ktlintCheck build -s
+
+      - name: Run Build
+        run: ./gradlew ktlintCheck build -s
 
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2.6.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.6.1
         if: success() || failure()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
@@ -78,10 +79,11 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
-      - name: Publish
+      - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.4.0
-        with:
-          arguments: publish -s
+
+      - name: Publish
+        run: ./gradlew publish -s
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
