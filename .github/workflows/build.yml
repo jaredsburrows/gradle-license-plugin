@@ -41,7 +41,7 @@ jobs:
 
       - name: Publish Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2.6.1
-        if: success() || failure()
+        if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
 
