@@ -356,7 +356,13 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     pomFile: File?,
     configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
+    recursionDepth: Int = 0,
   ): String {
+    if (recursionDepth == MAX_RECURSION_DEPTH) {
+      logger.warn("Failed to find version after $recursionDepth attempts: $pomFile")
+      return ""
+    }
+
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
@@ -380,6 +386,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         getParentPomFile(model, configurations, dependencies),
         configurations,
         dependencies,
+        recursionDepth = recursionDepth + 1,
       )
     }
     return ""
