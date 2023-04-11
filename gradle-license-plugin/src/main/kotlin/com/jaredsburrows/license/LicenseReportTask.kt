@@ -390,7 +390,14 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     pomFile: File?,
     configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
+    recursionDepth: Int = 0,
   ): List<License> {
+    if (recursionDepth == MAX_RECURSION_DEPTH) {
+      logger.warn("Failed to find license after $recursionDepth attempts: $pomFile")
+      return emptyList()
+    }
+
+    println("findLicenses $pomFile")
     if (pomFile.isNullOrEmpty()) {
       return mutableListOf()
     }
@@ -436,6 +443,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         getParentPomFile(model, configurations, dependencies),
         configurations,
         dependencies,
+        recursionDepth = recursionDepth + 1,
       )
     }
     return mutableListOf()
@@ -494,5 +502,6 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
     private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    private const val MAX_RECURSION_DEPTH = 5
   }
 }
