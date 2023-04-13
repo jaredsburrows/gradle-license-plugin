@@ -10,6 +10,7 @@ import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
+import org.codehaus.plexus.util.ReaderFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
@@ -22,7 +23,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
-import java.io.FileReader
 import java.net.URI
 import java.net.URL
 import java.util.Locale
@@ -221,7 +221,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .map { artifact ->
         // POM of artifact
         val pomFile = artifact.file
-        val model = mavenReader.read(FileReader(pomFile), false)
+        val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
 
         // Search for licenses
         var licenses = findLicenses(mavenReader, pomFile, configurations, dependencies)
@@ -360,7 +360,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     if (pomFile.isNullOrEmpty()) {
       return ""
     }
-    val model = mavenReader.read(FileReader(pomFile!!), false)
+    val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
 
     // If the POM is missing a name, do not record it
     val name = model.pomName()
@@ -394,7 +394,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     if (pomFile.isNullOrEmpty()) {
       return mutableListOf()
     }
-    val model = mavenReader.read(FileReader(pomFile!!), false)
+    val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
 
     // If the POM is missing a name, do not record it
     val name = model.pomName()
