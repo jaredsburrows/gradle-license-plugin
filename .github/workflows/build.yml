@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew ktlintCheck build -s
 
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2.6.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.6.2
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
