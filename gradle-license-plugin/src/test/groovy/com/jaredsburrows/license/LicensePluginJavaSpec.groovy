@@ -1,5 +1,7 @@
 package com.jaredsburrows.license
 
+import spock.lang.Issue
+
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
@@ -874,4 +876,33 @@ final class LicensePluginJavaSpec extends Specification {
     assertHtml(expectedHtml, actualHtml.text)
     assertJson(expectedJson, actualJson.text)
   }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/275")
+  def 'licenseReport with encoding, such as iso-8859-1 instead of UTF-8'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'com.sun.activation:javax.activation:1.2.0' // iso-8859-1
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+  }
+
 }
