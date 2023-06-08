@@ -160,7 +160,8 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         try {
           configuration.isCanBeResolved = true
         } catch (e: Exception) {
-          logger.warn("Cannot resolve configuration ${configuration.name}", e)
+          logger.warn("Cannot resolve configuration ${configuration.name}: ${e.shortMessage()}")
+          logger.debug("Cannot resolve configuration ${configuration.name}", e)
         }
       }
     }
@@ -226,7 +227,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         // Search for licenses
         var licenses = findLicenses(mavenReader, pomFile, configurations, dependencies)
         if (licenses.isEmpty()) {
-          logger.warn("$name dependency does not have a license.")
+          logger.warn("Dependency '${artifact.name}' does not have a license.")
           licenses = mutableListOf()
         }
 
@@ -271,7 +272,8 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
           else -> resolvedArtifacts += resolvedDependency.allModuleArtifacts
         }
       } catch (e: Exception) {
-        logger.warn("Failed to process ${resolvedDependency.name}", e)
+        logger.warn("Failed to process '${resolvedDependency.name}': ${e.shortMessage()}")
+        logger.debug("Failed to process '${resolvedDependency.name}'", e)
       }
     }
     return resolvedArtifacts
@@ -446,7 +448,8 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     try {
       uri = URL(this).toURI()
     } catch (e: Exception) {
-      logger.warn("$this dependency has an invalid license URL; skipping license", e)
+      logger.warn("Dependency has an invalid license URL '$this': ${e.shortMessage()}")
+      logger.debug("Dependency has an invalid license URL '$this'", e)
     }
     return uri != null
   }
@@ -489,10 +492,15 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
   private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
 
+  private fun Exception.shortMessage(): String = with(message ?: "<no message>") {
+    if (length > MAX_EXCEPTION_MESSAGE_LENGTH) substring(0, MAX_EXCEPTION_MESSAGE_LENGTH) + "... (see --debug for complete message)" else this
+  }
+
   private companion object {
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
     private const val APACHE_LICENSE_NAME = "The Apache Software License"
     private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
     private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+    private const val MAX_EXCEPTION_MESSAGE_LENGTH = 200
   }
 }
