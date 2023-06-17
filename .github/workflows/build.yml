@@ -51,7 +51,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2.7.0
         if: always()
         with:
-          comment_mode: false
+          comment_mode: off
           files: '**/build/test-results/test/TEST-*.xml'
 
       - name: Upload Artifacts
