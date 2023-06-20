@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew ktlintCheck build -s
 
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2.7.0
+        uses: EnricoMi/publish-unit-test-result-action@v2.8.0
         if: always()
         with:
           comment_mode: off
