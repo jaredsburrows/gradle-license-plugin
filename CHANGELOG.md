@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.9.3 *(2023-06-20)*
+ * [#291](https://github.com/jaredsburrows/gradle-license-plugin/pull/291) Use ReaderFactory.newXmlReader to fix #275
+
 ## Version 0.9.2 *(2023-03-20)*
  * [#247](https://github.com/jaredsburrows/gradle-license-plugin/pull/247) CsvReport: missing values converted to empty strings
  * [#245](https://github.com/jaredsburrows/gradle-license-plugin/pull/245) CsvReport: escape special characters
