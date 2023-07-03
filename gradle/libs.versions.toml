@@ -6,7 +6,7 @@ kotlin = "1.8.22"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.4.2" }
-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.2" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
 plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.0" }
 versions = { id = "com.github.ben-manes.versions", version = "0.47.0" }
 
