@@ -1,6 +1,13 @@
 name: Dependabot auto-merge
 
-on: pull_request
+on:
+  pull_request:
+    types: 
+      - opened
+      - synchronize
+  check_suite:
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -9,7 +16,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' }} && ${{ github.event.check_suite.conclusion == 'success' }}
 
     steps:
       - name: Dependabot metadata
