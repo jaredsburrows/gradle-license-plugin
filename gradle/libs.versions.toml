@@ -11,7 +11,7 @@ plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.0" }
 versions = { id = "com.github.ben-manes.versions", version = "0.47.0" }
 
 [libraries]
-android-plugin = { module = "com.android.tools.build:gradle", version = "3.6.4" }
+android-plugin = { module = "com.android.tools.build:gradle", version = "8.1.0" }
 commons = { module = "org.apache.commons:commons-csv", version = "1.10.0" }
 moshi = { module = "com.squareup.moshi:moshi", version = "1.15.0" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
