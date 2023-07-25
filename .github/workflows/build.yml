@@ -32,17 +32,17 @@ jobs:
         uses: actions/checkout@v3.5.3
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1.0.6
+        uses: gradle/wrapper-validation-action@v1.1.0
 
       - name: Configure JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v3.11.0
+        uses: actions/setup-java@v3.12.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.6.1
+        uses: gradle/gradle-build-action@v2.7.0
 
       - name: Run Build
         run: ./gradlew ktlintCheck build -s
@@ -79,17 +79,17 @@ jobs:
         uses: actions/checkout@v3.5.3
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1.0.6
+        uses: gradle/wrapper-validation-action@v1.1.0
 
       - name: Configure JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v3.11.0
+        uses: actions/setup-java@v3.12.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.6.1
+        uses: gradle/gradle-build-action@v2.7.0
 
       - name: Publish
         run: ./gradlew publish -s
