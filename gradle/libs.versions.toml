@@ -1,6 +1,6 @@
 [versions]
 java = "11"
-kotlin = "1.9.10"
+kotlin = "1.9.20"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
