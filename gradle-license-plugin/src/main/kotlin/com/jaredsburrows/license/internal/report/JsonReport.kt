@@ -23,7 +23,10 @@ class JsonReport(private val projects: List<Model>) : Report {
     val reportList = projects.map { project ->
       // Handle multiple licenses
       val licensesJson = project.licenses.map { license ->
-        linkedMapOf(LICENSE to license.name, LICENSE_URL to license.url)
+        linkedMapOf(
+          LICENSE to license.name,
+          LICENSE_URL to license.url,
+        )
       }
 
       // Handle multiple developer

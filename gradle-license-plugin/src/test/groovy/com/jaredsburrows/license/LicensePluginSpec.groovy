@@ -10,7 +10,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 final class LicensePluginSpec extends Specification {
-  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
+  @Rule
+  public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private int compileSdkVersion = 32
   private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
@@ -91,7 +92,8 @@ final class LicensePluginSpec extends Specification {
     result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
   }
 
-  @Unroll def 'apply with non java or agp plugins: #plugin'() {
+  @Unroll
+  def 'apply with non java or agp plugins: #plugin'() {
     given:
     buildFile <<
       """
@@ -127,7 +129,8 @@ final class LicensePluginSpec extends Specification {
     ]
   }
 
-  @Unroll def 'apply with allowed java plugins: #javaPlugin'() {
+  @Unroll
+  def 'apply with allowed java plugins: #javaPlugin'() {
     given:
     buildFile <<
       """
@@ -159,7 +162,8 @@ final class LicensePluginSpec extends Specification {
     ]
   }
 
-  @Unroll def 'apply with allowed android plugins: #androidPlugin'() {
+  @Unroll
+  def 'apply with allowed android plugins: #androidPlugin'() {
     given:
     testProjectDir.newFile('settings.gradle') <<
       """
