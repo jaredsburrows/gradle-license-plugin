@@ -1,11 +1,10 @@
 [versions]
-java = "11"
-kotlin = "1.9.10"
+kotlin = "1.9.20"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version = "1.9.0" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.0" }
+dokka = { id = "org.jetbrains.dokka", version = "1.9.10" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.1" }
 maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
 plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 versions = { id = "com.github.ben-manes.versions", version = "0.49.0" }
