@@ -12,7 +12,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 final class LicensePluginAndroidSpec extends Specification {
-  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
+  @Rule
+  public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private int compileSdkVersion = 32
   private List<File> pluginClasspath
   private String classpathString
@@ -42,7 +43,8 @@ final class LicensePluginAndroidSpec extends Specification {
     mainAssetsFolder = "${srcFolder}/main/assets"
   }
 
-  @Unroll def '#taskName that has no dependencies'() {
+  @Unroll
+  def '#taskName that has no dependencies'() {
     given:
     buildFile <<
       """
@@ -108,7 +110,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with default buildTypes'() {
+  @Unroll
+  def '#taskName with default buildTypes'() {
     given:
     buildFile <<
       """
@@ -236,7 +239,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def 'not UP-TO-DATE when dependencies change'() {
+  @Unroll
+  def 'not UP-TO-DATE when dependencies change'() {
     given:
     def originalBuildFile = """
       buildscript {
@@ -311,7 +315,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with buildTypes'() {
+  @Unroll
+  def '#taskName with buildTypes'() {
     given:
     buildFile <<
       """
@@ -444,7 +449,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with buildTypes + productFlavors + flavorDimensions'() {
+  @Unroll
+  def '#taskName with buildTypes + productFlavors + flavorDimensions'() {
     given:
     buildFile <<
       """
@@ -687,7 +693,8 @@ final class LicensePluginAndroidSpec extends Specification {
     result.task(":licenseFlavor2Flavor4ReleaseReport").outcome == SUCCESS
   }
 
-  @Unroll def '#taskName from readme example'() {
+  @Unroll
+  def '#taskName from readme example'() {
     given:
     buildFile <<
       """
@@ -831,7 +838,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with no open source dependencies'() {
+  @Unroll
+  def '#taskName with no open source dependencies'() {
     given:
     buildFile <<
       """
@@ -930,7 +938,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with default buildTypes, multi module and android and java'() {
+  @Unroll
+  def '#taskName with default buildTypes, multi module and android and java'() {
     given:
     testProjectDir.newFile('settings.gradle') <<
       """
@@ -1076,7 +1085,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with default buildTypes, multi module and android and android'() {
+  @Unroll
+  def '#taskName with default buildTypes, multi module and android and android'() {
     given:
     testProjectDir.newFile('settings.gradle') <<
       """
@@ -1229,7 +1239,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with reports enabled and copy enabled #copyEnabled'() {
+  @Unroll
+  def '#taskName with reports enabled and copy enabled #copyEnabled'() {
     given:
     buildFile <<
       """
@@ -1305,7 +1316,8 @@ final class LicensePluginAndroidSpec extends Specification {
     copyEnabled << [true, false]
   }
 
-  @Unroll def '#taskName with reports disabled and copy enabled #copyEnabled'() {
+  @Unroll
+  def '#taskName with reports disabled and copy enabled #copyEnabled'() {
     given:
     buildFile <<
       """
@@ -1374,7 +1386,8 @@ final class LicensePluginAndroidSpec extends Specification {
     copyEnabled << [true, false]
   }
 
-  @Unroll def '#taskName with variant-specific report'() {
+  @Unroll
+  def '#taskName with variant-specific report'() {
     given:
     buildFile <<
       """
@@ -1469,7 +1482,8 @@ final class LicensePluginAndroidSpec extends Specification {
     ]
   }
 
-  @Unroll def '#taskName with android gradle plugin version < 7.1.0 (7.0.4)'() {
+  @Unroll
+  def '#taskName with android gradle plugin version < 7.1.0 (7.0.4)'() {
     given:
     def androidGradlePluginVersion = '7.0.4'
     buildFile <<
@@ -1580,7 +1594,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
+  @Unroll
+  def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
     given:
     def androidGradlePluginVersion = '7.1.1'
     buildFile <<
@@ -1691,7 +1706,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring one group ID pattern'() {
+  @Unroll
+  def '#taskName ignoring one group ID pattern'() {
     given:
     buildFile <<
       """
@@ -1783,7 +1799,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring all group ID patterns'() {
+  @Unroll
+  def '#taskName ignoring all group ID patterns'() {
     given:
     buildFile <<
       """
@@ -1848,7 +1865,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring one artifact ID pattern'() {
+  @Unroll
+  def '#taskName ignoring one artifact ID pattern'() {
     given:
     buildFile <<
       """
@@ -1940,7 +1958,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring all artifact ID patterns'() {
+  @Unroll
+  def '#taskName ignoring all artifact ID patterns'() {
     given:
     buildFile <<
       """
@@ -2005,7 +2024,8 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
-  @Unroll def '#taskName ignoring multiple artifacts by group ID'() {
+  @Unroll
+  def '#taskName ignoring multiple artifacts by group ID'() {
     given:
     buildFile <<
       """
@@ -2099,7 +2119,9 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
-  @Unroll def '#taskName ignoring specific artifact via group and artifact IDs'() {
+
+  @Unroll
+  def '#taskName ignoring specific artifact via group and artifact IDs'() {
     given:
     buildFile <<
       """
@@ -2190,7 +2212,9 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
-  @Unroll def '#taskName ignoring artifact via version'() {
+
+  @Unroll
+  def '#taskName ignoring artifact via version'() {
     given:
     buildFile <<
       """

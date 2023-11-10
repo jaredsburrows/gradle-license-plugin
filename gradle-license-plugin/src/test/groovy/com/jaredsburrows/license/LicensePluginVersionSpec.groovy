@@ -9,7 +9,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 final class LicensePluginVersionSpec extends Specification {
-  @Rule public final TemporaryFolder testProjectDir = new TemporaryFolder()
+  @Rule
+  public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private int compileSdkVersion = 32
   private List<File> pluginClasspath
   private String classpathString
@@ -33,7 +34,8 @@ final class LicensePluginVersionSpec extends Specification {
     reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
   }
 
-  @Unroll def 'licenseReport using with gradle #gradleVersion'() {
+  @Unroll
+  def 'licenseReport using with gradle #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -67,7 +69,8 @@ final class LicensePluginVersionSpec extends Specification {
     ]
   }
 
-  @Unroll def 'AGP version 3.6+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll
+  def 'AGP version 3.6+, gradle: #gradleVersion and AGP: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -126,7 +129,8 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'AGP version 4.0+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  @Unroll
+  def 'AGP version 4.0+, gradle: #gradleVersion and AGP: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -185,7 +189,8 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'agp version 4.1+, gradle: #gradleVersion and agp: #agpVersion'() {
+  @Unroll
+  def 'agp version 4.1+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -244,7 +249,8 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'agp version 4.2+, gradle: #gradleVersion and agp: #agpVersion'() {
+  @Unroll
+  def 'agp version 4.2+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -303,7 +309,8 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'agp version 7.0+, gradle: #gradleVersion and agp: #agpVersion'() {
+  @Unroll
+  def 'agp version 7.0+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -362,7 +369,8 @@ final class LicensePluginVersionSpec extends Specification {
     ].combinations()
   }
 
-  @Unroll def 'agp version 7.1+, gradle: #gradleVersion and agp: #agpVersion'() {
+  @Unroll
+  def 'agp version 7.1+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
@@ -420,7 +428,8 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
 
-  @Unroll def 'agp version 7.2+, gradle: #gradleVersion and agp: #agpVersion'() {
+  @Unroll
+  def 'agp version 7.2+, gradle: #gradleVersion and agp: #agpVersion'() {
     given:
     buildFile <<
       """
