@@ -7,10 +7,6 @@ on:
   pull_request:
     types: [ opened, labeled, unlabeled, synchronize ]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
   JAVA_VERSION: 11
@@ -23,9 +19,6 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-
-    strategy:
-      fail-fast: false
 
     steps:
       - name: Checkout Project
