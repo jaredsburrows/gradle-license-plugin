@@ -254,9 +254,16 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
   private fun getResolvedArtifactsFromResolvedDependencies(
     resolvedDependencies: Set<ResolvedDependency>,
+    skipSet: MutableSet<ResolvedDependency> = hashSetOf<ResolvedDependency>(),
   ): Set<ResolvedArtifact> {
     val resolvedArtifacts = hashSetOf<ResolvedArtifact>()
     resolvedDependencies.forEach { resolvedDependency ->
+      if (skipSet.contains(resolvedDependency)) {
+        return@forEach
+      } else {
+        skipSet.add(resolvedDependency)
+      }
+
       try {
         when (resolvedDependency.moduleVersion) {
           /**
@@ -267,6 +274,7 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
            */
           "unspecified" -> resolvedArtifacts += getResolvedArtifactsFromResolvedDependencies(
             resolvedDependency.children,
+            skipSet,
           )
 
           else -> resolvedArtifacts += resolvedDependency.allModuleArtifacts
