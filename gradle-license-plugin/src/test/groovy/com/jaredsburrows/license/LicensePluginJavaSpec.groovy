@@ -755,6 +755,190 @@ final class LicensePluginJavaSpec extends Specification {
     assertJson(expectedJson, actualJson.text)
   }
 
+  def 'licenseReport with project dependencies - deep dependency graph'() {
+    given:
+    def depth = 18
+
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      ${(1..depth).collect {
+        """
+        include 'subproject_${it}a'
+        include 'subproject_${it}b'
+        include 'subproject_${it}c'
+        """
+      }.join()}
+      """
+
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+      }
+
+      dependencies {
+        implementation project(':subproject_1a')
+        implementation project(':subproject_1b')
+        implementation project(':subproject_1c')
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+      }
+
+      ${(1..depth-1).collect {
+        """
+        project(':subproject_${it}a') {
+          apply plugin: 'java-library'
+
+          dependencies {
+            implementation project(':subproject_${it+1}a')
+            implementation project(':subproject_${it+1}b')
+            implementation project(':subproject_${it+1}c')
+          }
+        }
+
+        project(':subproject_${it}b') {
+          apply plugin: 'java-library'
+
+          dependencies {
+            implementation project(':subproject_${it+1}a')
+            implementation project(':subproject_${it+1}b')
+            implementation project(':subproject_${it+1}c')
+          }
+        }
+
+        project(':subproject_${it}c') {
+          apply plugin: 'java-library'
+
+          dependencies {
+            implementation project(':subproject_${it+1}a')
+            implementation project(':subproject_${it+1}b')
+            implementation project(':subproject_${it+1}c')
+          }
+        }
+        """
+      }.join()}
+
+      project(':subproject_${depth}a') {
+        apply plugin: 'java-library'
+
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+
+      project(':subproject_${depth}b') {
+        apply plugin: 'java-library'
+
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+
+      project(':subproject_${depth}c') {
+        apply plugin: 'java-library'
+
+        dependencies {
+          implementation 'com.android.support:design:26.1.0'
+        }
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualCsv = new File(reportFolder, 'licenseReport.csv')
+    def actualHtml = new File(reportFolder, 'licenseReport.html')
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+            <li>
+              <a href="#1934118923">design (26.1.0)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+              </dl>
+            </li>
+            <a name="1934118923"></a>
+            <pre>${getLicenseText('apache-2.0.txt')}</pre>
+            <br>
+            <hr>
+          </ul>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"appcompat-v7",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:appcompat-v7:26.1.0"
+        },
+        {
+          "project":"design",
+          "description":null,
+          "version":"26.1.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"The Apache Software License",
+              "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+          ],
+          "dependency":"com.android.support:design:26.1.0"
+        }
+      ]
+      """
+    def actualText = new File(reportFolder, 'licenseReport.txt')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
+    actualCsv.exists()
+    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    actualHtml.exists()
+    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    actualJson.exists()
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
+  }
+
   def 'licenseReport using api and implementation configurations with multi java modules'() {
     given:
     testProjectDir.newFile('settings.gradle') <<
