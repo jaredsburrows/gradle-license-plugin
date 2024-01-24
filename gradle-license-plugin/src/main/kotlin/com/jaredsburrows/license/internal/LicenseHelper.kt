@@ -15,9 +15,14 @@ object LicenseHelper {
       // Apache License 2.0
       // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/apache-2.0.txt
       "Apache 2.0" to "apache-2.0.txt",
+      "Apache-2.0" to "apache-2.0.txt",
       "Apache License 2.0" to "apache-2.0.txt",
+      "Apache License Version 2.0" to "apache-2.0.txt",
+      "The Apache License, Version 2.0" to "apache-2.0.txt",
       "The Apache Software License" to "apache-2.0.txt",
       "The Apache Software License, Version 2.0" to "apache-2.0.txt",
+      "http://www.apache.org/licenses/LICENSE-2.0" to "apache-2.0.txt",
+      "https://www.apache.org/licenses/LICENSE-2.0" to "apache-2.0.txt",
       "http://www.apache.org/licenses/LICENSE-2.0.txt" to "apache-2.0.txt",
       "https://www.apache.org/licenses/LICENSE-2.0.txt" to "apache-2.0.txt",
       "http://opensource.org/licenses/Apache-2.0" to "apache-2.0.txt",
@@ -26,12 +31,16 @@ object LicenseHelper {
       // BSD 2-Clause "Simplified" License
       // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/bsd-2-clause.txt
       "BSD 2-Clause \"Simplified\" License" to "bsd-2-clause.txt",
+      "BSD 2-Clause License" to "bsd-2-clause.txt",
       "http://opensource.org/licenses/BSD-2-Clause" to "bsd-2-clause.txt",
       "https://opensource.org/licenses/BSD-2-Clause" to "bsd-2-clause.txt",
+      "http://www.opensource.org/licenses/bsd-license.php" to "bsd-2-clause.txt",
+      "https://www.opensource.org/licenses/bsd-license.php" to "bsd-2-clause.txt",
 
       // BSD 3-Clause "New" or "Revised" License
       // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/bsd-3-clause.txt
       "BSD 3-Clause \"New\" or \"Revised\" License" to "bsd-3-clause.txt",
+      "BSD-3-Clause" to "bsd-3-clause.txt",
       "http://opensource.org/licenses/BSD-3-Clause" to "bsd-3-clause.txt",
       "https://opensource.org/licenses/BSD-3-Clause" to "bsd-3-clause.txt",
 
@@ -78,6 +87,7 @@ object LicenseHelper {
       // MIT License
       // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/mit.txt
       "MIT License" to "mit.txt",
+      "The MIT License" to "mit.txt",
       "http://opensource.org/licenses/MIT" to "mit.txt",
       "https://opensource.org/licenses/MIT" to "mit.txt",
       "http://www.opensource.org/licenses/mit-license.php" to "mit.txt",
