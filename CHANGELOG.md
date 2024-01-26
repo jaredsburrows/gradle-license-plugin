@@ -1,5 +1,14 @@
 # Change Log
 
+## Version 0.9.4 *(2024-01-25)*
+ * [#398](https://github.com/jaredsburrows/gradle-license-plugin/pull/398) Fix exponential execution time for resolving complex dependencies
+ * [#312](https://github.com/jaredsburrows/gradle-license-plugin/pull/312) Quiet "Cannot resolve configuration" warnings
+
+Many thanks to
+[@realdadfish](https://github.com/realdadfish)
+[@monae](https://github.com/monae)
+for the code contributions!
+
 ## Version 0.9.3 *(2023-06-20)*
  * [#291](https://github.com/jaredsburrows/gradle-license-plugin/pull/291) Use ReaderFactory.newXmlReader to fix #275
 
