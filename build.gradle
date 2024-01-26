@@ -16,23 +16,27 @@ plugins {
   id 'groovy'
 }
 
-configurations.configureEach {
-  resolutionStrategy {
-    eachDependency { details ->
-      if (details.requested.group == 'org.jetbrains.kotlin') {
-        details.useVersion libs.versions.kotlin.get()
+allprojects {
+  configurations.configureEach {
+    resolutionStrategy {
+      preferProjectModules()
+
+      enableDependencyVerification()
+
+      eachDependency { details ->
+        if (details.requested.group == 'org.jetbrains.kotlin') {
+          details.useVersion libs.versions.kotlin.get()
+        }
       }
     }
+  }
+
+  tasks.withType(Wrapper).configureEach {
+    distributionType = Wrapper.DistributionType.ALL
   }
 }
 
 subprojects {
-  repositories {
-    gradlePluginPortal()
-    google()
-    mavenCentral()
-  }
-
   tasks.withType(Jar).configureEach {
     def dateFile = new File(buildDir, 'jar-manifest-date.txt')
     if (!dateFile.exists()) {
