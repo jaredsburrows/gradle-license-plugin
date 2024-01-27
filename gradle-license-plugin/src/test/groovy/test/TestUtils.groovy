@@ -10,16 +10,17 @@ import org.xmlunit.builder.Input
 
 final class TestUtils {
   private TestUtils() {
+    //noinspection GroovyAccessibility
     throw new AssertionError('No instances')
   }
 
-  static def assertCsv(def expected, def actual) {
+  static def assertCsv(String expected, String actual) {
     def left = CSVFormat.DEFAULT.parse(new StringReader(actual)).records.collect { it.toString() }
     def right = CSVFormat.DEFAULT.parse(new StringReader(expected)).records.collect { it.toString() }
     return left == right
   }
 
-  static def assertHtml(def expected, def actual) {
+  static def assertHtml(String expected, String actual) {
     def left = htmlToXml(expected)
     def right = htmlToXml(actual)
     return !DiffBuilder.compare(Input.fromString(right).build())
@@ -30,13 +31,13 @@ final class TestUtils {
       .differences
   }
 
-  static def assertJson(def expected, def actual) {
+  static def assertJson(String expected, String actual) {
     def moshi = new Moshi.Builder().build()
     def jsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, Map.class, String.class, Object.class))
     return jsonAdapter.fromJson(expected) == jsonAdapter.fromJson(actual)
   }
 
-  static def gradleWithCommand(def file, String... commands) {
+  static def gradleWithCommand(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
       .withArguments(commands)
@@ -44,7 +45,7 @@ final class TestUtils {
       .build()
   }
 
-  static def gradleWithCommandWithFail(def file, String... commands) {
+  static def gradleWithCommandWithFail(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
       .withArguments(commands)

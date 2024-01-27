@@ -11,7 +11,7 @@ import spock.lang.Unroll
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 32
+  private int compileSdkVersion = 33
   private List<File> pluginClasspath
   private String classpathString
   private File buildFile
@@ -100,7 +100,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -160,7 +160,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -220,7 +220,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -280,7 +280,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -340,7 +340,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -400,7 +400,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
@@ -459,7 +459,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     when:
     def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion)
+      .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()

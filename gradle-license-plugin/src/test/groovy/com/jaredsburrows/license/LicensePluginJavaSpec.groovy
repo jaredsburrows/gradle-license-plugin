@@ -792,15 +792,15 @@ final class LicensePluginJavaSpec extends Specification {
         implementation 'com.android.support:appcompat-v7:26.1.0'
       }
 
-      ${(1..depth-1).collect {
+      ${(1..depth - 1).collect {
         """
         project(':subproject_${it}a') {
           apply plugin: 'java-library'
 
           dependencies {
-            implementation project(':subproject_${it+1}a')
-            implementation project(':subproject_${it+1}b')
-            implementation project(':subproject_${it+1}c')
+            implementation project(':subproject_${it + 1}a')
+            implementation project(':subproject_${it + 1}b')
+            implementation project(':subproject_${it + 1}c')
           }
         }
 
@@ -808,9 +808,9 @@ final class LicensePluginJavaSpec extends Specification {
           apply plugin: 'java-library'
 
           dependencies {
-            implementation project(':subproject_${it+1}a')
-            implementation project(':subproject_${it+1}b')
-            implementation project(':subproject_${it+1}c')
+            implementation project(':subproject_${it + 1}a')
+            implementation project(':subproject_${it + 1}b')
+            implementation project(':subproject_${it + 1}c')
           }
         }
 
@@ -818,9 +818,9 @@ final class LicensePluginJavaSpec extends Specification {
           apply plugin: 'java-library'
 
           dependencies {
-            implementation project(':subproject_${it+1}a')
-            implementation project(':subproject_${it+1}b')
-            implementation project(':subproject_${it+1}c')
+            implementation project(':subproject_${it + 1}a')
+            implementation project(':subproject_${it + 1}b')
+            implementation project(':subproject_${it + 1}c')
           }
         }
         """
@@ -1089,5 +1089,4 @@ final class LicensePluginJavaSpec extends Specification {
     then:
     result.task(':licenseReport').outcome == SUCCESS
   }
-
 }
