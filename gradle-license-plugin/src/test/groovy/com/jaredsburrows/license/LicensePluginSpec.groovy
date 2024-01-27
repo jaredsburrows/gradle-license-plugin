@@ -12,7 +12,7 @@ import spock.lang.Unroll
 final class LicensePluginSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 32
+  private int compileSdkVersion = 33
   private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString
@@ -33,7 +33,7 @@ final class LicensePluginSpec extends Specification {
     buildFile = testProjectDir.newFile('build.gradle')
   }
 
-  def 'apply with buildscript'() {
+  def 'apply plugin with buildscript dsl'() {
     given:
     buildFile <<
       """
@@ -59,7 +59,32 @@ final class LicensePluginSpec extends Specification {
     result.task(':licenseReport').outcome == SUCCESS
   }
 
-  def 'apply with plugins'() {
+  def 'apply plugin with buildscript dsl and no other plugins'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        repositories {
+          mavenCentral()
+          google()
+        }
+
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.jaredsburrows.license'
+      """
+
+    when:
+    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+  }
+
+  def 'apply plugin with plugins dsl'() {
     given:
     buildFile <<
       """
@@ -76,7 +101,7 @@ final class LicensePluginSpec extends Specification {
     result.task(':licenseReport').outcome == SUCCESS
   }
 
-  def 'apply with no plugins'() {
+  def 'apply plugin with plugins dsl and no other plugins'() {
     given:
     buildFile <<
       """
