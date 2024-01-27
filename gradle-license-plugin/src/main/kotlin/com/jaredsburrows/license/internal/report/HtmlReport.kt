@@ -1,20 +1,20 @@
 package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.LicenseHelper
-import kotlinx.html.A
 import kotlinx.html.Entities
-import kotlinx.html.FlowOrInteractiveOrPhrasingContent
 import kotlinx.html.HTML
 import kotlinx.html.HtmlTagMarker
 import kotlinx.html.TagConsumer
-import kotlinx.html.attributesMapOf
+import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.br
+import kotlinx.html.dd
 import kotlinx.html.dl
 import kotlinx.html.dt
 import kotlinx.html.h3
 import kotlinx.html.head
 import kotlinx.html.hr
+import kotlinx.html.id
 import kotlinx.html.li
 import kotlinx.html.pre
 import kotlinx.html.stream.appendHTML
@@ -22,7 +22,6 @@ import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
-import kotlinx.html.visit
 import kotlinx.html.visitAndFinalize
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
@@ -86,14 +85,15 @@ class HtmlReport(private val projects: List<Model>) : Report {
             h3 {
               +NOTICE_LIBRARIES
             }
-            ul {
-              projectsMap.entries.forEach { entry ->
+
+            projectsMap.entries.forEach { entry ->
+              var currentProject: Model? = null
+              var currentLicense: Int? = null
+
+              ul {
                 val sortedProjects = entry.value.sortedWith(
                   compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
                 )
-
-                var currentProject: Model? = null
-                var currentLicense: Int? = null
 
                 sortedProjects.forEach { project ->
                   currentProject = project
@@ -114,6 +114,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
                             +Entities.copy
                             +" $copyrightYear ${developer.id}"
                           }
+                          dd { }
                         }
                       } else {
                         dt {
@@ -121,57 +122,58 @@ class HtmlReport(private val projects: List<Model>) : Report {
                           +Entities.copy
                           +" $copyrightYear $DEFAULT_AUTHOR"
                         }
+                        dd { }
                       }
                     }
                   }
                 }
+              }
 
-                // This isn't correctly indented in the html source (but is otherwise correct).
-                // It appears to be a bug in the DSL implementation from what little I see on the web.
-                a(name = currentLicense.toString())
+              a {
+                id = currentLicense.toString()
+              }
 
-                // Display associated license text with libraries
-                val licenses = currentProject?.licenses
-                if (licenses.isNullOrEmpty()) {
-                  pre {
-                    +NO_LICENSE
-                  }
-                } else {
-                  licenses.forEach { license ->
-                    val key = getLicenseKey(license)
-                    if (key.isNotEmpty() && licenseMap.values.contains(key)) {
-                      // license from license map
+              // Display associated license text with libraries
+              val licenses = currentProject?.licenses
+              if (licenses.isNullOrEmpty()) {
+                pre {
+                  +NO_LICENSE
+                }
+              } else {
+                licenses.forEach { license ->
+                  val key = getLicenseKey(license)
+                  if (key.isNotEmpty() && licenseMap.values.contains(key)) {
+                    // license from license map
+                    pre {
+                      unsafe { +getLicenseText(key) }
+                    }
+                  } else {
+                    // if not found in the map, just display the info from the POM.xml
+                    val currentLicenseName = license.name.trim()
+                    val currentUrl = license.url.trim()
+
+                    if (currentLicenseName.isNotEmpty() && currentUrl.isNotEmpty()) {
                       pre {
-                        unsafe { +getLicenseText(key) }
+                        unsafe { +"$currentLicenseName\n<a href=\"$currentUrl\">$currentUrl</a>" }
+                      }
+                    } else if (currentUrl.isNotEmpty()) {
+                      pre {
+                        unsafe { +"<a href=\"$currentUrl\">$currentUrl</a>" }
+                      }
+                    } else if (currentLicenseName.isNotEmpty()) {
+                      pre {
+                        unsafe { +"$currentLicenseName\n" }
                       }
                     } else {
-                      // if not found in the map, just display the info from the POM.xml
-                      val currentLicenseName = license.name.trim()
-                      val currentUrl = license.url.trim()
-
-                      if (currentLicenseName.isNotEmpty() && currentUrl.isNotEmpty()) {
-                        pre {
-                          unsafe { +"$currentLicenseName\n<a href=\"$currentUrl\">$currentUrl</a>" }
-                        }
-                      } else if (currentUrl.isNotEmpty()) {
-                        pre {
-                          unsafe { +"<a href=\"$currentUrl\">$currentUrl</a>" }
-                        }
-                      } else if (currentLicenseName.isNotEmpty()) {
-                        pre {
-                          unsafe { +"$currentLicenseName\n" }
-                        }
-                      } else {
-                        pre {
-                          +NO_LICENSE
-                        }
+                      pre {
+                        +NO_LICENSE
                       }
                     }
-                    br
                   }
+                  br
                 }
-                hr {}
               }
+              hr {}
             }
           }
         }
@@ -224,32 +226,11 @@ class HtmlReport(private val projects: List<Model>) : Report {
     namespace,
   ).visitAndFinalize(this, block)
 
-  @HtmlTagMarker
-  private fun FlowOrInteractiveOrPhrasingContent.a(
-    href: String? = null,
-    target: String? = null,
-    classes: String? = null,
-    name: String? = null,
-    block: A.() -> Unit = {},
-  ): Unit = A(
-    attributesMapOf(
-      "href",
-      href,
-      "target",
-      target,
-      "class",
-      classes,
-      "name",
-      name,
-    ),
-    consumer,
-  ).visit(block)
-
   private companion object {
     private const val EXTENSION = "html"
     private const val NAME = "HTML"
     const val DOCTYPE = "<!DOCTYPE html>"
-    const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+    const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"
     const val CSS_STYLE =
       "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
