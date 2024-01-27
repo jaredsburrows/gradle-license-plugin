@@ -20,7 +20,7 @@ final class HtmlReportSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head>
-          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <meta http-equiv="content-type" content="text/html; charset=utf-8">
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -74,7 +74,7 @@ final class HtmlReportSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head>
-          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+          <meta http-equiv="content-type" content="text/html; charset=utf-8">
           <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
           <title>Open source licenses</title>
         </head>
@@ -85,32 +85,40 @@ final class HtmlReportSpec extends Specification {
               <a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
+                <dd></dd>
                 <dt>Copyright &copy; year name</dt>
+                <dd></dd>
               </dl>
             </li>
             <li>
               <a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
+                <dd></dd>
                 <dt>Copyright &copy; year name</dt>
+                <dd></dd>
               </dl>
             </li>
-            <a name="87638953"></a>
-            <pre>name
-            <a href="url">url</a></pre>
-            <br>
-            <hr>
+          </ul>
+          <a id="87638953"></a>
+          <pre>name
+          <a href="url">url</a></pre>
+          <br>
+          <hr>
+          <ul>
             <li>
               <a href="#0">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; 20xx name</dt>
+                <dd></dd>
                 <dt>Copyright &copy; 20xx name</dt>
+                <dd></dd>
               </dl>
             </li>
-            <a name="0"></a>
-            <pre>No license found</pre>
-            <hr>
           </ul>
+          <a id="0"></a>
+          <pre>No license found</pre>
+          <hr>
         </body>
       </html>
       """

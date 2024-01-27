@@ -9,7 +9,7 @@ import java.net.URISyntaxException
 /**
  * Renders information in a format suitable for logging to the console.
  *
- * Taken from: https://github.com/gradle/gradle/blob/master/subprojects/logging/src/main/java/org/gradle/internal/logging/ConsoleRenderer.java
+ * Taken from: https://github.com/gradle/gradle/blob/f3828bbb3350292dcbea7f505464eb5d30cb9d44/platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/ConsoleRenderer.java
  */
 class ConsoleRenderer {
 
@@ -29,7 +29,7 @@ class ConsoleRenderer {
 /**
  * Wraps a checked exception. Carries no other context.
  *
- * Taken from: https://github.com/gradle/gradle/blob/master/subprojects/base-services/src/main/java/org/gradle/internal/UncheckedException.java
+ * Taken from: https://github.com/gradle/gradle/blob/f3828bbb3350292dcbea7f505464eb5d30cb9d44/platforms/core-runtime/base-services/src/main/java/org/gradle/internal/UncheckedException.java
  */
 private class UncheckedException : RuntimeException {
   constructor(cause: Throwable) : super(cause)
