@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.maven.publish)
   alias(libs.plugins.plugin.publish)
   alias(libs.plugins.versions)
+  alias(libs.plugins.license)
   id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
