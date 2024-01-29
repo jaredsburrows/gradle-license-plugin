@@ -286,21 +286,20 @@ licenseReport {
   
 
 ```kotlin
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.webkit.WebView
-
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 
 class OpenSourceLicensesDialog : DialogFragment() {
 
+  @SuppressLint("CommitTransaction")
   fun showLicenses(activity: AppCompatActivity) {
-    val fragmentManager = activity.getSupportFragmentManager()
+    val fragmentManager = activity.supportFragmentManager
     val fragmentTransaction = fragmentManager.beginTransaction()
     val previousFragment = fragmentManager.findFragmentByTag("dialog_licenses")
     if (previousFragment != null) {
@@ -315,11 +314,11 @@ class OpenSourceLicensesDialog : DialogFragment() {
     val webView = WebView(requireActivity())
     webView.loadUrl("file:///android_asset/open_source_licenses.html")
 
-    return Builder(requireActivity())
+    return AlertDialog.Builder(requireActivity())
       .setTitle("Open Source Licenses")
       .setView(webView)
-      .setPositiveButton("OK",
-        DialogInterface.OnClickListener { dialog: DialogInterface, which: Int -> dialog.dismiss() })
+      .setPositiveButton("OK"
+      ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
       .create()
   }
 }
