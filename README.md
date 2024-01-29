@@ -14,6 +14,13 @@ file(`open_source_licenses.html`) in the `<project>/build/reports/licenses/`.
 
 Also, for Android projects the license HTML file will be copied to `<project>/src/main/assets/`.
 
+
+## Compatibility Matrix
+
+| Plugin Version | Minimum [AGP](https://developer.android.com/build/releases/gradle-plugin) Version |
+|----------------|----------------------------------------------------------------------------------:|
+| <= 0.9.4       |                                                                            3.6.4+ |
+
 ## Download
 
 **Release:**
