@@ -12,7 +12,7 @@ import spock.lang.Unroll
 final class LicensePluginSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 33
+  private int compileSdkVersion = 34
   private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString

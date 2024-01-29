@@ -11,7 +11,7 @@ import spock.lang.Unroll
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 33
+  private int compileSdkVersion = 34
   private List<File> pluginClasspath
   private String classpathString
   private File buildFile
