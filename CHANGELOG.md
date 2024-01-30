@@ -1,11 +1,14 @@
 # Change Log
 
+## Version 0.9.7 *(2024-01-30)*
+ * [#422](https://github.com/jaredsburrows/gradle-license-plugin/pull/422) Bump compileOnly AGP to 7.2.2
+
 ## Version 0.9.6 *(2024-01-30)*
  * [#418](https://github.com/jaredsburrows/gradle-license-plugin/pull/418) Apply Ktlint 12.10
- * [#217](https://github.com/jaredsburrows/gradle-license-plugin/pull/416) Bump compileOnly AGP to 7.1.3
+ * [#417](https://github.com/jaredsburrows/gradle-license-plugin/pull/417) Bump compileOnly AGP to 7.1.3
 
 ## Version 0.9.5 *(2024-01-30)*
- * [#465](https://github.com/jaredsburrows/gradle-license-plugin/pull/416) Bump compileOnly AGP to 7.0.4
+ * [#416](https://github.com/jaredsburrows/gradle-license-plugin/pull/416) Bump compileOnly AGP to 7.0.4
  * [#415](https://github.com/jaredsburrows/gradle-license-plugin/pull/415) Bump compileOnly AGP to 4.2.2
  * [#413](https://github.com/jaredsburrows/gradle-license-plugin/pull/413) Bump compileOnly AGP to 4.0.2
  * [#411](https://github.com/jaredsburrows/gradle-license-plugin/pull/411) Update dialog code to remove warning
