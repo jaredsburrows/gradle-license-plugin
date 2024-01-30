@@ -32,7 +32,6 @@ import org.apache.maven.model.Model
  * @property projects list of [Model]s for thr HTML report.
  */
 class HtmlReport(private val projects: List<Model>) : Report {
-
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -91,9 +90,10 @@ class HtmlReport(private val projects: List<Model>) : Report {
               var currentLicense: Int? = null
 
               ul {
-                val sortedProjects = entry.value.sortedWith(
-                  compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
-                )
+                val sortedProjects =
+                  entry.value.sortedWith(
+                    compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
+                  )
 
                 sortedProjects.forEach { project ->
                   currentProject = project
@@ -180,25 +180,26 @@ class HtmlReport(private val projects: List<Model>) : Report {
     }
   }
 
-  override fun emptyReport(): String = buildString {
-    appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
-    appendHTML()
-      .html(lang = "en") {
-        head {
-          unsafe { +META }
-          style {
-            unsafe { +CSS_STYLE }
+  override fun emptyReport(): String =
+    buildString {
+      appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
+      appendHTML()
+        .html(lang = "en") {
+          head {
+            unsafe { +META }
+            style {
+              unsafe { +CSS_STYLE }
+            }
+            title { +OPEN_SOURCE_LIBRARIES }
           }
-          title { +OPEN_SOURCE_LIBRARIES }
-        }
 
-        body {
-          h3 {
-            +NO_LIBRARIES
+          body {
+            h3 {
+              +NO_LIBRARIES
+            }
           }
         }
-      }
-  }
+    }
 
   /**
    * See if the license is in our list of known licenses (which coalesces differing URLs to the
@@ -220,11 +221,12 @@ class HtmlReport(private val projects: List<Model>) : Report {
     lang: String,
     namespace: String? = null,
     crossinline block: HTML.() -> Unit = {},
-  ): T = HTML(
-    mapOf("lang" to lang),
-    this,
-    namespace,
-  ).visitAndFinalize(this, block)
+  ): T =
+    HTML(
+      mapOf("lang" to lang),
+      this,
+      namespace,
+    ).visitAndFinalize(this, block)
 
   private companion object {
     private const val EXTENSION = "html"
@@ -232,7 +234,9 @@ class HtmlReport(private val projects: List<Model>) : Report {
     const val DOCTYPE = "<!DOCTYPE html>"
     const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"
     const val CSS_STYLE =
-      "body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }"
+      "body { font-family: sans-serif } " +
+        "pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; " +
+        "word-break: break-word; display: inline-block }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
     const val NO_LIBRARIES = "None"
     const val NO_LICENSE = "No license found"
