@@ -262,8 +262,6 @@ final class LicensePluginSpec extends Specification {
       // AppPlugin
       'android',
       'com.android.application',
-      // FeaturePlugin
-      'com.android.feature',
       // LibraryPlugin
       'android-library',
       'com.android.library',
