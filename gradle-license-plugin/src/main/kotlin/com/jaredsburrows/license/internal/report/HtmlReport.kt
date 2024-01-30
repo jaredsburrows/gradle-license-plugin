@@ -2,9 +2,6 @@ package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.LicenseHelper
 import kotlinx.html.Entities
-import kotlinx.html.HTML
-import kotlinx.html.HtmlTagMarker
-import kotlinx.html.TagConsumer
 import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.br
@@ -14,7 +11,9 @@ import kotlinx.html.dt
 import kotlinx.html.h3
 import kotlinx.html.head
 import kotlinx.html.hr
+import kotlinx.html.html
 import kotlinx.html.id
+import kotlinx.html.lang
 import kotlinx.html.li
 import kotlinx.html.pre
 import kotlinx.html.stream.appendHTML
@@ -22,7 +21,6 @@ import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
-import kotlinx.html.visitAndFinalize
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 
@@ -71,7 +69,8 @@ class HtmlReport(private val projects: List<Model>) : Report {
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
       appendHTML()
-        .html(lang = "en") {
+        .html {
+          lang = "en"
           head {
             unsafe { +META }
             style {
@@ -184,7 +183,8 @@ class HtmlReport(private val projects: List<Model>) : Report {
     buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
       appendHTML()
-        .html(lang = "en") {
+        .html {
+          lang = "en"
           head {
             unsafe { +META }
             style {
@@ -215,18 +215,6 @@ class HtmlReport(private val projects: List<Model>) : Report {
       else -> license.url
     } as String
   }
-
-  @HtmlTagMarker
-  private inline fun <T, C : TagConsumer<T>> C.html(
-    lang: String,
-    namespace: String? = null,
-    crossinline block: HTML.() -> Unit = {},
-  ): T =
-    HTML(
-      mapOf("lang" to lang),
-      this,
-      namespace,
-    ).visitAndFinalize(this, block)
 
   private companion object {
     private const val EXTENSION = "html"
