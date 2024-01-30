@@ -6,7 +6,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static test.TestUtils.gradleWithCommand
 import static test.TestUtils.gradleWithCommandWithFail
 
@@ -49,7 +48,7 @@ final class LicensePluginSpec extends Specification {
         }
       }
 
-      apply plugin: 'java'
+      apply plugin: 'java-library'
       apply plugin: 'com.jaredsburrows.license'
       """
 
@@ -82,7 +81,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
   }
 
   def 'apply plugin with plugins dsl'() {
@@ -90,7 +89,7 @@ final class LicensePluginSpec extends Specification {
     buildFile <<
       """
       plugins {
-        id 'java'
+        id 'java-library'
         id 'com.jaredsburrows.license'
       }
       """
@@ -115,7 +114,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
   }
 
   @Unroll
@@ -133,7 +132,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
 
     where:
     // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
