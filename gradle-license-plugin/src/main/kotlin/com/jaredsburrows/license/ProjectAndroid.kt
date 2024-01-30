@@ -69,13 +69,14 @@ private fun Project.configureVariant(
 ) {
   // Configure tasks for all variants
   variants?.all { variant ->
-    val name = variant.name.replaceFirstChar {
-      if (it.isLowerCase()) {
-        it.titlecase(Locale.getDefault())
-      } else {
-        it.toString()
+    val name =
+      variant.name.replaceFirstChar {
+        if (it.isLowerCase()) {
+          it.titlecase(Locale.getDefault())
+        } else {
+          it.toString()
+        }
       }
-    }
 
     tasks.register("license${name}Report", LicenseReportTask::class.java) {
       // Apply common task configuration first
@@ -83,12 +84,13 @@ private fun Project.configureVariant(
 
       // Custom for Android tasks
       val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
-      it.assetDirs = baseExtension
-        .sourceSets
-        .getByName(sourceSetName)
-        .assets
-        .srcDirs
-        .toList()
+      it.assetDirs =
+        baseExtension
+          .sourceSets
+          .getByName(sourceSetName)
+          .assets
+          .srcDirs
+          .toList()
       it.variantName = variant.name
     }
   }

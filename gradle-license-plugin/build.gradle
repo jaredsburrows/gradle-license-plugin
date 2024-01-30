@@ -36,7 +36,7 @@ dependencies {
   compileOnly gradleApi()
   compileOnly libs.android.plugin
 
-  implementation(platform(libs.kotlin.bom))
+  implementation platform(libs.kotlin.bom)
   implementation libs.kotlin.stdlib
   implementation libs.kotlinx.html
   implementation libs.moshi
