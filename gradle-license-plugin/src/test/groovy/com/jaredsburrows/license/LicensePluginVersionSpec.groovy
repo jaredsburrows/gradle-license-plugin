@@ -479,7 +479,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.2',
         '7.3.3',
         '7.4.2',
         '7.5.1',
