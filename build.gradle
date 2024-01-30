@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -63,6 +64,14 @@ subprojects {
   tasks.withType(KotlinJvmCompile).configureEach {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_11)
+      languageVersion.set(KotlinVersion.KOTLIN_1_9)
+      apiVersion.set(KotlinVersion.KOTLIN_1_9)
+      freeCompilerArgs.add("-progressive")
+      freeCompilerArgs.add("-Xjsr305=strict")
+      freeCompilerArgs.add("-Xemit-jvm-type-annotations")
+      freeCompilerArgs.add("-Xassertions=jvm")
+      freeCompilerArgs.add("-Xproper-ieee754-comparisons")
+      freeCompilerArgs.add("-Xjvm-default=all")
     }
   }
 
