@@ -1,12 +1,12 @@
 package com.jaredsburrows.license
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 final class LicensePluginVersionSpec extends Specification {
   @Rule
@@ -58,14 +58,15 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
 
     where:
     gradleVersion << [
-      '7.0.2',
-      '7.1.1',
       '7.2',
       '7.3.3',
       '7.4.2',
+      '7.5.1',
+      '7.6.3',
       '8.0.2',
       '8.1.1',
       '8.2.1',
@@ -73,7 +74,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'AGP version 3.6+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  def 'agp 3.6+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -113,6 +114,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -120,8 +122,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 3.6.4
     [gradleVersion, agpVersion] << [
       [
-        '7.0.2',
-        '7.1.1',
         '7.2',
         '7.3.3',
         '7.4.2',
@@ -133,7 +133,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'AGP version 4.0+, gradle: #gradleVersion and AGP: #agpVersion'() {
+  def 'agp 4+ - agp version  #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -173,6 +173,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -180,8 +181,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4
     [gradleVersion, agpVersion] << [
       [
-        '7.0.2',
-        '7.1.1',
         '7.2',
         '7.3.3',
         '7.4.2',
@@ -193,7 +192,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 4.1+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 4.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -233,6 +232,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -240,8 +240,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4.1.0+
     [gradleVersion, agpVersion] << [
       [
-        '7.0.2',
-        '7.1.1',
         '7.2',
         '7.3.3',
         '7.4.2',
@@ -253,7 +251,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 4.2+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 4.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -293,6 +291,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -300,8 +299,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4.2
     [gradleVersion, agpVersion] << [
       [
-        '7.0.2',
-        '7.1.1',
         '7.2',
         '7.3.3',
         '7.4.2',
@@ -313,7 +310,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 7.0+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 7+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -353,6 +350,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -360,11 +358,14 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.0+, 7.0
     [gradleVersion, agpVersion] << [
       [
-        '7.0.2',
-        '7.1.1',
         '7.2',
         '7.3.3',
         '7.4.2',
+        '7.5.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '7.0.4',
@@ -373,7 +374,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 7.1+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 7.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -413,6 +414,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -423,7 +425,11 @@ final class LicensePluginVersionSpec extends Specification {
         '7.2',
         '7.3.3',
         '7.4.2',
-        '7.6.1',
+        '7.5.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '7.1.3',
@@ -432,7 +438,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 7.2+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 7.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -472,6 +478,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -479,10 +486,14 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
+        '7.2',
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '7.2.2',
@@ -491,7 +502,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 7.3+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 7.3+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -531,6 +542,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -541,7 +553,10 @@ final class LicensePluginVersionSpec extends Specification {
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '7.3.1',
@@ -550,7 +565,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 7.4+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 7.4+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -590,6 +605,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -600,7 +616,10 @@ final class LicensePluginVersionSpec extends Specification {
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '7.4.2',
@@ -609,7 +628,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 8+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 8+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -649,6 +668,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -659,7 +679,10 @@ final class LicensePluginVersionSpec extends Specification {
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '8.0.2',
@@ -668,7 +691,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 8.1+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 8.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -708,6 +731,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -718,7 +742,10 @@ final class LicensePluginVersionSpec extends Specification {
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '8.1.4',
@@ -727,7 +754,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'agp version 8.2+, gradle: #gradleVersion and agp: #agpVersion'() {
+  def 'agp 8.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
@@ -767,6 +794,7 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
     result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
     // https://docs.gradle.org/current/userguide/compatibility.html
@@ -777,7 +805,10 @@ final class LicensePluginVersionSpec extends Specification {
         '7.3.3',
         '7.4.2',
         '7.5.1',
-        '7.6.1',
+        '7.6.3',
+        '8.0.2',
+        '8.1.1',
+        '8.2.1',
       ],
       [
         '8.2.2',

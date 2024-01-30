@@ -1,15 +1,15 @@
 package com.jaredsburrows.license
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static test.TestUtils.assertHtml
-import static test.TestUtils.assertJson
-import static test.TestUtils.gradleWithCommand
-import static test.TestUtils.getLicenseText
-
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.assertHtml
+import static test.TestUtils.assertJson
+import static test.TestUtils.getLicenseText
+import static test.TestUtils.gradleWithCommand
 
 final class LicensePluginAndroidSpec extends Specification {
   @Rule

@@ -1,11 +1,11 @@
 package com.jaredsburrows.license.internal.report
 
-import static test.TestUtils.assertCsv
-
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import spock.lang.Specification
+
+import static test.TestUtils.assertCsv
 
 final class CsvReportSpec extends Specification {
   def 'no open source csv'() {
