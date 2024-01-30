@@ -21,6 +21,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 |----------------|-----------------------------------------------|----------------------------------------------------------------------------------:|
 | <= 0.9.4       | <= 7.0.2                                      |                                                                            3.6.4+ |
 | 0.9.5          | 7.0.2                                         |                                                                            3.6.4+ |
+| 0.9.6          | 7.1.3                                         |                                                                            3.6.4+ |
 
 ## Download
 
@@ -31,7 +32,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.5"
+  id("com.jaredsburrows.license") version "0.9.6"
 }
 ```
 </details>
@@ -48,7 +49,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.5'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.6'
   }
 }
 
@@ -67,7 +68,7 @@ and [here](https://central.sonatype.com/artifact/com.jaredsburrows/gradle-licens
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.6-SNAPSHOT"
+  id("com.jaredsburrows.license") version "0.9.7-SNAPSHOT"
 }
 ```
 </details>
@@ -83,7 +84,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.6-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.7-SNAPSHOT'
   }
 }
 

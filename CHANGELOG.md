@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.9.6 *(2024-01-30)*
+ * [#418](https://github.com/jaredsburrows/gradle-license-plugin/pull/418) Apply Ktlint 12.10
+ * [#217](https://github.com/jaredsburrows/gradle-license-plugin/pull/416) Bump compileOnly AGP to 7.1.3
+
 ## Version 0.9.5 *(2024-01-30)*
  * [#465](https://github.com/jaredsburrows/gradle-license-plugin/pull/416) Bump compileOnly AGP to 7.0.4
  * [#415](https://github.com/jaredsburrows/gradle-license-plugin/pull/415) Bump compileOnly AGP to 4.2.2
