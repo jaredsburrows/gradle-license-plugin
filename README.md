@@ -129,43 +129,39 @@ design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
   <summary>HTML Example (license descriptions are minimized):</summary>
 
 ```html
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
     <title>Open source licenses</title>
   </head>
   <body>
     <h3>Notice for packages:</h3>
     <ul>
-      <li>
-        <a href="#0">WSDL4J (1.5.1)</a>
+      <li><a href="#1934118923">design (26.1.0)</a>
         <dl>
           <dt>Copyright &copy; 20xx The original author or authors</dt>
+          <dd></dd>
         </dl>
       </li>
-      <a name="0"></a>
-        <pre>No license found</pre>
-      <br>
-      <hr>
+    </ul>
+    <a id="1934118923"></a>
+    <pre>apache-2.0.txt here</pre>
+    <br>
+    <hr>
+    <ul>
       <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
         <dl>
-          <dt>Copyright &copy; 20xx Karol Wrótniak</dt>
+          <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
+          <dd></dd>
         </dl>
       </li>
-      <a name="1783810846"></a>
-        <pre>mit.txt here</pre>
-      <br>
-      <hr>
-      <li><a href="#1934118923">Design (26.1.0)</a>
-        <dl>
-          <dt>Copyright &copy; 20xx The original author or authors</dt>
-        </dl>
-      </li>
-      <a name="1934118923"></a>
-        <pre>apache-2.0.txt here</pre>
-      <br>
-      <hr>
     </ul>
+    <a id="1783810846"></a>
+    <pre>apache-2.0.txt here</pre>
+    <br>
+    <hr>
   </body>
 </html>
 ```
@@ -183,46 +179,36 @@ Projects with multiple licenses are grouped as if those licenses were a single c
 ```json
 [
   {
-    "project": "Android GIF Drawable Library",
-    "description": "Views and Drawable for displaying animated GIFs for Android",
-    "version": "1.2.3",
-    "developers": [
-      "Karol Wrótniak"
+    "project":"Android GIF Drawable Library",
+    "description":"Views and Drawable for displaying animated GIFs for Android",
+    "version":"1.2.3",
+    "developers":[
+      "Karol Wr\\u00c3\\u00b3tniak"
     ],
-    "url": "https://github.com/koral--/android-gif-drawable",
-    "year": null,
-    "licenses": [
+    "url":"https://github.com/koral--/android-gif-drawable",
+    "year":null,
+    "licenses":[
       {
-        "license": "The MIT License",
-        "license_url": "http://opensource.org/licenses/MIT"
+        "license":"The MIT License",
+        "license_url":"http://opensource.org/licenses/MIT"
       }
     ],
-    "dependency": "pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+    "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
   },
   {
-    "project": "Design",
-    "description": null,
-    "version": "26.1.0",
-    "developers": [],
-    "url": null,
-    "year": null,
-    "licenses": [
+    "project":"design",
+    "description":null,
+    "version":"26.1.0",
+    "developers":[],
+    "url":null,
+    "year":null,
+    "licenses":[
       {
-        "license": "The Apache Software License",
-        "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        "license":"The Apache Software License",
+        "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
     ],
-    "dependency": "com.android.support:design:26.1.0"
-  },
-  {
-    "project": "WSDL4J",
-    "description": "Java stub generator for WSDL",
-    "version": "1.5.1",
-    "developers": [],
-    "url": "http://sf.net/projects/wsdl4j",
-    "year": null,
-    "licenses": [],
-    "dependency": "wsdl4j:wsdl4j:1.5.1"
+    "dependency":"com.android.support:design:26.1.0"
   }
 ]
 ```
@@ -235,6 +221,7 @@ Note, if no license information is found for a component, the `licenses` element
 
 ```text
 Notice for packages
+
 
 Android GIF Drawable Library (1.2.3) - The MIT License
 Views and Drawable for displaying animated GIFs for Android
@@ -339,6 +326,7 @@ class OpenSourceLicensesDialog : DialogFragment() {
   <summary>Java</summary>
   
 ```java
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.webkit.WebView;
@@ -353,9 +341,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public final class OpenSourceLicensesDialog extends DialogFragment {
 
-  public OpenSourceLicensesDialog() {
-  }
-
+  @SuppressLint("CommitTransaction")
   public void showLicenses(AppCompatActivity activity) {
     FragmentManager fragmentManager = activity.getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -374,10 +360,10 @@ public final class OpenSourceLicensesDialog extends DialogFragment {
     webView.loadUrl("file:///android_asset/open_source_licenses.html");
 
     return new AlertDialog.Builder(requireActivity())
-        .setTitle("Open Source Licenses")
-        .setView(webView)
-        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-        .create();
+      .setTitle("Open Source Licenses")
+      .setView(webView)
+      .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+      .create();
   }
 }
 ```
@@ -405,7 +391,7 @@ new OpenSourceLicensesDialog().showLicenses(this);
 
 Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
 
-<img src="https://www.bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" />
+<img src="https://www.bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png"  alt="License HTML"/>
 
 Source: https://www.bignerdranch.com/blog/open-source-licenses-and-android/
 
