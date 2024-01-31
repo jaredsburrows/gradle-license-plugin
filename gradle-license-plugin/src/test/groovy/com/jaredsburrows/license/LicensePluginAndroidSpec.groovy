@@ -1143,7 +1143,7 @@ final class LicensePluginAndroidSpec extends Specification {
       }
 
       project(':subproject') {
-        apply plugin: 'com.android.library'
+        apply plugin: 'com.android.application'
 
         android {
           compileSdkVersion $compileSdkVersion
