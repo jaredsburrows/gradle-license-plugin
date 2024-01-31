@@ -84,13 +84,7 @@ private fun Project.configureVariant(
 
       // Custom for Android tasks
       val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
-      it.assetDirs =
-        baseExtension
-          .sourceSets
-          .getByName(sourceSetName)
-          .assets
-          .srcDirs
-          .toList()
+      it.assetDirs = baseExtension.sourceSets.findByName(sourceSetName)?.assets?.srcDirs?.toList() ?: emptyList()
       it.variantName = variant.name
     }
   }

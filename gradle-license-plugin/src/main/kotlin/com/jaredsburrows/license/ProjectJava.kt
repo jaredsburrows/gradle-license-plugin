@@ -14,11 +14,7 @@ internal fun Project.isJavaProject(): Boolean {
   )
 }
 
-/**
- * Configure for Java projects.
- *
- * All of these plugins will apply the JavaPlugin(relies on JavaBasePlugin).
- */
+/** Configure for Java projects. */
 internal fun Project.configureJavaProject() {
   tasks.register("licenseReport", LicenseReportTask::class.java) {
     // Apply common task configuration first
