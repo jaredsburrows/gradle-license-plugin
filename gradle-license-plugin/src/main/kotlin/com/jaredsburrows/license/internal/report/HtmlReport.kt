@@ -55,7 +55,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
         project.licenses.forEach { license -> keys += getLicenseKey(license) }
       }
 
-      keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+      keys.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
       var key = ""
       if (keys.isNotEmpty()) {
         // No Licenses -> empty key, sort first
