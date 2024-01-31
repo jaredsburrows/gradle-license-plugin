@@ -16,6 +16,7 @@ plugins {
   id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
+  id 'idea'
 }
 
 allprojects {
@@ -35,6 +36,13 @@ allprojects {
 
   tasks.withType(Wrapper).configureEach {
     distributionType = Wrapper.DistributionType.ALL
+  }
+
+  idea {
+    module {
+      downloadSources = true
+      downloadJavadoc = true
+    }
   }
 }
 
