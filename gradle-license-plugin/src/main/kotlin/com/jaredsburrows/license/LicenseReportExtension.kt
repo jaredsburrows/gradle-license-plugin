@@ -1,7 +1,7 @@
 package com.jaredsburrows.license
 
 /** Configuration options for the gradle license plugin. */
-open class LicenseReportExtension { // extensions can't be final
+open class LicenseReportExtension {
   /** Whether the Csv report should be generated. */
   var generateCsvReport = true
 

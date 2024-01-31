@@ -17,9 +17,12 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ## Compatibility Matrix
 
-| Plugin Version | Minimum [AGP](https://developer.android.com/build/releases/gradle-plugin) Version |
-|----------------|----------------------------------------------------------------------------------:|
-| <= 0.9.4       |                                                                            3.6.4+ |
+| Plugin Version | Minimum [Gradle](https://gradle.org/) Version | Minimum [AGP](https://developer.android.com/build/releases/gradle-plugin) Version |
+|----------------|-----------------------------------------------|----------------------------------------------------------------------------------:|
+| <= 0.9.4       | <= 7.0.2                                      |                                                                            3.6.4+ |
+| 0.9.5          | 7.0.2                                         |                                                                            3.6.4+ |
+| 0.9.6          | 7.1.3                                         |                                                                            3.6.4+ |
+| 0.9.7          | 7.2.2                                         |                                                                            3.6.4+ |
 
 ## Download
 
@@ -30,7 +33,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.4"
+  id('com.jaredsburrows.license') version '0.9.7'
 }
 ```
 </details>
@@ -47,7 +50,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.4'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.7'
   }
 }
 
@@ -66,7 +69,7 @@ and [here](https://central.sonatype.com/artifact/com.jaredsburrows/gradle-licens
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.5-SNAPSHOT"
+  id('com.jaredsburrows.license') version '0.9.8-SNAPSHOT'
 }
 ```
 </details>
@@ -82,7 +85,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.5-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.8-SNAPSHOT'
   }
 }
 

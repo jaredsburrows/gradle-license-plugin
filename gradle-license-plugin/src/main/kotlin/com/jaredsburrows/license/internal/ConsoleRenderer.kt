@@ -12,7 +12,6 @@ import java.net.URISyntaxException
  * Taken from: https://github.com/gradle/gradle/blob/f3828bbb3350292dcbea7f505464eb5d30cb9d44/platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/ConsoleRenderer.java
  */
 class ConsoleRenderer {
-
   /** Renders a path name as a file URL that is likely recognized by consoles. */
   fun asClickableFileUrl(path: File): String {
     // File.toURI().toString() leads to an URL like this on Mac: file:/reports/index.html
