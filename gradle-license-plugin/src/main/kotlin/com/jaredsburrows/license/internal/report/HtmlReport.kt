@@ -139,9 +139,10 @@ class HtmlReport(private val projects: List<Model>) : Report {
                   +NO_LICENSE
                 }
               } else {
-                val sortedKeysAndLicenses = licenses.map { license ->
-                  Pair(getLicenseKey(license), license)
-                }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+                val sortedKeysAndLicenses =
+                  licenses.map { license ->
+                    Pair(getLicenseKey(license), license)
+                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
 
                 sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
