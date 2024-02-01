@@ -641,6 +641,133 @@ final class LicensePluginJavaSpec extends Specification {
     assertJson(expectedJson, actualJson.text)
   }
 
+  def 'licenseReport with same set of multiple licenses'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:name5-1:1.0.0'
+        implementation 'group:name5-2:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualCsv = new File(reportFolder, 'licenseReport.csv')
+    def actualHtml = new File(reportFolder, 'licenseReport.html')
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta http-equiv="content-type" content="text/html; charset=utf-8">
+          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li>
+              <a href="#1929112087">Fake dependency name 1 (1.0.0)</a>
+              <dl>
+                <dt>Copyright &copy; 2017 name</dt>
+                <dd></dd>
+              </dl>
+            </li>
+            <li>
+              <a href="#1929112087">Fake dependency name 2 (1.0.0)</a>
+              <dl>
+                <dt>Copyright &copy; 2017 name</dt>
+                <dd></dd>
+              </dl>
+            </li>
+          </ul>
+          <a id="1929112087"></a>
+          <pre>Some license 1
+            <a href="http://website-1.tld/">http://website-1.tld/</a>
+          </pre>
+          <br>
+          <pre>Some license 2
+            <a href="http://website-2.tld/">http://website-2.tld/</a>
+          </pre>
+          <br>
+          <hr>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Fake dependency name 1",
+          "description":"Fake dependency description 1",
+          "version":"1.0.0",
+          "developers":["name"],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license 1",
+              "license_url":"http://website-1.tld/"
+            },
+            {
+              "license":
+              "Some license 2",
+              "license_url":"http://website-2.tld/"
+            }
+          ],
+          "dependency":"group:name5-1:1.0.0"
+        },
+        {
+          "project":"Fake dependency name 2",
+          "description":"Fake dependency description 2",
+          "version":"1.0.0",
+          "developers":["name"],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license 2",
+              "license_url":"http://website-2.tld/"
+            },
+            {
+              "license":
+              "Some license 1",
+              "license_url":"http://website-1.tld/"
+            }
+          ],
+          "dependency":"group:name5-2:1.0.0"
+        }
+      ]
+      """
+    def actualText = new File(reportFolder, 'licenseReport.txt')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
+    actualCsv.exists()
+    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    actualHtml.exists()
+    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    actualJson.exists()
+    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
+    actualText.exists()
+    assertHtml(expectedHtml, actualHtml.text)
+    assertJson(expectedJson, actualJson.text)
+  }
+
   def 'licenseReport with project dependencies - multi java modules'() {
     given:
     testProjectDir.newFile('settings.gradle') <<
