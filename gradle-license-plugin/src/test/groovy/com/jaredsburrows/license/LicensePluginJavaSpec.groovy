@@ -1,16 +1,15 @@
 package com.jaredsburrows.license
 
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
+import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
 import static test.TestUtils.getLicenseText
 import static test.TestUtils.gradleWithCommand
-
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 
 final class LicensePluginJavaSpec extends Specification {
   @Rule
@@ -525,7 +524,7 @@ final class LicensePluginJavaSpec extends Specification {
     buildFile <<
       """
       plugins {
-        id 'java'
+        id 'java-library'
         id 'com.jaredsburrows.license'
       }
 

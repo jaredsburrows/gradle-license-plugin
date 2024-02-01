@@ -8,7 +8,6 @@ import org.apache.maven.model.Model
  * @property projects list of [Model]s for thr CSV report.
  */
 class CsvReport(private val projects: List<Model>) : Report {
-
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -22,34 +21,35 @@ class CsvReport(private val projects: List<Model>) : Report {
     projectInfoList += COLUMNS
 
     projects.map { project ->
-      val projectInfo = mutableListOf<String?>().apply {
-        // Project Name
-        addCsvString(project.name)
+      val projectInfo =
+        mutableListOf<String?>().apply {
+          // Project Name
+          addCsvString(project.name)
 
-        // Project Description
-        addCsvString(project.description)
+          // Project Description
+          addCsvString(project.description)
 
-        // Project Version
-        addCsvString(project.version)
+          // Project Version
+          addCsvString(project.version)
 
-        // Project Developers
-        addCsvList(project.developers) { it.id }
+          // Project Developers
+          addCsvList(project.developers) { it.id }
 
-        // Project Url
-        addCsvString(project.url)
+          // Project Url
+          addCsvString(project.url)
 
-        // Project Year
-        addCsvString(project.inceptionYear)
+          // Project Year
+          addCsvString(project.inceptionYear)
 
-        // Project License Names
-        addCsvList(project.licenses) { it.name }
+          // Project License Names
+          addCsvList(project.licenses) { it.name }
 
-        // Project License Url
-        addCsvList(project.licenses) { it.url }
+          // Project License Url
+          addCsvList(project.licenses) { it.url }
 
-        // Project Dependency
-        addCsvString("${project.groupId}:${project.artifactId}:${project.version}")
-      }
+          // Project Dependency
+          addCsvString("${project.groupId}:${project.artifactId}:${project.version}")
+        }
 
       // Add each row to the list
       projectInfoList += projectInfo.toCsv()
@@ -66,20 +66,21 @@ class CsvReport(private val projects: List<Model>) : Report {
 
   /** Add elements to Csv. */
   private fun MutableList<String?>.addCsvString(element: String): Boolean {
-    val escaped = element.valueOrNull()
-      ?.replace("\"", "\"\"")
-      ?.let { el ->
-        when {
-          el.contains(",") ||
-            el.contains("\n") ||
-            el.contains("'") ||
-            el.contains("\\") ||
-            el.contains("\"")
-          -> "\"$el\""
+    val escaped =
+      element.valueOrNull()
+        ?.replace("\"", "\"\"")
+        ?.let { el ->
+          when {
+            el.contains(",") ||
+              el.contains("\n") ||
+              el.contains("'") ||
+              el.contains("\\") ||
+              el.contains("\"")
+            -> "\"$el\""
 
-          else -> el
+            else -> el
+          }
         }
-      }
     return this.add(escaped)
   }
 

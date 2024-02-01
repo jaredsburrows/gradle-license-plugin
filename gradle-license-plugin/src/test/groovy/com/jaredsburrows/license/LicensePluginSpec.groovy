@@ -1,18 +1,18 @@
 package com.jaredsburrows.license
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static test.TestUtils.gradleWithCommand
-import static test.TestUtils.gradleWithCommandWithFail
-
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.gradleWithCommand
+import static test.TestUtils.gradleWithCommandWithFail
+
 final class LicensePluginSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 33
+  private int compileSdkVersion = 34
   private String agpVersion = "3.6.4"
   private List<File> pluginClasspath
   private String classpathString
@@ -48,7 +48,7 @@ final class LicensePluginSpec extends Specification {
         }
       }
 
-      apply plugin: 'java'
+      apply plugin: 'java-library'
       apply plugin: 'com.jaredsburrows.license'
       """
 
@@ -81,7 +81,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
   }
 
   def 'apply plugin with plugins dsl'() {
@@ -89,7 +89,7 @@ final class LicensePluginSpec extends Specification {
     buildFile <<
       """
       plugins {
-        id 'java'
+        id 'java-library'
         id 'com.jaredsburrows.license'
       }
       """
@@ -114,7 +114,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
   }
 
   @Unroll
@@ -132,7 +132,7 @@ final class LicensePluginSpec extends Specification {
     def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle Plugins.")
+    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
 
     where:
     // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
@@ -262,8 +262,6 @@ final class LicensePluginSpec extends Specification {
       // AppPlugin
       'android',
       'com.android.application',
-      // FeaturePlugin
-      'com.android.feature',
       // LibraryPlugin
       'android-library',
       'com.android.library',

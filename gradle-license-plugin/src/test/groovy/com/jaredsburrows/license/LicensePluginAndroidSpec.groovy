@@ -1,20 +1,20 @@
 package com.jaredsburrows.license
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static test.TestUtils.assertHtml
-import static test.TestUtils.assertJson
-import static test.TestUtils.gradleWithCommand
-import static test.TestUtils.getLicenseText
-
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static test.TestUtils.assertHtml
+import static test.TestUtils.assertJson
+import static test.TestUtils.getLicenseText
+import static test.TestUtils.gradleWithCommand
+
 final class LicensePluginAndroidSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 33
+  private int compileSdkVersion = 34
   private List<File> pluginClasspath
   private String classpathString
   private String mavenRepoUrl
@@ -1143,7 +1143,7 @@ final class LicensePluginAndroidSpec extends Specification {
       }
 
       project(':subproject') {
-        apply plugin: 'com.android.library'
+        apply plugin: 'com.android.application'
 
         android {
           compileSdkVersion $compileSdkVersion

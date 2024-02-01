@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.maven.publish)
   alias(libs.plugins.plugin.publish)
   alias(libs.plugins.versions)
+  alias(libs.plugins.license)
   id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
@@ -35,7 +36,7 @@ dependencies {
   compileOnly gradleApi()
   compileOnly libs.android.plugin
 
-  implementation(platform(libs.kotlin.bom))
+  implementation platform(libs.kotlin.bom)
   implementation libs.kotlin.stdlib
   implementation libs.kotlinx.html
   implementation libs.moshi

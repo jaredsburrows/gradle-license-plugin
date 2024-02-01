@@ -233,17 +233,18 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
 
         // Store the information that we need
         val module = artifact.moduleVersion.id
-        val project = Model().apply {
-          this.groupId = module.group.orEmpty().trim()
-          this.artifactId = module.name.orEmpty().trim()
-          this.version = model.pomVersion(mavenReader, pomFile, configurations, dependencies)
-          this.name = model.pomName()
-          this.description = model.pomDescription()
-          this.url = model.pomUrl()
-          this.inceptionYear = model.pomInceptionYear()
-          this.licenses = licenses
-          this.developers = model.pomDevelopers()
-        }
+        val project =
+          Model().apply {
+            this.groupId = module.group.orEmpty().trim()
+            this.artifactId = module.name.orEmpty().trim()
+            this.version = model.pomVersion(mavenReader, pomFile, configurations, dependencies)
+            this.name = model.pomName()
+            this.description = model.pomDescription()
+            this.url = model.pomUrl()
+            this.inceptionYear = model.pomInceptionYear()
+            this.licenses = licenses
+            this.developers = model.pomDevelopers()
+          }
 
         projects += project
       }
@@ -272,10 +273,12 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
            * to match a specific variant of the library project. Instead, we skip the
            * library project itself and enumerate its dependencies.
            */
-          "unspecified" -> resolvedArtifacts += getResolvedArtifactsFromResolvedDependencies(
-            resolvedDependency.children,
-            skipSet,
-          )
+          "unspecified" ->
+            resolvedArtifacts +=
+              getResolvedArtifactsFromResolvedDependencies(
+                resolvedDependency.children,
+                skipSet,
+              )
 
           else -> resolvedArtifacts += resolvedDependency.allModuleArtifacts
         }
@@ -306,13 +309,14 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
       .getByName(tempPomConfiguration)
       .dependencies += dependencies.add(tempPomConfiguration, dependency)
 
-    val pomFile = configurations
-      .getByName(tempPomConfiguration)
-      .resolvedConfiguration
-      .lenientConfiguration
-      .artifacts
-      .firstOrNull { it.type == "pom" }
-      ?.file
+    val pomFile =
+      configurations
+        .getByName(tempPomConfiguration)
+        .resolvedConfiguration
+        .lenientConfiguration
+        .artifacts
+        .firstOrNull { it.type == "pom" }
+        ?.file
 
     // Reset dependencies in temporary configuration
     configurations.remove(configurations.getByName(tempPomConfiguration))
@@ -320,7 +324,10 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     return pomFile
   }
 
-  private fun <T : Report> createReport(file: File, report: () -> T) {
+  private fun <T : Report> createReport(
+    file: File,
+    report: () -> T,
+  ) {
     val newReport = report()
 
     file.apply {
@@ -338,7 +345,10 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
     )
   }
 
-  private fun <T : Report> copyReport(file: File, report: () -> T) {
+  private fun <T : Report> copyReport(
+    file: File,
+    report: () -> T,
+  ) {
     val newReport = report()
 
     // Iterate through all asset directories
@@ -429,10 +439,11 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
         val licenseName = license.name.orEmpty().trim()
         val licenseUrl = license.url.orEmpty().trim()
         if (licenseUrl.isUrlValid()) {
-          licenses += License().apply {
-            this.name = licenseName
-            url = licenseUrl
-          }
+          licenses +=
+            License().apply {
+              this.name = licenseName
+              url = licenseUrl
+            }
         }
       }
       return licenses
@@ -491,18 +502,24 @@ internal open class LicenseReportTask : DefaultTask() { // tasks can't be final
   private fun Model.pomDevelopers(): List<Developer> {
     val developers = mutableListOf<Developer>()
     this.developers.orEmpty().forEach { developer ->
-      developers += Developer().apply {
-        id = developer.name.orEmpty().trim()
-      }
+      developers +=
+        Developer().apply {
+          id = developer.name.orEmpty().trim()
+        }
     }
     return developers
   }
 
   private fun File?.isNullOrEmpty(): Boolean = this == null || this.length() == 0L
 
-  private fun Exception.shortMessage(): String = with(message ?: "<no message>") {
-    if (length > MAX_EXCEPTION_MESSAGE_LENGTH) substring(0, MAX_EXCEPTION_MESSAGE_LENGTH) + "... (see --debug for complete message)" else this
-  }
+  private fun Exception.shortMessage(): String =
+    with(message ?: "<no message>") {
+      if (length > MAX_EXCEPTION_MESSAGE_LENGTH) {
+        substring(0, MAX_EXCEPTION_MESSAGE_LENGTH) + "... (see --debug for complete message)"
+      } else {
+        this
+      }
+    }
 
   private companion object {
     private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"

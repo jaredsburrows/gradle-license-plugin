@@ -1,11 +1,11 @@
 package com.jaredsburrows.license.internal.report
 
-import static test.TestUtils.assertHtml
-
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import spock.lang.Specification
+
+import static test.TestUtils.assertHtml
 
 final class HtmlReportSpec extends Specification {
   def 'no open source html'() {
