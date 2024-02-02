@@ -66,12 +66,12 @@ class HtmlReport(private val projects: List<Model>) : Report {
       (projectsMap[key] as MutableList).add(project)
     }
 
-    val sortedProjectsList = 
+    val sortedProjectsList =
       projectsMap.entries.map { (key, projects) ->
-        Pair(key, projects.sortedWith(
-          compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
-        ))
+        Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
       }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+
+    sortedProjectsList.forEach { (key, _) -> println(key) }
 
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
