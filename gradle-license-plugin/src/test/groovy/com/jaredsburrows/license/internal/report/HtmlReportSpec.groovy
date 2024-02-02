@@ -82,6 +82,20 @@ final class HtmlReportSpec extends Specification {
           <h3>Notice for packages:</h3>
           <ul>
             <li>
+              <a href="#0">name (1.2.3)</a>
+              <dl>
+                <dt>Copyright &copy; 20xx name</dt>
+                <dd></dd>
+                <dt>Copyright &copy; 20xx name</dt>
+                <dd></dd>
+              </dl>
+            </li>
+          </ul>
+          <a id="0"></a>
+          <pre>No license found</pre>
+          <hr>
+          <ul>
+            <li>
               <a href="#87638953">name (1.2.3)</a>
               <dl>
                 <dt>Copyright &copy; year name</dt>
@@ -104,20 +118,6 @@ final class HtmlReportSpec extends Specification {
           <pre>name
           <a href="url">url</a></pre>
           <br>
-          <hr>
-          <ul>
-            <li>
-              <a href="#0">name (1.2.3)</a>
-              <dl>
-                <dt>Copyright &copy; 20xx name</dt>
-                <dd></dd>
-                <dt>Copyright &copy; 20xx name</dt>
-                <dd></dd>
-              </dl>
-            </li>
-          </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
           <hr>
         </body>
       </html>

@@ -39,7 +39,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
-    val projectsMap = hashMapOf<String?, List<Model>>()
+    val projectsMap = hashMapOf<String, List<Model>>()
     val licenseMap = LicenseHelper.licenseMap
 
     // Store packages by licenses: build a composite key of all the licenses, sorted in the (probably vain)
@@ -66,6 +66,13 @@ class HtmlReport(private val projects: List<Model>) : Report {
       (projectsMap[key] as MutableList).add(project)
     }
 
+    val sortedProjectsList =
+      projectsMap.entries.map { (key, projects) ->
+        Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+      }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
+
+    sortedProjectsList.forEach { (key, _) -> println(key) }
+
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
       appendHTML()
@@ -83,20 +90,14 @@ class HtmlReport(private val projects: List<Model>) : Report {
             h3 {
               +NOTICE_LIBRARIES
             }
-
-            projectsMap.entries.forEach { entry ->
+            sortedProjectsList.forEach { (key, sortedProjects) ->
               var currentProject: Model? = null
               var currentLicense: Int? = null
 
               ul {
-                val sortedProjects =
-                  entry.value.sortedWith(
-                    compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
-                  )
-
                 sortedProjects.forEach { project ->
                   currentProject = project
-                  currentLicense = entry.key.hashCode()
+                  currentLicense = key.hashCode()
 
                   // Display libraries
                   li {
@@ -142,7 +143,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
                 val sortedKeysAndLicenses =
                   licenses.map { license ->
                     Pair(getLicenseKey(license), license)
-                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
                 sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
