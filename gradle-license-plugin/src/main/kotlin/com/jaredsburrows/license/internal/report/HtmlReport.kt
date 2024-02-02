@@ -52,7 +52,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
         project.licenses.forEach { license -> keys += getLicenseKey(license) }
       }
 
-      keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+      keys.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
       var key = ""
       if (keys.isNotEmpty()) {
         // No Licenses -> empty key, sort first
@@ -139,8 +139,12 @@ class HtmlReport(private val projects: List<Model>) : Report {
                   +NO_LICENSE
                 }
               } else {
-                licenses.forEach { license ->
-                  val key = getLicenseKey(license)
+                val sortedKeysAndLicenses =
+                  licenses.map { license ->
+                    Pair(getLicenseKey(license), license)
+                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+
+                sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
                     // license from license map
                     pre {
