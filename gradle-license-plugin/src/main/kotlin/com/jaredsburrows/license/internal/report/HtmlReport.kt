@@ -69,7 +69,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
     val sortedProjectsList =
       projectsMap.entries.map { (key, projects) ->
         Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
-      }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+      }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
     sortedProjectsList.forEach { (key, _) -> println(key) }
 
@@ -143,7 +143,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
                 val sortedKeysAndLicenses =
                   licenses.map { license ->
                     Pair(getLicenseKey(license), license)
-                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { (key, license) -> key })
+                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
                 sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
