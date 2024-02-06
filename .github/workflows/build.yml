@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew build -s
 
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2.13.0
+        uses: EnricoMi/publish-unit-test-result-action@v2.14.0
         if: always()
         with:
           comment_mode: off
