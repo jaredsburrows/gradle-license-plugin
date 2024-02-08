@@ -71,8 +71,6 @@ class HtmlReport(private val projects: List<Model>) : Report {
         Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
       }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
-    sortedProjectsList.forEach { (key, _) -> println(key) }
-
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
       appendHTML()
