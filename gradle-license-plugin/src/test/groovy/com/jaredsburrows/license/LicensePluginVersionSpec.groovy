@@ -62,7 +62,6 @@ final class LicensePluginVersionSpec extends Specification {
 
     where:
     gradleVersion << [
-      '7.3.3',
       '7.4.2',
       '7.5.1',
       '7.6.3',
@@ -121,7 +120,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 3.6.4
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
       ],
       [
@@ -179,7 +177,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
       ],
       [
@@ -237,7 +234,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4.1.0+
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
       ],
       [
@@ -295,7 +291,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7+, 4.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
       ],
       [
@@ -353,7 +348,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.0+, 7.0
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -416,7 +410,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.2+, 7.1
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -479,7 +472,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -542,7 +534,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -605,7 +596,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -668,7 +658,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -731,7 +720,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
@@ -794,7 +782,6 @@ final class LicensePluginVersionSpec extends Specification {
     // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
-        '7.3.3',
         '7.4.2',
         '7.5.1',
         '7.6.3',
