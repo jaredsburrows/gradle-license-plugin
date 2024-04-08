@@ -298,17 +298,18 @@ internal open class LicenseReportTask : DefaultTask() {
     val version = parent?.version.orEmpty()
     val dependency = "$groupId:$artifactId:$version@pom"
 
-    val result = dependencies.createArtifactResolutionQuery()
-      .forModule(groupId, artifactId, version)
-      .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
-      .execute()
+    val result =
+      dependencies.createArtifactResolutionQuery()
+        .forModule(groupId, artifactId, version)
+        .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+        .execute()
 
     var pomFile: File? = null
     for (component in result.resolvedComponents) {
       for (artifact in component.getArtifacts(MavenPomArtifact::class.java)) {
         if (artifact is ResolvedArtifactResult) {
           if (pomFile != null) {
-            logger.error("Parent POM ${dependency} resolved to multiple artifacts")
+            logger.error("Parent POM $dependency resolved to multiple artifacts")
             return null
           }
           pomFile = artifact.file
@@ -317,7 +318,7 @@ internal open class LicenseReportTask : DefaultTask() {
     }
 
     if (pomFile == null) {
-      logger.warn("Parent POM ${dependency} not found")
+      logger.warn("Parent POM $dependency not found")
     }
     return pomFile
   }
