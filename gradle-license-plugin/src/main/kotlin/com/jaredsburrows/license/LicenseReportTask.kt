@@ -428,11 +428,13 @@ internal open class LicenseReportTask : DefaultTask() {
     }
 
     // License information found
-    return model.licenses.orEmpty().filter { it.url.orEmpty().trim().isUrlValid() }.map { license ->
+    return model.licenses.orEmpty().map { license ->
       License().apply {
         this.name = license.name.orEmpty().trim()
         this.url = license.url.orEmpty().trim()
       }
+    }.filter {
+      it.name.isNotEmpty() || it.url.isUrlValid()
     }.ifEmpty {
       logger.info("Project, $name, has no license in POM file.")
       model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
