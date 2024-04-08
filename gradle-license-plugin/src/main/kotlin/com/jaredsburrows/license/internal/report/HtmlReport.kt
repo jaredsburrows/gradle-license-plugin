@@ -225,9 +225,17 @@ class HtmlReport(private val projects: List<Model>) : Report {
     const val DOCTYPE = "<!DOCTYPE html>"
     const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"
     const val CSS_STYLE =
-      "body { font-family: sans-serif } " +
+      // Default light theme styles
+      "body { font-family: sans-serif; background-color: #ffffff; color: #000000; } " +
+        "a { color: #0000EE; } " +
         "pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; " +
-        "word-break: break-word; display: inline-block }"
+        "word-break: break-word; display: inline-block; } " +
+
+        // Dark theme styles
+        "@media (prefers-color-scheme: dark) { " +
+        "body { background-color: #121212; color: #E0E0E0; } " +
+        "a { color: #BB86FC; } " +
+        "pre { background-color: #333333; color: #E0E0E0; } }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
     const val NO_LIBRARIES = "None"
     const val NO_LICENSE = "No license found"
