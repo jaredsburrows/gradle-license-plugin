@@ -25,5 +25,6 @@ internal fun Project.configureCommon(task: LicenseReportTask) {
     copyTextReportToAssets = licenseExtension.copyTextReportToAssets
     useVariantSpecificAssetDirs = licenseExtension.useVariantSpecificAssetDirs
     ignoredPatterns = licenseExtension.ignoredPatterns
+    showVersions = licenseExtension.showVersions
   }
 }

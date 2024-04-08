@@ -11,7 +11,7 @@ final class HtmlReportSpec extends Specification {
   def 'no open source html'() {
     given:
     def projects = []
-    def report = new HtmlReport(projects)
+    def report = new HtmlReport(projects, true)
 
     when:
     def actual = report.toString()
@@ -65,7 +65,7 @@ final class HtmlReportSpec extends Specification {
       version: '1.2.3',
     )
     def projects = [project, project, missingLicensesProject]
-    def sut = new HtmlReport(projects)
+    def sut = new HtmlReport(projects, true)
 
     when:
     def actual = sut.toString()

@@ -46,4 +46,7 @@ open class LicenseReportExtension {
 
   /** Set of patterns to ignore while generating the reports. Empty by default. */
   var ignoredPatterns = setOf<String>()
+
+  /** Whether to show the licenses in the reports (As of now, only affects HTML since it is used in the app itself). */
+  var showVersions = false
 }
