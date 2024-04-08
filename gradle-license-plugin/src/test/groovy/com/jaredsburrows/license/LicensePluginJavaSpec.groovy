@@ -45,7 +45,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -104,7 +104,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -188,7 +188,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -298,7 +298,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -357,7 +357,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -449,7 +449,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -550,7 +550,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -671,7 +671,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -812,7 +812,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -998,7 +998,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -1123,7 +1123,7 @@ final class LicensePluginJavaSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
