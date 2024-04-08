@@ -81,7 +81,6 @@ internal open class LicenseReportTask : DefaultTask() {
 
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"
-  private var tempPomConfiguration = "tempPoms"
 
   init {
     // From DefaultTask
@@ -151,7 +150,6 @@ internal open class LicenseReportTask : DefaultTask() {
   /** Setup configurations to collect dependencies. */
   private fun setupEnvironment(configurations: ConfigurationContainer) {
     pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
-    tempPomConfiguration += variantName.orEmpty() + UUID.randomUUID()
 
     // Create temporary configuration in order to store POM information
     configurations.apply {
