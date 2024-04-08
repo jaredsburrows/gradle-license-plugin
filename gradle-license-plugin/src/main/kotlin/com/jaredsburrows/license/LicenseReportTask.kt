@@ -225,7 +225,7 @@ internal open class LicenseReportTask : DefaultTask() {
         val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
 
         // Search for licenses
-        var licenses = findLicenses(mavenReader, pomFile, configurations, dependencies)
+        var licenses = findLicenses(mavenReader, pomFile, dependencies)
         if (licenses.isEmpty()) {
           logger.warn("Dependency '${artifact.name}' does not have a license.")
           licenses = mutableListOf()
@@ -237,7 +237,7 @@ internal open class LicenseReportTask : DefaultTask() {
           Model().apply {
             this.groupId = module.group.trim()
             this.artifactId = module.name.trim()
-            this.version = model.pomVersion(mavenReader, pomFile, configurations, dependencies)
+            this.version = model.pomVersion(mavenReader, pomFile, dependencies)
             this.name = model.pomName()
             this.description = model.pomDescription()
             this.url = model.pomUrl()
@@ -289,7 +289,6 @@ internal open class LicenseReportTask : DefaultTask() {
   /** Use Parent POM information when individual dependency license information is missing. */
   private fun getParentPomFile(
     model: Model,
-    configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
   ): File? {
     // Get parent POM information
@@ -373,7 +372,6 @@ internal open class LicenseReportTask : DefaultTask() {
   private fun findVersion(
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
-    configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
   ): String {
     if (pomFile.isNullOrEmpty()) {
@@ -396,8 +394,7 @@ internal open class LicenseReportTask : DefaultTask() {
     if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
       return findVersion(
         mavenReader,
-        getParentPomFile(model, configurations, dependencies),
-        configurations,
+        getParentPomFile(model, dependencies),
         dependencies,
       )
     }
@@ -407,7 +404,6 @@ internal open class LicenseReportTask : DefaultTask() {
   private fun findLicenses(
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
-    configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
   ): List<License> {
     if (pomFile.isNullOrEmpty()) {
@@ -440,7 +436,7 @@ internal open class LicenseReportTask : DefaultTask() {
     }.ifEmpty {
       logger.info("Project, $name, has no license in POM file.")
       model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
-        findLicenses(mavenReader, getParentPomFile(model, configurations, dependencies), configurations, dependencies)
+        findLicenses(mavenReader, getParentPomFile(model, dependencies), dependencies)
       } ?: emptyList()
     }
   }
@@ -459,9 +455,8 @@ internal open class LicenseReportTask : DefaultTask() {
   private fun Model.pomVersion(
     mavenReader: MavenXpp3Reader,
     pomFile: File?,
-    configurations: ConfigurationContainer,
     dependencies: DependencyHandler,
-  ): String = version.orEmpty().trim().ifEmpty { findVersion(mavenReader, pomFile, configurations, dependencies) }
+  ): String = version.orEmpty().trim().ifEmpty { findVersion(mavenReader, pomFile, dependencies) }
 
   private fun Model.pomName(): String = name.orEmpty().trim().ifEmpty { artifactId.orEmpty().trim() }
 
