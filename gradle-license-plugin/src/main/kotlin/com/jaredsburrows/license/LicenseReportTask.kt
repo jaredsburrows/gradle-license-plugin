@@ -28,7 +28,6 @@ import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.net.URL
 import java.util.Locale
-import java.util.UUID
 
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
 internal open class LicenseReportTask : DefaultTask() {
@@ -149,7 +148,7 @@ internal open class LicenseReportTask : DefaultTask() {
 
   /** Setup configurations to collect dependencies. */
   private fun setupEnvironment(configurations: ConfigurationContainer) {
-    pomConfiguration += variantName.orEmpty() + UUID.randomUUID()
+    pomConfiguration += variantName.orEmpty() + name
 
     // Create temporary configuration in order to store POM information
     configurations.apply {
