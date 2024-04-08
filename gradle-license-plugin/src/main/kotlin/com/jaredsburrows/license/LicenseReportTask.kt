@@ -17,11 +17,14 @@ import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.net.URL
 import java.util.Locale
@@ -299,24 +302,27 @@ internal open class LicenseReportTask : DefaultTask() {
     val version = parent?.version.orEmpty()
     val dependency = "$groupId:$artifactId:$version@pom"
 
-    // Add dependency to temporary configuration
-    configurations.create(tempPomConfiguration)
-    configurations
-      .getByName(tempPomConfiguration)
-      .dependencies += dependencies.add(tempPomConfiguration, dependency)
+    val result = dependencies.createArtifactResolutionQuery()
+      .forModule(groupId, artifactId, version)
+      .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+      .execute()
 
-    val pomFile =
-      configurations
-        .getByName(tempPomConfiguration)
-        .resolvedConfiguration
-        .lenientConfiguration
-        .artifacts
-        .firstOrNull { it.type == "pom" }
-        ?.file
+    var pomFile: File? = null
+    for (component in result.resolvedComponents) {
+      for (artifact in component.getArtifacts(MavenPomArtifact::class.java)) {
+        if (artifact is ResolvedArtifactResult) {
+          if (pomFile != null) {
+            logger.error("Parent POM ${dependency} resolved to multiple artifacts")
+            return null
+          }
+          pomFile = artifact.file
+        }
+      }
+    }
 
-    // Reset dependencies in temporary configuration
-    configurations.remove(configurations.getByName(tempPomConfiguration))
-
+    if (pomFile == null) {
+      logger.warn("Parent POM ${dependency} not found")
+    }
     return pomFile
   }
 
