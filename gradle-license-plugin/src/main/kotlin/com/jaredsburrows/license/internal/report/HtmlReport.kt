@@ -29,7 +29,7 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr HTML report.
  */
-class HtmlReport(private val projects: List<Model>) : Report {
+class HtmlReport(private val projects: List<Model>, private val showVersions: Boolean) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -101,7 +101,9 @@ class HtmlReport(private val projects: List<Model>) : Report {
                   li {
                     a(href = "#$currentLicense") {
                       +project.name
-                      +" (${project.version})"
+                      if (showVersions) {
+                        +" (${project.version})"
+                      }
                     }
                     val copyrightYear = project.inceptionYear.ifEmpty { DEFAULT_YEAR }
                     dl {

@@ -78,6 +78,9 @@ internal open class LicenseReportTask : DefaultTask() {
   @Input
   var ignoredPatterns = setOf<String>()
 
+  @Input
+  var showVersions = false
+
   private val projects = mutableListOf<Model>()
   private var pomConfiguration = "poms"
 
@@ -111,7 +114,7 @@ internal open class LicenseReportTask : DefaultTask() {
 
     // Create HTML report
     if (generateHtmlReport) {
-      val htmlReport = HtmlReport(projects)
+      val htmlReport = HtmlReport(projects, showVersions)
       val htmlFile = File(outputDir, "$name.${htmlReport.extension()}")
       createReport(file = htmlFile) { htmlReport }
 
