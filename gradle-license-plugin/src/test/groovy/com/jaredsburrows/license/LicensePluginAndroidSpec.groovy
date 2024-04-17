@@ -77,7 +77,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -157,21 +157,21 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <a href="#1934118923">appcompat-v7</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
               </dl>
             </li>
             <li>
-              <a href="#1934118923">design (26.1.0)</a>
+              <a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -369,21 +369,21 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#1934118923">appcompat-v7 (26.1.0)</a>
+              <a href="#1934118923">appcompat-v7</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
               </dl>
             </li>
             <li>
-              <a href="#1934118923">design (26.1.0)</a>
+              <a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -519,31 +519,31 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">appcompat-v7 (26.1.0)</a>
+            <li><a href="#1934118923">appcompat-v7</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
               </dl>
             </li>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
               </dl>
             </li>
-            <li><a href="#1934118923">support-annotations (26.1.0)</a>
+            <li><a href="#1934118923">support-annotations</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
               </dl>
             </li>
-            <li><a href="#1934118923">support-v4 (26.1.0)</a>
+            <li><a href="#1934118923">support-v4</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -748,13 +748,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -766,7 +766,7 @@ final class LicensePluginAndroidSpec extends Specification {
           <br>
           <hr>
           <ul>
-            <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+            <li><a href="#1783810846">Android GIF Drawable Library</a>
               <dl>
                 <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
                 <dd></dd>
@@ -894,13 +894,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#0">Fake dependency name (1.0.0)</a>
+            <li><a href="#0">Fake dependency name</a>
               <dl>
                 <dt>Copyright &copy; 2017 name</dt>
                 <dd></dd>
@@ -1011,13 +1011,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -1029,7 +1029,7 @@ final class LicensePluginAndroidSpec extends Specification {
           <br>
           <hr>
           <ul>
-            <li><a href="#-296292112">Fake dependency name (1.0.0)</a>
+            <li><a href="#-296292112">Fake dependency name</a>
               <dl>
                 <dt>Copyright &copy; 2017 name</dt>
                 <dd></dd>
@@ -1166,14 +1166,14 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#1934118923">design (26.1.0)</a>
+              <a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -1186,7 +1186,7 @@ final class LicensePluginAndroidSpec extends Specification {
           <hr>
           <ul>
             <li>
-              <a href="#-296292112">Fake dependency name (1.0.0)</a>
+              <a href="#-296292112">Fake dependency name</a>
               <dl>
                 <dt>Copyright &copy; 2017 name</dt>
                 <dd></dd>
@@ -1554,14 +1554,14 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap;  word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#1934118923">design (26.1.0)</a>
+              <a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -1667,14 +1667,14 @@ final class LicensePluginAndroidSpec extends Specification {
       <html lang="en">
         <head>
           <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
             <li>
-              <a href="#1934118923">design (26.1.0)</a>
+              <a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -1756,6 +1756,7 @@ final class LicensePluginAndroidSpec extends Specification {
         implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
         implementation 'com.android.support:design:26.1.0'
       }
+
       licenseReport {
         ignoredPatterns = ["pl.droidsonroids.gif"]
       }
@@ -1769,13 +1770,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -1863,7 +1864,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -1929,13 +1930,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -2023,7 +2024,7 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
@@ -2090,13 +2091,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+            <li><a href="#1783810846">Android GIF Drawable Library</a>
               <dl>
                 <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
                 <dd></dd>
@@ -2186,13 +2187,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>
@@ -2280,13 +2281,13 @@ final class LicensePluginAndroidSpec extends Specification {
       <!DOCTYPE html>
       <html lang="en">
         <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block }</style>
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
           <title>Open source licenses</title>
         </head>
         <body>
           <h3>Notice for packages:</h3>
           <ul>
-            <li><a href="#1934118923">design (26.1.0)</a>
+            <li><a href="#1934118923">design</a>
               <dl>
                 <dt>Copyright &copy; 20xx The original author or authors</dt>
                 <dd></dd>

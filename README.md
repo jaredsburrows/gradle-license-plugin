@@ -18,7 +18,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 ## Compatibility Matrix
 
 | Plugin Version | Minimum [Gradle](https://gradle.org/) Version | Minimum [AGP](https://developer.android.com/build/releases/gradle-plugin) Version |
-|----------------|-----------------------------------------------|----------------------------------------------------------------------------------:|
+|---------------:|----------------------------------------------:|----------------------------------------------------------------------------------:|
 | <= 0.9.4       | <= 7.0.2                                      |                                                                            3.6.4+ |
 | 0.9.5          | 7.0.2                                         |                                                                            3.6.4+ |
 | 0.9.6          | 7.1.3                                         |                                                                            3.6.4+ |
@@ -139,7 +139,7 @@ design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
   <body>
     <h3>Notice for packages:</h3>
     <ul>
-      <li><a href="#1934118923">design (26.1.0)</a>
+      <li><a href="#1934118923">design</a>
         <dl>
           <dt>Copyright &copy; 20xx The original author or authors</dt>
           <dd></dd>
@@ -151,7 +151,7 @@ design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
     <br>
     <hr>
     <ul>
-      <li><a href="#1783810846">Android GIF Drawable Library (1.2.3)</a>
+      <li><a href="#1783810846">Android GIF Drawable Library</a>
         <dl>
           <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
           <dd></dd>
@@ -244,18 +244,24 @@ To override the defaults, add the `licenseReport` configuration closure to the b
 apply plugin: "com.jaredsburrows.license"
 
 licenseReport {
+  // Generate reports
   generateCsvReport = false
   generateHtmlReport = true
   generateJsonReport = false
   generateTextReport = false
-  ignoredPatterns = []
 
-  // These options are ignored for Java projects
+  // Copy reports - These options are ignored for Java projects
   copyCsvReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
   copyTextReportToAssets = false
   useVariantSpecificAssetDirs = false
+  
+  // Ignore licenses for certain artifact patterns
+  ignoredPatterns = []
+  
+  // Show versions in the report - default is false
+  showVersions = true
 }
 ```
 

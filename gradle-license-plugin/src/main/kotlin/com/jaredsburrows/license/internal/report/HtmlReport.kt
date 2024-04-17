@@ -29,7 +29,7 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr HTML report.
  */
-class HtmlReport(private val projects: List<Model>) : Report {
+class HtmlReport(private val projects: List<Model>, private val showVersions: Boolean) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -39,7 +39,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
   override fun report(): String = if (projects.isEmpty()) emptyReport() else fullReport()
 
   override fun fullReport(): String {
-    val projectsMap = hashMapOf<String?, List<Model>>()
+    val projectsMap = hashMapOf<String, List<Model>>()
     val licenseMap = LicenseHelper.licenseMap
 
     // Store packages by licenses: build a composite key of all the licenses, sorted in the (probably vain)
@@ -52,7 +52,7 @@ class HtmlReport(private val projects: List<Model>) : Report {
         project.licenses.forEach { license -> keys += getLicenseKey(license) }
       }
 
-      keys.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+      keys.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
       var key = ""
       if (keys.isNotEmpty()) {
         // No Licenses -> empty key, sort first
@@ -65,6 +65,11 @@ class HtmlReport(private val projects: List<Model>) : Report {
 
       (projectsMap[key] as MutableList).add(project)
     }
+
+    val sortedProjectsList =
+      projectsMap.entries.map { (key, projects) ->
+        Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+      }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
@@ -83,26 +88,22 @@ class HtmlReport(private val projects: List<Model>) : Report {
             h3 {
               +NOTICE_LIBRARIES
             }
-
-            projectsMap.entries.forEach { entry ->
+            sortedProjectsList.forEach { (key, sortedProjects) ->
               var currentProject: Model? = null
               var currentLicense: Int? = null
 
               ul {
-                val sortedProjects =
-                  entry.value.sortedWith(
-                    compareBy(String.CASE_INSENSITIVE_ORDER) { it.name },
-                  )
-
                 sortedProjects.forEach { project ->
                   currentProject = project
-                  currentLicense = entry.key.hashCode()
+                  currentLicense = key.hashCode()
 
                   // Display libraries
                   li {
                     a(href = "#$currentLicense") {
                       +project.name
-                      +" (${project.version})"
+                      if (showVersions) {
+                        +" (${project.version})"
+                      }
                     }
                     val copyrightYear = project.inceptionYear.ifEmpty { DEFAULT_YEAR }
                     dl {
@@ -139,8 +140,12 @@ class HtmlReport(private val projects: List<Model>) : Report {
                   +NO_LICENSE
                 }
               } else {
-                licenses.forEach { license ->
-                  val key = getLicenseKey(license)
+                val sortedKeysAndLicenses =
+                  licenses.map { license ->
+                    Pair(getLicenseKey(license), license)
+                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
+
+                sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
                     // license from license map
                     pre {
@@ -222,9 +227,17 @@ class HtmlReport(private val projects: List<Model>) : Report {
     const val DOCTYPE = "<!DOCTYPE html>"
     const val META = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">"
     const val CSS_STYLE =
-      "body { font-family: sans-serif } " +
+      // Default light theme styles
+      "body { font-family: sans-serif; background-color: #ffffff; color: #000000; } " +
+        "a { color: #0000EE; } " +
         "pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; " +
-        "word-break: break-word; display: inline-block }"
+        "word-break: break-word; display: inline-block; } " +
+
+        // Dark theme styles
+        "@media (prefers-color-scheme: dark) { " +
+        "body { background-color: #121212; color: #E0E0E0; } " +
+        "a { color: #BB86FC; } " +
+        "pre { background-color: #333333; color: #E0E0E0; } }"
     const val OPEN_SOURCE_LIBRARIES = "Open source licenses"
     const val NO_LIBRARIES = "None"
     const val NO_LICENSE = "No license found"

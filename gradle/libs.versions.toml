@@ -1,14 +1,14 @@
 [versions]
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version = "1.9.10" }
+dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }
-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.28.0" }
 plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
-license = { id = "com.jaredsburrows.license", version = "0.9.6" }
+license = { id = "com.jaredsburrows.license", version = "0.9.7" }
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "7.2.2" }
