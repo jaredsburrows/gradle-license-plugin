@@ -24,12 +24,6 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v4.1.2
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
-        with:
-          gradle-home-cache-cleanup: true
-      - run: ./gradlew --version
-
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v3.3.0
 
@@ -38,10 +32,12 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          gradle-home-cache-cleanup: true
+        
       - run: ./gradlew --version
 
       - name: Run Ktlint Check On All Sources
@@ -81,12 +77,6 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v4.1.2
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3.3.0
-        with:
-          gradle-home-cache-cleanup: true
-      - run: ./gradlew --version
-
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v3.3.0
 
@@ -95,11 +85,14 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.3.0
+        with:
+          gradle-home-cache-cleanup: true
 
+      - run: ./gradlew --version
+          
       - name: Publish
         run: ./gradlew publish -s
         env:
