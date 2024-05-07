@@ -2334,4 +2334,105 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
+
+  @Unroll
+  def '#taskName sorting by id when package name is the same'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+      android {
+        compileSdkVersion $compileSdkVersion
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      dependencies {
+        implementation 'group:module-same-name-2:1.0.0'
+        implementation 'group:module-same-name-1:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualHtml = new File(reportFolder, "${taskName}.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#0">Module same name</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dd></dd>
+              </dl>
+            </li>
+            <li><a href="#0">Module same name</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dd></dd>
+              </dl>
+            </li>
+          </ul>
+          <a id="0"></a>
+          <pre>No license found</pre>
+          <hr>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "${taskName}.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Module same name",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:module-same-name-1:1.0.0"
+        },
+        {
+          "project":"Module same name",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:module-same-name-2:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
 }

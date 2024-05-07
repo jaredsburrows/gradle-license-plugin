@@ -4,6 +4,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.assertHtml
@@ -1344,5 +1345,96 @@ final class LicensePluginJavaSpec extends Specification {
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
+  }
+
+  @Unroll
+  def 'licenseReport sorting by id when package name is the same'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:module-same-name-2:1.0.0'
+        implementation 'group:module-same-name-1:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "licenseReport", '-s')
+    def actualHtml = new File(reportFolder, "licenseReport.html").text
+    def expectedHtml =
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta http-equiv="content-type" content="text/html; charset=utf-8">
+          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
+          <title>Open source licenses</title>
+        </head>
+        <body>
+          <h3>Notice for packages:</h3>
+          <ul>
+            <li><a href="#0">Module same name</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dd></dd>
+              </dl>
+            </li>
+            <li><a href="#0">Module same name</a>
+              <dl>
+                <dt>Copyright &copy; 20xx The original author or authors</dt>
+                <dd></dd>
+              </dl>
+            </li>
+          </ul>
+          <a id="0"></a>
+          <pre>No license found</pre>
+          <hr>
+        </body>
+      </html>
+      """
+    def actualJson = new File(reportFolder, "licenseReport.json").text
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Module same name",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:module-same-name-1:1.0.0"
+        },
+        {
+          "project":"Module same name",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:module-same-name-2:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(":licenseReport").outcome == SUCCESS
+    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
+    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    assertHtml(expectedHtml, actualHtml)
+    assertJson(expectedJson, actualJson)
   }
 }
