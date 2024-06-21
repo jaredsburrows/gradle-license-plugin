@@ -252,8 +252,8 @@ internal open class LicenseReportTask : DefaultTask() {
         projects += project
       }
 
-    // Sort POM information by name
-    projects.sortBy { it.name.lowercase(Locale.getDefault()) }
+    // Sort POM information by name and id (:group:module:packaging:version) to have a deterministic order.
+    projects.sortWith(compareBy({ it.name.lowercase(Locale.getDefault()) }, { it.id }))
   }
 
   private fun getResolvedArtifactsFromResolvedDependencies(

@@ -1,22 +1,22 @@
 [versions]
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }
-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.28.0" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.1" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
 plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 versions = { id = "com.github.ben-manes.versions", version = "0.51.0" }
-license = { id = "com.jaredsburrows.license", version = "0.9.7" }
+license = { id = "com.jaredsburrows.license", version = "0.9.8" }
 
 [libraries]
 android-plugin = { module = "com.android.tools.build:gradle", version = "7.2.2" }
-commons = { module = "org.apache.commons:commons-csv", version = "1.10.0" }
+commons = { module = "org.apache.commons:commons-csv", version = "1.11.0" }
 moshi = { module = "com.squareup.moshi:moshi", version = "1.15.1" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.11.0" }
-maven-model = { module = "org.apache.maven:maven-model", version = "3.9.6" }
+maven-model = { module = "org.apache.maven:maven-model", version = "3.9.8" }
 spock = { module = "org.spockframework:spock-junit4", version = "2.4-M1-groovy-3.0" }
-xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.9.1" }
+xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.10.0" }

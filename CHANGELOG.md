@@ -1,5 +1,20 @@
 # Change Log
 
+## Version 0.9.8 *(2024-06-06)*
+ * [#496](https://github.com/jaredsburrows/gradle-license-plugin/pull/496) Make sure dependencies are sorted deterministically
+ * [#465](https://github.com/jaredsburrows/gradle-license-plugin/pull/465) Don't show versions in html
+ * [#464](https://github.com/jaredsburrows/gradle-license-plugin/pull/464) Add dark mode support for html
+ * [#463](https://github.com/jaredsburrows/gradle-license-plugin/pull/463) POM artifact resolution
+ * [#439](https://github.com/jaredsburrows/gradle-license-plugin/pull/439) Remove debug print
+ * [#433](https://github.com/jaredsburrows/gradle-license-plugin/pull/433) Sort project group order in HTML report using license keys
+ * [#431](https://github.com/jaredsburrows/gradle-license-plugin/pull/431) Sort set of licenses in HTML report
+
+Many thanks to
+[@monae](https://github.com/monae)
+[@t-beckmann](https://github.com/t-beckmann)
+[@francescocervone](https://github.com/francescocervone)
+for the code contributions!
+
 ## Version 0.9.7 *(2024-01-30)*
  * [#422](https://github.com/jaredsburrows/gradle-license-plugin/pull/422) Bump compileOnly AGP to 7.2.2
 
