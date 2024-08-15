@@ -12,7 +12,7 @@ plugins {
 }
 
 tasks.register('createClasspathManifest') {
-  def outputDir = new File(buildDir, name)
+  def outputDir = layout.buildDirectory.file(name).get().asFile
 
   inputs.files sourceSets.main.runtimeClasspath
   outputs.dir outputDir

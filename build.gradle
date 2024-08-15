@@ -1,6 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -48,7 +50,7 @@ allprojects {
 
 subprojects {
   tasks.withType(Jar).configureEach {
-    def dateFile = new File(buildDir, 'jar-manifest-date.txt')
+    def dateFile = layout.buildDirectory.file('jar-manifest-date.txt').get().asFile
     if (!dateFile.exists()) {
       def date = DateTimeFormatter.ofPattern('EEE MMM dd HH:mm:ss zzz yyyy').
         format(ZonedDateTime.now())
@@ -72,8 +74,8 @@ subprojects {
   tasks.withType(KotlinJvmCompile).configureEach {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_11)
-      languageVersion.set(KotlinVersion.KOTLIN_1_9)
-      apiVersion.set(KotlinVersion.KOTLIN_1_9)
+      languageVersion.set(KotlinVersion.KOTLIN_2_0)
+      apiVersion.set(KotlinVersion.KOTLIN_2_0)
       freeCompilerArgs.add("-progressive")
       freeCompilerArgs.add("-Xjsr305=strict")
       freeCompilerArgs.add("-Xemit-jvm-type-annotations")
@@ -108,14 +110,12 @@ subprojects {
   }
 
   tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-
     testLogging {
-      exceptionFormat 'full'
-      showCauses true
-      showExceptions true
-      showStackTraces true
-      events 'failed', 'skipped'
+      exceptionFormat = TestExceptionFormat.FULL
+      showCauses = true
+      showExceptions = true
+      showStackTraces = true
+      events = [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
     }
 
     def maxWorkerCount = gradle.startParameter.maxWorkerCount
