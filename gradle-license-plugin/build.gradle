@@ -11,6 +11,9 @@ plugins {
   id 'groovy'
 }
 
+group = GROUP
+version = VERSION_NAME
+
 tasks.register('createClasspathManifest') {
   def outputDir = layout.buildDirectory.file(name).get().asFile
 
