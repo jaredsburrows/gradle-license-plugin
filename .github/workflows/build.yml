@@ -48,7 +48,6 @@ jobs:
 
       - name: Publish Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2.17.1
-        if: always()
         with:
           comment_mode: always
           files: '**/build/test-results/test/TEST-*.xml'
