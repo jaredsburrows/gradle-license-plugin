@@ -50,7 +50,8 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2.17.1
         if: always()
         with:
-          comment_mode: off
+          comment_mode: always
+          action_fail_on_inconclusive: true
           files: '**/build/test-results/test/TEST-*.xml'
 
       - name: Upload Artifacts
