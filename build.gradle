@@ -15,36 +15,19 @@ plugins {
   alias(libs.plugins.plugin.publish) apply false
   alias(libs.plugins.versions)
   alias(libs.plugins.license)
-  id 'java-gradle-plugin'
   id 'java-library'
   id 'groovy'
   id 'idea'
 }
 
-allprojects {
-  configurations.configureEach {
-    resolutionStrategy {
-      preferProjectModules()
+tasks.withType(Wrapper).configureEach {
+  distributionType = Wrapper.DistributionType.ALL
+}
 
-      enableDependencyVerification()
-
-      eachDependency { details ->
-        if (details.requested.group == 'org.jetbrains.kotlin') {
-          details.useVersion libs.versions.kotlin.get()
-        }
-      }
-    }
-  }
-
-  tasks.withType(Wrapper).configureEach {
-    distributionType = Wrapper.DistributionType.ALL
-  }
-
-  idea {
-    module {
-      downloadSources = true
-      downloadJavadoc = true
-    }
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
   }
 }
 
@@ -120,5 +103,7 @@ subprojects {
 
     def maxWorkerCount = gradle.startParameter.maxWorkerCount
     maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+
+    useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
   }
 }
