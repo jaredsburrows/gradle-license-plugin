@@ -64,7 +64,6 @@ subprojects {
       freeCompilerArgs.add("-Xjsr305=strict")
       freeCompilerArgs.add("-Xemit-jvm-type-annotations")
       freeCompilerArgs.add("-Xassertions=jvm")
-      freeCompilerArgs.add("-Xproper-ieee754-comparisons")
       freeCompilerArgs.add("-Xjvm-default=all")
     }
   }
