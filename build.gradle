@@ -107,4 +107,24 @@ subprojects {
 
     useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
   }
+
+  tasks.withType(Test).configureEach {
+    testLogging {
+      exceptionFormat = TestExceptionFormat.FULL
+      showCauses = true
+      showExceptions = true
+      showStackTraces = true
+
+      // Check if running on CI and set events accordingly
+      events = System.getenv("CI") != null ?
+        TestLogEvent.values() as Set :
+        [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
+    }
+
+    // For mockito to work with JDK 21
+    jvmArgs "-Dnet.bytebuddy.experimental=true"
+
+    def maxWorkerCount = gradle.startParameter.maxWorkerCount
+    maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+  }
 }
