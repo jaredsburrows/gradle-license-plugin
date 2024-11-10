@@ -21,30 +21,14 @@ plugins {
   id 'idea'
 }
 
-allprojects {
-  configurations.configureEach {
-    resolutionStrategy {
-      preferProjectModules()
+tasks.withType(Wrapper).configureEach {
+  distributionType = Wrapper.DistributionType.ALL
+}
 
-      enableDependencyVerification()
-
-      eachDependency { details ->
-        if (details.requested.group == 'org.jetbrains.kotlin') {
-          details.useVersion libs.versions.kotlin.get()
-        }
-      }
-    }
-  }
-
-  tasks.withType(Wrapper).configureEach {
-    distributionType = Wrapper.DistributionType.ALL
-  }
-
-  idea {
-    module {
-      downloadSources = true
-      downloadJavadoc = true
-    }
+idea {
+  module {
+    downloadSources = true
+    downloadJavadoc = true
   }
 }
 
