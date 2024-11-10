@@ -94,17 +94,21 @@ subprojects {
   }
 
   tasks.withType(Test).configureEach {
+    useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
+
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL
       showCauses = true
       showExceptions = true
       showStackTraces = true
-      events = [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
+
+      // Check if running on CI and set events accordingly
+      events = System.getenv("CI") != null ?
+        TestLogEvent.values() as Set :
+        [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
     }
 
     def maxWorkerCount = gradle.startParameter.maxWorkerCount
     maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
-
-    useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
   }
 }
