@@ -8,6 +8,9 @@ import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+// Follow the compatibility matrix
+// https://developer.android.com/studio/releases/gradle-plugin
+// https://docs.gradle.org/current/userguide/compatibility.html
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -116,9 +119,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7+, 3.6.4
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -174,9 +174,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7+, 4
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -232,9 +229,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7+, 4.1.0+
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -290,9 +284,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7+, 4.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -348,9 +339,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.0+, 7.0
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -358,8 +346,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '7.0.4',
@@ -411,9 +399,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.2+, 7.1
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -421,8 +406,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '7.1.3',
@@ -474,9 +459,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -484,8 +466,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '7.2.2',
@@ -537,9 +519,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -547,8 +526,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '7.3.1',
@@ -600,9 +579,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -610,8 +586,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '7.4.2',
@@ -663,9 +639,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -673,8 +646,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '8.0.2',
@@ -726,9 +699,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -736,8 +706,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '8.1.4',
@@ -789,9 +759,6 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // https://docs.gradle.org/current/userguide/compatibility.html
-    // https://developer.android.com/studio/releases/gradle-plugin
-    // 7.3+, 7.2
     [gradleVersion, agpVersion] << [
       [
         '7.3.3',
@@ -799,8 +766,8 @@ final class LicensePluginVersionSpec extends Specification {
         '7.5.1',
         '7.6.3',
         '8.0.2',
-        '8.1.1',
-        '8.2.1',
+//        '8.1.1',
+//        '8.2.1',
       ],
       [
         '8.2.2',

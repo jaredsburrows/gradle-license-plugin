@@ -120,5 +120,7 @@ subprojects {
 
     def maxWorkerCount = gradle.startParameter.maxWorkerCount
     maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+
+    useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
   }
 }
