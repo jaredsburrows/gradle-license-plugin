@@ -1,0 +1,62 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.jaredsburrows.license.internal.report////PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/index.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/index.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/CsvReport/#kotlin.collections.List[org.apache.maven.model.Model]/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/-csv-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/emptyReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/empty-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/extension/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/extension.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/fullReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/full-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/name/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/name.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/report/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/report.html
+$dokka.location:com.jaredsburrows.license.internal.report/CsvReport/toString/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-csv-report/to-string.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/index.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/HtmlReport/#kotlin.collections.List[org.apache.maven.model.Model]#kotlin.Boolean/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/-html-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/emptyReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/empty-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/extension/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/extension.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/fullReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/full-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/name/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/name.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/report/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/report.html
+$dokka.location:com.jaredsburrows.license.internal.report/HtmlReport/toString/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-html-report/to-string.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/index.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/JsonReport/#kotlin.collections.List[org.apache.maven.model.Model]/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/-json-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/emptyReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/empty-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/extension/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/extension.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/fullReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/full-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/name/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/name.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/report/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/report.html
+$dokka.location:com.jaredsburrows.license.internal.report/JsonReport/toString/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-json-report/to-string.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/index.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/TextReport/#kotlin.collections.List[org.apache.maven.model.Model]/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/-text-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/emptyReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/empty-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/extension/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/extension.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/fullReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/full-report.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/name/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/name.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/report/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/report.html
+$dokka.location:com.jaredsburrows.license.internal.report/TextReport/toString/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal.report/-text-report/to-string.html
+$dokka.location:com.jaredsburrows.license.internal////PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/index.html
+$dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-console-renderer/index.html
+$dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer/ConsoleRenderer/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-console-renderer/-console-renderer.html
+$dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer/asClickableFileUrl/#java.io.File/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-console-renderer/as-clickable-file-url.html
+$dokka.location:com.jaredsburrows.license.internal/LicenseHelper///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/index.html
+$dokka.location:com.jaredsburrows.license.internal/LicenseHelper/licenseMap/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/license-map.html
+$dokka.location:com.jaredsburrows.license////PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/index.html
+$dokka.location:com.jaredsburrows.license/LicensePlugin///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-plugin/index.html
+$dokka.location:com.jaredsburrows.license/LicensePlugin/LicensePlugin/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-plugin/-license-plugin.html
+$dokka.location:com.jaredsburrows.license/LicensePlugin/apply/#org.gradle.api.Project/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-plugin/apply.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/index.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/LicenseReportExtension/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/-license-report-extension.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/copyCsvReportToAssets/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/copy-csv-report-to-assets.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/copyHtmlReportToAssets/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/copy-html-report-to-assets.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/copyJsonReportToAssets/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/copy-json-report-to-assets.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/copyTextReportToAssets/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/copy-text-report-to-assets.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/generateCsvReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/generate-csv-report.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/generateHtmlReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/generate-html-report.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/generateJsonReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/generate-json-report.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/generateTextReport/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/generate-text-report.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/ignoredPatterns/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/ignored-patterns.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/showVersions/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/show-versions.html
+$dokka.location:com.jaredsburrows.license/LicenseReportExtension/useVariantSpecificAssetDirs/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-report-extension/use-variant-specific-asset-dirs.html
+com.jaredsburrows.license
+com.jaredsburrows.license.internal
+com.jaredsburrows.license.internal.report
+
