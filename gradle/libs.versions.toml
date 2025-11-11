@@ -19,4 +19,4 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.re
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.12.0" }
 maven-model = { module = "org.apache.maven:maven-model", version = "3.9.11" }
 spock = { module = "org.spockframework:spock-junit4", version = "2.4-M5-groovy-3.0" } # 2.4-M5-groovy-4.0
-xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.10.4" }
+xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.11.0" }
