@@ -1,1 +1,1 @@
-sourceset_dependencies='{":gradle-license-plugin:dokkaHtml/main":[]}'
+sourceset_dependencies='{":gradle-license-plugin/main":[]}'
