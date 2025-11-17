@@ -103,7 +103,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
 
       - name: Generate Docs
-        run: ./gradlew dokkaHtml
+        run: ./gradlew dokkaGenerateHtml
 
       - name: Publish Website
         uses: peaceiris/actions-gh-pages@v4.0.0
