@@ -12,492 +12,483 @@ import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.codehaus.plexus.util.ReaderFactory
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.api.artifacts.ResolvedDependency
-import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.gradle.maven.MavenModule
-import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.net.URL
 import java.util.Locale
+import javax.inject.Inject
 
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
-internal open class LicenseReportTask : DefaultTask() {
-  @Input
-  var assetDirs = emptyList<File>()
+internal abstract class LicenseReportTask
+  @Inject
+  constructor(
+    objectFactory: ObjectFactory,
+  ) : DefaultTask() {
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    val pomFiles: ConfigurableFileCollection = objectFactory.fileCollection()
 
-  @Optional
-  @Input
-  var variantName: String? = null
+    @Input
+    var rootCoordinates: List<String> = emptyList()
 
-  // This input is used by the task indirectly via some project properties (such as "configurations" and "dependencies")
-  // that affect the task's outcome. When the mentioned project properties change the task should re-run the next time
-  // it is requested and should *not* be marked as UP-TO-DATE.
-  @InputFile
-  var buildFile: File? = null
+    @Input
+    var pomCoordinatesToFile: Map<String, String> = emptyMap()
 
-  // Task annotations cannot be internal
-  @get:OutputDirectory
-  lateinit var outputDir: File
+    @Input
+    var assetDirs = emptyList<File>()
 
-  @Input
-  var generateCsvReport = false
+    @Optional
+    @Input
+    var variantName: String? = null
 
-  @Input
-  var generateHtmlReport = false
+    @get:OutputDirectory
+    lateinit var outputDir: File
 
-  @Input
-  var generateJsonReport = false
+    @Input
+    var generateCsvReport = false
 
-  @Input
-  var generateTextReport = false
+    @Input
+    var generateHtmlReport = false
 
-  @Input
-  var copyCsvReportToAssets = false
+    @Input
+    var generateJsonReport = false
 
-  @Input
-  var copyHtmlReportToAssets = false
+    @Input
+    var generateTextReport = false
 
-  @Input
-  var copyJsonReportToAssets = false
+    @Input
+    var copyCsvReportToAssets = false
 
-  @Input
-  var copyTextReportToAssets = false
+    @Input
+    var copyHtmlReportToAssets = false
 
-  @Input
-  var useVariantSpecificAssetDirs = false
+    @Input
+    var copyJsonReportToAssets = false
 
-  @Input
-  var ignoredPatterns = setOf<String>()
+    @Input
+    var copyTextReportToAssets = false
 
-  @Input
-  var showVersions = false
+    @Input
+    var useVariantSpecificAssetDirs = false
 
-  private val projects = mutableListOf<Model>()
-  private var pomConfiguration = "poms"
+    @Input
+    var ignoredPatterns = setOf<String>()
 
-  init {
-    // From DefaultTask
-    description = "Outputs licenses report for $name."
-    group = "Reporting"
-  }
+    @Input
+    var showVersions = false
 
-  @TaskAction
-  fun licenseReport() {
-    val mavenReader = MavenXpp3Reader()
-    val configurations: ConfigurationContainer = project.configurations
-    val dependencies: DependencyHandler = project.dependencies
+    private val projects = mutableListOf<Model>()
 
-    setupEnvironment(configurations)
-    initDependencies(configurations)
-    generatePOMInfo(mavenReader, configurations, dependencies)
-
-    // Create CSV report
-    if (generateCsvReport) {
-      val csvReport = CsvReport(projects)
-      val csvFile = File(outputDir, "$name.${csvReport.extension()}")
-      createReport(file = csvFile) { csvReport }
-
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
-        copyReport(file = csvFile) { csvReport }
-      }
+    init {
+      // From DefaultTask
+      description = "Outputs licenses report for $name."
+      group = "Reporting"
     }
 
-    // Create HTML report
-    if (generateHtmlReport) {
-      val htmlReport = HtmlReport(projects, showVersions)
-      val htmlFile = File(outputDir, "$name.${htmlReport.extension()}")
-      createReport(file = htmlFile) { htmlReport }
+    @TaskAction
+    fun licenseReport() {
+      val mavenReader = MavenXpp3Reader()
 
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
-        copyReport(file = htmlFile) { htmlReport }
+      val loggedMissingParentPomCoordinates = hashSetOf<String>()
+      projects.clear()
+      generatePOMInfo(mavenReader, loggedMissingParentPomCoordinates)
+
+      // Create CSV report
+      if (generateCsvReport) {
+        val csvReport = CsvReport(projects)
+        val csvFile = File(outputDir, "$name.${csvReport.extension()}")
+        createReport(file = csvFile) { csvReport }
+
+        // If android project and copy enabled, copy to asset directory
+        if (!variantName.isNullOrEmpty() && copyCsvReportToAssets) {
+          copyReport(file = csvFile) { csvReport }
+        }
       }
-    }
 
-    // Create JSON report
-    if (generateJsonReport) {
-      val jsonReport = JsonReport(projects)
-      val jsonFile = File(outputDir, "$name.${jsonReport.extension()}")
-      createReport(file = jsonFile) { jsonReport }
+      // Create HTML report
+      if (generateHtmlReport) {
+        val htmlReport = HtmlReport(projects, showVersions)
+        val htmlFile = File(outputDir, "$name.${htmlReport.extension()}")
+        createReport(file = htmlFile) { htmlReport }
 
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
-        copyReport(file = jsonFile) { jsonReport }
+        // If android project and copy enabled, copy to asset directory
+        if (!variantName.isNullOrEmpty() && copyHtmlReportToAssets) {
+          copyReport(file = htmlFile) { htmlReport }
+        }
       }
-    }
 
-    // Create Text report
-    if (generateTextReport) {
-      val textReport = TextReport(projects)
-      val textFile = File(outputDir, "$name.${textReport.extension()}")
-      createReport(file = textFile) { textReport }
+      // Create JSON report
+      if (generateJsonReport) {
+        val jsonReport = JsonReport(projects)
+        val jsonFile = File(outputDir, "$name.${jsonReport.extension()}")
+        createReport(file = jsonFile) { jsonReport }
 
-      // If android project and copy enabled, copy to asset directory
-      if (!variantName.isNullOrEmpty() && copyTextReportToAssets) {
-        copyReport(file = textFile) { textReport }
+        // If android project and copy enabled, copy to asset directory
+        if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
+          copyReport(file = jsonFile) { jsonReport }
+        }
       }
-    }
-  }
 
-  /** Setup configurations to collect dependencies. */
-  private fun setupEnvironment(configurations: ConfigurationContainer) {
-    pomConfiguration += variantName.orEmpty() + name
+      // Create Text report
+      if (generateTextReport) {
+        val textReport = TextReport(projects)
+        val textFile = File(outputDir, "$name.${textReport.extension()}")
+        createReport(file = textFile) { textReport }
 
-    // Create temporary configuration in order to store POM information
-    configurations.apply {
-      create(pomConfiguration)
-
-      forEach { configuration ->
-        try {
-          configuration.isCanBeResolved = true
-        } catch (e: Exception) {
-          logger.warn("Cannot resolve configuration ${configuration.name}: ${e.shortMessage()}")
-          logger.debug("Cannot resolve configuration ${configuration.name}", e)
+        // If android project and copy enabled, copy to asset directory
+        if (!variantName.isNullOrEmpty() && copyTextReportToAssets) {
+          copyReport(file = textFile) { textReport }
         }
       }
     }
-  }
 
-  /** Iterate through all configurations and collect dependencies. */
-  private fun initDependencies(configurations: ConfigurationContainer) {
-    // Add POM information to our POM configuration
-    val configurationSet = linkedSetOf<Configuration>()
-    val configurationList = mutableListOf("api", "compile", "implementation")
-
-    // If Android project, add extra configurations
-    variantName?.let { variant ->
-      configurations
-        .find { it.name == "${variant}RuntimeClasspath" }
-        ?.also { configurationList += it.name }
-    }
-
-    // Iterate through all the configuration's dependencies
-    configurations
-      .filter { configurationList.contains(it.name) }
-      .forEach { configurationSet += it }
-
-    // Resolve the POM artifacts
-    configurationSet
-      .asSequence()
-      .filter { it.isCanBeResolved }
-      .map { it.resolvedConfiguration }
-      .map { it.lenientConfiguration }
-      .map { it.allModuleDependencies }
-      .flatMap { getResolvedArtifactsFromResolvedDependencies(it) }
-      .toList()
-      .forEach { artifact ->
-        val id = artifact.moduleVersion.id
-        val gav = "${id.group}:${id.name}:${id.version}@pom"
-        configurations
-          .getByName(pomConfiguration)
-          .dependencies += project.dependencies.add(pomConfiguration, gav)
-      }
-  }
-
-  /** Get POM information from the dependency artifacts. */
-  private fun generatePOMInfo(
-    mavenReader: MavenXpp3Reader,
-    configurations: ConfigurationContainer,
-    dependencies: DependencyHandler,
-  ) {
-    // Iterate through all POMs in order from our custom POM configuration
-    configurations
-      .getByName(pomConfiguration)
-      .resolvedConfiguration
-      .lenientConfiguration
-      .artifacts
-      .filter { it.type == "pom" }
-      // Filter out artifacts for ignored patterns
-      .filter { artifact ->
-        val depString = with(artifact.moduleVersion.id) { "$group:$name:$version" }
-        ignoredPatterns.none { depString.contains(it) }
-      }
-      .map { artifact ->
-        // POM of artifact
-        val pomFile = artifact.file
-        val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
-
-        // Search for licenses
-        var licenses = findLicenses(mavenReader, pomFile, dependencies)
-        if (licenses.isEmpty()) {
-          logger.warn("Dependency '${artifact.name}' does not have a license.")
-          licenses = mutableListOf()
+    /** Get POM information from the provided POM files (resolved/configured outside the task). */
+    private fun generatePOMInfo(
+      mavenReader: MavenXpp3Reader,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ) {
+      rootCoordinates
+        .asSequence()
+        .distinct()
+        .mapNotNull { coordinate ->
+          val pomFilePath = pomCoordinatesToFile[coordinate] ?: return@mapNotNull null
+          coordinate to File(pomFilePath)
         }
+        .filter { (coordinate, _) ->
+          ignoredPatterns.none { coordinate.contains(it) }
+        }
+        .forEach { (coordinate, pomFile) ->
+          val model = readModel(mavenReader, pomFile) ?: return@forEach
 
-        // Store the information that we need
-        val module = artifact.moduleVersion.id
-        val project =
-          Model().apply {
-            this.groupId = module.group.trim()
-            this.artifactId = module.name.trim()
-            this.version = model.pomVersion(mavenReader, pomFile, dependencies)
-            this.name = model.pomName()
-            this.description = model.pomDescription()
-            this.url = model.pomUrl()
-            this.inceptionYear = model.pomInceptionYear()
-            this.licenses = licenses
-            this.developers = model.pomDevelopers()
+          val (groupId, artifactId, version) = parseCoordinate(coordinate)
+
+          var licenses = findLicenses(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+          if (licenses.isEmpty()) {
+            logger.warn("Dependency '$artifactId' does not have a license.")
+            licenses = mutableListOf()
           }
 
-        projects += project
-      }
+          val project =
+            Model().apply {
+              this.groupId = groupId
+              this.artifactId = artifactId
+              this.version = version
+              this.name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+              this.description = model.pomDescription()
+              this.url = model.pomUrl()
+              this.inceptionYear = model.pomInceptionYear()
+              this.licenses = licenses
+              this.developers = model.pomDevelopers()
+            }
 
-    // Sort POM information by name and id (:group:module:packaging:version) to have a deterministic order.
-    projects.sortWith(compareBy({ it.name.lowercase(Locale.getDefault()) }, { it.id }))
-  }
-
-  private fun getResolvedArtifactsFromResolvedDependencies(
-    resolvedDependencies: Set<ResolvedDependency>,
-    skipSet: MutableSet<ResolvedDependency> = hashSetOf(),
-  ): Set<ResolvedArtifact> {
-    return resolvedDependencies.flatMap { resolvedDependency ->
-      if (!skipSet.add(resolvedDependency)) {
-        // If the dependency is already in skipSet, skip it
-        return@flatMap emptySet<ResolvedArtifact>()
-      }
-
-      try {
-        when (resolvedDependency.moduleVersion) {
-          /**
-           * Attempting to getAllModuleArtifacts on a local library project will result
-           * in AmbiguousVariantSelectionException as there are not enough criteria
-           * to match a specific variant of the library project. Instead, we skip the
-           * library project itself and enumerate its dependencies.
-           */
-          "unspecified" ->
-            // Recursively collect artifacts from the children of unresolved dependencies
-            getResolvedArtifactsFromResolvedDependencies(resolvedDependency.children, skipSet)
-          else ->
-            // Collect artifacts from the resolved dependency
-            resolvedDependency.allModuleArtifacts
+          projects += project
         }
-      } catch (e: Exception) {
-        logger.warn("Failed to process '${resolvedDependency.name}': ${e.shortMessage()}")
-        logger.debug("Failed to process '${resolvedDependency.name}'", e)
-        emptySet()
-      }
-    }.toSet()
-  }
 
-  /** Use Parent POM information when individual dependency license information is missing. */
-  private fun getParentPomFile(
-    model: Model,
-    dependencies: DependencyHandler,
-  ): File? {
-    // Get parent POM information
-    val parent = model.parent
-    val groupId = parent?.groupId.orEmpty()
-    val artifactId = parent?.artifactId.orEmpty()
-    val version = parent?.version.orEmpty()
-    val dependency = "$groupId:$artifactId:$version@pom"
-
-    val result =
-      dependencies.createArtifactResolutionQuery()
-        .forModule(groupId, artifactId, version)
-        .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
-        .execute()
-
-    var pomFile: File? = null
-    for (component in result.resolvedComponents) {
-      for (artifact in component.getArtifacts(MavenPomArtifact::class.java)) {
-        if (artifact is ResolvedArtifactResult) {
-          if (pomFile != null) {
-            logger.error("Parent POM $dependency resolved to multiple artifacts")
-            return null
-          }
-          pomFile = artifact.file
-        }
-      }
+      // Sort POM information by name and id (:group:module:packaging:version) to have a deterministic order.
+      projects.sortWith(compareBy({ it.name.lowercase(Locale.getDefault()) }, { it.id }))
     }
 
-    if (pomFile == null) {
-      logger.warn("Parent POM $dependency not found")
-    }
-    return pomFile
-  }
+    private fun <T : Report> createReport(
+      file: File,
+      report: () -> T,
+    ) {
+      val newReport = report()
 
-  private fun <T : Report> createReport(
-    file: File,
-    report: () -> T,
-  ) {
-    val newReport = report()
-
-    file.apply {
-      // Remove existing file
-      delete()
-
-      // Write report for file
-      parentFile.mkdirs()
-      writeText(newReport.toString())
-    }
-
-    // Log output directory for user
-    logger.lifecycle(
-      "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}.",
-    )
-  }
-
-  private fun <T : Report> copyReport(
-    file: File,
-    report: () -> T,
-  ) {
-    val newReport = report()
-
-    // Iterate through all asset directories
-    assetDirs.forEach { directory ->
-      val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES.${newReport.extension()}")
-
-      licenseFile.apply {
+      file.apply {
         // Remove existing file
         delete()
 
         // Write report for file
         parentFile.mkdirs()
-        writeText(file.readText())
+        writeText(newReport.toString())
       }
 
       // Log output directory for user
       logger.lifecycle(
-        "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.",
+        "Wrote ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(file)}.",
       )
     }
-  }
 
-  private fun findVersion(
-    mavenReader: MavenXpp3Reader,
-    pomFile: File?,
-    dependencies: DependencyHandler,
-  ): String {
-    if (pomFile.isNullOrEmpty()) {
+    private fun <T : Report> copyReport(
+      file: File,
+      report: () -> T,
+    ) {
+      val newReport = report()
+
+      // Iterate through all asset directories
+      assetDirs.forEach { directory ->
+        val licenseFile = File(directory.path, "$OPEN_SOURCE_LICENSES.${newReport.extension()}")
+
+        licenseFile.apply {
+          // Remove existing file
+          delete()
+
+          // Write report for file
+          parentFile.mkdirs()
+          writeText(file.readText())
+        }
+
+        // Log output directory for user
+        logger.lifecycle(
+          "Copied ${newReport.name()} report to ${ConsoleRenderer().asClickableFileUrl(licenseFile)}.",
+        )
+      }
+    }
+
+    private fun findVersion(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File?,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): String {
+      if (pomFile.isNullOrEmpty()) {
+        return ""
+      }
+      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
+
+      // If the POM is missing a name, do not record it
+      val name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+      if (name.isEmpty()) {
+        logger.warn("POM file is missing a name: $pomFile")
+        return ""
+      }
+
+      val version = model.pomVersion()
+      if (version.isNotEmpty()) {
+        return version.trim()
+      }
+
+      if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
+        val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
+        if (parentPomFile != null) {
+          return findVersion(
+            mavenReader,
+            parentPomFile,
+            loggedMissingParentPomCoordinates,
+          )
+        }
+      }
       return ""
     }
-    val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
 
-    // If the POM is missing a name, do not record it
-    val name = model.pomName()
-    if (name.isEmpty()) {
-      logger.warn("POM file is missing a name: $pomFile")
-      return ""
-    }
+    private fun findLicenses(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File?,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): List<License> {
+      if (pomFile.isNullOrEmpty()) {
+        return emptyList()
+      }
+      val model = pomFile?.let { readModel(mavenReader, it) } ?: return emptyList()
 
-    val version = model.pomVersion()
-    if (version.isNotEmpty()) {
-      return version.trim()
-    }
+      // If the POM is missing a name, do not record it
+      val name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+      if (name.isEmpty()) {
+        logger.warn("POM file is missing a name: $pomFile")
+        return emptyList()
+      }
 
-    if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
-      return findVersion(
-        mavenReader,
-        getParentPomFile(model, dependencies),
-        dependencies,
-      )
-    }
-    return ""
-  }
+      if (ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
+        return listOf(
+          License().apply {
+            this.name = APACHE_LICENSE_NAME
+            url = APACHE_LICENSE_URL
+          },
+        )
+      }
 
-  private fun findLicenses(
-    mavenReader: MavenXpp3Reader,
-    pomFile: File?,
-    dependencies: DependencyHandler,
-  ): List<License> {
-    if (pomFile.isNullOrEmpty()) {
-      return emptyList()
-    }
-    val model = mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
-
-    // If the POM is missing a name, do not record it
-    val name = model.pomName()
-    if (name.isEmpty()) {
-      logger.warn("POM file is missing a name: $pomFile")
-      return emptyList()
-    }
-
-    if (ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
-      return listOf(
+      // License information found
+      return model.licenses.orEmpty().map { license ->
         License().apply {
-          this.name = APACHE_LICENSE_NAME
-          url = APACHE_LICENSE_URL
-        },
-      )
-    }
-
-    // License information found
-    return model.licenses.orEmpty().map { license ->
-      License().apply {
-        this.name = license.name.orEmpty().trim()
-        this.url = license.url.orEmpty().trim()
-      }
-    }.filter {
-      it.name.isNotEmpty() || it.url.isUrlValid()
-    }.ifEmpty {
-      logger.info("Project, $name, has no license in POM file.")
-      model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
-        findLicenses(mavenReader, getParentPomFile(model, dependencies), dependencies)
-      } ?: emptyList()
-    }
-  }
-
-  private fun String.isUrlValid(): Boolean {
-    return try {
-      URL(this).toURI()
-      true
-    } catch (e: Exception) {
-      logger.warn("Dependency has an invalid license URL '$this': ${e.shortMessage()}")
-      logger.debug("Dependency has an invalid license URL '$this'", e)
-      false
-    }
-  }
-
-  private fun Model.pomVersion(
-    mavenReader: MavenXpp3Reader,
-    pomFile: File?,
-    dependencies: DependencyHandler,
-  ): String = version.orEmpty().trim().ifEmpty { findVersion(mavenReader, pomFile, dependencies) }
-
-  private fun Model.pomName(): String = name.orEmpty().trim().ifEmpty { artifactId.orEmpty().trim() }
-
-  private fun Model.pomDescription(): String = description.orEmpty().trim()
-
-  private fun Model.pomUrl(): String = url.orEmpty().trim()
-
-  private fun Model.pomVersion(): String = version.orEmpty().trim()
-
-  private fun Model.pomInceptionYear(): String = inceptionYear.orEmpty().trim()
-
-  private fun Model.pomDevelopers(): List<Developer> {
-    return developers.orEmpty().map { developer ->
-      Developer().apply {
-        id = developer.name.orEmpty().trim()
-      }
-    }
-  }
-
-  private fun File?.isNullOrEmpty(): Boolean = this?.length() == 0L
-
-  private fun Exception.shortMessage(): String =
-    (message ?: "<no message>").let {
-      if (it.length > MAX_EXCEPTION_MESSAGE_LENGTH) {
-        "${it.take(MAX_EXCEPTION_MESSAGE_LENGTH)}... (see --debug for complete message)"
-      } else {
-        it
+          this.name = license.name.orEmpty().trim()
+          this.url = license.url.orEmpty().trim()
+        }
+      }.filter {
+        it.name.isNotEmpty() || it.url.isUrlValid()
+      }.ifEmpty {
+        logger.info("Project, $name, has no license in POM file.")
+        model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
+          val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
+          if (parentPomFile != null) {
+            findLicenses(
+              mavenReader,
+              parentPomFile,
+              loggedMissingParentPomCoordinates,
+            )
+          } else {
+            emptyList()
+          }
+        } ?: emptyList()
       }
     }
 
-  private companion object {
-    private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
-    private const val APACHE_LICENSE_NAME = "The Apache Software License"
-    private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-    private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
-    private const val MAX_EXCEPTION_MESSAGE_LENGTH = 200
+    private fun String.isUrlValid(): Boolean {
+      return try {
+        URL(this).toURI()
+        true
+      } catch (e: Exception) {
+        logger.warn("Dependency has an invalid license URL '$this': ${e.shortMessage()}")
+        logger.debug("Dependency has an invalid license URL '$this'", e)
+        false
+      }
+    }
+
+    private fun Model.pomName(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File?,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): String {
+      val rawName = name.orEmpty().trim().ifEmpty { artifactId.orEmpty().trim() }
+      if (!rawName.contains("\${")) {
+        return rawName
+      }
+
+      val effectiveGroupId = resolveEffectiveGroupId(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+      val effectiveArtifactId = artifactId.orEmpty().trim()
+      val effectiveVersion = resolveEffectiveVersion(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+
+      val placeholderToValue =
+        mapOf(
+          "project.groupId" to effectiveGroupId,
+          "pom.groupId" to effectiveGroupId,
+          "groupId" to effectiveGroupId,
+          "project.artifactId" to effectiveArtifactId,
+          "pom.artifactId" to effectiveArtifactId,
+          "artifactId" to effectiveArtifactId,
+          "project.name" to effectiveArtifactId,
+          "project.version" to effectiveVersion,
+          "pom.version" to effectiveVersion,
+          "version" to effectiveVersion,
+        )
+
+      var interpolatedName = rawName
+      placeholderToValue.forEach { (key, value) ->
+        if (value.isNotEmpty()) {
+          interpolatedName = interpolatedName.replace("\${$key}", value)
+        }
+      }
+
+      return interpolatedName.trim()
+    }
+
+    private fun Model.pomDescription(): String = description.orEmpty().trim()
+
+    private fun Model.pomUrl(): String = url.orEmpty().trim()
+
+    private fun Model.pomVersion(): String = version.orEmpty().trim()
+
+    private fun Model.pomInceptionYear(): String = inceptionYear.orEmpty().trim()
+
+    private fun Model.pomDevelopers(): List<Developer> {
+      return developers.orEmpty().map { developer ->
+        Developer().apply {
+          id = developer.name.orEmpty().trim()
+        }
+      }
+    }
+
+    /**
+     * Parent POM resolution is performed outside the task; this only looks up the already-provided mapping.
+     * Logs each missing parent coordinate only once to avoid noisy repeated warnings.
+     */
+    private fun getParentPomFile(
+      model: Model,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): File? {
+      val parent = model.parent ?: return null
+      val groupId = parent.groupId.orEmpty().trim()
+      val artifactId = parent.artifactId.orEmpty().trim()
+      val version = parent.version.orEmpty().trim()
+
+      if (groupId.isEmpty() || artifactId.isEmpty() || version.isEmpty()) {
+        return null
+      }
+
+      val coordinate = "$groupId:$artifactId:$version"
+      val pomFilePath = pomCoordinatesToFile[coordinate]
+      if (pomFilePath == null) {
+        if (loggedMissingParentPomCoordinates.add(coordinate)) {
+          logger.warn("Parent POM $groupId:$artifactId:$version@pom not found")
+        }
+        return null
+      }
+
+      return File(pomFilePath)
+    }
+
+    private fun readModel(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File,
+    ): Model? {
+      return try {
+        mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
+      } catch (e: Exception) {
+        logger.warn("Failed to read POM file '$pomFile': ${e.shortMessage()}")
+        null
+      }
+    }
+
+    private fun parseCoordinate(coordinate: String): Triple<String, String, String> {
+      val parts = coordinate.split(":")
+      if (parts.size != 3) {
+        return Triple("", coordinate, "")
+      }
+      return Triple(parts[0].trim(), parts[1].trim(), parts[2].trim())
+    }
+
+    private fun resolveEffectiveGroupId(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File?,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): String {
+      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
+      val groupId = model.groupId.orEmpty().trim()
+      if (groupId.isNotEmpty()) {
+        return groupId
+      }
+
+      val parentFile = getParentPomFile(model, loggedMissingParentPomCoordinates) ?: return ""
+      return resolveEffectiveGroupId(mavenReader, parentFile, loggedMissingParentPomCoordinates)
+    }
+
+    private fun resolveEffectiveVersion(
+      mavenReader: MavenXpp3Reader,
+      pomFile: File?,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): String {
+      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
+      val version = model.version.orEmpty().trim()
+      if (version.isNotEmpty()) {
+        return version
+      }
+
+      val parentFile = getParentPomFile(model, loggedMissingParentPomCoordinates) ?: return ""
+      return resolveEffectiveVersion(mavenReader, parentFile, loggedMissingParentPomCoordinates)
+    }
+
+    private fun File?.isNullOrEmpty(): Boolean = this?.length() == 0L
+
+    private fun Exception.shortMessage(): String =
+      (message ?: "<no message>").let {
+        if (it.length > MAX_EXCEPTION_MESSAGE_LENGTH) {
+          "${it.take(MAX_EXCEPTION_MESSAGE_LENGTH)}... (see --debug for complete message)"
+        } else {
+          it
+        }
+      }
+
+    private companion object {
+      private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
+      private const val APACHE_LICENSE_NAME = "The Apache Software License"
+      private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+      private const val MAX_EXCEPTION_MESSAGE_LENGTH = 200
+    }
   }
-}

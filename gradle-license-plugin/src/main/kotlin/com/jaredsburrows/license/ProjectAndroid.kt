@@ -80,7 +80,13 @@ private fun Project.configureVariant(
 
     tasks.register("license${name}Report", LicenseReportTask::class.java) {
       // Apply common task configuration first
-      configureCommon(it)
+      configureCommon(
+        it,
+        listOf(
+          "${variant.name}CompileClasspath",
+          "${variant.name}RuntimeClasspath",
+        ),
+      )
 
       // Custom for Android tasks
       val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"

@@ -14,24 +14,58 @@ plugins {
 group = GROUP
 version = VERSION_NAME
 
-tasks.register('createClasspathManifest') {
-  def outputDir = layout.buildDirectory.file(name).get().asFile
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.Classpath
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 
-  inputs.files sourceSets.main.runtimeClasspath
-  outputs.dir outputDir
+abstract class CreateClasspathManifestTask extends DefaultTask {
+  @Classpath
+  abstract ConfigurableFileCollection getClasspath()
 
-  doLast {
+  @OutputDirectory
+  abstract DirectoryProperty getOutputDir()
+
+  @TaskAction
+  void writeManifest() {
+    def outputDir = outputDir.get().asFile
     outputDir.mkdirs()
-    // Combine both main and test plugin classpaths
-    def set = new HashSet<String>()
-    sourceSets.main.runtimeClasspath.files.forEach {
-      set.add(it.path)
+    def manifestFile = new File(outputDir, 'plugin-classpath.txt')
+    def entries = classpath.files.collect { it.path }.toSet().toList()
+    entries.sort()
+    manifestFile.text = entries.join("\n")
+  }
+}
+
+tasks.register('createClasspathManifest', CreateClasspathManifestTask) {
+  def javaPluginExtension = project.extensions.getByType(JavaPluginExtension)
+  def mainRuntimeClasspath = javaPluginExtension.sourceSets.getByName('main').runtimeClasspath
+
+  classpath.from(mainRuntimeClasspath)
+  classpath.from(configurations.pluginTestKitClasspath)
+  outputDir.set(layout.buildDirectory.dir(name))
+}
+
+sourceSets {
+  test {
+    resources {
+      srcDir(layout.buildDirectory.dir('createClasspathManifest'))
     }
-    sourceSets.test.runtimeClasspath.files.forEach {
-      set.add(it.path)
-    }
-    def list = new ArrayList<String>(set)
-    file("$outputDir/plugin-classpath.txt").text = String.join("\n", list)
+  }
+}
+
+tasks.named('processTestResources') {
+  dependsOn(tasks.named('createClasspathManifest'))
+}
+
+configurations {
+  pluginTestKitClasspath {
+    canBeConsumed = false
+    canBeResolved = true
+    extendsFrom testRuntimeOnly
   }
 }
 
@@ -45,7 +79,6 @@ dependencies {
   implementation libs.moshi
   implementation libs.maven.model
 
-  testRuntimeOnly files(createClasspathManifest)
   testRuntimeOnly libs.android.plugin
 
   testImplementation localGroovy()
