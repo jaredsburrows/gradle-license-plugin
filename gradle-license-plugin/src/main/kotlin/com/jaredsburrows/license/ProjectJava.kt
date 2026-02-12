@@ -18,6 +18,6 @@ internal fun Project.isJavaProject(): Boolean {
 internal fun Project.configureJavaProject() {
   tasks.register("licenseReport", LicenseReportTask::class.java) {
     // Apply common task configuration first
-    configureCommon(it)
+    configureCommon(it, listOf("compileClasspath", "runtimeClasspath"))
   }
 }
