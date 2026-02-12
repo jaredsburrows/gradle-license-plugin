@@ -3,8 +3,8 @@ package com.jaredsburrows.license
 import org.gradle.api.Project
 
 /** Returns true if Java Gradle project. */
-internal fun Project.isJavaProject(): Boolean {
-  return hasPlugin(
+internal fun Project.isJavaProject(): Boolean =
+  hasPlugin(
     listOf(
       // JavaPlugin
       "java",
@@ -12,7 +12,6 @@ internal fun Project.isJavaProject(): Boolean {
       "org.jetbrains.kotlin.jvm",
     ),
   )
-}
 
 /** Configure for Java projects. */
 internal fun Project.configureJavaProject() {

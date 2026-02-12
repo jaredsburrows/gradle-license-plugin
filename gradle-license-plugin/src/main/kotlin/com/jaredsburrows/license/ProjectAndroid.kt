@@ -13,8 +13,8 @@ import org.gradle.api.Project
 import java.util.Locale
 
 /** Returns true if Android Gradle project. */
-internal fun Project.isAndroidProject(): Boolean {
-  return hasPlugin(
+internal fun Project.isAndroidProject(): Boolean =
+  hasPlugin(
     listOf(
       // AppPlugin
       "android",
@@ -26,7 +26,6 @@ internal fun Project.isAndroidProject(): Boolean {
       "com.android.test",
     ),
   )
-}
 
 /**
  * Configure for Android projects.
@@ -90,7 +89,11 @@ private fun Project.configureVariant(
 
       // Custom for Android tasks
       val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
-      it.assetDirs = baseExtension.sourceSets.findByName(sourceSetName)?.assets?.srcDirs?.toList() ?: emptyList()
+      it.assetDirs = baseExtension.sourceSets
+        .findByName(sourceSetName)
+        ?.assets
+        ?.srcDirs
+        ?.toList() ?: emptyList()
       it.variantName = variant.name
     }
   }
