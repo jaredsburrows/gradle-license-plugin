@@ -57,7 +57,7 @@ subprojects {
 
   tasks.withType(KotlinJvmCompile).configureEach {
     compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
+      jvmTarget.set(JvmTarget.JVM_17)
       languageVersion.set(KotlinVersion.KOTLIN_2_0)
       apiVersion.set(KotlinVersion.KOTLIN_2_0)
       freeCompilerArgs.add("-progressive")
@@ -69,8 +69,8 @@ subprojects {
   }
 
   tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     configure(options) {
       compilerArgs << '-Xlint:all'
@@ -81,8 +81,8 @@ subprojects {
   }
 
   tasks.withType(GroovyCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     configure(options) {
       compilerArgs << '-Xlint:all'
