@@ -69,7 +69,8 @@ private fun Project.resolvePomFile(
   version: String,
 ): File? {
   val result =
-    dependencies.createArtifactResolutionQuery()
+    dependencies
+      .createArtifactResolutionQuery()
       .forModule(groupId, artifactId, version)
       .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
       .execute()

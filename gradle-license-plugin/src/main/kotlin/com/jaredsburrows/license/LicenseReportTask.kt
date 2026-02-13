@@ -161,11 +161,9 @@ internal abstract class LicenseReportTask
         .mapNotNull { coordinate ->
           val pomFilePath = pomCoordinatesToFile[coordinate] ?: return@mapNotNull null
           coordinate to File(pomFilePath)
-        }
-        .filter { (coordinate, _) ->
+        }.filter { (coordinate, _) ->
           ignoredPatterns.none { coordinate.contains(it) }
-        }
-        .forEach { (coordinate, pomFile) ->
+        }.forEach { (coordinate, pomFile) ->
           val model = readModel(mavenReader, pomFile) ?: return@forEach
 
           val (groupId, artifactId, version) = parseCoordinate(coordinate)
@@ -265,7 +263,11 @@ internal abstract class LicenseReportTask
         return version.trim()
       }
 
-      if (model.parent.artifactId.orEmpty().trim().isNotEmpty()) {
+      if (model.parent.artifactId
+          .orEmpty()
+          .trim()
+          .isNotEmpty()
+      ) {
         val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
         if (parentPomFile != null) {
           return findVersion(
@@ -305,32 +307,34 @@ internal abstract class LicenseReportTask
       }
 
       // License information found
-      return model.licenses.orEmpty().map { license ->
-        License().apply {
-          this.name = license.name.orEmpty().trim()
-          this.url = license.url.orEmpty().trim()
-        }
-      }.filter {
-        it.name.isNotEmpty() || it.url.isUrlValid()
-      }.ifEmpty {
-        logger.info("Project, $name, has no license in POM file.")
-        model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
-          val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
-          if (parentPomFile != null) {
-            findLicenses(
-              mavenReader,
-              parentPomFile,
-              loggedMissingParentPomCoordinates,
-            )
-          } else {
-            emptyList()
+      return model.licenses
+        .orEmpty()
+        .map { license ->
+          License().apply {
+            this.name = license.name.orEmpty().trim()
+            this.url = license.url.orEmpty().trim()
           }
-        } ?: emptyList()
-      }
+        }.filter {
+          it.name.isNotEmpty() || it.url.isUrlValid()
+        }.ifEmpty {
+          logger.info("Project, $name, has no license in POM file.")
+          model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
+            val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
+            if (parentPomFile != null) {
+              findLicenses(
+                mavenReader,
+                parentPomFile,
+                loggedMissingParentPomCoordinates,
+              )
+            } else {
+              emptyList()
+            }
+          } ?: emptyList()
+        }
     }
 
-    private fun String.isUrlValid(): Boolean {
-      return try {
+    private fun String.isUrlValid(): Boolean =
+      try {
         URL(this).toURI()
         true
       } catch (e: Exception) {
@@ -338,7 +342,6 @@ internal abstract class LicenseReportTask
         logger.debug("Dependency has an invalid license URL '$this'", e)
         false
       }
-    }
 
     private fun Model.pomName(
       mavenReader: MavenXpp3Reader,
@@ -386,13 +389,12 @@ internal abstract class LicenseReportTask
 
     private fun Model.pomInceptionYear(): String = inceptionYear.orEmpty().trim()
 
-    private fun Model.pomDevelopers(): List<Developer> {
-      return developers.orEmpty().map { developer ->
+    private fun Model.pomDevelopers(): List<Developer> =
+      developers.orEmpty().map { developer ->
         Developer().apply {
           id = developer.name.orEmpty().trim()
         }
       }
-    }
 
     /**
      * Parent POM resolution is performed outside the task; this only looks up the already-provided mapping.
@@ -426,14 +428,13 @@ internal abstract class LicenseReportTask
     private fun readModel(
       mavenReader: MavenXpp3Reader,
       pomFile: File,
-    ): Model? {
-      return try {
+    ): Model? =
+      try {
         mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
       } catch (e: Exception) {
         logger.warn("Failed to read POM file '$pomFile': ${e.shortMessage()}")
         null
       }
-    }
 
     private fun parseCoordinate(coordinate: String): Triple<String, String, String> {
       val parts = coordinate.split(":")

@@ -8,7 +8,9 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr Text report.
  */
-class TextReport(private val projects: List<Model>) : Report {
+class TextReport(
+  private val projects: List<Model>,
+) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -104,9 +106,7 @@ class TextReport(private val projects: List<Model>) : Report {
 
   override fun emptyReport(): String = EMPTY_TEXT
 
-  private fun List<License>.licenseNames(): String {
-    return this.joinToString(separator = ",", transform = { it.name })
-  }
+  private fun List<License>.licenseNames(): String = this.joinToString(separator = ",", transform = { it.name })
 
   private companion object {
     private const val EXTENSION = "txt"
