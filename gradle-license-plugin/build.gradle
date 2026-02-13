@@ -15,7 +15,6 @@ group = GROUP
 version = VERSION_NAME
 
 def mainClasspath = sourceSets.main.runtimeClasspath
-def testClasspath = sourceSets.test.runtimeClasspath
 
 tasks.register('createClasspathManifest') {
   def outputDir = layout.buildDirectory.file(name).get().asFile
@@ -25,15 +24,7 @@ tasks.register('createClasspathManifest') {
 
   doLast {
     outputDir.mkdirs()
-    // Combine both main and test plugin classpaths
-    def set = new HashSet<String>()
-    mainClasspath.files.forEach {
-      set.add(it.path)
-    }
-    testClasspath.files.forEach {
-      set.add(it.path)
-    }
-    def list = new ArrayList<String>(set)
+    def list = mainClasspath.files.collect { it.path }
     new File(outputDir, 'plugin-classpath.txt').text = String.join("\n", list)
   }
 }
