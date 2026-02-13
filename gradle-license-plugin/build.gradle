@@ -14,24 +14,18 @@ plugins {
 group = GROUP
 version = VERSION_NAME
 
+def mainClasspath = sourceSets.main.runtimeClasspath
+
 tasks.register('createClasspathManifest') {
   def outputDir = layout.buildDirectory.file(name).get().asFile
 
-  inputs.files sourceSets.main.runtimeClasspath
+  inputs.files mainClasspath
   outputs.dir outputDir
 
   doLast {
     outputDir.mkdirs()
-    // Combine both main and test plugin classpaths
-    def set = new HashSet<String>()
-    sourceSets.main.runtimeClasspath.files.forEach {
-      set.add(it.path)
-    }
-    sourceSets.test.runtimeClasspath.files.forEach {
-      set.add(it.path)
-    }
-    def list = new ArrayList<String>(set)
-    file("$outputDir/plugin-classpath.txt").text = String.join("\n", list)
+    def list = mainClasspath.files.collect { it.path }
+    new File(outputDir, 'plugin-classpath.txt').text = String.join("\n", list)
   }
 }
 
@@ -47,10 +41,15 @@ dependencies {
 
   testRuntimeOnly files(createClasspathManifest)
   testRuntimeOnly libs.android.plugin
+  testImplementation platform(libs.junit.bom)
+  testRuntimeOnly libs.junit.platform.launcher
+  testRuntimeOnly libs.junit.jupiter.engine
+  testRuntimeOnly libs.junit.vintage.engine
 
   testImplementation localGroovy()
   testImplementation gradleTestKit()
-  testImplementation libs.spock, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation libs.spockcore, { exclude module: 'groovy-all' } // Use localGroovy()
+  testImplementation libs.spock.junit4
   testImplementation libs.xmlunit
   testImplementation libs.commons
 }

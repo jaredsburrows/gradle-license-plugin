@@ -10,12 +10,14 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 // Follow the compatibility matrix
 // https://developer.android.com/studio/releases/gradle-plugin
+// https://developer.android.com/build/releases/agp-8-13-0-release-notes
+// https://maven.google.com/web/index.html?q=builder#com.android.tools.build:builder
 // https://docs.gradle.org/current/userguide/compatibility.html#plugin-compatibility
 // https://gradle.org/releases/
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
-  private int compileSdkVersion = 34
+  private int compileSdkVersion = 36
   private List<File> pluginClasspath
   private String classpathString
   private File buildFile
@@ -66,14 +68,6 @@ final class LicensePluginVersionSpec extends Specification {
 
     where:
     gradleVersion << [
-      '7.3.3',
-      '7.4.2',
-      '7.5.1',
-      '7.6.3',
-      '8.0.2',
-      '8.1.1',
-      '8.2.1',
-      '8.3',
       '8.4',
       '8.5',
       '8.6',
@@ -81,6 +75,14 @@ final class LicensePluginVersionSpec extends Specification {
       '8.8',
       '8.9',
       '8.10.2',
+      '8.11.1',
+      '8.12.1',
+      '8.13',
+      '8.14.4',
+      '9.0.0',
+      '9.1.0',
+      '9.2.1',
+      '9.3.1',
     ]
   }
 
@@ -105,6 +107,10 @@ final class LicensePluginVersionSpec extends Specification {
     apply plugin: 'com.jaredsburrows.license'
 
     android {
+      if (${Integer.parseInt(agpVersion.split("\\.")[0])} > 0) {
+        namespace = "test"
+        compileSdk = $compileSdkVersion
+      }
       compileSdkVersion $compileSdkVersion
 
       defaultConfig {
@@ -128,25 +134,19 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // gradle version 7.3.3 for this repo
+    // gradle version 8.3.2 for this repo
     [agpVersion, gradleVersion] << [
-      ['3.6.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.0.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.1.3', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.0.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.1.3', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.3.1', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.4.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.0.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.1.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.3.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.4.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.5.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.6.1', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.7.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
+      ['8.3.2', ['8.4',]],
+      ['8.4.2', ['8.6',]],
+      ['8.5.2', ['8.7',]],
+      ['8.6.1', ['8.7',]],
+      ['8.7.3', ['8.9',]],
+      ['8.8.2', ['8.10.2',]],
+      ['8.9.3', ['8.11.1',]],
+      ['8.10.0', ['8.11.1',]],
+      ['8.11.2', ['8.13',]],
+      ['8.12.3', ['8.13',]],
+      ['8.13.0', ['8.13',]],
     ].collectMany { agp, gradleVersions ->
       gradleVersions.collect { gradle -> [agp, gradle] }
     }
