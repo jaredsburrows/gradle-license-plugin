@@ -7,7 +7,9 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr CSV report.
  */
-class CsvReport(private val projects: List<Model>) : Report {
+class CsvReport(
+  private val projects: List<Model>,
+) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -67,7 +69,8 @@ class CsvReport(private val projects: List<Model>) : Report {
   /** Add elements to Csv. */
   private fun MutableList<String?>.addCsvString(element: String): Boolean {
     val escaped =
-      element.valueOrNull()
+      element
+        .valueOrNull()
         ?.replace("\"", "\"\"")
         ?.let { el ->
           when {
@@ -88,12 +91,11 @@ class CsvReport(private val projects: List<Model>) : Report {
   private fun <T> MutableList<String?>.addCsvList(
     elements: List<T>,
     transform: ((T) -> CharSequence)? = null,
-  ): Boolean {
-    return when {
+  ): Boolean =
+    when {
       elements.isEmpty() -> this.add(null)
       else -> addCsvString(elements.joinToString(separator = ",", transform = transform))
     }
-  }
 
   private companion object {
     private const val EXTENSION = "csv"
