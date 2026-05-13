@@ -106,7 +106,7 @@ jobs:
         run: ./gradlew dokkaGeneratePublicationHtml
 
       - name: Publish Website
-        uses: peaceiris/actions-gh-pages@v4.0.0
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: gradle-license-plugin/build/dokka/html
