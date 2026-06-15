@@ -1,16 +1,17 @@
 package com.jaredsburrows.license
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.TestExtension
-import com.android.build.gradle.TestPlugin
-import com.android.build.gradle.api.BaseVariant
-import org.gradle.api.DomainObjectSet
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.gradle.BasePlugin
 import org.gradle.api.Project
-import java.util.Locale
+import java.io.File
+import java.util.*
+
+private fun String.capitalizeText(): String {
+  if (isEmpty()) return this
+  return replaceFirstChar { it.titlecase(Locale.getDefault()) }
+}
 
 /** Returns true if Android Gradle project. */
 internal fun Project.isAndroidProject(): Boolean =
@@ -37,64 +38,82 @@ internal fun Project.isAndroidProject(): Boolean =
 internal fun Project.configureAndroidProject() {
   plugins.all {
     when (it) {
-      is AppPlugin -> {
-        extensions.getByType(AppExtension::class.java).run {
-          configureVariant(this, applicationVariants)
-          configureVariant(this, testVariants)
-          configureVariant(this, unitTestVariants)
-        }
-      }
-
-      is LibraryPlugin -> {
-        extensions.getByType(LibraryExtension::class.java).run {
-          configureVariant(this, libraryVariants)
-          configureVariant(this, testVariants)
-          configureVariant(this, unitTestVariants)
-        }
-      }
-
-      is TestPlugin -> {
-        extensions.getByType(TestExtension::class.java).run {
-          configureVariant(this, applicationVariants)
+      is BasePlugin -> {
+        extensions.getByType(CommonExtension::class.java).run {
+          val flavorDimensions = flavorDimensions
+          val flavorValues = flavorDimensions.map { dimension ->
+            dimension to productFlavors.filter { it.dimension == dimension }.map { it.name }
+          }
+          val buildTypes = buildTypes.names
+          val targetTypes = if (this is LibraryExtension || this is ApplicationExtension) {
+            listOf("", "androidTest", "unitTest")
+          } else {
+            listOf("")
+          }
+          generateTaskForAllVariants(
+            flavorValues,
+            buildTypes.toList(),
+            targetTypes
+          )
         }
       }
     }
   }
 }
 
+internal fun Project.generateTaskForAllVariants(
+  flavorDimensionValues: List<Pair<String, List<String>>>,
+  buildTypes: List<String>,
+  targetVariants: List<String>,
+) {
+  fun generateNameVariants(possibleValues: List<List<String>>, prefix: String = "", processGenerated: (String) -> Unit) {
+    if (possibleValues.isEmpty()) {
+      processGenerated(prefix)
+    } else {
+      for (value in possibleValues.first()) {
+        generateNameVariants(possibleValues.drop(1), prefix + value.capitalizeText(), processGenerated)
+      }
+    }
+  }
+
+  val generatedVariants = buildList {
+    val nameComponents = flavorDimensionValues.map { it.second }.toMutableList()
+    nameComponents.add(buildTypes)
+    nameComponents.add(targetVariants)
+
+    generateNameVariants(nameComponents, processGenerated = this::add)
+  }
+
+  logger.info("Generated ${generatedVariants.size} variants for project ${this.name}: $generatedVariants")
+  generatedVariants.forEach { configureVariant(it) }
+}
+
 private fun Project.configureVariant(
-  baseExtension: BaseExtension,
-  variants: DomainObjectSet<out BaseVariant>? = null,
+  variantName: String,
 ) {
   // Configure tasks for all variants
-  variants?.all { variant ->
-    val name =
-      variant.name.replaceFirstChar {
-        if (it.isLowerCase()) {
-          it.titlecase(Locale.getDefault())
-        } else {
-          it.toString()
-        }
+  val name = variantName.capitalizeText()
+
+  tasks.register("license${name}Report", LicenseReportTask::class.java) { report ->
+    // Apply common task configuration first
+    configureCommon(
+      report,
+      listOf(
+        "${variantName}CompileClasspath",
+        "${variantName}RuntimeClasspath",
+      ),
+    )
+
+    // Custom for Android tasks
+    val sourceSetName = if (report.useVariantSpecificAssetDirs) variantName else "main"
+    extensions.getByType(CommonExtension::class.java).apply {
+      sourceSets.findByName(sourceSetName)?.let {
+        report.assetDirs = it.assets.directories.map { File(it) }
+      } ?: run {
+        report.assetDirs = emptyList()
       }
-
-    tasks.register("license${name}Report", LicenseReportTask::class.java) {
-      // Apply common task configuration first
-      configureCommon(
-        it,
-        listOf(
-          "${variant.name}CompileClasspath",
-          "${variant.name}RuntimeClasspath",
-        ),
-      )
-
-      // Custom for Android tasks
-      val sourceSetName = if (it.useVariantSpecificAssetDirs) variant.name else "main"
-      it.assetDirs = baseExtension.sourceSets
-        .findByName(sourceSetName)
-        ?.assets
-        ?.srcDirs
-        ?.toList() ?: emptyList()
-      it.variantName = variant.name
     }
+
+    report.variantName = variantName
   }
 }
