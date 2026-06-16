@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -63,10 +63,8 @@ subprojects {
   }
 
   tasks.withType(KotlinJvmCompile).configureEach {
-    // jvmToolchain(17) above selects the JDK and the target bytecode version (17). This block only
-    // configures compiler behaviour that the toolchain does not: the Kotlin language/API level and
-    // extra compiler flags.
     compilerOptions {
+      jvmTarget.set(JvmTarget.JVM_17)
       languageVersion.set(KotlinVersion.KOTLIN_2_0)
       apiVersion.set(KotlinVersion.KOTLIN_2_0)
       freeCompilerArgs.add("-progressive")
