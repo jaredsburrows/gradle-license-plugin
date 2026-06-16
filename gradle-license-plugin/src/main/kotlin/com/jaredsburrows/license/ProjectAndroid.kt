@@ -6,7 +6,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BasePlugin
 import org.gradle.api.Project
 import java.io.File
-import java.util.*
+import java.util.Locale
 
 private fun String.capitalizeText(): String {
   if (isEmpty()) return this
@@ -41,19 +41,26 @@ internal fun Project.configureAndroidProject() {
       is BasePlugin -> {
         extensions.getByType(CommonExtension::class.java).run {
           val flavorDimensions = flavorDimensions
-          val flavorValues = flavorDimensions.map { dimension ->
-            dimension to productFlavors.filter { it.dimension == dimension }.map { it.name }
-          }
+          val flavorValues =
+            flavorDimensions
+              .map { dimension ->
+                val flavorValues =
+                  productFlavors
+                    .filter { it.dimension == dimension }
+                    .map { it.name }
+                dimension to flavorValues
+              }
           val buildTypes = buildTypes.names
-          val targetTypes = if (this is LibraryExtension || this is ApplicationExtension) {
-            listOf("", "androidTest", "unitTest")
-          } else {
-            listOf("")
-          }
+          val targetTypes =
+            if (this is LibraryExtension || this is ApplicationExtension) {
+              listOf("", "androidTest", "unitTest")
+            } else {
+              listOf("")
+            }
           generateTaskForAllVariants(
             flavorValues,
             buildTypes.toList(),
-            targetTypes
+            targetTypes,
           )
         }
       }
@@ -66,7 +73,11 @@ internal fun Project.generateTaskForAllVariants(
   buildTypes: List<String>,
   targetVariants: List<String>,
 ) {
-  fun generateNameVariants(possibleValues: List<List<String>>, prefix: String = "", processGenerated: (String) -> Unit) {
+  fun generateNameVariants(
+    possibleValues: List<List<String>>,
+    prefix: String = "",
+    processGenerated: (String) -> Unit,
+  ) {
     if (possibleValues.isEmpty()) {
       processGenerated(prefix)
     } else {
@@ -76,21 +87,20 @@ internal fun Project.generateTaskForAllVariants(
     }
   }
 
-  val generatedVariants = buildList {
-    val nameComponents = flavorDimensionValues.map { it.second }.toMutableList()
-    nameComponents.add(buildTypes)
-    nameComponents.add(targetVariants)
+  val generatedVariants =
+    buildList {
+      val nameComponents = flavorDimensionValues.map { it.second }.toMutableList()
+      nameComponents.add(buildTypes)
+      nameComponents.add(targetVariants)
 
-    generateNameVariants(nameComponents, processGenerated = this::add)
-  }
+      generateNameVariants(nameComponents, processGenerated = this::add)
+    }
 
   logger.info("Generated ${generatedVariants.size} variants for project ${this.name}: $generatedVariants")
   generatedVariants.forEach { configureVariant(it) }
 }
 
-private fun Project.configureVariant(
-  variantName: String,
-) {
+private fun Project.configureVariant(variantName: String) {
   // Configure tasks for all variants
   val name = variantName.capitalizeText()
 
