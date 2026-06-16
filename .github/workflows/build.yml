@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 env:
-  JAVA_VERSION: 17
+  JAVA_VERSION: 21
 
 permissions:
   checks: write
