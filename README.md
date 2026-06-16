@@ -19,11 +19,14 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 | Plugin Version | Minimum [Gradle](https://gradle.org/) Version | Minimum [AGP](https://developer.android.com/build/releases/gradle-plugin) Version |
 |---------------:|----------------------------------------------:|----------------------------------------------------------------------------------:|
-|       <= 0.9.4 | <= 7.0.2                                      |                                                                            3.6.4+ |
-|          0.9.5 | 7.0.2                                         |                                                                            3.6.4+ |
-|          0.9.6 | 7.1.3                                         |                                                                            3.6.4+ |
-|          0.9.7 | 7.2.2                                         |                                                                            3.6.4+ |
-|          0.9.8 | 7.2.2                                         |                                                                            3.6.4+ |
+|       <= 0.9.4 |                                      <= 7.0.2 |                                                                            3.6.4+ |
+|          0.9.5 |                                         7.0.2 |                                                                            3.6.4+ |
+|          0.9.6 |                                         7.1.3 |                                                                            3.6.4+ |
+|          0.9.7 |                                         7.2.2 |                                                                            3.6.4+ |
+|          0.9.8 |                                         7.2.2 |                                                                            3.6.4+ |
+|          0.9.9 |                                           8.2 |                                                                            8.0.0+ |
+
+> **Note:** `0.9.9+` requires **JDK 17+**; AGP 9.x additionally requires Gradle **9.4.1+** (an AGP requirement).
 
 ## Download
 
@@ -34,7 +37,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ```kotlin
 plugins {
-  id('com.jaredsburrows.license') version '0.9.8'
+  id('com.jaredsburrows.license') version '0.9.9'
 }
 ```
 </details>
@@ -51,7 +54,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.8'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.9'
   }
 }
 
@@ -86,7 +89,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.9-SNAPSHOT'
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.91-SNAPSHOT'
   }
 }
 
