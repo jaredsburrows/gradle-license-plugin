@@ -19,15 +19,12 @@ env:
 permissions:
   checks: write
   pull-requests: write
+  contents: write
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-
-    permissions:
-      checks: write
-      pull-requests: write
 
     steps:
       - name: Checkout Project
