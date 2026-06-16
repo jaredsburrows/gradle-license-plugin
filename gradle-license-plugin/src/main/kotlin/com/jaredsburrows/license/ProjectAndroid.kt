@@ -4,8 +4,8 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.internal.api.DefaultAndroidSourceDirectorySet
 import org.gradle.api.Project
-import java.io.File
 import java.util.Locale
 
 private fun String.capitalizeText(): String {
@@ -118,7 +118,12 @@ private fun Project.configureVariant(variantName: String) {
     val sourceSetName = if (report.useVariantSpecificAssetDirs) variantName else "main"
     extensions.getByType(CommonExtension::class.java).apply {
       sourceSets.findByName(sourceSetName)?.let {
-        report.assetDirs = it.assets.directories.map { File(it) }
+        val assetsSet = it.assets
+        if (assetsSet is DefaultAndroidSourceDirectorySet) {
+          report.assetDirs = assetsSet.srcDirs.toList()
+        } else {
+          report.assetDirs = assetsSet.directories.map { file(it) }
+        }
       } ?: run {
         report.assetDirs = emptyList()
       }

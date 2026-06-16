@@ -59,6 +59,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -67,7 +68,8 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}") //, '-s')
+    println(result.output)
     def actualCsv = new File(reportFolder, "${taskName}.csv")
     def actualHtml = new File(reportFolder, "${taskName}.html")
     def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
@@ -132,6 +134,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -262,6 +265,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -290,6 +294,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -339,6 +344,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -475,6 +481,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -665,6 +672,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -723,6 +731,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -872,6 +881,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
         android {
           compileSdkVersion $compileSdkVersion
+          namespace 'com.example'
 
           defaultConfig {
             applicationId 'com.example'
@@ -980,6 +990,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1131,6 +1142,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1146,6 +1158,7 @@ final class LicensePluginAndroidSpec extends Specification {
         apply plugin: 'com.android.application'
 
         android {
+          namespace 'com.example'
           compileSdkVersion $compileSdkVersion
         }
 
@@ -1276,6 +1289,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1353,6 +1367,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1429,6 +1444,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1532,6 +1548,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1645,6 +1662,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1748,6 +1766,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -1843,6 +1863,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -1909,6 +1931,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2003,6 +2027,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2069,6 +2095,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2166,6 +2194,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2260,6 +2290,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2354,6 +2386,8 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
         defaultConfig {
           applicationId 'com.example'
         }
