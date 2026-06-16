@@ -8,13 +8,22 @@ class LicensePlugin : Plugin<Project> {
   override fun apply(project: Project) {
     project.extensions.add("licenseReport", LicenseReportExtension::class.java)
 
+    // Android must be wired during configuration: the modern Variant API (onVariants) has to be
+    // registered before AGP finalizes its variants, so it cannot wait until afterEvaluate. This
+    // only reacts to Android plugins (by id) and is otherwise a no-op.
+    project.configureAndroidProject()
+
+    // Java/Kotlin support and the "unsupported project" error depend on the final set of applied
+    // plugins, which is only known after evaluation. Android was already handled above, so here we
+    // only register the Java task or fail when no supported plugin is present.
     project.afterEvaluate {
-      when {
-        project.isAndroidProject() -> project.configureAndroidProject()
-        project.isJavaProject() -> project.configureJavaProject()
-        else -> throw UnsupportedOperationException(
-          "'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.",
-        )
+      if (!project.isAndroidProject()) {
+        when {
+          project.isJavaProject() -> project.configureJavaProject()
+          else -> throw UnsupportedOperationException(
+            "'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.",
+          )
+        }
       }
     }
   }

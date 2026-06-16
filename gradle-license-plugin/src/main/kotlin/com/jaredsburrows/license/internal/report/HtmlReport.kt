@@ -29,7 +29,10 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr HTML report.
  */
-class HtmlReport(private val projects: List<Model>, private val showVersions: Boolean) : Report {
+class HtmlReport(
+  private val projects: List<Model>,
+  private val showVersions: Boolean,
+) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -67,9 +70,10 @@ class HtmlReport(private val projects: List<Model>, private val showVersions: Bo
     }
 
     val sortedProjectsList =
-      projectsMap.entries.map { (key, projects) ->
-        Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
-      }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
+      projectsMap.entries
+        .map { (key, projects) ->
+          Pair(key, projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+        }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
     return buildString {
       appendLine(DOCTYPE) // createHTMLDocument() add doctype and meta
@@ -141,9 +145,10 @@ class HtmlReport(private val projects: List<Model>, private val showVersions: Bo
                 }
               } else {
                 val sortedKeysAndLicenses =
-                  licenses.map { license ->
-                    Pair(getLicenseKey(license), license)
-                  }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
+                  licenses
+                    .map { license ->
+                      Pair(getLicenseKey(license), license)
+                    }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
                 sortedKeysAndLicenses.forEach { (key, license) ->
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
@@ -210,8 +215,8 @@ class HtmlReport(private val projects: List<Model>, private val showVersions: Bo
    * See if the license is in our list of known licenses (which coalesces differing URLs to the
    * same license text). If not, use the URL if present. Else "".
    */
-  private fun getLicenseKey(license: License): String {
-    return when {
+  private fun getLicenseKey(license: License): String =
+    when {
       // look up by url
       LicenseHelper.licenseMap.containsKey(license.url) -> LicenseHelper.licenseMap[license.url]
       // then by name
@@ -219,7 +224,6 @@ class HtmlReport(private val projects: List<Model>, private val showVersions: Bo
       // otherwise, use the url as a key
       else -> license.url
     } as String
-  }
 
   private companion object {
     private const val EXTENSION = "html"
@@ -248,11 +252,10 @@ class HtmlReport(private val projects: List<Model>, private val showVersions: Bo
     private const val MISSING_LICENSE = "Missing standard license text for: "
 
     @JvmStatic
-    fun getLicenseText(fileName: String): String {
-      return HtmlReport::class.java
+    fun getLicenseText(fileName: String): String =
+      HtmlReport::class.java
         .getResource("/license/$fileName")
         ?.readText()
         ?: (MISSING_LICENSE + fileName)
-    }
   }
 }

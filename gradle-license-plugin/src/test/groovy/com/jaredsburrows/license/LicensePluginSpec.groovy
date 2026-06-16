@@ -214,6 +214,7 @@ final class LicensePluginSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example.target'
 
         defaultConfig {
           if (project.plugins.hasPlugin("com.android.application")) applicationId 'com.example'
@@ -240,6 +241,7 @@ final class LicensePluginSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           if (project.plugins.hasPlugin("com.android.application")) applicationId 'com.example'

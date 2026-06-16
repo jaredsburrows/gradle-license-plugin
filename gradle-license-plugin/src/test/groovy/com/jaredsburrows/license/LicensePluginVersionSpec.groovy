@@ -10,13 +10,15 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 // Follow the compatibility matrix
 // https://developer.android.com/studio/releases/gradle-plugin
-// https://docs.gradle.org/current/userguide/compatibility.html
+// https://docs.gradle.org/current/userguide/compatibility.html#plugin-compatibility
+// https://gradle.org/releases/
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private int compileSdkVersion = 34
   private List<File> pluginClasspath
   private String classpathString
+  private String mainClasspathString
   private File buildFile
   private String reportFolder
 
@@ -30,6 +32,11 @@ final class LicensePluginVersionSpec extends Specification {
     pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
     classpathString = pluginClasspath
       .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+    def mainClasspathResource = getClass().classLoader.getResource('plugin-classpath-main.txt')
+    mainClasspathString = mainClasspathResource.readLines().collect { new File(it) }
+      .collect { it.absolutePath.replace('\\', '\\\\') }
       .collect { "'$it'" }
       .join(", ")
     buildFile = testProjectDir.newFile('build.gradle')
@@ -65,44 +72,44 @@ final class LicensePluginVersionSpec extends Specification {
 
     where:
     gradleVersion << [
-      '7.3.3',
-      '7.4.2',
-      '7.5.1',
-      '7.6.3',
-      '8.0.2',
-      '8.1.1',
-      '8.2.1',
+      '8.7',
+      '8.10.2',
+      '8.14.5',
+      '9.0.0',
+      '9.1.0',
+      '9.5.1',
     ]
   }
 
   @Unroll
-  def 'agp 3.6+ - agp version #agpVersion and gradle version #gradleVersion'() {
+  def 'agp plugin version #agpVersion with require gradle version #gradleVersion'() {
     given:
     buildFile <<
       """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
+    buildscript {
+      repositories {
+        mavenCentral()
+        google()
       }
 
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
+      dependencies {
+        classpath "com.android.tools.build:gradle:${agpVersion}"
+        classpath files($mainClasspathString)
       }
-      """
+    }
+
+    apply plugin: 'com.android.application'
+    apply plugin: 'com.jaredsburrows.license'
+
+    android {
+      compileSdkVersion $compileSdkVersion
+      namespace 'com.example'
+
+      defaultConfig {
+        applicationId 'com.example'
+      }
+    }
+    """
 
     when:
     def result = GradleRunner.create()
@@ -119,659 +126,13 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-      ],
-      [
-        '3.6.4',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 4+ - agp version  #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-      ],
-      [
-        '4.0.2',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 4.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-      ],
-      [
-        '4.1.3',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 4.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-      ],
-      [
-        '4.2.2',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 7+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '7.0.4',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 7.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '7.1.3',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 7.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '7.2.2',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 7.3+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '7.3.1',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 7.4+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '7.4.2',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 8+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '8.0.2',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 8.1+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '8.1.4',
-      ]
-    ].combinations()
-  }
-
-  @Unroll
-  def 'agp 8.2+ - agp version #agpVersion and gradle version #gradleVersion'() {
-    given:
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath "com.android.tools.build:gradle:${agpVersion}"
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-      """
-
-    when:
-    def result = GradleRunner.create()
-      .withGradleVersion(gradleVersion as String)
-      .withProjectDir(testProjectDir.root)
-      .withArguments('licenseDebugReport', '-s')
-      .build()
-
-    then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
-
-    where:
-    [gradleVersion, agpVersion] << [
-      [
-        '7.3.3',
-        '7.4.2',
-        '7.5.1',
-        '7.6.3',
-        '8.0.2',
-//        '8.1.1',
-//        '8.2.1',
-      ],
-      [
-        '8.2.2',
-      ]
-    ].combinations()
+    // AGP 8+ paired with each AGP version's minimum-compatible Gradle (all run on JDK 17).
+    [agpVersion, gradleVersion] << [
+      ['8.0.2', '8.2'],
+      ['8.7.2', '8.9'],
+      ['8.13.0', '8.13'],
+      ['9.0.0', '9.1.0'],
+      ['9.2.1', '9.5.1'],
+    ]
   }
 }

@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 0.9.9 *(2026-06-16)*
+ * [#791](https://github.com/jaredsburrows/gradle-license-plugin/pull/791) AGP 9+ support
+
 ## Version 0.9.8 *(2024-06-06)*
  * [#496](https://github.com/jaredsburrows/gradle-license-plugin/pull/496) Make sure dependencies are sorted deterministically
  * [#465](https://github.com/jaredsburrows/gradle-license-plugin/pull/465) Don't show versions in html

@@ -9,7 +9,9 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr JSON report.
  */
-class JsonReport(private val projects: List<Model>) : Report {
+class JsonReport(
+  private val projects: List<Model>,
+) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -46,14 +48,16 @@ class JsonReport(private val projects: List<Model>) : Report {
         )
       }
 
-    return moshi.adapter<List<Map<String, Any?>>>(
-      Types.newParameterizedType(
-        List::class.java,
-        Map::class.java,
-        String::class.java,
-        Any::class.java,
-      ),
-    ).serializeNulls().toJson(reportList)
+    return moshi
+      .adapter<List<Map<String, Any?>>>(
+        Types.newParameterizedType(
+          List::class.java,
+          Map::class.java,
+          String::class.java,
+          Any::class.java,
+        ),
+      ).serializeNulls()
+      .toJson(reportList)
   }
 
   override fun emptyReport(): String = EMPTY_JSON

@@ -8,7 +8,9 @@ import org.apache.maven.model.Model
  *
  * @property projects list of [Model]s for thr Text report.
  */
-class TextReport(private val projects: List<Model>) : Report {
+class TextReport(
+  private val projects: List<Model>,
+) : Report {
   override fun toString(): String = report()
 
   override fun name(): String = NAME
@@ -22,11 +24,11 @@ class TextReport(private val projects: List<Model>) : Report {
     projectInfoList += "Notice for packages"
     projectInfoList += "\n"
 
-    projects.map { project ->
+    projects.forEach { project ->
       val projectInfo = mutableListOf<String>()
 
       // If no name return early
-      if (project.name.isEmpty()) return@map
+      if (project.name.isEmpty()) return@forEach
 
       // Project Name (1.0) - License Name
       val firstLine =
@@ -43,7 +45,7 @@ class TextReport(private val projects: List<Model>) : Report {
           project.name.isNotEmpty() ->
             project.name
 
-          else -> return@map
+          else -> return@forEach
         }
 
       // Project Description
@@ -104,9 +106,7 @@ class TextReport(private val projects: List<Model>) : Report {
 
   override fun emptyReport(): String = EMPTY_TEXT
 
-  private fun List<License>.licenseNames(): String {
-    return this.joinToString(separator = ",", transform = { it.name })
-  }
+  private fun List<License>.licenseNames(): String = this.joinToString(separator = ",", transform = { it.name })
 
   private companion object {
     private const val EXTENSION = "txt"

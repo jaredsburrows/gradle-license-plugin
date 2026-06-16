@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency whose name uses an unresolved property (for placeholder fallback testing) -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>group</groupId>
+  <artifactId>placeholder</artifactId>
+  <version>1.0.0</version>
+  <packaging>aar</packaging>
+  <name>${extension.name} API v.${spec.version}</name>
+</project>

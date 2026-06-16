@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency published at two versions (for compile-vs-runtime version-skew dedup testing) -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>group</groupId>
+  <artifactId>verlib</artifactId>
+  <version>2.0.0</version>
+  <packaging>aar</packaging>
+  <name>Versioned module</name>
+  <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>Some license</name>
+      <url>http://website.tld/</url>
+    </license>
+  </licenses>
+</project>
