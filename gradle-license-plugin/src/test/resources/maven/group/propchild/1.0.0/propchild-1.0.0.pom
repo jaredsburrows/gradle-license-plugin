@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency whose name uses a property defined in its parent POM -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>group</groupId>
+    <artifactId>propparent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <groupId>group</groupId>
+  <artifactId>propchild</artifactId>
+  <version>1.0.0</version>
+  <packaging>aar</packaging>
+  <name>${product.name} Library</name>
+  <licenses>
+    <license>
+      <name>Some license</name>
+      <url>http://website.tld/</url>
+    </license>
+  </licenses>
+</project>

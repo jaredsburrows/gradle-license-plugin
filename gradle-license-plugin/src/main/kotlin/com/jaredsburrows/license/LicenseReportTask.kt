@@ -21,12 +21,14 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import java.net.URL
 import java.util.Locale
 import javax.inject.Inject
 
 /** A [org.gradle.api.Task] that creates HTML and JSON reports of the current projects dependencies. */
+@DisableCachingByDefault(because = "Reports are copied to asset directories outside the declared output directory")
 internal abstract class LicenseReportTask
   @Inject
   constructor(
@@ -190,8 +192,79 @@ internal abstract class LicenseReportTask
           projects += project
         }
 
+      // Collapse duplicate developers and the same library reported more than once (different
+      // versions from compile vs runtime, or Kotlin Multiplatform variants like foo / foo-android).
+      deduplicate()
+
       // Sort POM information by name and id (:group:module:packaging:version) to have a deterministic order.
       projects.sortWith(compareBy({ it.name.lowercase(Locale.getDefault()) }, { it.id }))
+    }
+
+    /**
+     * Reduce duplication in the collected projects:
+     *  1. Remove repeated developers within a single project (some POMs list an author twice).
+     *  2. Collapse entries that describe the same library but appear more than once because they
+     *     were resolved at different versions (compile vs runtime) or as Kotlin Multiplatform
+     *     platform variants (e.g. `foo` and `foo-android`). The highest version is kept; for equal
+     *     versions the shorter (root) artifact id wins. Genuinely different artifacts that merely
+     *     share a display name (sibling artifact ids, neither a prefix of the other) are preserved.
+     */
+    private fun deduplicate() {
+      projects.forEach { model ->
+        model.developers = model.developers.orEmpty().distinctBy { it.id.orEmpty() }
+      }
+
+      val deduped = mutableListOf<Model>()
+      projects.forEach { model ->
+        val existingIndex = deduped.indexOfFirst { it.isSameLibraryAs(model) }
+        if (existingIndex < 0) {
+          deduped += model
+        } else if (model.isPreferredOver(deduped[existingIndex])) {
+          deduped[existingIndex] = model
+        }
+      }
+      projects.clear()
+      projects.addAll(deduped)
+    }
+
+    /**
+     * True if [this] and [other] are the same module with the same display name (so only the
+     * version and/or platform suffix differ). The artifact ids must be equal, or one must be the
+     * other followed by a "-<platform>" suffix (e.g. annotation / annotation-jvm). Sibling artifacts
+     * that merely share a name (foo-1, foo-2 — neither a prefix of the other) are kept separate.
+     */
+    private fun Model.isSameLibraryAs(other: Model): Boolean {
+      if (groupId.orEmpty() != other.groupId.orEmpty()) return false
+      if (name.orEmpty() != other.name.orEmpty()) return false
+
+      val thisArtifact = artifactId.orEmpty()
+      val otherArtifact = other.artifactId.orEmpty()
+      return thisArtifact == otherArtifact ||
+        thisArtifact.startsWith("$otherArtifact-") ||
+        otherArtifact.startsWith("$thisArtifact-")
+    }
+
+    /** Prefer the higher version; for equal versions prefer the shorter (root) artifact id. */
+    private fun Model.isPreferredOver(other: Model): Boolean {
+      val comparison = compareVersions(version.orEmpty(), other.version.orEmpty())
+      return comparison > 0 ||
+        (comparison == 0 && artifactId.orEmpty().length < other.artifactId.orEmpty().length)
+    }
+
+    private fun compareVersions(
+      left: String,
+      right: String,
+    ): Int {
+      val leftParts = left.split('.', '-', '_')
+      val rightParts = right.split('.', '-', '_')
+      for (index in 0 until maxOf(leftParts.size, rightParts.size)) {
+        val leftPart = leftParts.getOrNull(index)?.toIntOrNull() ?: 0
+        val rightPart = rightParts.getOrNull(index)?.toIntOrNull() ?: 0
+        if (leftPart != rightPart) {
+          return leftPart.compareTo(rightPart)
+        }
+      }
+      return 0
     }
 
     private fun <T : Report> createReport(
@@ -378,7 +451,39 @@ internal abstract class LicenseReportTask
         }
       }
 
-      return interpolatedName.trim()
+      // Resolve user-defined POM properties (e.g. ${extension.name}), including ones inherited from
+      // parent POMs (where projects like javax.* commonly define them).
+      collectProperties(mavenReader, loggedMissingParentPomCoordinates).forEach { (key, value) ->
+        if (value.isNotEmpty()) {
+          interpolatedName = interpolatedName.replace("\${$key}", value)
+        }
+      }
+
+      // Fall back to the artifact id when placeholders cannot be resolved, so the report never shows
+      // a raw "${...}" placeholder.
+      return if (interpolatedName.contains("\${")) {
+        artifactId.orEmpty().trim()
+      } else {
+        interpolatedName.trim()
+      }
+    }
+
+    /** Collect this POM's properties merged with those inherited from its parent chain. */
+    private fun Model.collectProperties(
+      mavenReader: MavenXpp3Reader,
+      loggedMissingParentPomCoordinates: MutableSet<String>,
+    ): Map<String, String> {
+      val merged = linkedMapOf<String, String>()
+      // Parent properties first so this POM's own properties take precedence.
+      getParentPomFile(this, loggedMissingParentPomCoordinates)?.let { parentPomFile ->
+        readModel(mavenReader, parentPomFile)?.let { parentModel ->
+          merged.putAll(parentModel.collectProperties(mavenReader, loggedMissingParentPomCoordinates))
+        }
+      }
+      properties.stringPropertyNames().forEach { key ->
+        merged[key] = properties.getProperty(key).orEmpty()
+      }
+      return merged
     }
 
     private fun Model.pomDescription(): String = description.orEmpty().trim()

@@ -20,73 +20,76 @@ private fun Project.includeParentPomFilesRecursively(
   fileCollection: ConfigurableFileCollection,
   coordinateToFile: MutableMap<String, String>,
 ) {
-  val pomFilesToInspect = ArrayDeque<File>()
-  fileCollection.files.forEach { pomFilesToInspect.addLast(it) }
-
-  val visitedPomFiles = hashSetOf<File>()
+  var pomFilesToInspect = fileCollection.files.toList()
   val visitedParentCoordinates = hashSetOf<String>()
 
   while (pomFilesToInspect.isNotEmpty()) {
-    val pomFile = pomFilesToInspect.removeFirst()
-    if (!visitedPomFiles.add(pomFile)) {
-      continue
-    }
+    // Collect every not-yet-resolved parent coordinate referenced by the current batch of POMs.
+    val parentCoordinates = linkedSetOf<String>()
+    pomFilesToInspect.forEach { pomFile ->
+      val model =
+        try {
+          mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
+        } catch (_: Exception) {
+          return@forEach
+        }
 
-    val model =
-      try {
-        mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
-      } catch (_: Exception) {
-        continue
+      val parent = model.parent ?: return@forEach
+      val parentGroupId = parent.groupId.orEmpty().trim()
+      val parentArtifactId = parent.artifactId.orEmpty().trim()
+      val parentVersion = parent.version.orEmpty().trim()
+      if (parentGroupId.isEmpty() || parentArtifactId.isEmpty() || parentVersion.isEmpty()) {
+        return@forEach
       }
 
-    val parent = model.parent ?: continue
-    val parentGroupId = parent.groupId.orEmpty().trim()
-    val parentArtifactId = parent.artifactId.orEmpty().trim()
-    val parentVersion = parent.version.orEmpty().trim()
-
-    if (parentGroupId.isEmpty() || parentArtifactId.isEmpty() || parentVersion.isEmpty()) {
-      continue
+      val parentCoordinate = "$parentGroupId:$parentArtifactId:$parentVersion"
+      if (parentCoordinate !in coordinateToFile && visitedParentCoordinates.add(parentCoordinate)) {
+        parentCoordinates += parentCoordinate
+      }
     }
 
-    val parentCoordinate = "$parentGroupId:$parentArtifactId:$parentVersion"
-    if (!visitedParentCoordinates.add(parentCoordinate)) {
-      continue
-    }
-    if (coordinateToFile.containsKey(parentCoordinate)) {
-      continue
+    if (parentCoordinates.isEmpty()) {
+      break
     }
 
-    val parentPomFile = resolvePomFile(parentGroupId, parentArtifactId, parentVersion) ?: continue
-    coordinateToFile[parentCoordinate] = parentPomFile.absolutePath
-    fileCollection.from(parentPomFile)
-    pomFilesToInspect.addLast(parentPomFile)
+    // Resolve every parent POM for this level in a SINGLE batched resolution (instead of one
+    // metadata query per parent), then recurse on the grandparents found by parsing them.
+    val nextPomFiles = mutableListOf<File>()
+    resolvePomFiles(parentCoordinates).forEach { (coordinate, pomFile) ->
+      coordinateToFile[coordinate] = pomFile.absolutePath
+      fileCollection.from(pomFile)
+      nextPomFiles += pomFile
+    }
+    pomFilesToInspect = nextPomFiles
   }
 }
 
-private fun Project.resolvePomFile(
-  groupId: String,
-  artifactId: String,
-  version: String,
-): File? {
-  val result =
-    dependencies
-      .createArtifactResolutionQuery()
-      .forModule(groupId, artifactId, version)
-      .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
-      .execute()
+/** Resolve the POM files for the given GAV coordinates in a single batched dependency resolution. */
+private fun Project.resolvePomFiles(coordinates: Collection<String>): Map<String, File> {
+  if (coordinates.isEmpty()) {
+    return emptyMap()
+  }
 
-  val resolvedPomFiles =
-    buildList {
-      for (component in result.resolvedComponents) {
-        for (artifact in component.getArtifacts(MavenPomArtifact::class.java)) {
-          if (artifact is ResolvedArtifactResult) {
-            add(artifact.file)
-          }
-        }
+  val pomDependencies =
+    coordinates
+      .map { dependencies.create("$it@pom") }
+      .toTypedArray()
+  val detachedConfiguration =
+    configurations.detachedConfiguration(*pomDependencies).apply {
+      isTransitive = false
+    }
+
+  val resolved = linkedMapOf<String, File>()
+  detachedConfiguration.incoming
+    .artifactView { it.isLenient = true }
+    .artifacts
+    .forEach { artifact ->
+      val id = artifact.id.componentIdentifier
+      if (id is ModuleComponentIdentifier) {
+        resolved["${id.group}:${id.module}:${id.version}"] = artifact.file
       }
-    }.distinct()
-
-  return resolvedPomFiles.firstOrNull()
+    }
+  return resolved
 }
 
 /** Configure common configuration for both Java and Android tasks. */
@@ -100,7 +103,11 @@ internal fun Project.configureCommon(
   val pomInput = buildPomInput(configurationNames)
 
   task.apply {
-    outputDir = reportingExtension.file("licenses")
+    outputDir =
+      reportingExtension.baseDirectory
+        .dir("licenses")
+        .get()
+        .asFile
 
     pomFiles.from(pomInput.files.files)
     pomFiles.disallowChanges()

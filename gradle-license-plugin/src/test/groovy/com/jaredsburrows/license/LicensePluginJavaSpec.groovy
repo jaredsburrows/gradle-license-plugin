@@ -889,6 +889,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
       include 'subproject'
       """
+    testProjectDir.newFolder('subproject')
 
     buildFile <<
       """
@@ -1022,6 +1023,11 @@ final class LicensePluginJavaSpec extends Specification {
         """
       }.join()}
       """
+    (1..depth).each {
+      testProjectDir.newFolder("subproject_${it}a")
+      testProjectDir.newFolder("subproject_${it}b")
+      testProjectDir.newFolder("subproject_${it}c")
+    }
 
     buildFile <<
       """
@@ -1200,6 +1206,7 @@ final class LicensePluginJavaSpec extends Specification {
       """
       include 'subproject'
       """
+    testProjectDir.newFolder('subproject')
 
     buildFile <<
       """
@@ -1436,5 +1443,242 @@ final class LicensePluginJavaSpec extends Specification {
     result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
+  }
+
+  def 'licenseReport deduplicates kotlin multiplatform root and platform variant artifacts'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:samename:1.0.0'
+        implementation 'group:samename-android:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Same module",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:samename:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+  }
+
+  def 'licenseReport removes duplicate developers within a project'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:dupedev:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Duplicate dev module",
+          "description":null,
+          "version":"1.0.0",
+          "developers":["Sam"],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:dupedev:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+  }
+
+  def 'licenseReport falls back to artifact id when a pom name has unresolved placeholders'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:placeholder:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"placeholder",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[],
+          "dependency":"group:placeholder:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+  }
+
+  def 'licenseReport collapses the same library resolved at different versions (compile vs runtime)'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        compileOnly 'group:verlib:2.0.0'
+        runtimeOnly 'group:verlib:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Versioned module",
+          "description":null,
+          "version":"2.0.0",
+          "developers":[],
+          "url":null,
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:verlib:2.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+  }
+
+  def 'licenseReport resolves a pom name placeholder defined in a parent pom'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:propchild:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Cool Library",
+          "description":null,
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:propchild:1.0.0"
+        }
+      ]
+      """
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
   }
 }
