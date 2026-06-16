@@ -24,11 +24,11 @@ class TextReport(
     projectInfoList += "Notice for packages"
     projectInfoList += "\n"
 
-    projects.map { project ->
+    projects.forEach { project ->
       val projectInfo = mutableListOf<String>()
 
       // If no name return early
-      if (project.name.isEmpty()) return@map
+      if (project.name.isEmpty()) return@forEach
 
       // Project Name (1.0) - License Name
       val firstLine =
@@ -45,7 +45,7 @@ class TextReport(
           project.name.isNotEmpty() ->
             project.name
 
-          else -> return@map
+          else -> return@forEach
         }
 
       // Project Description

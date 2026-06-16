@@ -59,6 +59,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -132,6 +133,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -262,6 +264,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -290,6 +293,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -339,6 +343,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -475,6 +480,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -665,6 +671,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -723,6 +730,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -872,6 +880,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
         android {
           compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
           defaultConfig {
             applicationId 'com.example'
@@ -958,6 +967,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       include 'subproject'
       """
+    testProjectDir.newFolder('subproject')
 
     buildFile <<
       """
@@ -980,6 +990,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1109,6 +1120,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
       include 'subproject'
       """
+    testProjectDir.newFolder('subproject')
 
     buildFile <<
       """
@@ -1131,6 +1143,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1146,7 +1159,8 @@ final class LicensePluginAndroidSpec extends Specification {
         apply plugin: 'com.android.application'
 
         android {
-          compileSdkVersion $compileSdkVersion
+          compileSdk = $compileSdkVersion
+          namespace 'com.example.subproject'
         }
 
         dependencies {
@@ -1276,6 +1290,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1353,6 +1368,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1429,6 +1445,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
 
         defaultConfig {
           applicationId 'com.example'
@@ -1504,232 +1521,6 @@ final class LicensePluginAndroidSpec extends Specification {
   }
 
   @Unroll
-  def '#taskName with android gradle plugin version < 7.1.0 (7.0.4)'() {
-    given:
-    def androidGradlePluginVersion = '7.0.4'
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath files($classpathString)
-          classpath 'com.android.tools.build:gradle:${androidGradlePluginVersion}'
-        }
-      }
-
-      repositories {
-        maven {
-          url '${mavenRepoUrl}'
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-
-      dependencies {
-        implementation 'com.android.support:design:26.1.0'
-      }
-      """
-
-    when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
-      """
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
-          <title>Open source licenses</title>
-        </head>
-        <body>
-          <h3>Notice for packages:</h3>
-          <ul>
-            <li>
-              <a href="#1934118923">design</a>
-              <dl>
-                <dt>Copyright &copy; 20xx The original author or authors</dt>
-                <dd></dd>
-              </dl>
-            </li>
-          </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
-          <br>
-          <hr>
-        </body>
-      </html>
-      """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
-      """
-      [
-        {
-          "project": "design",
-          "description": null,
-          "version": "26.1.0",
-          "developers": [],
-          "url": null,
-          "year": null,
-          "licenses": [
-            {
-              "license": "The Apache Software License",
-              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-          ],
-          "dependency": "com.android.support:design:26.1.0"
-        }
-      ]
-      """
-    def actualText = new File(reportFolder, "${taskName}.txt")
-
-    then:
-    result.task(":${taskName}").outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
-    actualCsv.exists()
-    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
-    actualHtml.exists()
-    openSourceHtml.exists()
-    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-    actualJson.exists()
-    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    actualText.exists()
-    assertHtml(expectedHtml, actualHtml.text)
-    assertJson(expectedJson, actualJson.text)
-
-    where:
-    taskName << ['licenseDebugReport', 'licenseReleaseReport']
-  }
-
-  @Unroll
-  def '#taskName with android gradle plugin version >= 7.1.0 (7.1.1)'() {
-    given:
-    def androidGradlePluginVersion = '7.1.1'
-    buildFile <<
-      """
-      buildscript {
-        repositories {
-          mavenCentral()
-          google()
-        }
-
-        dependencies {
-          classpath files($classpathString)
-          classpath 'com.android.tools.build:gradle:${androidGradlePluginVersion}'
-        }
-      }
-
-      repositories {
-        maven {
-          url '${mavenRepoUrl}'
-        }
-      }
-
-      apply plugin: 'com.android.application'
-      apply plugin: 'com.jaredsburrows.license'
-
-      android {
-        compileSdkVersion $compileSdkVersion
-
-        defaultConfig {
-          applicationId 'com.example'
-        }
-      }
-
-      dependencies {
-        implementation 'com.android.support:design:26.1.0'
-      }
-      """
-
-    when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
-      """
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <style>body { font-family: sans-serif; background-color: #ffffff; color: #000000; } a { color: #0000EE; } pre { background-color: #eeeeee; padding: 1em; white-space: pre-wrap; word-break: break-word; display: inline-block; } @media (prefers-color-scheme: dark) { body { background-color: #121212; color: #E0E0E0; } a { color: #BB86FC; } pre { background-color: #333333; color: #E0E0E0; } }</style>
-          <title>Open source licenses</title>
-        </head>
-        <body>
-          <h3>Notice for packages:</h3>
-          <ul>
-            <li>
-              <a href="#1934118923">design</a>
-              <dl>
-                <dt>Copyright &copy; 20xx The original author or authors</dt>
-                <dd></dd>
-              </dl>
-            </li>
-          </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
-          <br>
-          <hr>
-        </body>
-      </html>
-      """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
-      """
-      [
-        {
-          "project": "design",
-          "description": null,
-          "version": "26.1.0",
-          "developers": [],
-          "url": null,
-          "year": null,
-          "licenses": [
-            {
-              "license": "The Apache Software License",
-              "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-          ],
-          "dependency": "com.android.support:design:26.1.0"
-        }
-      ]
-      """
-    def actualText = new File(reportFolder, "${taskName}.txt")
-
-    then:
-    result.task(":${taskName}").outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/${taskName}.csv.")
-    actualCsv.exists()
-    result.output.find("Wrote HTML report to .*${reportFolder}/${taskName}.html.")
-    actualHtml.exists()
-    openSourceHtml.exists()
-    result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
-    actualJson.exists()
-    result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
-    actualText.exists()
-    assertHtml(expectedHtml, actualHtml.text)
-    assertJson(expectedJson, actualJson.text)
-
-    where:
-    taskName << ['licenseDebugReport', 'licenseReleaseReport']
-  }
-
-  @Unroll
   def '#taskName ignoring one group ID pattern'() {
     given:
     buildFile <<
@@ -1748,6 +1539,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -1843,6 +1635,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -1909,6 +1702,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2003,6 +1797,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2069,6 +1864,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2166,6 +1962,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2260,6 +2057,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }
@@ -2354,6 +2152,7 @@ final class LicensePluginAndroidSpec extends Specification {
       apply plugin: 'com.jaredsburrows.license'
       android {
         compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
         defaultConfig {
           applicationId 'com.example'
         }

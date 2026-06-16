@@ -18,6 +18,7 @@ final class LicensePluginVersionSpec extends Specification {
   private int compileSdkVersion = 34
   private List<File> pluginClasspath
   private String classpathString
+  private String mainClasspathString
   private File buildFile
   private String reportFolder
 
@@ -31,6 +32,11 @@ final class LicensePluginVersionSpec extends Specification {
     pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
     classpathString = pluginClasspath
       .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
+      .collect { "'$it'" }
+      .join(", ")
+    def mainClasspathResource = getClass().classLoader.getResource('plugin-classpath-main.txt')
+    mainClasspathString = mainClasspathResource.readLines().collect { new File(it) }
+      .collect { it.absolutePath.replace('\\', '\\\\') }
       .collect { "'$it'" }
       .join(", ")
     buildFile = testProjectDir.newFile('build.gradle')
@@ -66,21 +72,12 @@ final class LicensePluginVersionSpec extends Specification {
 
     where:
     gradleVersion << [
-      '7.3.3',
-      '7.4.2',
-      '7.5.1',
-      '7.6.3',
-      '8.0.2',
-      '8.1.1',
-      '8.2.1',
-      '8.3',
-      '8.4',
-      '8.5',
-      '8.6',
       '8.7',
-      '8.8',
-      '8.9',
       '8.10.2',
+      '8.14.5',
+      '9.0.0',
+      '9.1.0',
+      '9.5.1',
     ]
   }
 
@@ -97,7 +94,7 @@ final class LicensePluginVersionSpec extends Specification {
 
       dependencies {
         classpath "com.android.tools.build:gradle:${agpVersion}"
-        classpath files($classpathString)
+        classpath files($mainClasspathString)
       }
     }
 
@@ -106,6 +103,7 @@ final class LicensePluginVersionSpec extends Specification {
 
     android {
       compileSdkVersion $compileSdkVersion
+      namespace 'com.example'
 
       defaultConfig {
         applicationId 'com.example'
@@ -128,27 +126,13 @@ final class LicensePluginVersionSpec extends Specification {
     result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     where:
-    // gradle version 7.3.3 for this repo
+    // AGP 8+ paired with each AGP version's minimum-compatible Gradle (all run on JDK 17).
     [agpVersion, gradleVersion] << [
-      ['3.6.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.0.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.1.3', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['4.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.0.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.1.3', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.3.1', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['7.4.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.0.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.1.4', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.2.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.3.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.4.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.5.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.6.1', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-      ['8.7.2', ['7.3.3', '7.4.2', '7.5.1', '7.6.3', '8.0.2',]],
-    ].collectMany { agp, gradleVersions ->
-      gradleVersions.collect { gradle -> [agp, gradle] }
-    }
+      ['8.0.2', '8.2'],
+      ['8.7.2', '8.9'],
+      ['8.13.0', '8.13'],
+      ['9.0.0', '9.1.0'],
+      ['9.2.1', '9.5.1'],
+    ]
   }
 }

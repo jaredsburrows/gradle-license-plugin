@@ -22,7 +22,7 @@ class CsvReport(
     val projectInfoList = mutableListOf<String>()
     projectInfoList += COLUMNS
 
-    projects.map { project ->
+    projects.forEach { project ->
       val projectInfo =
         mutableListOf<String?>().apply {
           // Project Name

@@ -1,9 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -33,6 +32,14 @@ idea {
 }
 
 subprojects {
+  // Pin the Java/Kotlin toolchain to JDK 17 (AGP 9 / Gradle 9 minimum) so compilation, tests and
+  // IDE analysis use a consistent JDK regardless of the JDK used to launch Gradle.
+  pluginManager.withPlugin('org.jetbrains.kotlin.jvm') {
+    kotlin {
+      jvmToolchain(17)
+    }
+  }
+
   tasks.withType(Jar).configureEach {
     def dateFile = layout.buildDirectory.file('jar-manifest-date.txt').get().asFile
     if (!dateFile.exists()) {
@@ -57,7 +64,7 @@ subprojects {
 
   tasks.withType(KotlinJvmCompile).configureEach {
     compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
+      jvmTarget.set(JvmTarget.JVM_17)
       languageVersion.set(KotlinVersion.KOTLIN_2_0)
       apiVersion.set(KotlinVersion.KOTLIN_2_0)
       freeCompilerArgs.add("-progressive")
@@ -69,8 +76,8 @@ subprojects {
   }
 
   tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     configure(options) {
       compilerArgs << '-Xlint:all'
@@ -81,8 +88,8 @@ subprojects {
   }
 
   tasks.withType(GroovyCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     configure(options) {
       compilerArgs << '-Xlint:all'
