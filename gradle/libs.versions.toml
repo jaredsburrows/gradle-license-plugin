@@ -19,5 +19,5 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.re
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version = "0.12.0" }
 maven-model = { module = "org.apache.maven:maven-model", version = "3.9.16" }
 spock = { module = "org.spockframework:spock-junit4", version = "2.4-M5-groovy-4.0" } # Gradle 9 bundles Groovy 4 via localGroovy()
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "6.1.0" } # Gradle 9 no longer auto-provides the launcher
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "6.1.1" } # Gradle 9 no longer auto-provides the launcher
 xmlunit = { module = "org.xmlunit:xmlunit-matchers", version = "2.11.0" }
