@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Configure JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v5.6.0
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Configure JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v5.6.0
