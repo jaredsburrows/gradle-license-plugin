@@ -1851,4 +1851,67 @@ final class LicensePluginJavaSpec extends Specification {
     third.task(':licenseReport').outcome == SUCCESS
     new File(reportFolder, 'licenseReport.json').text.contains('License B')
   }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/488")
+  def 'licenseReport as a dependency of processResources produces a populated report'() {
+    given: 'processResources depends on licenseReport and bundles its reports'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:name:1.0.0'
+      }
+
+      processResources {
+        dependsOn 'licenseReport'
+        from(layout.buildDirectory.dir('reports/licenses')) {
+          into 'public/oss'
+        }
+      }
+      """
+
+    when: 'the report task runs as part of the build task graph, not directly'
+    def result = gradleWithCommand(testProjectDir.root, 'build', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def bundledJson = new File(testProjectDir.root, 'build/resources/main/public/oss/licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Fake dependency name",
+          "description":"Fake dependency description",
+          "version":"1.0.0",
+          "developers":[
+            "name"
+          ],
+          "url":"https://github.com/user/repo",
+          "year":"2017",
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:name:1.0.0"
+        }
+      ]
+      """
+
+    then: 'the report has the same content as when the task is invoked directly'
+    result.task(':licenseReport').outcome == SUCCESS
+    result.task(':processResources').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+    bundledJson.exists()
+    assertJson(expectedJson, bundledJson.text)
+  }
 }
