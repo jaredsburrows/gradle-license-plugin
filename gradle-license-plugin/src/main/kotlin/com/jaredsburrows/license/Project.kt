@@ -6,21 +6,21 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
 import java.io.File
+import java.security.MessageDigest
 
 /** Returns true if plugin exists in project. */
 internal fun Project.hasPlugin(list: List<String>): Boolean = list.any { plugins.hasPlugin(it) }
 
 private fun Project.includeParentPomFilesRecursively(
   mavenReader: MavenXpp3Reader,
-  fileCollection: ConfigurableFileCollection,
+  rootPomFiles: List<File>,
   coordinateToFile: MutableMap<String, String>,
 ) {
-  var pomFilesToInspect = fileCollection.files.toList()
+  var pomFilesToInspect = rootPomFiles
   val visitedParentCoordinates = hashSetOf<String>()
 
   while (pomFilesToInspect.isNotEmpty()) {
@@ -57,7 +57,6 @@ private fun Project.includeParentPomFilesRecursively(
     val nextPomFiles = mutableListOf<File>()
     resolvePomFiles(parentCoordinates).forEach { (coordinate, pomFile) ->
       coordinateToFile[coordinate] = pomFile.absolutePath
-      fileCollection.from(pomFile)
       nextPomFiles += pomFile
     }
     pomFilesToInspect = nextPomFiles
@@ -100,7 +99,12 @@ internal fun Project.configureCommon(
   val reportingExtension = extensions.getByType(ReportingExtension::class.java)
   val licenseExtension = extensions.getByType(LicenseReportExtension::class.java)
 
-  val pomInput = buildPomInput(configurationNames)
+  // Defer all resolution until the task inputs are queried at execution time; resolving during
+  // task configuration triggers AGP's "resolved during configuration time" warning (#804).
+  val pomInput = lazy { buildPomInput(configurationNames) }
+  val rootCoordinatesProvider = provider { pomInput.value.rootCoordinates }
+  val coordinateToFileProvider = provider { pomInput.value.coordinateToFile }
+  val contentHashesProvider = provider { pomInput.value.contentHashes }
 
   task.apply {
     outputDir =
@@ -109,10 +113,9 @@ internal fun Project.configureCommon(
         .get()
         .asFile
 
-    pomFiles.from(pomInput.files.files)
-    pomFiles.disallowChanges()
-    rootCoordinates = pomInput.rootCoordinates
-    pomCoordinatesToFile = pomInput.coordinateToFile
+    rootCoordinates.set(rootCoordinatesProvider)
+    pomCoordinatesToFile.set(coordinateToFileProvider)
+    pomContentHashes.set(contentHashesProvider)
 
     generateCsvReport = licenseExtension.generateCsvReport
     generateHtmlReport = licenseExtension.generateHtmlReport
@@ -129,13 +132,25 @@ internal fun Project.configureCommon(
 }
 
 private data class PomInput(
-  val files: ConfigurableFileCollection,
   val rootCoordinates: List<String>,
   val coordinateToFile: Map<String, String>,
+  val contentHashes: Map<String, String>,
 )
 
+/** Content hash tracked as a task input; a stable path (e.g. mavenLocal) can hide POM changes. */
+private fun File.contentHash(): String =
+  try {
+    MessageDigest
+      .getInstance("SHA-256")
+      .digest(readBytes())
+      .joinToString("") { "%02x".format(it) }
+  } catch (_: Exception) {
+    // Unreadable file: fall back to metadata so it still contributes a distinguishing value.
+    "$absolutePath:${length()}:${lastModified()}"
+  }
+
 private fun Project.buildPomInput(configurationNames: List<String>): PomInput {
-  val fileCollection = objects.fileCollection()
+  val rootPomFiles = mutableListOf<File>()
   val coordinateToFile = sortedMapOf<String, String>()
   val roots = linkedSetOf<String>()
 
@@ -179,7 +194,7 @@ private fun Project.buildPomInput(configurationNames: List<String>): PomInput {
       val coordinate = "${componentId.group}:${componentId.module}:${componentId.version}"
       coordinateToFile.putIfAbsent(coordinate, pomFile.absolutePath)
       roots += coordinate
-      fileCollection.from(pomFile)
+      rootPomFiles += pomFile
     }
   }
 
@@ -187,13 +202,13 @@ private fun Project.buildPomInput(configurationNames: List<String>): PomInput {
 
   includeParentPomFilesRecursively(
     mavenReader = mavenReader,
-    fileCollection = fileCollection,
+    rootPomFiles = rootPomFiles,
     coordinateToFile = coordinateToFile,
   )
 
   return PomInput(
-    files = fileCollection,
     rootCoordinates = roots.toList().sorted(),
     coordinateToFile = coordinateToFile,
+    contentHashes = coordinateToFile.mapValues { (_, path) -> File(path).contentHash() },
   )
 }

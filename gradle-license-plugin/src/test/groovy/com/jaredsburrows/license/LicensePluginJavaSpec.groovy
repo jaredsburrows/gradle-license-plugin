@@ -7,6 +7,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static test.TestUtils.assertHtml
 import static test.TestUtils.assertJson
 import static test.TestUtils.getLicenseText
@@ -1680,5 +1681,106 @@ final class LicensePluginJavaSpec extends Specification {
     then:
     result.task(':licenseReport').outcome == SUCCESS
     assertJson(expectedJson, actualJson.text)
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/804")
+  def 'licenseReport does not resolve configurations at configuration time'() {
+    given: 'a build that flags configuration-time resolution the same way AGP does'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:name:1.0.0'
+      }
+
+      // Mirror AGP's DependencyResolutionChecks: flag configurations resolved before the task graph is ready.
+      def configurationPhase = new java.util.concurrent.atomic.AtomicBoolean(true)
+      gradle.taskGraph.whenReady { configurationPhase.set(false) }
+      configurations.configureEach { conf ->
+        conf.incoming.beforeResolve {
+          if (configurationPhase.get()) {
+            println("CONFIGURATION-TIME-RESOLUTION: \${conf.name}")
+          }
+        }
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then: 'the report is generated without resolving any configuration during configuration'
+    result.task(':licenseReport').outcome == SUCCESS
+    !result.output.contains('CONFIGURATION-TIME-RESOLUTION:')
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/804")
+  def 'licenseReport re-runs when a POM changes in place'() {
+    given: 'a dependency in a file-based repository inside the test project'
+    def repoDir = testProjectDir.newFolder('repo', 'group', 'local', '1.0.0')
+    def pomFile = new File(repoDir, 'local-1.0.0.pom')
+    pomFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>group</groupId>
+  <artifactId>local</artifactId>
+  <version>1.0.0</version>
+  <name>Local dependency</name>
+  <licenses>
+    <license>
+      <name>License A</name>
+      <url>https://example.com/a</url>
+    </license>
+  </licenses>
+</project>
+"""
+    new File(repoDir, 'local-1.0.0.jar').createNewFile()
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${testProjectDir.root.toURI()}repo'
+        }
+      }
+
+      dependencies {
+        implementation 'group:local:1.0.0'
+      }
+      """
+
+    when: 'the report is generated'
+    def first = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    first.task(':licenseReport').outcome == SUCCESS
+    new File(reportFolder, 'licenseReport.json').text.contains('License A')
+
+    when: 'nothing changes'
+    def second = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    second.task(':licenseReport').outcome == UP_TO_DATE
+
+    when: 'the POM content changes at the same path'
+    pomFile.text = pomFile.text.replace('License A', 'License B')
+    def third = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then: 'the task is not up-to-date and regenerates the report'
+    third.task(':licenseReport').outcome == SUCCESS
+    new File(reportFolder, 'licenseReport.json').text.contains('License B')
   }
 }
