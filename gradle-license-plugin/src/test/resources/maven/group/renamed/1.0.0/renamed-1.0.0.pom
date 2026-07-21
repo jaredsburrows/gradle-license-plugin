@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - https://maven.apache.org/pom.html#Quick_Overview -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- The Basics -->
+  <groupId>group</groupId>
+  <artifactId>renamed</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <!-- More Project Information -->
+  <name>Renamed Library</name>
+  <licenses>
+    <license>
+      <name>Some license</name>
+      <url>http://website.tld/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>

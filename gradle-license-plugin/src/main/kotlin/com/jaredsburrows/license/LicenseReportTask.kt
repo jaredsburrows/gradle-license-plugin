@@ -232,20 +232,24 @@ internal abstract class LicenseReportTask
     }
 
     /**
-     * True if [this] and [other] are the same module with the same display name (so only the
-     * version and/or platform suffix differ). The artifact ids must be equal, or one must be the
-     * other followed by a "-<platform>" suffix (e.g. annotation / annotation-jvm). Sibling artifacts
-     * that merely share a name (foo-1, foo-2 — neither a prefix of the other) are kept separate.
+     * True if [this] and [other] are the same library: the same module at any versions (display
+     * names may change between versions, e.g. "Okio" vs "okio"), or a Kotlin Multiplatform
+     * platform artifact of it (annotation / annotation-jvm). Other "-suffix" siblings (foo-ktx,
+     * kotlin-stdlib-jdk7) are distinct libraries and only collapse when their display names match.
      */
     private fun Model.isSameLibraryAs(other: Model): Boolean {
       if (groupId.orEmpty() != other.groupId.orEmpty()) return false
-      if (name.orEmpty() != other.name.orEmpty()) return false
 
       val thisArtifact = artifactId.orEmpty()
       val otherArtifact = other.artifactId.orEmpty()
-      return thisArtifact == otherArtifact ||
-        thisArtifact.startsWith("$otherArtifact-") ||
-        otherArtifact.startsWith("$thisArtifact-")
+      if (thisArtifact == otherArtifact) return true
+
+      val root = if (thisArtifact.length <= otherArtifact.length) thisArtifact else otherArtifact
+      val variant = if (root === thisArtifact) otherArtifact else thisArtifact
+      if (!variant.startsWith("$root-")) return false
+
+      return variant.removePrefix("$root-") in PLATFORM_ARTIFACT_SUFFIXES ||
+        name.orEmpty() == other.name.orEmpty()
     }
 
     /** Prefer the higher version; for equal versions prefer the shorter (root) artifact id. */
@@ -595,6 +599,9 @@ internal abstract class LicenseReportTask
       }
 
     private companion object {
+      // Kotlin Multiplatform platform-artifact suffixes safe to treat as the same library.
+      // "-android" is excluded: distinct products use it (dagger / dagger-android).
+      private val PLATFORM_ARTIFACT_SUFFIXES = setOf("jvm")
       private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
       private const val APACHE_LICENSE_NAME = "The Apache Software License"
       private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
