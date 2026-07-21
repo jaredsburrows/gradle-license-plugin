@@ -757,6 +757,74 @@ final class LicensePluginJavaSpec extends Specification {
     assertJson(expectedJson, actualJson.text)
   }
 
+  @Issue("jaredsburrows/gradle-license-plugin/issues/800")
+  def 'licenseReport with parents of the same module at different versions'() {
+    given: 'two dependencies whose parent POMs are different versions of the same module'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:childa:1.0.0'
+        implementation 'group:childb:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"Child A",
+          "description":"Fake dependency with parent at version 1",
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"License One",
+              "license_url":"http://license-1.tld/"
+            }
+          ],
+          "dependency":"group:childa:1.0.0"
+        },
+        {
+          "project":"Child B",
+          "description":"Fake dependency with parent at version 2",
+          "version":"1.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"License Two",
+              "license_url":"http://license-2.tld/"
+            }
+          ],
+          "dependency":"group:childb:1.0.0"
+        }
+      ]
+      """
+
+    then: 'both parent POMs are resolved and each child reports its own parent license'
+    result.task(':licenseReport').outcome == SUCCESS
+    !result.output.contains('Parent POM group:multiparent:1.0.0@pom not found')
+    !result.output.contains('Parent POM group:multiparent:2.0.0@pom not found')
+    assertJson(expectedJson, actualJson.text)
+  }
+
   def 'licenseReport with same set of multiple licenses'() {
     given:
     buildFile <<
