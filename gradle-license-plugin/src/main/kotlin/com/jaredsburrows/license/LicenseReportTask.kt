@@ -378,15 +378,6 @@ internal abstract class LicenseReportTask
         return emptyList()
       }
 
-      if (ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
-        return listOf(
-          License().apply {
-            this.name = APACHE_LICENSE_NAME
-            url = APACHE_LICENSE_URL
-          },
-        )
-      }
-
       // License information found
       return model.licenses
         .orEmpty()
@@ -399,18 +390,31 @@ internal abstract class LicenseReportTask
           it.name.isNotEmpty() || it.url.isUrlValid()
         }.ifEmpty {
           logger.info("Project, $name, has no license in POM file.")
-          model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
-            val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
-            if (parentPomFile != null) {
-              findLicenses(
-                mavenReader,
-                parentPomFile,
-                loggedMissingParentPomCoordinates,
-              )
-            } else {
-              emptyList()
-            }
-          } ?: emptyList()
+          val parentLicenses =
+            model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
+              val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
+              if (parentPomFile != null) {
+                findLicenses(
+                  mavenReader,
+                  parentPomFile,
+                  loggedMissingParentPomCoordinates,
+                )
+              } else {
+                emptyList()
+              }
+            } ?: emptyList()
+
+          // Pre-20.0.0 support library POMs declare no license at all; they are all Apache 2.0.
+          if (parentLicenses.isEmpty() && ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
+            listOf(
+              License().apply {
+                this.name = APACHE_LICENSE_NAME
+                url = APACHE_LICENSE_URL
+              },
+            )
+          } else {
+            parentLicenses
+          }
         }
     }
 

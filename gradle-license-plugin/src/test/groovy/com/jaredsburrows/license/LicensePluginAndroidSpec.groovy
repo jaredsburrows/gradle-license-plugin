@@ -2236,6 +2236,55 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
+  def 'licenseDebugReport prefers the license declared in a support library POM over the default'() {
+    given: 'support libraries with a declared license, an inherited license, and no license at all'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:support-core-utils:26.1.0'
+        implementation 'com.android.support:support-parented:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseDebugReport.json')
+
+    then: 'declared and parent-inherited licenses win; only the bare POM falls back to Apache'
+    result.task(':licenseDebugReport').outcome == SUCCESS
+    actualJson.text.contains('"license":"The Apache Software License, Version 2.0"')
+    actualJson.text.contains('"license":"Parent Declared License"')
+    actualJson.text.contains('"license":"The Apache Software License"')
+    actualJson.text.contains('"dependency":"com.android.support:support-core-utils:26.1.0"')
+    actualJson.text.contains('"dependency":"com.android.support:support-parented:26.1.0"')
+    actualJson.text.contains('"dependency":"com.android.support:design:26.1.0"')
+  }
+
   @Issue("jaredsburrows/gradle-license-plugin/issues/811")
   def 'licenseDebugReport with android library subproject and task iteration in afterEvaluate'() {
     given: 'a library subproject configured by its own build file, after the app project'

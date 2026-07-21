@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - mirrors a real support library POM from 20.0.0 onward, which
+     declares its license (earlier support POMs declare nothing at all). -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- The Basics -->
+  <groupId>com.android.support</groupId>
+  <artifactId>support-core-utils</artifactId>
+  <version>26.1.0</version>
+  <packaging>aar</packaging>
+
+  <!-- More Project Information -->
+  <name>Support Core Utils</name>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>
