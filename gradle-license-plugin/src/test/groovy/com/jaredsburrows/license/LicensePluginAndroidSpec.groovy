@@ -2236,6 +2236,81 @@ final class LicensePluginAndroidSpec extends Specification {
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
 
+  @Issue("jaredsburrows/gradle-license-plugin/issues/811")
+  def 'licenseDebugReport with android library subproject and task iteration in afterEvaluate'() {
+    given: 'a library subproject configured by its own build file, after the app project'
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'library'
+      """
+    testProjectDir.newFolder('library')
+    testProjectDir.newFile('library/build.gradle') <<
+      """
+      apply plugin: 'com.android.library'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example.library'
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      allprojects {
+        repositories {
+          maven {
+            url '${mavenRepoUrl}'
+          }
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation project(':library')
+        implementation 'group:name:1.0.0'
+      }
+
+      // Simulate a third-party plugin (e.g. AppLovin Quality Service) iterating the task
+      // container in afterEvaluate, which realizes the license tasks during configuration -
+      // before the library subproject is configured.
+      afterEvaluate {
+        tasks.forEach { }
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseDebugReport.json')
+
+    then: 'configuration does not crash and the report includes both modules dependencies'
+    result.task(':licenseDebugReport').outcome == SUCCESS
+    !result.output.contains('cannot be executed in the current context')
+    actualJson.exists()
+    actualJson.text.contains('group:name:1.0.0')
+    actualJson.text.contains('com.android.support:design:26.1.0')
+  }
+
   @Issue("jaredsburrows/gradle-license-plugin/issues/804")
   @Unroll
   def '#taskName does not resolve configurations at configuration time'() {
