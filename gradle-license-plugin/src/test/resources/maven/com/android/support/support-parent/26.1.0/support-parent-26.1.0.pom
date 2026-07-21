@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - parent POM declaring the license its children inherit. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- The Basics -->
+  <groupId>com.android.support</groupId>
+  <artifactId>support-parent</artifactId>
+  <version>26.1.0</version>
+  <packaging>pom</packaging>
+
+  <!-- More Project Information -->
+  <name>Support Parent</name>
+  <licenses>
+    <license>
+      <name>Parent Declared License</name>
+      <url>http://parent.tld/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>
