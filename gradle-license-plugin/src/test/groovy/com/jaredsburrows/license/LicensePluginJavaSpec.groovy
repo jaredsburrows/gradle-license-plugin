@@ -1852,6 +1852,93 @@ final class LicensePluginJavaSpec extends Specification {
     new File(reportFolder, 'licenseReport.json').text.contains('License B')
   }
 
+  @Issue("jaredsburrows/gradle-license-plugin/issues/444")
+  def 'licenseReport collapses a library resolved at different versions across classpaths'() {
+    given: 'libraries whose display name or artifact id changed between the resolved versions'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        // Same module, renamed between versions: compile resolves 1.0.0, runtime 2.0.0.
+        implementation 'group:renamed:1.0.0'
+        runtimeOnly 'group:renamed:2.0.0'
+        // Renamed to a Kotlin Multiplatform platform artifact between versions.
+        implementation 'group:kmpl:1.0.0'
+        runtimeOnly 'group:kmpl-jvm:2.0.0'
+        // A distinct "-suffix" sibling library that must stay its own report entry.
+        implementation 'group:kmpl-jdk7:2.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def expectedJson =
+      """
+      [
+        {
+          "project":"kmpl",
+          "description":null,
+          "version":"2.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:kmpl-jvm:2.0.0"
+        },
+        {
+          "project":"Kmpl Jdk7",
+          "description":null,
+          "version":"2.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:kmpl-jdk7:2.0.0"
+        },
+        {
+          "project":"renamed",
+          "description":null,
+          "version":"2.0.0",
+          "developers":[],
+          "url":null,
+          "year":null,
+          "licenses":[
+            {
+              "license":"Some license",
+              "license_url":"http://website.tld/"
+            }
+          ],
+          "dependency":"group:renamed:2.0.0"
+        }
+      ]
+      """
+
+    then: 'each library appears once at its highest version; the sibling stays separate'
+    result.task(':licenseReport').outcome == SUCCESS
+    assertJson(expectedJson, actualJson.text)
+  }
+
   @Issue("jaredsburrows/gradle-license-plugin/issues/488")
   def 'licenseReport as a dependency of processResources produces a populated report'() {
     given: 'processResources depends on licenseReport and bundles its reports'
