@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - https://maven.apache.org/pom.html#Quick_Overview -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- The Basics -->
+  <groupId>group</groupId>
+  <artifactId>multiparent</artifactId>
+  <version>2.0.0</version>
+  <packaging>pom</packaging>
+
+  <!-- More Project Information -->
+  <name>Fake parent at version 2</name>
+  <licenses>
+    <license>
+      <name>License Two</name>
+      <url>http://license-2.tld/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+</project>

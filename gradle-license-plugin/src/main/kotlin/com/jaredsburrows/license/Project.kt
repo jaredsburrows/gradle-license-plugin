@@ -63,31 +63,52 @@ private fun Project.includeParentPomFilesRecursively(
   }
 }
 
-/** Resolve the POM files for the given GAV coordinates in a single batched dependency resolution. */
+/**
+ * Resolve the POM files for the given GAV coordinates in batched dependency resolutions.
+ * Coordinates sharing a module at different versions go to separate batches: within one
+ * configuration Gradle conflict-resolves them to a single version and silently drops the
+ * other POMs (#800).
+ */
 private fun Project.resolvePomFiles(coordinates: Collection<String>): Map<String, File> {
   if (coordinates.isEmpty()) {
     return emptyMap()
   }
 
-  val pomDependencies =
-    coordinates
-      .map { dependencies.create("$it@pom") }
-      .toTypedArray()
-  val detachedConfiguration =
-    configurations.detachedConfiguration(*pomDependencies).apply {
-      isTransitive = false
+  // batches[i] holds the i-th version of each module, so no batch sees two versions of one module.
+  val batches = mutableListOf<MutableList<String>>()
+  coordinates
+    .groupBy { it.substringBeforeLast(':') }
+    .values
+    .forEach { moduleCoordinates ->
+      moduleCoordinates.forEachIndexed { index, coordinate ->
+        if (batches.size <= index) {
+          batches.add(mutableListOf())
+        }
+        batches[index] += coordinate
+      }
     }
 
   val resolved = linkedMapOf<String, File>()
-  detachedConfiguration.incoming
-    .artifactView { it.isLenient = true }
-    .artifacts
-    .forEach { artifact ->
-      val id = artifact.id.componentIdentifier
-      if (id is ModuleComponentIdentifier) {
-        resolved["${id.group}:${id.module}:${id.version}"] = artifact.file
+  batches.forEach { batch ->
+    val pomDependencies =
+      batch
+        .map { dependencies.create("$it@pom") }
+        .toTypedArray()
+    val detachedConfiguration =
+      configurations.detachedConfiguration(*pomDependencies).apply {
+        isTransitive = false
       }
-    }
+
+    detachedConfiguration.incoming
+      .artifactView { it.isLenient = true }
+      .artifacts
+      .forEach { artifact ->
+        val id = artifact.id.componentIdentifier
+        if (id is ModuleComponentIdentifier) {
+          resolved["${id.group}:${id.module}:${id.version}"] = artifact.file
+        }
+      }
+  }
   return resolved
 }
 
