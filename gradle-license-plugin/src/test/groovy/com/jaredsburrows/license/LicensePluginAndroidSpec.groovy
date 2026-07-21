@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import spock.lang.Issue
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -2230,6 +2231,65 @@ final class LicensePluginAndroidSpec extends Specification {
     result.output.find("Wrote JSON report to .*${reportFolder}/${taskName}.json.")
     assertHtml(expectedHtml, actualHtml)
     assertJson(expectedJson, actualJson)
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/804")
+  @Unroll
+  def '#taskName does not resolve configurations at configuration time'() {
+    given: 'a build that flags configuration-time resolution the same way AGP does'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'group:child:1.0.0'
+      }
+
+      // Mirror AGP's DependencyResolutionChecks: report any project configuration that is
+      // resolved before the task graph is ready, i.e. during the configuration phase.
+      def configurationPhase = new java.util.concurrent.atomic.AtomicBoolean(true)
+      gradle.taskGraph.whenReady { configurationPhase.set(false) }
+      configurations.configureEach { conf ->
+        conf.incoming.beforeResolve {
+          if (configurationPhase.get()) {
+            println("CONFIGURATION-TIME-RESOLUTION: \${conf.name}")
+          }
+        }
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+
+    then: 'the report is generated without resolving any configuration during configuration'
+    result.task(":${taskName}").outcome == SUCCESS
+    !result.output.contains('CONFIGURATION-TIME-RESOLUTION:')
+    !result.output.contains('was resolved during configuration time')
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']

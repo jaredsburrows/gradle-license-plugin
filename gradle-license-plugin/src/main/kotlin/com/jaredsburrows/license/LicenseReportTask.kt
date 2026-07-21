@@ -12,14 +12,12 @@ import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.codehaus.plexus.util.ReaderFactory
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 import java.io.File
@@ -34,15 +32,23 @@ internal abstract class LicenseReportTask
   constructor(
     objectFactory: ObjectFactory,
   ) : DefaultTask() {
-    @get:InputFiles
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    val pomFiles: ConfigurableFileCollection = objectFactory.fileCollection()
+    // Value properties (never file collections, whose providers Gradle resolves while computing
+    // task dependencies during scheduling) so that the dependency graph is only resolved when the
+    // value is first queried, at execution time (or configuration cache store time) - never while
+    // the task is configured or scheduled.
+    @get:Input
+    val rootCoordinates: ListProperty<String> = objectFactory.listProperty(String::class.java)
 
-    @Input
-    var rootCoordinates: List<String> = emptyList()
+    @get:Input
+    val pomCoordinatesToFile: MapProperty<String, String> =
+      objectFactory.mapProperty(String::class.java, String::class.java)
 
-    @Input
-    var pomCoordinatesToFile: Map<String, String> = emptyMap()
+    // Never read by the task action; declared as an input in place of the POM files themselves so
+    // that a POM whose content changes at a stable path (e.g. in a mavenLocal or other file-based
+    // repository) still re-runs the task.
+    @get:Input
+    val pomContentHashes: MapProperty<String, String> =
+      objectFactory.mapProperty(String::class.java, String::class.java)
 
     @Input
     var assetDirs = emptyList<File>()
@@ -158,10 +164,11 @@ internal abstract class LicenseReportTask
       loggedMissingParentPomCoordinates: MutableSet<String>,
     ) {
       rootCoordinates
+        .get()
         .asSequence()
         .distinct()
         .mapNotNull { coordinate ->
-          val pomFilePath = pomCoordinatesToFile[coordinate] ?: return@mapNotNull null
+          val pomFilePath = pomCoordinatesToFile.get()[coordinate] ?: return@mapNotNull null
           coordinate to File(pomFilePath)
         }.filter { (coordinate, _) ->
           ignoredPatterns.none { coordinate.contains(it) }
@@ -519,7 +526,7 @@ internal abstract class LicenseReportTask
       }
 
       val coordinate = "$groupId:$artifactId:$version"
-      val pomFilePath = pomCoordinatesToFile[coordinate]
+      val pomFilePath = pomCoordinatesToFile.get()[coordinate]
       if (pomFilePath == null) {
         if (loggedMissingParentPomCoordinates.add(coordinate)) {
           logger.warn("Parent POM $groupId:$artifactId:$version@pom not found")
