@@ -1703,8 +1703,7 @@ final class LicensePluginJavaSpec extends Specification {
         implementation 'group:name:1.0.0'
       }
 
-      // Mirror AGP's DependencyResolutionChecks: report any project configuration that is
-      // resolved before the task graph is ready, i.e. during the configuration phase.
+      // Mirror AGP's DependencyResolutionChecks: flag configurations resolved before the task graph is ready.
       def configurationPhase = new java.util.concurrent.atomic.AtomicBoolean(true)
       gradle.taskGraph.whenReady { configurationPhase.set(false) }
       configurations.configureEach { conf ->

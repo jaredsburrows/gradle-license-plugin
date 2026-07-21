@@ -99,13 +99,8 @@ internal fun Project.configureCommon(
   val reportingExtension = extensions.getByType(ReportingExtension::class.java)
   val licenseExtension = extensions.getByType(LicenseReportExtension::class.java)
 
-  // Dependency resolution must not run while the task is being configured: realizing the task
-  // during the configuration phase would resolve the (variant) classpath configurations, which AGP
-  // reports as "Configuration '...' was resolved during configuration time" (issue #804). Computing
-  // the POM input lazily (and at most once) defers the graph resolution, the POM artifact queries
-  // and the parent POM walk until these providers are first queried - when Gradle fingerprints the
-  // task inputs at execution time, or at configuration cache store time once the task graph is
-  // ready.
+  // Defer all resolution until the task inputs are queried at execution time; resolving during
+  // task configuration triggers AGP's "resolved during configuration time" warning (#804).
   val pomInput = lazy { buildPomInput(configurationNames) }
   val rootCoordinatesProvider = provider { pomInput.value.rootCoordinates }
   val coordinateToFileProvider = provider { pomInput.value.coordinateToFile }
@@ -142,11 +137,7 @@ private data class PomInput(
   val contentHashes: Map<String, String>,
 )
 
-/**
- * Content hash used as a task input in place of the POM files themselves, so that a POM whose
- * content changes at a stable path (e.g. in a mavenLocal or other file-based repository) still
- * re-runs the task.
- */
+/** Content hash tracked as a task input; a stable path (e.g. mavenLocal) can hide POM changes. */
 private fun File.contentHash(): String =
   try {
     MessageDigest
@@ -154,7 +145,7 @@ private fun File.contentHash(): String =
       .digest(readBytes())
       .joinToString("") { "%02x".format(it) }
   } catch (_: Exception) {
-    // Fall back to file metadata so an unreadable file still contributes a distinguishing value.
+    // Unreadable file: fall back to metadata so it still contributes a distinguishing value.
     "$absolutePath:${length()}:${lastModified()}"
   }
 

@@ -32,10 +32,8 @@ internal abstract class LicenseReportTask
   constructor(
     objectFactory: ObjectFactory,
   ) : DefaultTask() {
-    // Value properties (never file collections, whose providers Gradle resolves while computing
-    // task dependencies during scheduling) so that the dependency graph is only resolved when the
-    // value is first queried, at execution time (or configuration cache store time) - never while
-    // the task is configured or scheduled.
+    // Never file collections: Gradle resolves their providers during scheduling, which is still
+    // configuration time (#804).
     @get:Input
     val rootCoordinates: ListProperty<String> = objectFactory.listProperty(String::class.java)
 
@@ -43,9 +41,8 @@ internal abstract class LicenseReportTask
     val pomCoordinatesToFile: MapProperty<String, String> =
       objectFactory.mapProperty(String::class.java, String::class.java)
 
-    // Never read by the task action; declared as an input in place of the POM files themselves so
-    // that a POM whose content changes at a stable path (e.g. in a mavenLocal or other file-based
-    // repository) still re-runs the task.
+    // Never read by the action; re-runs the task when POM content changes at a stable path
+    // (e.g. mavenLocal).
     @get:Input
     val pomContentHashes: MapProperty<String, String> =
       objectFactory.mapProperty(String::class.java, String::class.java)
