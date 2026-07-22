@@ -91,8 +91,7 @@ final class HtmlReportSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
+          <pre id="0">No license found</pre>
           <hr>
           <ul>
             <li>
@@ -114,8 +113,7 @@ final class HtmlReportSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="87638953"></a>
-          <pre>name
+          <pre id="87638953">name
           <a href="url">url</a></pre>
           <br>
           <hr>

@@ -2,6 +2,8 @@ package com.jaredsburrows.license.internal.report
 
 import com.jaredsburrows.license.internal.LicenseHelper
 import kotlinx.html.Entities
+import kotlinx.html.FlowContent
+import kotlinx.html.PRE
 import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.br
@@ -133,14 +135,14 @@ class HtmlReport(
                 }
               }
 
-              a {
-                id = currentLicense.toString()
-              }
+              // The anchor id lives on the first license block itself: an empty inline anchor next
+              // to the inline-block <pre> sits at its baseline, scrolling links to the bottom (#462).
+              val anchorId = currentLicense.toString()
 
               // Display associated license text with libraries
               val licenses = currentProject?.licenses
               if (licenses.isNullOrEmpty()) {
-                pre {
+                licensePre(anchorId) {
                   +NO_LICENSE
                 }
               } else {
@@ -150,10 +152,11 @@ class HtmlReport(
                       Pair(getLicenseKey(license), license)
                     }.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.first })
 
-                sortedKeysAndLicenses.forEach { (key, license) ->
+                sortedKeysAndLicenses.forEachIndexed { index, (key, license) ->
+                  val preId = if (index == 0) anchorId else null
                   if (key.isNotEmpty() && licenseMap.values.contains(key)) {
                     // license from license map
-                    pre {
+                    licensePre(preId) {
                       unsafe { +getLicenseText(key) }
                     }
                   } else {
@@ -162,19 +165,19 @@ class HtmlReport(
                     val currentUrl = license.url.trim()
 
                     if (currentLicenseName.isNotEmpty() && currentUrl.isNotEmpty()) {
-                      pre {
+                      licensePre(preId) {
                         unsafe { +"$currentLicenseName\n<a href=\"$currentUrl\">$currentUrl</a>" }
                       }
                     } else if (currentUrl.isNotEmpty()) {
-                      pre {
+                      licensePre(preId) {
                         unsafe { +"<a href=\"$currentUrl\">$currentUrl</a>" }
                       }
                     } else if (currentLicenseName.isNotEmpty()) {
-                      pre {
+                      licensePre(preId) {
                         unsafe { +"$currentLicenseName\n" }
                       }
                     } else {
-                      pre {
+                      licensePre(preId) {
                         +NO_LICENSE
                       }
                     }
@@ -210,6 +213,19 @@ class HtmlReport(
           }
         }
     }
+
+  /** A license text block; the first block of a group carries the anchor id (#462). */
+  private fun FlowContent.licensePre(
+    anchorId: String?,
+    block: PRE.() -> Unit,
+  ) {
+    pre {
+      if (anchorId != null) {
+        id = anchorId
+      }
+      block()
+    }
+  }
 
   /**
    * See if the license is in our list of known licenses (which coalesces differing URLs to the
