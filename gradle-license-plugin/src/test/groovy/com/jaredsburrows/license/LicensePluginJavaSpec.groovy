@@ -1939,6 +1939,42 @@ final class LicensePluginJavaSpec extends Specification {
     assertJson(expectedJson, actualJson.text)
   }
 
+  @Issue("jaredsburrows/gradle-license-plugin/issues/397")
+  def 'ignoredPatterns does not ignore artifacts that merely extend the pattern'() {
+    given: 'two artifacts where one coordinate is a prefix of the other'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:kmpl:1.0.0'
+        implementation 'group:kmpl-jdk7:2.0.0'
+      }
+
+      licenseReport {
+        ignoredPatterns = ["group:kmpl"]
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+
+    then: 'only the exact artifact is ignored, not its -suffix sibling'
+    result.task(':licenseReport').outcome == SUCCESS
+    !actualJson.text.contains('"dependency":"group:kmpl:1.0.0"')
+    actualJson.text.contains('"dependency":"group:kmpl-jdk7:2.0.0"')
+  }
+
   @Issue("jaredsburrows/gradle-license-plugin/issues/488")
   def 'licenseReport as a dependency of processResources produces a populated report'() {
     given: 'processResources depends on licenseReport and bundles its reports'

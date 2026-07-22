@@ -1,7 +1,7 @@
 # Gradle License Plugin
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Maven](https://img.shields.io/maven-central/v/com.jaredsburrows/gradle-license-plugin?label=maven&style=flat)](https://search.maven.org/artifact/com.jaredsburrows/gradle-license-plugin)
+[![Maven](https://img.shields.io/maven-central/v/com.jaredsburrows/gradle-license-plugin?label=maven&style=flat)](https://central.sonatype.com/artifact/com.jaredsburrows/gradle-license-plugin)
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/com.jaredsburrows.license)](https://plugins.gradle.org/plugin/com.jaredsburrows.license)
 [![Build](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/jaredsburrows/gradle-license-plugin/actions/workflows/build.yml)
 [![Twitter Follow](https://img.shields.io/twitter/follow/jaredsburrows.svg?style=social)](https://twitter.com/jaredsburrows)
@@ -84,7 +84,7 @@ plugins {
 ```groovy
 buildscript {
   repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
     google() // For Android projects
   }
 
@@ -98,7 +98,7 @@ apply plugin: 'com.jaredsburrows.license'
 ```
 </details>
 
-Snapshot versions are available in the [Sonatype's snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/com/jaredsburrows/gradle-license-plugin/).
+Snapshot versions are available in the [Central Portal snapshots repository](https://central.sonatype.com/repository/maven-snapshots/com/jaredsburrows/gradle-license-plugin/).
 
 ## Tasks
 
@@ -273,7 +273,11 @@ The `copyHtmlReportToAssets` option in the above example would have no effect si
 
 The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant. For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`. They are copied into `src/main/assets` by default.
 
-The `ignoredPatterns` allows for ignoring artifact patterns. These can be partial or full patterns.
+The `ignoredPatterns` allows for ignoring artifact patterns. A pattern can cover whole segments of the
+`group:artifact:version` coordinate (a group, an artifact, a version, or any combination), but it only
+matches along segment boundaries: ignoring `com.some.group:some.name` does not ignore
+`com.some.group:some.name-extra`. Both `:` and `.` count as boundaries, so a pattern may also cover
+dot-separated pieces of a group or version - `1.2` still ignores version `1.2.3`.
 
 ```groovy
 apply plugin: "com.jaredsburrows.license"
@@ -288,6 +292,42 @@ licenseReport {
 ## Usage Example
 
 ### Create an open source dialog
+<details open>
+  <summary>Jetpack Compose</summary>
+
+
+```kotlin
+import android.webkit.WebView
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+
+@Composable
+fun OpenSourceLicensesDialog(onDismiss: () -> Unit) {
+  AlertDialog(
+    onDismissRequest = onDismiss,
+    title = { Text("Open Source Licenses") },
+    text = {
+      AndroidView(
+        factory = { context ->
+          WebView(context).apply {
+            loadUrl("file:///android_asset/open_source_licenses.html")
+          }
+        },
+      )
+    },
+    confirmButton = {
+      TextButton(onClick = onDismiss) {
+        Text("OK")
+      }
+    },
+  )
+}
+```
+</details>
+
 <details open>
   <summary>Kotlin</summary>
   
@@ -381,6 +421,23 @@ public final class OpenSourceLicensesDialog extends DialogFragment {
 
 ### How to use it
 <details open>
+  <summary>Jetpack Compose</summary>
+
+
+```kotlin
+var showLicenses by remember { mutableStateOf(false) }
+
+Button(onClick = { showLicenses = true }) {
+  Text("Licenses")
+}
+
+if (showLicenses) {
+  OpenSourceLicensesDialog(onDismiss = { showLicenses = false })
+}
+```
+</details>
+
+<details open>
   <summary>Kotlin</summary>
   
 
@@ -401,9 +458,9 @@ new OpenSourceLicensesDialog().showLicenses(this);
 
 Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
 
-<img src="https://www.bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png"  alt="License HTML"/>
+<img src="https://web.archive.org/web/20241102172214/https://bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" alt="License HTML"/>
 
-Source: https://www.bignerdranch.com/blog/open-source-licenses-and-android/
+Source: https://web.archive.org/web/20241102053331/https://bignerdranch.com/blog/open-source-licenses-and-android/
 
 ## License
 ```
