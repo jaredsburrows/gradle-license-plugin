@@ -168,7 +168,7 @@ internal abstract class LicenseReportTask
           val pomFilePath = pomCoordinatesToFile.get()[coordinate] ?: return@mapNotNull null
           coordinate to File(pomFilePath)
         }.filter { (coordinate, _) ->
-          ignoredPatterns.none { coordinate.contains(it) }
+          ignoredPatterns.none { coordinate.matchesIgnoredPattern(it) }
         }.forEach { (coordinate, pomFile) ->
           val model = readModel(mavenReader, pomFile) ?: return@forEach
 
@@ -552,6 +552,30 @@ internal abstract class LicenseReportTask
         logger.warn("Failed to read POM file '$pomFile': ${e.shortMessage()}")
         null
       }
+
+    /**
+     * True when [pattern] occurs in this coordinate aligned to segment boundaries (':', '.' or
+     * either end), so ignoring "foo:bar" does not also ignore "foo:bar-extra" (#397).
+     */
+    private fun String.matchesIgnoredPattern(pattern: String): Boolean {
+      if (pattern.isEmpty()) {
+        return false
+      }
+
+      var index = indexOf(pattern)
+      while (index >= 0) {
+        val end = index + pattern.length
+        val startsAtBoundary = index == 0 || this[index - 1].isBoundary() || pattern.first().isBoundary()
+        val endsAtBoundary = end == length || this[end].isBoundary() || pattern.last().isBoundary()
+        if (startsAtBoundary && endsAtBoundary) {
+          return true
+        }
+        index = indexOf(pattern, index + 1)
+      }
+      return false
+    }
+
+    private fun Char.isBoundary(): Boolean = this == ':' || this == '.'
 
     private fun parseCoordinate(coordinate: String): Triple<String, String, String> {
       val parts = coordinate.split(":")
