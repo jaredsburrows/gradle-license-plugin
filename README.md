@@ -293,7 +293,43 @@ licenseReport {
 
 ### Create an open source dialog
 <details open>
-  <summary>Kotlin</summary>
+  <summary>Jetpack Compose</summary>
+
+
+```kotlin
+import android.webkit.WebView
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+
+@Composable
+fun OpenSourceLicensesDialog(onDismiss: () -> Unit) {
+  AlertDialog(
+    onDismissRequest = onDismiss,
+    title = { Text("Open Source Licenses") },
+    text = {
+      AndroidView(
+        factory = { context ->
+          WebView(context).apply {
+            loadUrl("file:///android_asset/open_source_licenses.html")
+          }
+        },
+      )
+    },
+    confirmButton = {
+      TextButton(onClick = onDismiss) {
+        Text("OK")
+      }
+    },
+  )
+}
+```
+</details>
+
+<details>
+  <summary>Kotlin (Views)</summary>
   
 
 ```kotlin
@@ -385,7 +421,24 @@ public final class OpenSourceLicensesDialog extends DialogFragment {
 
 ### How to use it
 <details open>
-  <summary>Kotlin</summary>
+  <summary>Jetpack Compose</summary>
+
+
+```kotlin
+var showLicenses by remember { mutableStateOf(false) }
+
+Button(onClick = { showLicenses = true }) {
+  Text("Licenses")
+}
+
+if (showLicenses) {
+  OpenSourceLicensesDialog(onDismiss = { showLicenses = false })
+}
+```
+</details>
+
+<details>
+  <summary>Kotlin (Views)</summary>
   
 
 ```kotlin
