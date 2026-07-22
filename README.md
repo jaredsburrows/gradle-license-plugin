@@ -328,8 +328,8 @@ fun OpenSourceLicensesDialog(onDismiss: () -> Unit) {
 ```
 </details>
 
-<details>
-  <summary>Kotlin (Views)</summary>
+<details open>
+  <summary>Kotlin</summary>
   
 
 ```kotlin
@@ -437,8 +437,8 @@ if (showLicenses) {
 ```
 </details>
 
-<details>
-  <summary>Kotlin (Views)</summary>
+<details open>
+  <summary>Kotlin</summary>
   
 
 ```kotlin
