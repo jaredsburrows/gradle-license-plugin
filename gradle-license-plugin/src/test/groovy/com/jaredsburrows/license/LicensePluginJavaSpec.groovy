@@ -120,8 +120,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
+          <pre id="0">No license found</pre>
           <hr>
         </body>
       </html>
@@ -214,8 +213,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -326,8 +324,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -488,8 +485,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="-296292112"></a>
-          <pre>Some license
+          <pre id="-296292112">Some license
             <a href="http://website.tld/">http://website.tld/</a>
           </pre>
           <br>
@@ -580,8 +576,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1195092182"></a>
-          <pre>Some license
+          <pre id="1195092182">Some license
             <a href="http://website.tld/">http://website.tld/</a>
           </pre>
           <br>
@@ -681,8 +676,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
           <ul>
@@ -694,8 +688,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="-296292112"></a>
-          <pre>Some license
+          <pre id="-296292112">Some license
             <a href="http://website.tld/">http://website.tld/</a>
           </pre>
           <br>
@@ -877,8 +870,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1929112087"></a>
-          <pre>Some license 1
+          <pre id="1929112087">Some license 1
             <a href="http://website-1.tld/">http://website-1.tld/</a>
           </pre>
           <br>
@@ -1019,8 +1011,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1210,8 +1201,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1336,8 +1326,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1472,8 +1461,7 @@ final class LicensePluginJavaSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
+          <pre id="0">No license found</pre>
           <hr>
         </body>
       </html>

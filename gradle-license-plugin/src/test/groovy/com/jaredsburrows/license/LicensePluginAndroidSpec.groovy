@@ -181,8 +181,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -396,8 +395,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -557,8 +555,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -770,8 +767,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
           <ul>
@@ -782,8 +778,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1783810846"></a>
-          <pre>${getLicenseText('mit.txt')}</pre>
+          <pre id="1783810846">${getLicenseText('mit.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -917,8 +912,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
+          <pre id="0">No license found</pre>
           <hr>
         </body>
       </html>
@@ -1036,8 +1030,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
           <ul>
@@ -1048,8 +1041,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="-296292112"></a>
-          <pre>Some license
+          <pre id="-296292112">Some license
           <a href="http://website.tld/">http://website.tld/</a></pre>
           <br>
           <hr>
@@ -1195,8 +1187,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
           <ul>
@@ -1208,8 +1199,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="-296292112"></a>
-          <pre>Some license
+          <pre id="-296292112">Some license
             <a href="http://website.tld/">http://website.tld/</a>
           </pre>
           <br>
@@ -1576,8 +1566,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1738,8 +1727,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1901,8 +1889,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1783810846"></a>
-          <pre>${getLicenseText('mit.txt')}</pre>
+          <pre id="1783810846">${getLicenseText('mit.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -1998,8 +1985,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -2093,8 +2079,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="1934118923"></a>
-          <pre>${getLicenseText('apache-2.0.txt')}</pre>
+          <pre id="1934118923">${getLicenseText('apache-2.0.txt')}</pre>
           <br>
           <hr>
         </body>
@@ -2191,8 +2176,7 @@ final class LicensePluginAndroidSpec extends Specification {
               </dl>
             </li>
           </ul>
-          <a id="0"></a>
-          <pre>No license found</pre>
+          <pre id="0">No license found</pre>
           <hr>
         </body>
       </html>
