@@ -3,10 +3,12 @@ package test
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import javax.xml.parsers.DocumentBuilderFactory
 import org.apache.commons.csv.CSVFormat
 import org.gradle.testkit.runner.GradleRunner
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer
 
 final class TestUtils {
   private TestUtils() {
@@ -25,6 +27,8 @@ final class TestUtils {
     def right = htmlToXml(actual)
     return !DiffBuilder.compare(Input.fromString(right).build())
       .withTest(Input.fromString(left).build())
+      // XMLUnit 2.12.0+ disallows DOCTYPE declarations by default, but the generated HTML reports start with one
+      .withDocumentBuilderFactory(DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing.configure(DocumentBuilderFactory.newInstance()))
       .normalizeWhitespace()
       .ignoreWhitespace()
       .build()
