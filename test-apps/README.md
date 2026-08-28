@@ -7,12 +7,24 @@ repository rather than a published version.
 
 | Module | Report | Screen |
 |---|---|---|
-| `test-app-compose-html` | `open_source_licenses.html` | The generated HTML in a `WebView` dialog |
+| `test-app-compose-html` | `open_source_licenses.html` | The generated HTML full screen in a `WebView` |
 | `test-app-compose-json` | `open_source_licenses.json` | A Compose list linking out to each license URL |
 | `test-app-compose-fulljson` | `open_source_licenses.full.json` | A custom Compose license screen rendering the bundled license text offline |
 
-Every app enables exactly one report and copies it into `src/main/assets`, and wires the report task
-into `merge<Variant>Assets` so the packaged asset is always up to date.
+Every app enables exactly one report and wires the report task into `merge<Variant>Assets` so the
+packaged asset is always up to date. `useVariantSpecificAssetDirs` puts each variant's report in its
+own source set (`src/debug/assets`, `src/release/assets`); sharing `src/main/assets` would let the
+variant that ran last overwrite the other one's report.
+
+## Open in the IDE
+
+These apps are a separate Gradle build, so importing the repository only syncs the plugin build and
+the IDE cannot resolve anything here - version catalog accessors included. The root build cannot
+include this one either: this build already includes the root through `pluginManagement`, and Gradle
+rejects two builds including each other.
+
+Link it as a second Gradle project in the same window instead: **Gradle** tool window -> **+** (Link
+Gradle Project) -> pick `test-apps/settings.gradle`.
 
 ## Test
 

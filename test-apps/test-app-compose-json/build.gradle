@@ -42,12 +42,14 @@ licenseReport {
   generateJsonFullReport = false
   generateTextReport = false
 
+  useVariantSpecificAssetDirs = true
+
   copyHtmlReportToAssets = false
   copyJsonReportToAssets = true
 }
 
-// Generate (and copy) the report before the assets are packaged so the app always ships an
-// up to date open_source_licenses.json.
+// Generate (and copy) the report before the assets are packaged so each variant always ships
+// an up to date open_source_licenses.json.
 ['Debug', 'Release'].each { variant ->
   tasks.matching { it.name == "merge${variant}Assets" }.configureEach {
     it.dependsOn("license${variant}Report")
@@ -63,6 +65,7 @@ dependencies {
   implementation libs.gif.drawable
 
   testImplementation platform(libs.compose.bom)
+  testImplementation libs.androidx.test.ext.junit
   testImplementation libs.compose.ui.test.junit4
   testImplementation libs.junit
   testImplementation libs.robolectric

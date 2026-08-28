@@ -1,20 +1,21 @@
 package com.jaredsburrows.license.testapp.json
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 /**
  * Reads the report that `licenseDebugReport` generated into the app assets, so a change to the
  * report format is caught here instead of at runtime.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class OpenSourceLibraryTest {
-  private val libraries = RuntimeEnvironment.getApplication().readOpenSourceLibraries()
+  private val libraries = ApplicationProvider.getApplicationContext<Context>().readOpenSourceLibraries()
 
   @Test
   fun `every library has a name and a license`() {

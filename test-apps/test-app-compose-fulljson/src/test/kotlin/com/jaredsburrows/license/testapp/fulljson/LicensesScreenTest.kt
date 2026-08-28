@@ -7,29 +7,29 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /** Drives the screen the way a user would, against the report generated into the app assets. */
-@RunWith(RobolectricTestRunner::class)
-@Config(qualifiers = "w400dp-h900dp")
+@RunWith(AndroidJUnit4::class)
 class LicensesScreenTest {
   @get:Rule
   val composeRule = createComposeRule()
 
   @Test
-  fun `lists the libraries of the report`() {
+  fun `lists the library names of the report`() {
     composeRule.setContent { LicensesScreen() }
 
     composeRule.onNodeWithText("Full JSON report", substring = true).assertIsDisplayed()
-    composeRule.onNodeWithText("Activity Compose", substring = true).assertIsDisplayed()
+    // The rows are the library name alone, the version and the license name are not shown
+    composeRule.onNodeWithText("Activity Compose").assertIsDisplayed()
+    composeRule.onNodeWithText("Activity Compose (", substring = true).assertDoesNotExist()
   }
 
   @Test
-  fun `opening a library shows its full license text offline`() {
+  fun `opening a library shows nothing but its full license text`() {
     composeRule.setContent { LicensesScreen() }
 
     composeRule
@@ -39,7 +39,8 @@ class LicensesScreenTest {
 
     // The full text comes from license_texts, not from a URL or a WebView
     composeRule.onNodeWithText("Permission is hereby granted, free of charge", substring = true).assertExists()
-    composeRule.onNodeWithText("pl.droidsonroids.gif:android-gif-drawable", substring = true).assertExists()
+    // The detail screen is the license itself, nothing else
+    composeRule.onNodeWithText("pl.droidsonroids.gif:android-gif-drawable", substring = true).assertDoesNotExist()
   }
 
   private companion object {

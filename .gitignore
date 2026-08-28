@@ -93,4 +93,4 @@ hs_err_pid*
 
 ### Gradle License Plugin ###
 # Reports the plugin copies into the test app assets while building
-test-apps/*/src/main/assets/open_source_licenses.*
+test-apps/*/src/*/assets/open_source_licenses.*

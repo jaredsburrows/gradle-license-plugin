@@ -4,7 +4,7 @@
   <application
     android:allowBackup="false"
     android:label="@string/app_name"
-    android:theme="@style/Theme.TestApp">
+    android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
     <activity
       android:name=".MainActivity"

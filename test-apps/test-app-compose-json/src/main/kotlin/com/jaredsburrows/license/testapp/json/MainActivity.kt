@@ -53,7 +53,7 @@ internal fun LicensesScreen() {
   val libraries = remember { context.readOpenSourceLibraries() }
 
   Scaffold(
-    topBar = { TopAppBar(title = { Text("JSON report (${libraries.size})") }) },
+    topBar = { TopAppBar(title = { Text("JSON report") }) },
   ) { contentPadding ->
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
@@ -79,7 +79,7 @@ private fun LibraryRow(
         .padding(horizontal = 16.dp, vertical = 12.dp),
   ) {
     Text(
-      text = if (library.version != null) "${library.name} (${library.version})" else library.name,
+      text = library.name,
       style = MaterialTheme.typography.titleMedium,
     )
 

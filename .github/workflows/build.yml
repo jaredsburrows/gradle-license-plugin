@@ -95,9 +95,12 @@ jobs:
 
       - name: Verify the Reports were Copied to the Test App Assets
         run: |
-          test -s test-apps/test-app-compose-html/src/main/assets/open_source_licenses.html
-          test -s test-apps/test-app-compose-json/src/main/assets/open_source_licenses.json
-          test -s test-apps/test-app-compose-fulljson/src/main/assets/open_source_licenses.full.json
+          test -s test-apps/test-app-compose-html/src/debug/assets/open_source_licenses.html
+          test -s test-apps/test-app-compose-html/src/release/assets/open_source_licenses.html
+          test -s test-apps/test-app-compose-json/src/debug/assets/open_source_licenses.json
+          test -s test-apps/test-app-compose-json/src/release/assets/open_source_licenses.json
+          test -s test-apps/test-app-compose-fulljson/src/debug/assets/open_source_licenses.full.json
+          test -s test-apps/test-app-compose-fulljson/src/release/assets/open_source_licenses.full.json
 
       - name: Publish Test App Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2.24.0

@@ -417,11 +417,11 @@ repository (through an included build) and show a different way of surfacing the
 
 | Module | Report | Screen |
 |---|---|---|
-| [`test-app-compose-html`](test-apps/test-app-compose-html) | `open_source_licenses.html` | The generated HTML in a `WebView` dialog |
+| [`test-app-compose-html`](test-apps/test-app-compose-html) | `open_source_licenses.html` | The generated HTML full screen in a `WebView` |
 | [`test-app-compose-json`](test-apps/test-app-compose-json) | `open_source_licenses.json` | A Compose list linking out to each license URL |
 | [`test-app-compose-fulljson`](test-apps/test-app-compose-fulljson) | `open_source_licenses.full.json` | A custom Compose license screen rendering the bundled license text offline |
 
-Each app generates its report and copies it into `src/main/assets` as part of `assemble`, so building
+Each app generates its report and copies it into its variant source set as part of `assemble`, so building
 them exercises the plugin end to end:
 
 ```console

@@ -61,7 +61,7 @@ internal fun LicensesScreen() {
     LibraryListScreen(report.dependencies, onLibraryClick = { selected = it })
   } else {
     BackHandler { selected = null }
-    LibraryDetailScreen(report, library, onBack = { selected = null })
+    LibraryDetailScreen(report, library)
   }
 }
 
@@ -72,29 +72,22 @@ private fun LibraryListScreen(
   onLibraryClick: (OpenSourceLibrary) -> Unit,
 ) {
   Scaffold(
-    topBar = { TopAppBar(title = { Text("Full JSON report (${libraries.size})") }) },
+    topBar = { TopAppBar(title = { Text("Full JSON report") }) },
   ) { contentPadding ->
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
       contentPadding = contentPadding,
     ) {
       items(libraries) { library ->
-        Column(
+        Text(
+          text = library.name,
+          style = MaterialTheme.typography.titleMedium,
           modifier =
             Modifier
               .fillMaxWidth()
               .clickable { onLibraryClick(library) }
-              .padding(horizontal = 16.dp, vertical = 12.dp),
-        ) {
-          Text(
-            text = if (library.version != null) "${library.name} (${library.version})" else library.name,
-            style = MaterialTheme.typography.titleMedium,
-          )
-          Text(
-            text = library.licenses.mapNotNull { it.name }.joinToString().ifEmpty { "No license found" },
-            style = MaterialTheme.typography.bodyMedium,
-          )
-        }
+              .padding(horizontal = 16.dp, vertical = 16.dp),
+        )
         HorizontalDivider()
       }
     }
@@ -106,25 +99,9 @@ private fun LibraryListScreen(
 private fun LibraryDetailScreen(
   report: OpenSourceReport,
   library: OpenSourceLibrary,
-  onBack: () -> Unit,
 ) {
   Scaffold(
-    topBar = {
-      TopAppBar(
-        title = { Text(library.name) },
-        navigationIcon = {
-          Text(
-            text = "Back",
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
-            modifier =
-              Modifier
-                .clickable(onClick = onBack)
-                .padding(horizontal = 16.dp),
-          )
-        },
-      )
-    },
+    topBar = { TopAppBar(title = { Text(library.name) }) },
   ) { contentPadding ->
     Column(
       modifier =
@@ -134,32 +111,17 @@ private fun LibraryDetailScreen(
           .verticalScroll(rememberScrollState())
           .padding(16.dp),
     ) {
-      library.dependency?.let {
-        Text(text = it, style = MaterialTheme.typography.bodySmall)
-      }
-      library.developers.takeIf { it.isNotEmpty() }?.let { developers ->
-        Text(
-          text = "Copyright © ${library.year ?: "20xx"} ${developers.joinToString()}",
-          style = MaterialTheme.typography.bodySmall,
-        )
-      }
-
       if (library.licenses.isEmpty()) {
         Text(text = "No license found", style = MaterialTheme.typography.bodyMedium)
       }
 
       library.licenses.forEach { license ->
         Text(
-          text = license.name ?: license.url.orEmpty(),
-          style = MaterialTheme.typography.titleSmall,
-          modifier = Modifier.padding(top = 16.dp),
-        )
-        Text(
           // Licenses that the plugin does not bundle have no text, only a URL.
           text = report.textFor(license) ?: license.url ?: "No license text available",
           style = MaterialTheme.typography.bodySmall,
           fontFamily = FontFamily.Monospace,
-          modifier = Modifier.padding(top = 8.dp),
+          modifier = Modifier.padding(bottom = 16.dp),
         )
       }
     }

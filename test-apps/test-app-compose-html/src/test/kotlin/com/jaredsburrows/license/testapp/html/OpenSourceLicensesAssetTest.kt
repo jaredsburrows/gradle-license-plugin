@@ -1,20 +1,21 @@
 package com.jaredsburrows.license.testapp.html
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 /**
  * The HTML report is displayed as-is, so the only thing to verify is that `licenseDebugReport`
  * copied a usable report into the assets the WebView loads.
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class OpenSourceLicensesAssetTest {
   private val html =
-    RuntimeEnvironment
-      .getApplication()
+    ApplicationProvider
+      .getApplicationContext<Context>()
       .assets
       .open("open_source_licenses.html")
       .bufferedReader()

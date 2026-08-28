@@ -6,15 +6,13 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /** Drives the screen the way a user would, against the report generated into the app assets. */
-@RunWith(RobolectricTestRunner::class)
-@Config(qualifiers = "w400dp-h900dp")
+@RunWith(AndroidJUnit4::class)
 class LicensesScreenTest {
   @get:Rule
   val composeRule = createComposeRule()
