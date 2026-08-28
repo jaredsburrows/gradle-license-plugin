@@ -7,12 +7,12 @@ plugins {
 
 android {
   namespace 'com.jaredsburrows.license.testapp.html'
-  compileSdk libs.versions.sdk.get().toInteger()
+  compileSdk libs.versions.targetSdk.get().toInteger()
 
   defaultConfig {
     applicationId 'com.jaredsburrows.license.testapp.html'
-    minSdk libs.versions.sdk.get().toInteger()
-    targetSdk libs.versions.sdk.get().toInteger()
+    minSdk libs.versions.minSdk.get().toInteger()
+    targetSdk libs.versions.targetSdk.get().toInteger()
     versionCode 1
     versionName '1.0'
   }

@@ -88,6 +88,14 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
+      - name: Cache Robolectric android-all jars
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ hashFiles('test-apps/gradle/libs.versions.toml') }}
+          restore-keys: |
+            robolectric-
+
       # The test apps are a separate build that includes this one, so they always run against the
       # plugin sources in this commit.
       - name: Build the Jetpack Compose Test Apps
