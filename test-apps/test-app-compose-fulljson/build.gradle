@@ -7,12 +7,12 @@ plugins {
 
 android {
   namespace 'com.jaredsburrows.license.testapp.fulljson'
-  compileSdk libs.versions.compileSdk.get().toInteger()
+  compileSdk libs.versions.sdk.get().toInteger()
 
   defaultConfig {
     applicationId 'com.jaredsburrows.license.testapp.fulljson'
-    minSdk libs.versions.minSdk.get().toInteger()
-    targetSdk libs.versions.targetSdk.get().toInteger()
+    minSdk libs.versions.sdk.get().toInteger()
+    targetSdk libs.versions.sdk.get().toInteger()
     versionCode 1
     versionName '1.0'
   }
@@ -72,4 +72,14 @@ dependencies {
   testImplementation libs.kotlin.test.junit
   testImplementation libs.robolectric
   debugImplementation libs.compose.ui.test.manifest
+
+  // See https://github.com/robolectric/robolectric/issues/11344
+  constraints {
+    testImplementation('androidx.test.espresso:espresso-core:3.7.0') {
+      because('Force espresso-core 3.7.0+ for API 36 support (InputManager.getInstance was removed).')
+    }
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.7.0') {
+      because('Force espresso-core 3.7.0+ for API 36 support (InputManager.getInstance was removed).')
+    }
+  }
 }
