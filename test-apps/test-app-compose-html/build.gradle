@@ -7,12 +7,12 @@ plugins {
 
 android {
   namespace 'com.jaredsburrows.license.testapp.html'
-  compileSdk 37
+  compileSdk libs.versions.compileSdk.get().toInteger()
 
   defaultConfig {
     applicationId 'com.jaredsburrows.license.testapp.html'
-    minSdk 24
-    targetSdk 37
+    minSdk libs.versions.minSdk.get().toInteger()
+    targetSdk libs.versions.targetSdk.get().toInteger()
     versionCode 1
     versionName '1.0'
   }
@@ -22,8 +22,8 @@ android {
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_17
-    targetCompatibility JavaVersion.VERSION_17
+    sourceCompatibility JavaVersion.toVersion(libs.versions.sourceCompatibility.get())
+    targetCompatibility JavaVersion.toVersion(libs.versions.targetCompatibility.get())
   }
 }
 

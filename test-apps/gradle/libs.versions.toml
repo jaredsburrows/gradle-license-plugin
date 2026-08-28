@@ -2,6 +2,13 @@
 agp = "9.3.2"
 kotlin = "2.4.10"
 
+# Shared by every test app so they always build against the same SDK and Java level.
+compileSdk = "37"
+minSdk = "24"
+targetSdk = "37"
+sourceCompatibility = "17"
+targetCompatibility = "17"
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

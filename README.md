@@ -342,10 +342,9 @@ licenseReport {
 
 ## Usage Example
 
-### Create an open source dialog
-<details open>
-  <summary>Jetpack Compose</summary>
+For complete, buildable examples - including license screens built from the JSON reports instead of a `WebView` - see [Test Apps](#test-apps).
 
+### Create an open source dialog
 
 ```kotlin
 import android.webkit.WebView
@@ -377,103 +376,8 @@ fun OpenSourceLicensesDialog(onDismiss: () -> Unit) {
   )
 }
 ```
-</details>
-
-<details open>
-  <summary>Kotlin</summary>
-  
-
-```kotlin
-import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
-import android.os.Bundle
-import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
-
-class OpenSourceLicensesDialog : DialogFragment() {
-
-  @SuppressLint("CommitTransaction")
-  fun showLicenses(activity: AppCompatActivity) {
-    val fragmentManager = activity.supportFragmentManager
-    val fragmentTransaction = fragmentManager.beginTransaction()
-    val previousFragment = fragmentManager.findFragmentByTag("dialog_licenses")
-    if (previousFragment != null) {
-      fragmentTransaction.remove(previousFragment)
-    }
-    fragmentTransaction.addToBackStack(null)
-
-    show(fragmentManager, "dialog_licenses")
-  }
-
-  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val webView = WebView(requireActivity())
-    webView.loadUrl("file:///android_asset/open_source_licenses.html")
-
-    return AlertDialog.Builder(requireActivity())
-      .setTitle("Open Source Licenses")
-      .setView(webView)
-      .setPositiveButton("OK"
-      ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-      .create()
-  }
-}
-```
-</details>
-
-<details>
-  <summary>Java</summary>
-  
-```java
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.webkit.WebView;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-public final class OpenSourceLicensesDialog extends DialogFragment {
-
-  @SuppressLint("CommitTransaction")
-  public void showLicenses(AppCompatActivity activity) {
-    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
-    if (previousFragment != null) {
-      fragmentTransaction.remove(previousFragment);
-    }
-    fragmentTransaction.addToBackStack(null);
-
-    show(fragmentManager, "dialog_licenses");
-  }
-
-  @Override
-  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    WebView webView = new WebView(requireActivity());
-    webView.loadUrl("file:///android_asset/open_source_licenses.html");
-
-    return new AlertDialog.Builder(requireActivity())
-      .setTitle("Open Source Licenses")
-      .setView(webView)
-      .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-      .create();
-  }
-}
-```
-</details>
 
 ### How to use it
-<details open>
-  <summary>Jetpack Compose</summary>
-
 
 ```kotlin
 var showLicenses by remember { mutableStateOf(false) }
@@ -486,28 +390,6 @@ if (showLicenses) {
   OpenSourceLicensesDialog(onDismiss = { showLicenses = false })
 }
 ```
-</details>
-
-<details open>
-  <summary>Kotlin</summary>
-  
-
-```kotlin
-OpenSourceLicensesDialog().showLicenses(this)
-```
-</details>
-
-<details>
-  <summary>Java</summary>
-  
-
-```java
-new OpenSourceLicensesDialog().showLicenses(this);
-```
-</details>
-
-
-Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
 
 <img src="https://web.archive.org/web/20241102172214/https://bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" alt="License HTML"/>
 
