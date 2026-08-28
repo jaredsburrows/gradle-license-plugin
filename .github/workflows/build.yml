@@ -66,12 +66,55 @@ jobs:
             build/reports
             build/test-results
 
+  test-apps:
+    name: Test Apps
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v7.0.1
+
+      - name: Configure JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v6.0.0
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4.0.1
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      # The test apps are a separate build that includes this one, so they always run against the
+      # plugin sources in this commit.
+      - name: Build the Jetpack Compose Test Apps
+        run: ./gradlew -p test-apps build -s
+
+      - name: Verify the Reports were Copied to the Test App Assets
+        run: |
+          test -s test-apps/test-app-compose-html/src/main/assets/open_source_licenses.html
+          test -s test-apps/test-app-compose-json/src/main/assets/open_source_licenses.json
+          test -s test-apps/test-app-compose-fulljson/src/main/assets/open_source_licenses.full.json
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7.0.1
+        if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
+        with:
+          name: test-apps-${{ github.workflow }}-${{ github.run_id }}
+          path: |
+            test-apps/*/build/outputs/apk
+            test-apps/*/build/reports
+
   publish:
     name: Publish Snapshot
     runs-on: ubuntu-latest
     if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
     needs:
       - build
+      - test-apps
 
     steps:
       - name: Checkout Project

@@ -219,6 +219,51 @@ Note, if no license information is found for a component, the `licenses` element
 </details>
 
 <details>
+  <summary>Full JSON Example (full):</summary>
+
+```json
+[
+  {
+    "project":"Android GIF Drawable Library",
+    "description":"Views and Drawable for displaying animated GIFs for Android",
+    "version":"1.2.3",
+    "developers":[
+      "Karol Wr\\u00c3\\u00b3tniak"
+    ],
+    "url":"https://github.com/koral--/android-gif-drawable",
+    "year":null,
+    "licenses":[
+      {
+        "license":"The MIT License",
+        "license_url":"http://opensource.org/licenses/MIT",
+        "license_text":"MIT License\n\nCopyright (c) [year] [fullname]\n\nPermission is hereby granted, free of charge, ..."
+      }
+    ],
+    "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+  },
+  {
+    "project":"design",
+    "description":null,
+    "version":"26.1.0",
+    "developers":[],
+    "url":null,
+    "year":null,
+    "licenses":[
+      {
+        "license":"The Apache Software License",
+        "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt",
+        "license_text":"Apache License\nVersion 2.0, January 2004\nhttp://www.apache.org/licenses/ ..."
+      }
+    ],
+    "dependency":"com.android.support:design:26.1.0"
+  }
+]
+```
+
+Note, `license_text` is null for licenses that are not bundled with the plugin - use `license_url` for those.
+</details>
+
+<details>
   <summary>Text Example (full):</summary>
 
 ```text
@@ -250,12 +295,14 @@ licenseReport {
   generateCsvReport = false
   generateHtmlReport = true
   generateJsonReport = false
+  generateJsonFullReport = false
   generateTextReport = false
 
   // Copy reports - These options are ignored for Java projects
   copyCsvReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
+  copyJsonFullReportToAssets = false
   copyTextReportToAssets = false
   useVariantSpecificAssetDirs = false
   
@@ -268,6 +315,12 @@ licenseReport {
 ```
 
 The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
+
+The `generateJsonFullReport` option generates `open_source_licenses.full.json`, the JSON report plus
+the full text of every license the plugin knows about (`license_text`). It is meant for applications
+that render their own license screen instead of displaying the generated HTML report, so the license
+text ships with the app and no network call or WebView is needed. It is disabled by default because
+the embedded license texts make the report considerably larger.
 
 The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant. For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`. They are copied into `src/main/assets` by default.
 
@@ -459,6 +512,24 @@ Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be
 <img src="https://web.archive.org/web/20241102172214/https://bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" alt="License HTML"/>
 
 Source: https://web.archive.org/web/20241102053331/https://bignerdranch.com/blog/open-source-licenses-and-android/
+
+## Test Apps
+
+[`test-apps/`](test-apps) holds three Jetpack Compose applications that apply the plugin from this
+repository (through an included build) and show a different way of surfacing the licenses:
+
+| Module | Report | Screen |
+|---|---|---|
+| [`test-app-compose-html`](test-apps/test-app-compose-html) | `open_source_licenses.html` | The generated HTML in a `WebView` dialog |
+| [`test-app-compose-json`](test-apps/test-app-compose-json) | `open_source_licenses.json` | A Compose list linking out to each license URL |
+| [`test-app-compose-fulljson`](test-apps/test-app-compose-fulljson) | `open_source_licenses.full.json` | A custom Compose license screen rendering the bundled license text offline |
+
+Each app generates its report and copies it into `src/main/assets` as part of `assemble`, so building
+them exercises the plugin end to end:
+
+```console
+./gradlew -p test-apps build
+```
 
 ## License
 ```

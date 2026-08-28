@@ -231,15 +231,7 @@ class HtmlReport(
    * See if the license is in our list of known licenses (which coalesces differing URLs to the
    * same license text). If not, use the URL if present. Else "".
    */
-  private fun getLicenseKey(license: License): String =
-    when {
-      // look up by url
-      LicenseHelper.licenseMap.containsKey(license.url) -> LicenseHelper.licenseMap[license.url]
-      // then by name
-      LicenseHelper.licenseMap.containsKey(license.name) -> LicenseHelper.licenseMap[license.name]
-      // otherwise, use the url as a key
-      else -> license.url
-    } as String
+  private fun getLicenseKey(license: License): String = LicenseHelper.licenseKey(license.name, license.url)
 
   private companion object {
     private const val EXTENSION = "html"
@@ -268,10 +260,6 @@ class HtmlReport(
     private const val MISSING_LICENSE = "Missing standard license text for: "
 
     @JvmStatic
-    fun getLicenseText(fileName: String): String =
-      HtmlReport::class.java
-        .getResource("/license/$fileName")
-        ?.readText()
-        ?: (MISSING_LICENSE + fileName)
+    fun getLicenseText(fileName: String): String = LicenseHelper.licenseText(fileName) ?: (MISSING_LICENSE + fileName)
   }
 }

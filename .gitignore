@@ -90,3 +90,7 @@ gradle-app.setting
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+### Gradle License Plugin ###
+# Reports the plugin copies into the test app assets while building
+test-apps/*/src/main/assets/open_source_licenses.*

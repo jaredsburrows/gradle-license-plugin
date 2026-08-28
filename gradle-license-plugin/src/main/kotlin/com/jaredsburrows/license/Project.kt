@@ -141,10 +141,12 @@ internal fun Project.configureCommon(
     generateCsvReport = licenseExtension.generateCsvReport
     generateHtmlReport = licenseExtension.generateHtmlReport
     generateJsonReport = licenseExtension.generateJsonReport
+    generateJsonFullReport = licenseExtension.generateJsonFullReport
     generateTextReport = licenseExtension.generateTextReport
     copyCsvReportToAssets = licenseExtension.copyCsvReportToAssets
     copyHtmlReportToAssets = licenseExtension.copyHtmlReportToAssets
     copyJsonReportToAssets = licenseExtension.copyJsonReportToAssets
+    copyJsonFullReportToAssets = licenseExtension.copyJsonFullReportToAssets
     copyTextReportToAssets = licenseExtension.copyTextReportToAssets
     useVariantSpecificAssetDirs = licenseExtension.useVariantSpecificAssetDirs
     ignoredPatterns = licenseExtension.ignoredPatterns

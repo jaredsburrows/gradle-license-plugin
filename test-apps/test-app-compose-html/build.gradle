@@ -1,0 +1,56 @@
+plugins {
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.compose)
+  // No version: the plugin comes from the build included in settings.gradle.
+  id 'com.jaredsburrows.license'
+}
+
+android {
+  namespace 'com.jaredsburrows.license.testapp.html'
+  compileSdk 37
+
+  defaultConfig {
+    applicationId 'com.jaredsburrows.license.testapp.html'
+    minSdk 24
+    targetSdk 37
+    versionCode 1
+    versionName '1.0'
+  }
+
+  buildFeatures {
+    compose true
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
+
+licenseReport {
+  // Only the HTML report, copied to src/main/assets/open_source_licenses.html.
+  generateCsvReport = false
+  generateHtmlReport = true
+  generateJsonReport = false
+  generateJsonFullReport = false
+  generateTextReport = false
+
+  copyHtmlReportToAssets = true
+}
+
+// Generate (and copy) the report before the assets are packaged so the app always ships an
+// up to date open_source_licenses.html.
+['Debug', 'Release'].each { variant ->
+  tasks.matching { it.name == "merge${variant}Assets" }.configureEach {
+    it.dependsOn("license${variant}Report")
+  }
+}
+
+dependencies {
+  implementation platform(libs.compose.bom)
+  implementation libs.activity.compose
+  implementation libs.compose.material3
+  implementation libs.compose.ui
+  implementation libs.core.ktx
+  implementation libs.gif.drawable
+}

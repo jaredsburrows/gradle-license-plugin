@@ -1,0 +1,16 @@
+[versions]
+agp = "9.3.2"
+kotlin = "2.4.10"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[libraries]
+activity-compose = { module = "androidx.activity:activity-compose", version = "1.13.0" }
+compose-bom = { module = "androidx.compose:compose-bom", version = "2026.08.00" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+core-ktx = { module = "androidx.core:core-ktx", version = "1.19.0" }
+# A MIT licensed dependency, so the reports show more than one kind of license.
+gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version = "1.2.29" }

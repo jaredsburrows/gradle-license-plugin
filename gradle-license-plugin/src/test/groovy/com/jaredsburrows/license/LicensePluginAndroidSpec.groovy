@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import groovy.json.JsonSlurper
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
@@ -2397,6 +2398,64 @@ final class LicensePluginAndroidSpec extends Specification {
     result.task(":${taskName}").outcome == SUCCESS
     !result.output.contains('CONFIGURATION-TIME-RESOLUTION:')
     !result.output.contains('was resolved during configuration time')
+
+    where:
+    taskName << ['licenseDebugReport', 'licenseReleaseReport']
+  }
+
+  @Unroll
+  def '#taskName with the full JSON report copied to assets'() {
+    given:
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+      }
+
+      licenseReport {
+        generateJsonFullReport = true
+        copyJsonFullReportToAssets = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    def actualJsonFull = new File(reportFolder, "${taskName}.full.json")
+    def openSourceJsonFull = new File(mainAssetsFolder, 'open_source_licenses.full.json')
+
+    then:
+    result.task(":${taskName}").outcome == SUCCESS
+    result.output.find("Wrote Full JSON report to .*${reportFolder}/${taskName}.full.json.")
+    actualJsonFull.exists()
+    result.output.find("Copied Full JSON report to .*${mainAssetsFolder}/open_source_licenses.full.json.")
+    openSourceJsonFull.exists()
+    // The asset is a copy of the generated report and it carries the license text
+    openSourceJsonFull.text == actualJsonFull.text
+    new JsonSlurper().parseText(openSourceJsonFull.text)[0].licenses[0].license_text == getLicenseText('mit.txt')
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
