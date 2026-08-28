@@ -24,7 +24,7 @@ include this one either: this build already includes the root through `pluginMan
 rejects two builds including each other.
 
 Link it as a second Gradle project in the same window instead: **Gradle** tool window -> **+** (Link
-Gradle Project) -> pick `test-apps/settings.gradle`.
+Gradle Project) -> pick `test-apps/settings.gradle.kts`.
 
 ## Test
 
