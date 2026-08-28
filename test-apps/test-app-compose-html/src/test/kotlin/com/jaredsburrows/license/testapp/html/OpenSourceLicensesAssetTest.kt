@@ -3,8 +3,8 @@ package com.jaredsburrows.license.testapp.html
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertTrue
 import org.junit.runner.RunWith
 
 /**
@@ -30,8 +30,8 @@ class OpenSourceLicensesAssetTest {
 
   @Test
   fun `the report contains the license texts the dependencies point at`() {
-    assertTrue("no license anchor", html.contains("<pre id="))
-    assertTrue("missing the Apache license text", html.contains("Apache License"))
-    assertTrue("missing the MIT license text", html.contains("Permission is hereby granted, free of charge"))
+    assertTrue(html.contains("<pre id="), "no license anchor")
+    assertTrue(html.contains("Apache License"), "missing the Apache license text")
+    assertTrue(html.contains("Permission is hereby granted, free of charge"), "missing the MIT license text")
   }
 }

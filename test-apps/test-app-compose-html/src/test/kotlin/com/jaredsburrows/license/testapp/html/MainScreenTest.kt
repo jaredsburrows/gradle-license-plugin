@@ -7,10 +7,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 
@@ -28,9 +28,9 @@ class MainScreenTest {
 
   @Test
   fun `the webview loads the report generated into the assets`() {
-    val webView = composeRule.activity.findViewById<View>(android.R.id.content).findWebView()
+    val content = composeRule.activity.findViewById<View>(android.R.id.content)
+    val webView = assertNotNull(content.findWebView(), "no WebView on screen")
 
-    assertNotNull("no WebView on screen", webView)
     assertEquals(OPEN_SOURCE_LICENSES, shadowOf(webView).lastLoadedUrl)
   }
 

@@ -3,10 +3,10 @@ package com.jaredsburrows.license.testapp.fulljson
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import org.junit.runner.RunWith
 
 /**
@@ -19,10 +19,10 @@ class OpenSourceReportTest {
 
   @Test
   fun `every dependency has a name and coordinates`() {
-    assertTrue("the report is empty", report.dependencies.isNotEmpty())
+    assertTrue(report.dependencies.isNotEmpty(), "the report is empty")
     report.dependencies.forEach { library ->
-      assertTrue("missing name for ${library.dependency}", library.name.isNotBlank())
-      assertTrue("missing coordinates for ${library.name}", library.dependency.orEmpty().isNotBlank())
+      assertTrue(library.name.isNotBlank(), "missing name for ${library.dependency}")
+      assertTrue(library.dependency.orEmpty().isNotBlank(), "missing coordinates for ${library.name}")
     }
   }
 
@@ -30,13 +30,13 @@ class OpenSourceReportTest {
   fun `each license text is stored once and referenced by key`() {
     val licensedDependencies = report.dependencies.count { library -> library.licenses.any { it.key != null } }
 
-    assertTrue("nothing references a bundled license", licensedDependencies > 0)
+    assertTrue(licensedDependencies > 0, "nothing references a bundled license")
     assertTrue(
-      "expected the texts to be interned, got ${report.licenseTexts.size} for $licensedDependencies dependencies",
       report.licenseTexts.size < licensedDependencies,
+      "expected the texts to be interned, got ${report.licenseTexts.size} for $licensedDependencies dependencies",
     )
     report.licenseTexts.forEach { (key, text) ->
-      assertTrue("empty license text for $key", text.isNotBlank())
+      assertTrue(text.isNotBlank(), "empty license text for $key")
     }
   }
 
@@ -44,7 +44,7 @@ class OpenSourceReportTest {
   fun `every license key resolves to a text`() {
     report.dependencies.forEach { library ->
       library.licenses.filter { it.key != null }.forEach { license ->
-        assertNotNull("no text for ${license.key} of ${library.name}", report.textFor(license))
+        assertNotNull(report.textFor(license), "no text for ${license.key} of ${library.name}")
       }
     }
   }

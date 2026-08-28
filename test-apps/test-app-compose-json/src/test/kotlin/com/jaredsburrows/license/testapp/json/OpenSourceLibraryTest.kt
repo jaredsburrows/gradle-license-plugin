@@ -3,10 +3,10 @@ package com.jaredsburrows.license.testapp.json
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.runner.RunWith
 
 /**
@@ -19,10 +19,10 @@ class OpenSourceLibraryTest {
 
   @Test
   fun `every library has a name and a license`() {
-    assertTrue("the report is empty", libraries.isNotEmpty())
+    assertTrue(libraries.isNotEmpty(), "the report is empty")
     libraries.forEach { library ->
-      assertTrue("missing name for $library", library.name.isNotBlank())
-      assertTrue("missing license for ${library.name}", library.licenses.isNotEmpty())
+      assertTrue(library.name.isNotBlank(), "missing name for $library")
+      assertTrue(library.licenses.isNotEmpty(), "missing license for ${library.name}")
     }
   }
 
