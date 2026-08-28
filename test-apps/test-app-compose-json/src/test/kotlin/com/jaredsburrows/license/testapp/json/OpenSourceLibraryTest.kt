@@ -31,7 +31,9 @@ class OpenSourceLibraryTest {
     val gifDrawable = libraries.single { it.name == "android-gif-drawable" }
     val license = gifDrawable.licenses.single()
 
-    assertEquals("1.2.29", gifDrawable.version)
+    // Deliberately not the exact version: Renovate bumps the dependency and the report follows it,
+    // so asserting a literal here only breaks the build on an unrelated upgrade.
+    assertTrue(gifDrawable.version.orEmpty().isNotBlank(), "the report should carry a version")
     assertEquals("The MIT License", license.name)
     assertEquals("https://spdx.org/licenses/MIT.html", license.url)
   }
