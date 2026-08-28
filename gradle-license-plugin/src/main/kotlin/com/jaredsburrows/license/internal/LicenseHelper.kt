@@ -110,12 +110,12 @@ object LicenseHelper {
   /** The bundled license text for a [licenseMap] value (eg. "apache-2.0.txt"), null when unknown. */
   fun licenseText(fileName: String): String? = LicenseHelper::class.java.getResource("/license/$fileName")?.readText()
 
-  /** The bundled license text for the license identified by [name]/[url], null when unknown. */
-  fun licenseTextFor(
+  /**
+   * The [licenseMap] file name (eg. "apache-2.0.txt") for the license identified by [name]/[url],
+   * or null when the plugin does not bundle that license.
+   */
+  fun licenseFileName(
     name: String?,
     url: String?,
-  ): String? =
-    licenseKey(name, url)
-      .takeIf { licenseMap.values.contains(it) }
-      ?.let { licenseText(it) }
+  ): String? = licenseKey(name, url).takeIf { licenseMap.values.contains(it) }
 }

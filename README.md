@@ -221,46 +221,56 @@ Note, if no license information is found for a component, the `licenses` element
 <details>
   <summary>Full JSON Example (full):</summary>
 
+Each license text is stored once under `license_texts` and referenced by `license_key`, so a report
+covering dozens of dependencies that share a handful of licenses stays small.
+
 ```json
-[
-  {
-    "project":"Android GIF Drawable Library",
-    "description":"Views and Drawable for displaying animated GIFs for Android",
-    "version":"1.2.3",
-    "developers":[
-      "Karol Wr\\u00c3\\u00b3tniak"
-    ],
-    "url":"https://github.com/koral--/android-gif-drawable",
-    "year":null,
-    "licenses":[
-      {
-        "license":"The MIT License",
-        "license_url":"http://opensource.org/licenses/MIT",
-        "license_text":"MIT License\n\nCopyright (c) [year] [fullname]\n\nPermission is hereby granted, free of charge, ..."
-      }
-    ],
-    "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+{
+  "license_texts":{
+    "apache-2.0":"Apache License\nVersion 2.0, January 2004\nhttp://www.apache.org/licenses/ ...",
+    "mit":"MIT License\n\nCopyright (c) [year] [fullname]\n\nPermission is hereby granted, free of charge, ..."
   },
-  {
-    "project":"design",
-    "description":null,
-    "version":"26.1.0",
-    "developers":[],
-    "url":null,
-    "year":null,
-    "licenses":[
-      {
-        "license":"The Apache Software License",
-        "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt",
-        "license_text":"Apache License\nVersion 2.0, January 2004\nhttp://www.apache.org/licenses/ ..."
-      }
-    ],
-    "dependency":"com.android.support:design:26.1.0"
-  }
-]
+  "dependencies":[
+    {
+      "project":"Android GIF Drawable Library",
+      "description":"Views and Drawable for displaying animated GIFs for Android",
+      "version":"1.2.3",
+      "developers":[
+        "Karol Wr\\u00c3\\u00b3tniak"
+      ],
+      "url":"https://github.com/koral--/android-gif-drawable",
+      "year":null,
+      "licenses":[
+        {
+          "license":"The MIT License",
+          "license_url":"http://opensource.org/licenses/MIT",
+          "license_key":"mit"
+        }
+      ],
+      "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+    },
+    {
+      "project":"design",
+      "description":null,
+      "version":"26.1.0",
+      "developers":[],
+      "url":null,
+      "year":null,
+      "licenses":[
+        {
+          "license":"The Apache Software License",
+          "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "license_key":"apache-2.0"
+        }
+      ],
+      "dependency":"com.android.support:design:26.1.0"
+    }
+  ]
+}
 ```
 
-Note, `license_text` is null for licenses that are not bundled with the plugin - use `license_url` for those.
+Note, `license_key` is null for licenses that are not bundled with the plugin - `license` and
+`license_url` always hold what the POM declared, so use those for the ones without a text.
 </details>
 
 <details>
@@ -317,10 +327,15 @@ licenseReport {
 The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
 
 The `generateJsonFullReport` option generates `open_source_licenses.full.json`, the JSON report plus
-the full text of every license the plugin knows about (`license_text`). It is meant for applications
-that render their own license screen instead of displaying the generated HTML report, so the license
-text ships with the app and no network call or WebView is needed. It is disabled by default because
-the embedded license texts make the report considerably larger.
+the full text of every license the plugin knows about. It is meant for applications that render their
+own license screen instead of displaying the generated HTML report, so the license text ships with
+the app and no network call or WebView is needed. It is disabled by default because the license texts
+make the report larger.
+
+Every license text is stored once under the top level `license_texts`, keyed by license id, and each
+dependency references it with `license_key`. Dependencies overwhelmingly share a handful of licenses,
+so this keeps the report - and the memory an app needs to parse it - roughly an order of magnitude
+smaller than repeating the text per dependency.
 
 The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant. For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`. They are copied into `src/main/assets` by default.
 

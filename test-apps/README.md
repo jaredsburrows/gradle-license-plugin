@@ -14,6 +14,16 @@ repository rather than a published version.
 Every app enables exactly one report and copies it into `src/main/assets`, and wires the report task
 into `merge<Variant>Assets` so the packaged asset is always up to date.
 
+## Test
+
+Each app has Robolectric unit tests that run against the report `licenseDebugReport` just generated
+into its assets, so a change to a report format fails here instead of at runtime. They cover both the
+parsing and, with Jetpack Compose UI tests, what the screens actually display.
+
+```console
+./gradlew -p test-apps test
+```
+
 ## Build
 
 ```console

@@ -23,10 +23,12 @@ data class OpenSourceLicense(
  * Read `open_source_licenses.json` out of the assets. The report is copied there by the
  * `copyJsonReportToAssets` option of the plugin.
  */
-fun Context.readOpenSourceLibraries(assetName: String = "open_source_licenses.json"): List<OpenSourceLibrary> {
-  val json = assets.open(assetName).bufferedReader().use { it.readText() }
+fun Context.readOpenSourceLibraries(assetName: String = "open_source_licenses.json"): List<OpenSourceLibrary> =
+  parseOpenSourceLibraries(assets.open(assetName).bufferedReader().use { it.readText() })
 
-  return JSONArray(json).mapObjects { library ->
+/** Parse the JSON report. */
+fun parseOpenSourceLibraries(json: String): List<OpenSourceLibrary> =
+  JSONArray(json).mapObjects { library ->
     OpenSourceLibrary(
       name = library.stringOrNull("project") ?: library.stringOrNull("dependency").orEmpty(),
       version = library.stringOrNull("version"),
@@ -41,7 +43,6 @@ fun Context.readOpenSourceLibraries(assetName: String = "open_source_licenses.js
         },
     )
   }
-}
 
 /** The report serializes missing values as JSON nulls, which [JSONObject.optString] turns into "null". */
 private fun JSONObject.stringOrNull(key: String): String? = if (isNull(key)) null else optString(key).ifEmpty { null }

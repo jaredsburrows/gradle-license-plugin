@@ -25,6 +25,13 @@ android {
     sourceCompatibility JavaVersion.toVersion(libs.versions.sourceCompatibility.get())
     targetCompatibility JavaVersion.toVersion(libs.versions.targetCompatibility.get())
   }
+
+  testOptions {
+    unitTests {
+      // Robolectric needs the merged resources and the generated report in the assets.
+      includeAndroidResources = true
+    }
+  }
 }
 
 licenseReport {
@@ -54,4 +61,10 @@ dependencies {
   implementation libs.compose.ui
   implementation libs.core.ktx
   implementation libs.gif.drawable
+
+  testImplementation platform(libs.compose.bom)
+  testImplementation libs.compose.ui.test.junit4
+  testImplementation libs.junit
+  testImplementation libs.robolectric
+  debugImplementation libs.compose.ui.test.manifest
 }

@@ -21,3 +21,8 @@ compose-ui = { module = "androidx.compose.ui:ui" }
 core-ktx = { module = "androidx.core:core-ktx", version = "1.19.0" }
 # A MIT licensed dependency, so the reports show more than one kind of license.
 gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version = "1.2.29" }
+
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+junit = { module = "junit:junit", version = "4.13.2" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.15.1" }

@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen() {
+internal fun MainScreen() {
   var showLicenses by remember { mutableStateOf(false) }
 
   Scaffold(

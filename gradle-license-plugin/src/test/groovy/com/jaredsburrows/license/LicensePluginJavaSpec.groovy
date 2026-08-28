@@ -2057,7 +2057,7 @@ final class LicensePluginJavaSpec extends Specification {
     !result.output.find('Wrote Full JSON report to .*')
   }
 
-  def 'licenseReport with generateJsonFullReport bundles the full license text'() {
+  def 'licenseReport with generateJsonFullReport interns the license text'() {
     given:
     buildFile <<
       """
@@ -2073,6 +2073,8 @@ final class LicensePluginJavaSpec extends Specification {
       }
 
       dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
         implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
         implementation 'group:name:1.0.0'
       }
@@ -2087,8 +2089,8 @@ final class LicensePluginJavaSpec extends Specification {
     def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
     def actualJson = new File(reportFolder, 'licenseReport.json')
     def report = new JsonSlurper().parseText(actualJsonFull.text)
-    def known = report.find { it.dependency == 'pl.droidsonroids.gif:android-gif-drawable:1.2.3' }
-    def unknown = report.find { it.dependency == 'group:name:1.0.0' }
+    def known = report.dependencies.find { it.dependency == 'pl.droidsonroids.gif:android-gif-drawable:1.2.3' }
+    def unknown = report.dependencies.find { it.dependency == 'group:name:1.0.0' }
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2096,8 +2098,14 @@ final class LicensePluginJavaSpec extends Specification {
     actualJsonFull.exists()
     // The full report is written next to, and not instead of, the regular JSON report
     actualJson.exists()
-    report.size() == 2
-    // Everything the regular JSON report has, plus the license text of known licenses
+    report.dependencies.size() == 4
+
+    // Each license text is stored once, no matter how many dependencies share it
+    report.license_texts.keySet() == ['apache-2.0', 'mit'] as Set
+    report.license_texts['apache-2.0'] == getLicenseText('apache-2.0.txt')
+    report.license_texts['mit'] == getLicenseText('mit.txt')
+
+    // Everything the regular JSON report has, plus a key into license_texts
     known.project == 'Android GIF Drawable Library'
     known.description == 'Views and Drawable for displaying animated GIFs for Android'
     known.version == '1.2.3'
@@ -2105,11 +2113,12 @@ final class LicensePluginJavaSpec extends Specification {
     known.licenses.size() == 1
     known.licenses[0].license == 'The MIT License'
     known.licenses[0].license_url == 'http://opensource.org/licenses/MIT'
-    known.licenses[0].license_text == getLicenseText('mit.txt')
-    // Licenses that are not bundled with the plugin have no text
+    known.licenses[0].license_key == 'mit'
+
+    // Licenses the plugin does not bundle keep their POM name and url, but have no text to point at
     unknown.licenses[0].license == 'Some license'
     unknown.licenses[0].license_url == 'http://website.tld/'
-    unknown.licenses[0].license_text == null
+    unknown.licenses[0].license_key == null
   }
 
   def 'licenseReport with generateJsonFullReport and no dependencies'() {
@@ -2129,10 +2138,12 @@ final class LicensePluginJavaSpec extends Specification {
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
     def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    def report = new JsonSlurper().parseText(actualJsonFull.text)
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
     actualJsonFull.exists()
-    actualJsonFull.text.trim() == '[]'
+    report.license_texts == [:]
+    report.dependencies == []
   }
 }

@@ -2446,6 +2446,7 @@ final class LicensePluginAndroidSpec extends Specification {
     def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     def actualJsonFull = new File(reportFolder, "${taskName}.full.json")
     def openSourceJsonFull = new File(mainAssetsFolder, 'open_source_licenses.full.json')
+    def report = new JsonSlurper().parseText(openSourceJsonFull.text)
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -2455,7 +2456,8 @@ final class LicensePluginAndroidSpec extends Specification {
     openSourceJsonFull.exists()
     // The asset is a copy of the generated report and it carries the license text
     openSourceJsonFull.text == actualJsonFull.text
-    new JsonSlurper().parseText(openSourceJsonFull.text)[0].licenses[0].license_text == getLicenseText('mit.txt')
+    report.dependencies[0].licenses[0].license_key == 'mit'
+    report.license_texts['mit'] == getLicenseText('mit.txt')
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']

@@ -99,6 +99,15 @@ jobs:
           test -s test-apps/test-app-compose-json/src/main/assets/open_source_licenses.json
           test -s test-apps/test-app-compose-fulljson/src/main/assets/open_source_licenses.full.json
 
+      - name: Publish Test App Test Report
+        uses: EnricoMi/publish-unit-test-result-action@v2.24.0
+        if: always()
+        with:
+          check_name: Test App Results
+          comment_mode: off
+          action_fail_on_inconclusive: true
+          files: 'test-apps/**/build/test-results/**/TEST-*.xml'
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7.0.1
         if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
@@ -107,6 +116,7 @@ jobs:
           path: |
             test-apps/*/build/outputs/apk
             test-apps/*/build/reports
+            test-apps/*/build/test-results
 
   publish:
     name: Publish Snapshot

@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LicensesScreen() {
+internal fun LicensesScreen() {
   val context = LocalContext.current
   val libraries = remember { context.readOpenSourceLibraries() }
 

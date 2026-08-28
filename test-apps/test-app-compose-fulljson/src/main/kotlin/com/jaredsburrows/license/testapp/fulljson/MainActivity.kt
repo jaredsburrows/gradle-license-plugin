@@ -35,7 +35,8 @@ import androidx.compose.ui.unit.dp
  *
  * The report is copied to `src/main/assets/open_source_licenses.full.json` by
  * `copyJsonFullReportToAssets`. Because it carries the full license text, the app can show the
- * license of a library offline and without a WebView: pick a library, read `license_text`.
+ * license of a library offline and without a WebView: pick a library, look its license key up in
+ * `license_texts`.
  */
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,17 +51,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun LicensesScreen() {
+internal fun LicensesScreen() {
   val context = LocalContext.current
-  val libraries = remember { context.readOpenSourceLibraries() }
+  val report = remember { context.readOpenSourceReport() }
   var selected by remember { mutableStateOf<OpenSourceLibrary?>(null) }
 
   val library = selected
   if (library == null) {
-    LibraryListScreen(libraries, onLibraryClick = { selected = it })
+    LibraryListScreen(report.dependencies, onLibraryClick = { selected = it })
   } else {
     BackHandler { selected = null }
-    LibraryDetailScreen(library, onBack = { selected = null })
+    LibraryDetailScreen(report, library, onBack = { selected = null })
   }
 }
 
@@ -103,6 +104,7 @@ private fun LibraryListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LibraryDetailScreen(
+  report: OpenSourceReport,
   library: OpenSourceLibrary,
   onBack: () -> Unit,
 ) {
@@ -154,7 +156,7 @@ private fun LibraryDetailScreen(
         )
         Text(
           // Licenses that the plugin does not bundle have no text, only a URL.
-          text = license.text ?: license.url ?: "No license text available",
+          text = report.textFor(license) ?: license.url ?: "No license text available",
           style = MaterialTheme.typography.bodySmall,
           fontFamily = FontFamily.Monospace,
           modifier = Modifier.padding(top = 8.dp),
