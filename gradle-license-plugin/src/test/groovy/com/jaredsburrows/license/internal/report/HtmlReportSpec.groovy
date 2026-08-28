@@ -1,5 +1,6 @@
 package com.jaredsburrows.license.internal.report
 
+import com.jaredsburrows.license.internal.LicenseHelper
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
@@ -123,5 +124,56 @@ final class HtmlReportSpec extends Specification {
 
     then:
     assertHtml(expected, actual)
+  }
+
+  def 'getLicenseText returns the bundled text of a known license'() {
+    expect: 'the same text LicenseHelper resolves, so the HTML and JSON reports cannot drift apart'
+    HtmlReport.getLicenseText('apache-2.0.txt') == LicenseHelper.INSTANCE.licenseText('apache-2.0.txt')
+  }
+
+  def 'getLicenseText reports a license it cannot find rather than failing'() {
+    expect:
+    HtmlReport.getLicenseText('does-not-exist.txt') == 'Missing standard license text for: does-not-exist.txt'
+  }
+
+  def 'a bundled license is rendered as its full text'() {
+    given: 'a license the plugin bundles, matched by name because the url is not in the map'
+    def project = new Model(
+      name: 'name',
+      description: 'description',
+      licenses: [new License(name: 'The MIT License', url: 'https://spdx.org/licenses/MIT.html')],
+      url: 'url',
+      developers: [],
+      inceptionYear: 'year',
+      groupId: 'foo',
+      artifactId: 'bar',
+      version: '1.2.3',
+    )
+
+    when:
+    def actual = new HtmlReport([project], false).toString()
+
+    then: 'the text is inlined rather than linked'
+    actual.contains('Permission is hereby granted, free of charge')
+    !actual.contains('<a href="https://spdx.org/licenses/MIT.html">')
+  }
+
+  def 'showVersions leaves the version out when disabled'() {
+    given:
+    def project = new Model(
+      name: 'name',
+      description: '',
+      licenses: [],
+      url: '',
+      developers: [],
+      inceptionYear: '',
+      groupId: 'foo',
+      artifactId: 'bar',
+      version: '1.2.3',
+    )
+
+    expect:
+    new HtmlReport([project], true).toString().contains('name (1.2.3)')
+    !new HtmlReport([project], false).toString().contains('name (1.2.3)')
   }
 }

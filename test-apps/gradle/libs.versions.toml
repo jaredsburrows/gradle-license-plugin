@@ -1,0 +1,29 @@
+[versions]
+agp = "9.3.2"
+kotlin = "2.4.10"
+
+# Shared by every test app so they always build against the same SDK and Java level.
+targetSdk = "37"
+minSdk = "35"
+sourceCompatibility = "17"
+targetCompatibility = "17"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[libraries]
+activity-compose = { module = "androidx.activity:activity-compose", version = "1.13.0" }
+compose-bom = { module = "androidx.compose:compose-bom", version = "2026.08.00" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+core-ktx = { module = "androidx.core:core-ktx", version = "1.19.0" }
+# A MIT licensed dependency, so the reports show more than one kind of license.
+gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version = "1.2.29" }
+
+androidx-test-ext-junit = { module = "androidx.test.ext:junit-ktx", version = "1.3.0" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+junit = { module = "junit:junit", version = "4.13.2" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.17-beta-4" }

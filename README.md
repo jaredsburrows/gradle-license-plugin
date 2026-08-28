@@ -219,6 +219,61 @@ Note, if no license information is found for a component, the `licenses` element
 </details>
 
 <details>
+  <summary>Full JSON Example (full):</summary>
+
+Each license text is stored once under `license_texts` and referenced by `license_key`, so a report
+covering dozens of dependencies that share a handful of licenses stays small.
+
+```json
+{
+  "license_texts":{
+    "apache-2.0":"Apache License\nVersion 2.0, January 2004\nhttp://www.apache.org/licenses/ ...",
+    "mit":"MIT License\n\nCopyright (c) [year] [fullname]\n\nPermission is hereby granted, free of charge, ..."
+  },
+  "dependencies":[
+    {
+      "project":"Android GIF Drawable Library",
+      "description":"Views and Drawable for displaying animated GIFs for Android",
+      "version":"1.2.3",
+      "developers":[
+        "Karol Wr\\u00c3\\u00b3tniak"
+      ],
+      "url":"https://github.com/koral--/android-gif-drawable",
+      "year":null,
+      "licenses":[
+        {
+          "license":"The MIT License",
+          "license_url":"http://opensource.org/licenses/MIT",
+          "license_key":"mit"
+        }
+      ],
+      "dependency":"pl.droidsonroids.gif:android-gif-drawable:1.2.3"
+    },
+    {
+      "project":"design",
+      "description":null,
+      "version":"26.1.0",
+      "developers":[],
+      "url":null,
+      "year":null,
+      "licenses":[
+        {
+          "license":"The Apache Software License",
+          "license_url":"http://www.apache.org/licenses/LICENSE-2.0.txt",
+          "license_key":"apache-2.0"
+        }
+      ],
+      "dependency":"com.android.support:design:26.1.0"
+    }
+  ]
+}
+```
+
+Note, `license_key` is null for licenses that are not bundled with the plugin - `license` and
+`license_url` always hold what the POM declared, so use those for the ones without a text.
+</details>
+
+<details>
   <summary>Text Example (full):</summary>
 
 ```text
@@ -250,12 +305,14 @@ licenseReport {
   generateCsvReport = false
   generateHtmlReport = true
   generateJsonReport = false
+  generateJsonFullReport = false
   generateTextReport = false
 
   // Copy reports - These options are ignored for Java projects
   copyCsvReportToAssets = false
   copyHtmlReportToAssets = true
   copyJsonReportToAssets = false
+  copyJsonFullReportToAssets = false
   copyTextReportToAssets = false
   useVariantSpecificAssetDirs = false
   
@@ -268,6 +325,17 @@ licenseReport {
 ```
 
 The `copyHtmlReportToAssets` option in the above example would have no effect since the HTML report is disabled.
+
+The `generateJsonFullReport` option generates `open_source_licenses.full.json`, the JSON report plus
+the full text of every license the plugin knows about. It is meant for applications that render their
+own license screen instead of displaying the generated HTML report, so the license text ships with
+the app and no network call or WebView is needed. It is disabled by default because the license texts
+make the report larger.
+
+Every license text is stored once under the top level `license_texts`, keyed by license id, and each
+dependency references it with `license_key`. Dependencies overwhelmingly share a handful of licenses,
+so this keeps the report - and the memory an app needs to parse it - roughly an order of magnitude
+smaller than repeating the text per dependency.
 
 The `useVariantSpecificAssetDirs` allows the reports to be copied into the source set asset directory of the variant. For example, `licensePaidProductionReleaseReport` would put the reports in `src/paidProductionRelease/assets`. They are copied into `src/main/assets` by default.
 
@@ -289,10 +357,9 @@ licenseReport {
 
 ## Usage Example
 
-### Create an open source dialog
-<details open>
-  <summary>Jetpack Compose</summary>
+For complete, buildable examples - including license screens built from the JSON reports instead of a `WebView` - see [Test Apps](#test-apps).
 
+### Create an open source dialog
 
 ```kotlin
 import android.webkit.WebView
@@ -324,103 +391,8 @@ fun OpenSourceLicensesDialog(onDismiss: () -> Unit) {
   )
 }
 ```
-</details>
-
-<details open>
-  <summary>Kotlin</summary>
-  
-
-```kotlin
-import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
-import android.os.Bundle
-import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
-
-class OpenSourceLicensesDialog : DialogFragment() {
-
-  @SuppressLint("CommitTransaction")
-  fun showLicenses(activity: AppCompatActivity) {
-    val fragmentManager = activity.supportFragmentManager
-    val fragmentTransaction = fragmentManager.beginTransaction()
-    val previousFragment = fragmentManager.findFragmentByTag("dialog_licenses")
-    if (previousFragment != null) {
-      fragmentTransaction.remove(previousFragment)
-    }
-    fragmentTransaction.addToBackStack(null)
-
-    show(fragmentManager, "dialog_licenses")
-  }
-
-  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val webView = WebView(requireActivity())
-    webView.loadUrl("file:///android_asset/open_source_licenses.html")
-
-    return AlertDialog.Builder(requireActivity())
-      .setTitle("Open Source Licenses")
-      .setView(webView)
-      .setPositiveButton("OK"
-      ) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-      .create()
-  }
-}
-```
-</details>
-
-<details>
-  <summary>Java</summary>
-  
-```java
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.webkit.WebView;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-public final class OpenSourceLicensesDialog extends DialogFragment {
-
-  @SuppressLint("CommitTransaction")
-  public void showLicenses(AppCompatActivity activity) {
-    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    Fragment previousFragment = fragmentManager.findFragmentByTag("dialog_licenses");
-    if (previousFragment != null) {
-      fragmentTransaction.remove(previousFragment);
-    }
-    fragmentTransaction.addToBackStack(null);
-
-    show(fragmentManager, "dialog_licenses");
-  }
-
-  @Override
-  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    WebView webView = new WebView(requireActivity());
-    webView.loadUrl("file:///android_asset/open_source_licenses.html");
-
-    return new AlertDialog.Builder(requireActivity())
-      .setTitle("Open Source Licenses")
-      .setView(webView)
-      .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-      .create();
-  }
-}
-```
-</details>
 
 ### How to use it
-<details open>
-  <summary>Jetpack Compose</summary>
-
 
 ```kotlin
 var showLicenses by remember { mutableStateOf(false) }
@@ -433,32 +405,28 @@ if (showLicenses) {
   OpenSourceLicensesDialog(onDismiss = { showLicenses = false })
 }
 ```
-</details>
-
-<details open>
-  <summary>Kotlin</summary>
-  
-
-```kotlin
-OpenSourceLicensesDialog().showLicenses(this)
-```
-</details>
-
-<details>
-  <summary>Java</summary>
-  
-
-```java
-new OpenSourceLicensesDialog().showLicenses(this);
-```
-</details>
-
-
-Source: https://github.com/google/iosched/blob/2531cbdbe27e5795eb78bf47d27e8c1be494aad4/android/src/main/java/com/google/samples/apps/iosched/util/AboutUtils.java#L52
 
 <img src="https://web.archive.org/web/20241102172214/https://bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" alt="License HTML"/>
 
 Source: https://web.archive.org/web/20241102053331/https://bignerdranch.com/blog/open-source-licenses-and-android/
+
+## Test Apps
+
+[`test-apps/`](test-apps) holds three Jetpack Compose applications that apply the plugin from this
+repository (through an included build) and show a different way of surfacing the licenses:
+
+| Module | Report | Screen |
+|---|---|---|
+| [`test-app-compose-html`](test-apps/test-app-compose-html) | `open_source_licenses.html` | The generated HTML full screen in a `WebView` |
+| [`test-app-compose-json`](test-apps/test-app-compose-json) | `open_source_licenses.json` | A Compose list linking out to each license URL |
+| [`test-app-compose-fulljson`](test-apps/test-app-compose-fulljson) | `open_source_licenses.full.json` | A custom Compose license screen rendering the bundled license text offline |
+
+Each app generates its report and copies it into its variant source set as part of `assemble`, so building
+them exercises the plugin end to end:
+
+```console
+./gradlew -p test-apps build
+```
 
 ## License
 ```

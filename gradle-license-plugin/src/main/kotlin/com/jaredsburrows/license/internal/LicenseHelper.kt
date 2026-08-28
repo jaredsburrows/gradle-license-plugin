@@ -89,4 +89,33 @@ object LicenseHelper {
       "http://opensource.org/licenses/MPL-2.0" to "mpl-2.0.txt",
       "https://opensource.org/licenses/MPL-2.0" to "mpl-2.0.txt",
     )
+
+  /**
+   * See if the license is in [licenseMap] (which coalesces differing names and URLs to the same
+   * license text). If not, use the URL if present. Else "".
+   */
+  fun licenseKey(
+    name: String?,
+    url: String?,
+  ): String =
+    when {
+      // look up by url
+      licenseMap.containsKey(url) -> licenseMap.getValue(url as String)
+      // then by name
+      licenseMap.containsKey(name) -> licenseMap.getValue(name as String)
+      // otherwise, use the url as a key
+      else -> url.orEmpty()
+    }
+
+  /** The bundled license text for a [licenseMap] value (eg. "apache-2.0.txt"), null when unknown. */
+  fun licenseText(fileName: String): String? = LicenseHelper::class.java.getResource("/license/$fileName")?.readText()
+
+  /**
+   * The [licenseMap] file name (eg. "apache-2.0.txt") for the license identified by [name]/[url],
+   * or null when the plugin does not bundle that license.
+   */
+  fun licenseFileName(
+    name: String?,
+    url: String?,
+  ): String? = licenseKey(name, url).takeIf { licenseMap.values.contains(it) }
 }

@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import groovy.json.JsonSlurper
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
@@ -2024,5 +2025,125 @@ final class LicensePluginJavaSpec extends Specification {
     assertJson(expectedJson, actualJson.text)
     bundledJson.exists()
     assertJson(expectedJson, bundledJson.text)
+  }
+
+  def 'licenseReport does not generate the full JSON report by default'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    !actualJsonFull.exists()
+    !result.output.find('Wrote Full JSON report to .*')
+  }
+
+  def 'licenseReport with generateJsonFullReport interns the license text'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:design:26.1.0'
+        implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+        implementation 'group:name:1.0.0'
+      }
+
+      licenseReport {
+        generateJsonFullReport = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    def actualJson = new File(reportFolder, 'licenseReport.json')
+    def report = new JsonSlurper().parseText(actualJsonFull.text)
+    def known = report.dependencies.find { it.dependency == 'pl.droidsonroids.gif:android-gif-drawable:1.2.3' }
+    def unknown = report.dependencies.find { it.dependency == 'group:name:1.0.0' }
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    result.output.find("Wrote Full JSON report to .*${reportFolder}/licenseReport.full.json.")
+    actualJsonFull.exists()
+    // The full report is written next to, and not instead of, the regular JSON report
+    actualJson.exists()
+    report.dependencies.size() == 4
+
+    // Each license text is stored once, no matter how many dependencies share it
+    report.license_texts.keySet() == ['apache-2.0', 'mit'] as Set
+    report.license_texts['apache-2.0'] == getLicenseText('apache-2.0.txt')
+    report.license_texts['mit'] == getLicenseText('mit.txt')
+
+    // Everything the regular JSON report has, plus a key into license_texts
+    known.project == 'Android GIF Drawable Library'
+    known.description == 'Views and Drawable for displaying animated GIFs for Android'
+    known.version == '1.2.3'
+    known.url == 'https://github.com/koral--/android-gif-drawable'
+    known.licenses.size() == 1
+    known.licenses[0].license == 'The MIT License'
+    known.licenses[0].license_url == 'http://opensource.org/licenses/MIT'
+    known.licenses[0].license_key == 'mit'
+
+    // Licenses the plugin does not bundle keep their POM name and url, but have no text to point at
+    unknown.licenses[0].license == 'Some license'
+    unknown.licenses[0].license_url == 'http://website.tld/'
+    unknown.licenses[0].license_key == null
+  }
+
+  def 'licenseReport with generateJsonFullReport and no dependencies'() {
+    given:
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      licenseReport {
+        generateJsonFullReport = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    def report = new JsonSlurper().parseText(actualJsonFull.text)
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    actualJsonFull.exists()
+    report.license_texts == [:]
+    report.dependencies == []
   }
 }

@@ -3,6 +3,7 @@ package com.jaredsburrows.license
 import com.jaredsburrows.license.internal.ConsoleRenderer
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
+import com.jaredsburrows.license.internal.report.JsonFullReport
 import com.jaredsburrows.license.internal.report.JsonReport
 import com.jaredsburrows.license.internal.report.Report
 import com.jaredsburrows.license.internal.report.TextReport
@@ -67,6 +68,9 @@ internal abstract class LicenseReportTask
     var generateJsonReport = false
 
     @Input
+    var generateJsonFullReport = false
+
+    @Input
     var generateTextReport = false
 
     @Input
@@ -77,6 +81,9 @@ internal abstract class LicenseReportTask
 
     @Input
     var copyJsonReportToAssets = false
+
+    @Input
+    var copyJsonFullReportToAssets = false
 
     @Input
     var copyTextReportToAssets = false
@@ -139,6 +146,18 @@ internal abstract class LicenseReportTask
         // If android project and copy enabled, copy to asset directory
         if (!variantName.isNullOrEmpty() && copyJsonReportToAssets) {
           copyReport(file = jsonFile) { jsonReport }
+        }
+      }
+
+      // Create full JSON report
+      if (generateJsonFullReport) {
+        val jsonFullReport = JsonFullReport(projects)
+        val jsonFullFile = File(outputDir, "$name.${jsonFullReport.extension()}")
+        createReport(file = jsonFullFile) { jsonFullReport }
+
+        // If android project and copy enabled, copy to asset directory
+        if (!variantName.isNullOrEmpty() && copyJsonFullReportToAssets) {
+          copyReport(file = jsonFullFile) { jsonFullReport }
         }
       }
 
