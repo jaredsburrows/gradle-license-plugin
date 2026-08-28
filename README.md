@@ -406,9 +406,13 @@ if (showLicenses) {
 }
 ```
 
-<img src="https://web.archive.org/web/20241102172214/https://bignerdranch.com/assets/img/blog/2015/07/screenshot-gmail.png" alt="License HTML"/>
+## Examples - from test-apps
 
-Source: https://web.archive.org/web/20241102053331/https://bignerdranch.com/blog/open-source-licenses-and-android/
+| Type | License Screen | License Details |
+| --- | --- | --- |
+| HTML | <img width="1080" height="2340" alt="01-html-licenses" src="https://github.com/user-attachments/assets/f2b1ed60-39c1-417d-ad17-ace1dc1aaa0c" /> | |
+| JSON | <img width="1080" height="2340" alt="03-json-license-list" src="https://github.com/user-attachments/assets/35bb82dd-9a8e-4ba1-8576-c2eb7a63f4f1" /> | |
+| JSON Full | <img width="1080" height="2340" alt="05-fulljson-library-list" src="https://github.com/user-attachments/assets/13244d84-0547-4517-9970-4b70e2905685" /> | <img width="1080" height="2340" alt="06-fulljson-license-apache" src="https://github.com/user-attachments/assets/83bc60b8-eccd-4b1c-8be1-e8df4329dbcc" /> |
 
 ## Test Apps
 
