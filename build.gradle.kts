@@ -1,8 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -14,55 +14,56 @@ plugins {
   alias(libs.plugins.plugin.publish) apply false
   alias(libs.plugins.versions)
   alias(libs.plugins.license)
-  id 'java-gradle-plugin'
-  id 'java-library'
-  id 'groovy'
-  id 'idea'
+  id("java-gradle-plugin")
+  id("java-library")
+  id("groovy")
+  id("idea")
 }
 
-tasks.withType(Wrapper).configureEach {
+tasks.withType<Wrapper>().configureEach {
   distributionType = Wrapper.DistributionType.ALL
 }
 
 idea {
   module {
-    downloadSources = true
-    downloadJavadoc = true
+    isDownloadSources = true
+    isDownloadJavadoc = true
   }
 }
 
 subprojects {
   // Pin the Java/Kotlin toolchain to JDK 17 (AGP 9 / Gradle 9 minimum) so compilation, tests and
   // IDE analysis use a consistent JDK regardless of the JDK used to launch Gradle.
-  pluginManager.withPlugin('org.jetbrains.kotlin.jvm') {
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
     kotlin {
       jvmToolchain(17)
     }
   }
 
-  tasks.withType(Jar).configureEach {
-    def dateFile = layout.buildDirectory.file('jar-manifest-date.txt').get().asFile
+  tasks.withType<Jar>().configureEach {
+    val dateFile = layout.buildDirectory.file("jar-manifest-date.txt").get().asFile
     if (!dateFile.exists()) {
-      def date = DateTimeFormatter.ofPattern('EEE MMM dd HH:mm:ss zzz yyyy').
-        format(ZonedDateTime.now())
+      val date = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
+        .format(ZonedDateTime.now())
       dateFile.parentFile.mkdirs()
-      dateFile.text = date.trim()
+      dateFile.writeText(date.trim())
     }
 
     manifest {
       attributes(
-        'Created-By': POM_DEVELOPER_NAME,
-        'Implementation-Title': POM_NAME,
-        'Implementation-Version': VERSION_NAME,
-        'Implementation-Vendor': POM_DEVELOPER_NAME,
-        'Built-By': System.getProperty('user.name'),
-        'Built-Date': dateFile.text.trim(),
-        'Built-JDK': System.getProperty('java.version'),
-        'Built-Gradle': gradle.gradleVersion)
+        "Created-By" to project.property("POM_DEVELOPER_NAME") as String,
+        "Implementation-Title" to project.property("POM_NAME") as String,
+        "Implementation-Version" to project.property("VERSION_NAME") as String,
+        "Implementation-Vendor" to project.property("POM_DEVELOPER_NAME") as String,
+        "Built-By" to System.getProperty("user.name"),
+        "Built-Date" to dateFile.readText().trim(),
+        "Built-JDK" to System.getProperty("java.version"),
+        "Built-Gradle" to project.gradle.gradleVersion,
+      )
     }
   }
 
-  tasks.withType(KotlinJvmCompile).configureEach {
+  tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_17)
       languageVersion.set(KotlinVersion.KOTLIN_2_0)
@@ -75,31 +76,31 @@ subprojects {
     }
   }
 
-  tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+  tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = JavaVersion.VERSION_17.toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
 
-    configure(options) {
-      compilerArgs << '-Xlint:all'
-      compilerArgs << '-Xlint:-options'
-      encoding = 'utf-8'
-      fork = true
+    options.apply {
+      compilerArgs.add("-Xlint:all")
+      compilerArgs.add("-Xlint:-options")
+      encoding = "utf-8"
+      isFork = true
     }
   }
 
-  tasks.withType(GroovyCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+  tasks.withType<GroovyCompile>().configureEach {
+    sourceCompatibility = JavaVersion.VERSION_17.toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
 
-    configure(options) {
-      compilerArgs << '-Xlint:all'
-      compilerArgs << '-Xlint:-options'
-      encoding = 'utf-8'
-      fork = true
+    options.apply {
+      compilerArgs.add("-Xlint:all")
+      compilerArgs.add("-Xlint:-options")
+      encoding = "utf-8"
+      isFork = true
     }
   }
 
-  tasks.withType(Test).configureEach {
+  tasks.withType<Test>().configureEach {
     useJUnitPlatform() // Ensure JUnit Platform is used if you are using JUnit 5 or Spock 2.x
 
     testLogging {
@@ -109,12 +110,15 @@ subprojects {
       showStackTraces = true
 
       // Check if running on CI and set events accordingly
-      events = System.getenv("CI") != null ?
-        TestLogEvent.values() as Set :
-        [TestLogEvent.FAILED, TestLogEvent.SKIPPED]
+      events =
+        if (System.getenv("CI") != null) {
+          TestLogEvent.values().toSet()
+        } else {
+          setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+        }
     }
 
-    def maxWorkerCount = gradle.startParameter.maxWorkerCount
-    maxParallelForks = (maxWorkerCount < 2) ? 1 : maxWorkerCount / 2
+    val maxWorkerCount = project.gradle.startParameter.maxWorkerCount
+    maxParallelForks = if (maxWorkerCount < 2) 1 else maxWorkerCount / 2
   }
 }

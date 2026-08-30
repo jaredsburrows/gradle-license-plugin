@@ -7,8 +7,8 @@ pluginManagement {
 }
 
 plugins {
-  id 'com.gradle.develocity' version '4.5.0'
-  id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+  id("com.gradle.develocity") version "4.5.0"
+  id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 dependencyResolutionManagement {
@@ -23,13 +23,13 @@ dependencyResolutionManagement {
 
 develocity {
   buildScan {
-    termsOfUseUrl = 'https://gradle.com/terms-of-service'
-    termsOfUseAgree = 'yes'
-    def isCI = System.getenv('CI') != null
+    termsOfUseUrl = "https://gradle.com/terms-of-service"
+    termsOfUseAgree = "yes"
+    val isCI = System.getenv("CI") != null
     publishing.onlyIf { isCI }
   }
 }
 
-rootProject.name = 'gradle-license-plugin'
+rootProject.name = "gradle-license-plugin"
 
-include ':gradle-license-plugin'
+include(":gradle-license-plugin")
