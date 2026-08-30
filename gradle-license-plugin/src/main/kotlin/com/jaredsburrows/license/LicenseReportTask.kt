@@ -343,31 +343,31 @@ internal abstract class LicenseReportTask
     }
 
     /**
-     * This POM and its ancestors, nearest first.
-     *
-     * Lazy, so a caller that only needs the nearest POM declaring some value does not pay to read
-     * the rest of the chain. Iterative rather than recursive, and guarded by a visited set and
-     * [MAX_PARENT_DEPTH]: a POM naming itself as its own parent, or a cycle between two POMs, would
-     * otherwise walk until the stack overflows.
+     * This POM and its ancestors, nearest first, lazily. Stops at a POM already seen, so a
+     * self-parent or an A -> B -> A cycle terminates instead of overflowing the stack.
      */
     private fun parentChain(
       mavenReader: MavenXpp3Reader,
       pomFile: File?,
       loggedMissingParentPomCoordinates: MutableSet<String>,
     ): Sequence<Pair<File, Model>> =
-      sequence {
+      // Sequence {} rather than a shared generateSequence: each iteration needs its own visited
+      // set, or consuming the chain twice would yield nothing the second time.
+      Sequence {
         val visited = hashSetOf<String>()
-        var current = pomFile
-        var depth = 0
-        while (depth++ < MAX_PARENT_DEPTH) {
-          val file = current ?: break
-          if (file.isNullOrEmpty() || !visited.add(file.absolutePath)) {
-            break
+
+        fun node(file: File?): Pair<File, Model>? {
+          val candidate = file ?: return null
+          if (candidate.isNullOrEmpty() || !visited.add(candidate.absolutePath)) {
+            return null
           }
-          val model = readModel(mavenReader, file) ?: break
-          yield(file to model)
-          current = getParentPomFile(model, loggedMissingParentPomCoordinates)
+          return readModel(mavenReader, candidate)?.let { candidate to it }
         }
+
+        generateSequence(node(pomFile)) { (_, model) ->
+          node(getParentPomFile(model, loggedMissingParentPomCoordinates))
+        }.take(MAX_PARENT_DEPTH)
+          .iterator()
       }
 
     private fun findLicenses(
@@ -489,29 +489,21 @@ internal abstract class LicenseReportTask
       mavenReader: MavenXpp3Reader,
       loggedMissingParentPomCoordinates: MutableSet<String>,
     ): Map<String, String> {
-      // Walk to the root of the chain first, guarded the same way as parentChain: this starts from
-      // a Model rather than a File, so it cannot reuse it directly.
-      val chain = mutableListOf(this)
+      // Guarded like parentChain, but seeded from a Model rather than a File, so it cannot reuse it.
       val visited = hashSetOf<String>()
-      var current: Model = this
-      var depth = 0
-      while (depth++ < MAX_PARENT_DEPTH) {
-        val parentPomFile = getParentPomFile(current, loggedMissingParentPomCoordinates) ?: break
-        if (!visited.add(parentPomFile.absolutePath)) {
-          break
-        }
-        current = readModel(mavenReader, parentPomFile) ?: break
-        chain += current
-      }
-
-      // Root-most first, so a nearer POM's properties take precedence.
-      val merged = linkedMapOf<String, String>()
-      chain.asReversed().forEach { model ->
-        model.properties.stringPropertyNames().forEach { key ->
-          merged[key] = model.properties.getProperty(key).orEmpty()
-        }
-      }
-      return merged
+      return generateSequence(this) { model ->
+        getParentPomFile(model, loggedMissingParentPomCoordinates)
+          ?.takeIf { visited.add(it.absolutePath) }
+          ?.let { readModel(mavenReader, it) }
+      }.take(MAX_PARENT_DEPTH)
+        .toList()
+        // Root-most first, so a nearer POM's properties overwrite an ancestor's.
+        .asReversed()
+        .flatMap { model ->
+          model.properties.stringPropertyNames().map { key ->
+            key to model.properties.getProperty(key).orEmpty()
+          }
+        }.toMap()
     }
 
     private fun Model.pomDescription(): String = description.orEmpty().trim()

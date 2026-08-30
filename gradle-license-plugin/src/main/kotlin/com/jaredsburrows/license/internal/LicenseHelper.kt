@@ -1,16 +1,10 @@
 package com.jaredsburrows.license.internal
 
 /**
- * Map License name and URL to license text file.
+ * Map License name and URL to license text file, matched after normalisation so one alias covers
+ * every spelling of the same thing (scheme, casing, www, trailing slash, extension, punctuation).
  *
- * Based on "popular and widely-used or with strong communities" found here:
- * https://opensource.org/licenses/category.
- * License text from: https://github.com/github/choosealicense.com/blob/gh-pages/_licenses.
- *
- * Names and URLs are matched after normalisation, so a single alias covers every spelling of the
- * same thing: `http` and `https`, a leading `www.`, a trailing slash, a `.txt`/`.html`/`.php`
- * suffix, any casing, and surrounding whitespace all collapse to one key. That is why the tables
- * below list each name or URL only once even though POMs spell them many ways.
+ * Based on https://opensource.org/licenses/category; text from choosealicense and the SPDX list.
  */
 object LicenseHelper {
   // Deliberately not "." - it separates the parts of a version number ("2.0").
@@ -32,11 +26,7 @@ object LicenseHelper {
   private val LOCALE = Regex("\\.[a-z]{2}$")
   private val PORT = Regex("^([^/]+):\\d+")
 
-  /**
-   * URLs that do not name a specific variant of a license family.
-   * opensource.org/licenses/bsd-license.php is the retired OSI page that POMs cite for both the
-   * 2-clause and 3-clause BSD licenses, so a name that does state the variant wins over it.
-   */
+  /** URLs cited for more than one variant of a family, so a name stating the variant wins. */
   private val AMBIGUOUS_URLS: Set<String> = setOf("opensource.org/licenses/bsd-license")
 
   /** Canonical SPDX identifier to the bundled license text file. */
@@ -289,12 +279,8 @@ object LicenseHelper {
     )
 
   /**
-   * SPDX identifiers, lower cased, for case-insensitive lookup of a bare identifier.
-   *
-   * SPDX deprecated the bare GNU identifiers in list v3.0 (2018) in favour of an explicit
-   * "-only"/"-or-later" suffix, and that is what current tooling emits - logback, for one, declares
-   * "LGPL-2.1-only". Both spellings resolve to the same bundled text, since the plugin reports the
-   * license rather than the choice of version.
+   * SPDX identifiers, lower cased. SPDX deprecated the bare GNU ids in 2018, so the "-only" and
+   * "-or-later" spellings current tooling emits map to the same text.
    */
   private val spdxIds: Map<String, String> =
     buildMap {
@@ -311,11 +297,7 @@ object LicenseHelper {
         .forEach { put("$it with classpath-exception-2.0", "GPL-2.0-with-classpath-exception") }
     }
 
-  /**
-   * Strip everything that varies between spellings of the same URL: the scheme, a leading "www.",
-   * a trailing slash and a file extension. `https://www.Apache.org/licenses/LICENSE-2.0.txt` and
-   * `http://apache.org/licenses/LICENSE-2.0` both become `apache.org/licenses/license-2.0`.
-   */
+  /** Strip everything that varies between spellings: scheme, www, port, query, slash, extension. */
   private fun normalizeUrl(url: String): String {
     var value = url.trim().lowercase().replace(WHITESPACE, "")
     value = value.substringAfter("://", value)
@@ -337,11 +319,7 @@ object LicenseHelper {
     return value.trimEnd('/')
   }
 
-  /**
-   * Reduce a license name to its distinguishing words: lower case, punctuation removed, runs of
-   * whitespace collapsed, a leading "the" dropped and "version 2.0"/"v2.0" folded to "2.0".
-   * `The Apache Software License, Version 2.0` becomes `apache software license 2.0`.
-   */
+  /** Reduce a name to its distinguishing words: "The Apache Software License, Version 2.0" -> "apache software license 2.0". */
   private fun normalizeName(name: String): String {
     var value = name.trim().lowercase()
     value = value.replace(PUNCTUATION, " ")
@@ -365,12 +343,8 @@ object LicenseHelper {
     spdxIds[name.trim().lowercase().replace(WHITESPACE, " ")] ?: nameAliases[normalizeName(name)]
 
   /**
-   * The canonical SPDX identifier for [name]/[url], or null when it is not one we bundle.
-   *
-   * The URL is consulted first because it is the more precise signal, except for the handful of
-   * URLs in [AMBIGUOUS_URLS] that do not name a specific variant. For those the name decides when
-   * it says something more specific, so a POM such as hamcrest's - "New BSD License" pointing at
-   * the retired opensource.org/licenses/bsd-license.php page - is not reported as BSD 2-Clause.
+   * The SPDX id for [name]/[url], or null. URL first, since it is the more precise signal - unless
+   * it is in [AMBIGUOUS_URLS], where a name that states the variant wins (hamcrest, #846).
    */
   private fun spdxId(
     name: String?,
