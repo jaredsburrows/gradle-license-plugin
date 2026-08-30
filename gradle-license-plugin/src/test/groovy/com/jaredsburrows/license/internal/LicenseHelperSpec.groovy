@@ -323,6 +323,122 @@ final class LicenseHelperSpec extends Specification {
     'http://website.tld'|| false
   }
 
+  // ---------------------------------------------------------------------------------------------
+  // Licenses added on top of the original eleven.
+  // ---------------------------------------------------------------------------------------------
+
+  @Unroll
+  def 'the added license #id resolves by bare SPDX id'() {
+    expect:
+    HELPER.licenseFileName(id, null) == expected
+
+    where:
+    id                                 || expected
+    '0BSD'                             || '0bsd.txt'
+    'AGPL-3.0'                         || 'agpl-3.0.txt'
+    'Apache-1.1'                       || 'apache-1.1.txt'
+    'BSD-4-Clause'                     || 'bsd-4-clause.txt'
+    'CC-BY-4.0'                        || 'cc-by-4.0.txt'
+    'CC-BY-SA-4.0'                     || 'cc-by-sa-4.0.txt'
+    'CDDL-1.0'                         || 'cddl-1.0.txt'
+    'CDDL-1.1'                         || 'cddl-1.1.txt'
+    'EPL-1.0'                          || 'epl-1.0.txt'
+    'GPL-2.0-with-classpath-exception' || 'gpl-2.0-with-classpath-exception.txt'
+    'ISC'                              || 'isc.txt'
+    'LGPL-2.0'                         || 'lgpl-2.0.txt'
+    'MIT-0'                            || 'mit-0.txt'
+    'Unlicense'                        || 'unlicense.txt'
+  }
+
+  @Unroll
+  def 'the added license resolves by name - #name'() {
+    expect:
+    HELPER.licenseFileName(name, null) == expected
+
+    where:
+    name                                                     || expected
+    'BSD Zero Clause License'                                || '0bsd.txt'
+    'GNU Affero General Public License v3.0'                 || 'agpl-3.0.txt'
+    'Apache License 1.1'                                     || 'apache-1.1.txt'
+    'The Apache Software License, Version 1.1'               || 'apache-1.1.txt'
+    'BSD 4-Clause "Original" or "Old" License'               || 'bsd-4-clause.txt'
+    'Creative Commons Attribution 4.0 International'         || 'cc-by-4.0.txt'
+    'Common Development and Distribution License (CDDL) v1.0'|| 'cddl-1.0.txt'
+    'CDDL 1.1'                                               || 'cddl-1.1.txt'
+    'Eclipse Public License 1.0'                             || 'epl-1.0.txt'
+    'Eclipse Public License v1.0'                            || 'epl-1.0.txt'
+    'Eclipse Public License - v 1.0'                         || 'epl-1.0.txt'
+    'ISC License'                                            || 'isc.txt'
+    'GNU Lesser General Public License v2.0'                 || 'lgpl-2.0.txt'
+    'MIT No Attribution'                                     || 'mit-0.txt'
+    'The Unlicense'                                          || 'unlicense.txt'
+    'GNU General Public License v2.0 w/Classpath exception'  || 'gpl-2.0-with-classpath-exception.txt'
+  }
+
+  @Unroll
+  def 'the added license resolves by url - #url'() {
+    expect:
+    HELPER.licenseFileName(null, url) == expected
+
+    where:
+    url                                                  || expected
+    'https://www.eclipse.org/legal/epl-v10.html'         || 'epl-1.0.txt'
+    'http://www.opensource.org/licenses/cddl1.php'       || null
+    'https://opensource.org/licenses/CDDL-1.0'           || 'cddl-1.0.txt'
+    'https://opensource.org/licenses/ISC'                || 'isc.txt'
+    'https://unlicense.org/'                             || 'unlicense.txt'
+    'https://opensource.org/licenses/0BSD'               || '0bsd.txt'
+    'https://www.gnu.org/licenses/agpl-3.0.txt'          || 'agpl-3.0.txt'
+    'https://www.gnu.org/licenses/lgpl-2.0.txt'          || 'lgpl-2.0.txt'
+    'https://creativecommons.org/licenses/by/4.0/'       || 'cc-by-4.0.txt'
+    'https://creativecommons.org/licenses/by-sa/4.0/'    || 'cc-by-sa-4.0.txt'
+    'https://openjdk.java.net/legal/gplv2+ce.html'       || 'gpl-2.0-with-classpath-exception.txt'
+    'https://spdx.org/licenses/EPL-1.0.html'             || 'epl-1.0.txt'
+    'https://spdx.org/licenses/ISC.html'                 || 'isc.txt'
+  }
+
+  @Unroll
+  def 'the Eclipse Distribution License maps to the BSD 3-Clause text - #nameOrUrl'() {
+    expect: 'EDL-1.0 is textually BSD-3-Clause, so it aliases rather than duplicating the file'
+    HELPER.licenseFileName(name, url) == 'bsd-3-clause.txt'
+
+    where:
+    nameOrUrl                   | name                              | url
+    'the name'                  | 'Eclipse Distribution License 1.0'| null
+    'the dashed name'           | 'Eclipse Distribution License - v 1.0' | null
+    'the short name'            | 'EDL 1.0'                         | null
+    'the url'                   | null | 'http://www.eclipse.org/org/documents/edl-v10.html'
+  }
+
+  @Unroll
+  def 'the added licenses stay distinct from their neighbours - #a vs #b'() {
+    expect:
+    HELPER.licenseFileName(a, null) != HELPER.licenseFileName(b, null)
+
+    where:
+    a          | b
+    'EPL-1.0'  | 'EPL-2.0'
+    'CDDL-1.0' | 'CDDL-1.1'
+    'LGPL-2.0' | 'LGPL-2.1'
+    'GPL-2.0'  | 'GPL-2.0-with-classpath-exception'
+    'AGPL-3.0' | 'GPL-3.0'
+    'MIT'      | 'MIT-0'
+    'Apache-1.1' | 'Apache-2.0'
+    'BSD-3-Clause' | 'BSD-4-Clause'
+    'CC-BY-4.0' | 'CC-BY-SA-4.0'
+    'CC0-1.0'  | 'CC-BY-4.0'
+  }
+
+  def 'the classpath exception text contains both the GPL and the exception'() {
+    when:
+    def text = HELPER.licenseText('gpl-2.0-with-classpath-exception.txt')
+
+    then:
+    text.contains('GNU GENERAL PUBLIC LICENSE')
+    text.contains('CLASSPATH EXCEPTION')
+    text.contains('link this library with independent modules')
+  }
+
   @Unroll
   def 'licenseFileName only resolves licenses the plugin bundles - #description'() {
     expect:
