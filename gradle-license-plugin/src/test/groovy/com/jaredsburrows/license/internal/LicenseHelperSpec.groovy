@@ -127,7 +127,7 @@ final class LicenseHelperSpec extends Specification {
     url                                                        || expected
     'https://opensource.org/licenses/Apache-2.0'               || 'apache-2.0.txt'
     'http://opensource.org/licenses/BSD-2-Clause'              || 'bsd-2-clause.txt'
-    'http://www.opensource.org/licenses/bsd-license.php'       || 'bsd-2-clause.txt'
+    'http://www.opensource.org/licenses/bsd-license.php'       || null
     'https://opensource.org/licenses/BSD-3-Clause'             || 'bsd-3-clause.txt'
     'https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt'|| 'epl-2.0.txt'
     'https://opensource.org/licenses/EPL-2.0'                  || 'epl-2.0.txt'
@@ -417,8 +417,8 @@ final class LicenseHelperSpec extends Specification {
     and: 'the same url with a 2-clause name still resolves to 2-clause'
     HELPER.licenseFileName('BSD 2-Clause License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-2-clause.txt'
 
-    and: 'and on its own, with nothing more specific to go on, it keeps its historical answer'
-    HELPER.licenseFileName(null, 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-2-clause.txt'
+    and: 'on its own it names no variant, so no text is asserted - the report links it instead'
+    HELPER.licenseFileName(null, 'http://www.opensource.org/licenses/bsd-license.php') == null
   }
 
   @Unroll
@@ -540,4 +540,72 @@ final class LicenseHelperSpec extends Specification {
     'an unbundled license'    | 'Some license'    | 'http://website.tld/'                            || null
     'no license at all'       | null              | null                                             || null
   }
+
+  // -------------------------------------------------------------------------------------------
+  // Real POMs that produced a WRONG license, found by probing ~1300 POMs from the local caches.
+  // -------------------------------------------------------------------------------------------
+
+  def 'BUG: an ambiguous url is not used as a fallback when the name says nothing'() {
+    expect: 'jline declares "The BSD License" against the retired OSI page but is BSD-3-Clause'
+    HELPER.licenseFileName('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == null
+
+    and: 'so the report links the page instead of asserting a variant'
+    HELPER.licenseKey('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php') ==
+      'http://www.opensource.org/licenses/bsd-license.php'
+
+    and: 'a name that does state the variant still wins'
+    HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-3-clause.txt'
+  }
+
+  def 'BUG: the glassfish CDDL+GPL page names two licenses, so the name decides'() {
+    given: 'jaxb-api cites the same dual-license url for both of its license entries'
+    def url = 'https://glassfish.java.net/public/CDDL+GPL_1_1.html'
+
+    expect: 'the GPL arm is no longer swallowed and reported as CDDL'
+    HELPER.licenseFileName('GPL2 w/ CPE', url) == 'gpl-2.0-with-classpath-exception.txt'
+
+    and: 'the CDDL arm still resolves'
+    HELPER.licenseFileName('CDDL 1.1', url) == 'cddl-1.1.txt'
+
+    and: 'the two arms no longer collapse onto one key'
+    HELPER.licenseKey('GPL2 w/ CPE', url) != HELPER.licenseKey('CDDL 1.1', url)
+  }
+
+  def 'BUG: the Common Public License is not the Eclipse Public License'() {
+    expect: 'junit 4.10 declares CPL-1.0, which the plugin does not bundle'
+    HELPER.licenseFileName('Common Public License Version 1.0', 'http://www.opensource.org/licenses/cpl1.0.txt') == null
+
+    and: 'it must not be labelled with the EPL text, which is a different license'
+    HELPER.licenseFileName('Common Public License 1.0', null) != 'epl-1.0.txt'
+  }
+
+  @Unroll
+  def 'a locale path segment does not defeat the url - #url'() {
+    expect: 'h2 cites the localised Mozilla url'
+    HELPER.licenseFileName(null, url) == 'mpl-2.0.txt'
+
+    where:
+    url << [
+      'https://www.mozilla.org/en-US/MPL/2.0/',
+      'https://www.mozilla.org/MPL/2.0/',
+      'https://www.mozilla.org/fr/MPL/2.0/',
+    ]
+  }
+
+  @Unroll
+  def 'a space-separated SPDX id resolves like its hyphenated form - #name'() {
+    expect:
+    HELPER.licenseFileName(name, null) == expected
+
+    where:
+    name          || expected
+    'MPL 2.0'     || 'mpl-2.0.txt'
+    'EPL 2.0'     || 'epl-2.0.txt'
+    'GPL 3.0'     || 'gpl-3.0.txt'
+    'LGPL 2.1'    || 'lgpl-2.1.txt'
+    'AGPL 3.0'    || 'agpl-3.0.txt'
+    'CC0 1.0'     || 'cc0-1.0.txt'
+    'MIT 0'       || 'mit-0.txt'
+  }
+
 }

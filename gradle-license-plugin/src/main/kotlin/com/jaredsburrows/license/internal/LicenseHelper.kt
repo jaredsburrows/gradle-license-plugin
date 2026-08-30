@@ -24,10 +24,8 @@ object LicenseHelper {
 
   private val EXTENSION = Regex("(\\.(txt|html?|php))+$")
   private val LOCALE = Regex("\\.[a-z]{2}$")
+  private val LOCALE_SEGMENT = Regex("^([^/]+)/[a-z]{2}(-[a-z]{2})?/")
   private val PORT = Regex("^([^/]+):\\d+")
-
-  /** URLs cited for more than one variant of a family, so a name stating the variant wins. */
-  private val AMBIGUOUS_URLS: Set<String> = setOf("opensource.org/licenses/bsd-license")
 
   /** Canonical SPDX identifier to the bundled license text file. */
   private val texts =
@@ -179,7 +177,6 @@ object LicenseHelper {
       "edl 1.0" to "BSD-3-Clause",
       // Eclipse Public License 1.0
       "eclipse public license 1.0" to "EPL-1.0",
-      "common public license 1.0" to "EPL-1.0",
       // GNU General Public License v2.0 with the Classpath exception
       "gnu general public license 2.0 w/classpath exception" to "GPL-2.0-with-classpath-exception",
       "gnu general public license 2.0 with the classpath exception" to "GPL-2.0-with-classpath-exception",
@@ -204,7 +201,8 @@ object LicenseHelper {
       "opensource.org/licenses/apache-2.0" to "Apache-2.0",
       // BSD 2-Clause "Simplified" License
       "opensource.org/licenses/bsd-2-clause" to "BSD-2-Clause",
-      "opensource.org/licenses/bsd-license" to "BSD-2-Clause",
+      // opensource.org/licenses/bsd-license.php is deliberately absent: the retired OSI page is
+      // cited for both the 2- and 3-clause licenses, so only a name can say which (jline, #846).
       // BSD 3-Clause "New" or "Revised" License
       "opensource.org/licenses/bsd-3-clause" to "BSD-3-Clause",
       // Creative Commons Zero v1.0 Universal
@@ -252,9 +250,9 @@ object LicenseHelper {
       // Common Development and Distribution License 1.0
       "opensource.org/licenses/cddl-1.0" to "CDDL-1.0",
       "opensource.org/licenses/cddl1" to "CDDL-1.0",
-      "glassfish.dev.java.net/public/cddlv1.0" to "CDDL-1.0",
       // Common Development and Distribution License 1.1
-      "glassfish.java.net/public/cddl+gpl_1_1" to "CDDL-1.1",
+      // glassfish CDDL+GPL is deliberately absent: one page covering two licenses, and both arms
+      // of jaxb-api cite it, so aliasing it would swallow the GPL arm.
       "oracle.com/technetwork/licenses/cddl-1.1" to "CDDL-1.1",
       // Eclipse Distribution License 1.0 is the BSD 3-Clause text
       "eclipse.org/org/documents/edl-v10" to "BSD-3-Clause",
@@ -316,6 +314,8 @@ object LicenseHelper {
     if (value.contains('/')) {
       value = value.replace(LOCALE, "")
     }
+    // mozilla.org/en-US/MPL/2.0 - the locale can be a path segment rather than a suffix.
+    value = value.replace(LOCALE_SEGMENT, "$1/")
     return value.trimEnd('/')
   }
 
@@ -339,28 +339,22 @@ object LicenseHelper {
   }
 
   /** The SPDX identifier a name states, or null. */
-  private fun spdxIdFromName(name: String): String? =
-    spdxIds[name.trim().lowercase().replace(WHITESPACE, " ")] ?: nameAliases[normalizeName(name)]
+  private fun spdxIdFromName(name: String): String? {
+    val plain = name.trim().lowercase().replace(WHITESPACE, " ")
+    // "MPL 2.0" names the same license as "MPL-2.0"; POMs spell it both ways.
+    return spdxIds[plain] ?: spdxIds[plain.replace(' ', '-')] ?: nameAliases[normalizeName(name)]
+  }
 
   /**
-   * The SPDX id for [name]/[url], or null. URL first, since it is the more precise signal - unless
-   * it is in [AMBIGUOUS_URLS], where a name that states the variant wins (hamcrest, #846).
+   * The SPDX id for [name]/[url], or null. URL first, since it is the more precise signal. A URL
+   * that names more than one license is simply not aliased, so the name decides (hamcrest, #846).
    */
   private fun spdxId(
     name: String?,
     url: String?,
   ): String? {
-    var fromUrl: String? = null
-    var urlIsAmbiguous = false
-    if (!url.isNullOrBlank()) {
-      fromUrl = spdxIdFromUrl(url)
-      urlIsAmbiguous = normalizeUrl(url) in AMBIGUOUS_URLS
-    }
-    if (fromUrl != null && !urlIsAmbiguous) return fromUrl
-    if (!name.isNullOrBlank()) {
-      spdxIdFromName(name)?.let { return it }
-    }
-    return fromUrl
+    url?.takeIf { it.isNotBlank() }?.let { spdxIdFromUrl(it) }?.let { return it }
+    return name?.takeIf { it.isNotBlank() }?.let { spdxIdFromName(it) }
   }
 
   /**
