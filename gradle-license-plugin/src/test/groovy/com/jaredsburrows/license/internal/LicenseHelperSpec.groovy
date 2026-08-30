@@ -540,4 +540,85 @@ final class LicenseHelperSpec extends Specification {
     'an unbundled license'    | 'Some license'    | 'http://website.tld/'                            || null
     'no license at all'       | null              | null                                             || null
   }
+
+  @Unroll
+  def 'the bundled text really is #fileName, not another license'() {
+    given: 'the phrase, together with what must be absent, identifies exactly one bundled license'
+    def text = HELPER.licenseText(fileName)
+
+    expect:
+    text.contains(mustContain)
+    mustNotContain.every { !text.contains(it) }
+
+    where:
+    fileName | mustContain | mustNotContain
+    '0bsd.txt'                             | 'BSD Zero Clause License'                               | []
+    'agpl-3.0.txt'                         | 'Version 3, 19 November 2007'                           | []
+    'apache-1.1.txt'                       | 'The Apache Software License, Version 1.1'              | []
+    'apache-2.0.txt'                       | 'Version 2.0, January 2004'                             | []
+    'bsd-2-clause.txt'                     | 'BSD 2-Clause License'                                  | []
+    'bsd-3-clause.txt'                     | 'BSD 3-Clause License'                                  | []
+    'bsd-4-clause.txt'                     | 'BSD 4-Clause License'                                  | []
+    'cc-by-4.0.txt'                        | 'Attribution 4.0 International'                         | ['ShareAlike']
+    'cc-by-sa-4.0.txt'                     | 'Attribution-ShareAlike 4.0 International'              | []
+    'cc0-1.0.txt'                          | 'CC0 1.0 Universal'                                     | []
+    'cddl-1.0.txt'                         | 'Sun Microsystems, Inc. is the initial license steward' | []
+    'cddl-1.1.txt'                         | 'Oracle is the initial license steward'                 | []
+    'epl-1.0.txt'                          | 'Eclipse Public License - v 1.0'                        | []
+    'epl-2.0.txt'                          | 'Eclipse Public License - v 2.0'                        | []
+    'gpl-2.0-with-classpath-exception.txt' | 'CLASSPATH EXCEPTION'                                   | []
+    'gpl-2.0.txt'                          | 'Version 2, June 1991'                                  | ['CLASSPATH EXCEPTION', 'LIBRARY GENERAL PUBLIC LICENSE']
+    'gpl-3.0.txt'                          | 'Version 3, 29 June 2007'                               | ['LESSER GENERAL PUBLIC LICENSE']
+    'isc.txt'                              | 'ISC License'                                           | []
+    'lgpl-2.0.txt'                         | 'GNU LIBRARY GENERAL PUBLIC LICENSE'                    | []
+    'lgpl-2.1.txt'                         | 'Version 2.1, February 1999'                            | []
+    'lgpl-3.0.txt'                         | 'GNU LESSER GENERAL PUBLIC LICENSE'                     | ['Version 2.1, February 1999']
+    'mit-0.txt'                            | 'MIT No Attribution'                                    | []
+    'mit.txt'                              | 'MIT License'                                           | ['No Attribution']
+    'mpl-2.0.txt'                          | 'Mozilla Public License Version 2.0'                    | []
+    'unlicense.txt'                        | 'unencumbered software released into the public domain' | []
+  }
+
+  def 'the identity table covers every bundled license'() {
+    given: 'so a license added without an identity assertion fails here'
+    def asserted = [
+      '0bsd.txt',
+      'agpl-3.0.txt',
+      'apache-1.1.txt',
+      'apache-2.0.txt',
+      'bsd-2-clause.txt',
+      'bsd-3-clause.txt',
+      'bsd-4-clause.txt',
+      'cc-by-4.0.txt',
+      'cc-by-sa-4.0.txt',
+      'cc0-1.0.txt',
+      'cddl-1.0.txt',
+      'cddl-1.1.txt',
+      'epl-1.0.txt',
+      'epl-2.0.txt',
+      'gpl-2.0-with-classpath-exception.txt',
+      'gpl-2.0.txt',
+      'gpl-3.0.txt',
+      'isc.txt',
+      'lgpl-2.0.txt',
+      'lgpl-2.1.txt',
+      'lgpl-3.0.txt',
+      'mit-0.txt',
+      'mit.txt',
+      'mpl-2.0.txt',
+      'unlicense.txt',
+    ] as Set
+
+    expect:
+    asserted == HELPER.bundledFileNames()
+  }
+
+  def 'no two bundled licenses have identical text'() {
+    given: 'a copy-paste that duplicates a license would otherwise ship silently'
+    def texts = HELPER.bundledFileNames().collect { HELPER.licenseText(it) }
+
+    expect:
+    texts.toSet().size() == texts.size()
+  }
+
 }

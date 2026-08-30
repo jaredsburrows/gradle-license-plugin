@@ -6,6 +6,7 @@ import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import spock.lang.Specification
+import spock.lang.Unroll
 
 final class JsonFullReportSpec extends Specification {
   private static final String APACHE_URL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
@@ -129,4 +130,22 @@ final class JsonFullReportSpec extends Specification {
       it.url = url
     }
   }
+
+  @Unroll
+  def 'every bundled license reaches the full report under its own key - #spdxId'() {
+    given: 'the key is the bundled file name without its extension'
+    def projects = [project('P', 'p', [license(spdxId, '')])]
+
+    when:
+    def report = new JsonSlurper().parseText(new JsonFullReport(projects).toString())
+
+    then: 'the dependency points at the key, and the text is carried under it'
+    report.dependencies[0].licenses[0].license_key == expectedKey
+    report.license_texts[expectedKey] == LicenseHelper.INSTANCE.licenseText(expectedKey + '.txt')
+
+    where:
+    spdxId << LicenseHelper.INSTANCE.bundledFileNames().collect { it - '.txt' }
+    expectedKey = spdxId
+  }
+
 }
