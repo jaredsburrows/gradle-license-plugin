@@ -45,10 +45,11 @@ jobs:
       - name: Ktlint Check, Build, and Unit Tests with --continue
         run: ./gradlew ktlintCheck build -s --continue
 
-      - name: Publish Test Report
+      - name: Publish Plugin Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2.24.0
         if: always()
         with:
+          check_name: Test Plugin Results
           comment_mode: off
           action_fail_on_inconclusive: true
           files: '**/build/test-results/test/TEST-*.xml'
@@ -80,13 +81,11 @@ jobs:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4.0.1
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+      - run: ./gradlew --version
 
       - name: Cache Robolectric android-all jars
         uses: actions/cache@v6.1.0
@@ -110,7 +109,7 @@ jobs:
           test -s test-apps/test-app-compose-fulljson/src/debug/assets/open_source_licenses.full.json
           test -s test-apps/test-app-compose-fulljson/src/release/assets/open_source_licenses.full.json
 
-      - name: Publish Test App Test Report
+      - name: Publish Test Apps Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2.24.0
         if: always()
         with:

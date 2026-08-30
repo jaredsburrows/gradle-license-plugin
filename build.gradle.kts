@@ -14,10 +14,10 @@ plugins {
   alias(libs.plugins.plugin.publish) apply false
   alias(libs.plugins.versions)
   alias(libs.plugins.license)
-  id("java-gradle-plugin")
-  id("java-library")
-  id("groovy")
-  id("idea")
+  `java-gradle-plugin`
+  `java-library`
+  groovy
+  idea
 }
 
 tasks.withType<Wrapper>().configureEach {
@@ -66,13 +66,13 @@ subprojects {
   tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_17)
-      languageVersion.set(KotlinVersion.KOTLIN_2_0)
-      apiVersion.set(KotlinVersion.KOTLIN_2_0)
+      languageVersion.set(KotlinVersion.KOTLIN_2_4)
+      apiVersion.set(KotlinVersion.KOTLIN_2_4)
       freeCompilerArgs.add("-progressive")
       freeCompilerArgs.add("-Xjsr305=strict")
       freeCompilerArgs.add("-Xemit-jvm-type-annotations")
       freeCompilerArgs.add("-Xassertions=jvm")
-      freeCompilerArgs.add("-Xjvm-default=all")
+      freeCompilerArgs.add("-jvm-default=enable")
     }
   }
 
@@ -112,7 +112,7 @@ subprojects {
       // Check if running on CI and set events accordingly
       events =
         if (System.getenv("CI") != null) {
-          TestLogEvent.values().toSet()
+          TestLogEvent.entries.toSet()
         } else {
           setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
         }

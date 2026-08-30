@@ -5,7 +5,6 @@ pluginManagement {
   repositories {
     gradlePluginPortal()
     google {
-      // Google's repository only serves these groups, so nothing else is looked up there.
       content {
         includeGroupByRegex("com\\.android.*")
         includeGroupByRegex("com\\.google.*")
@@ -27,7 +26,6 @@ dependencyResolutionManagement {
   repositories {
     gradlePluginPortal()
     google {
-      // Google's repository only serves these groups, so nothing else is looked up there.
       content {
         includeGroupByRegex("com\\.android.*")
         includeGroupByRegex("com\\.google.*")

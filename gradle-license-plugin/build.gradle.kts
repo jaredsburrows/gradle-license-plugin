@@ -7,8 +7,8 @@ plugins {
   alias(libs.plugins.versions)
   alias(libs.plugins.license)
   id("java-gradle-plugin")
-  id("java-library")
-  id("groovy")
+  `java-library`
+  groovy
 }
 
 group = property("GROUP") as String
@@ -20,6 +20,7 @@ val mainRuntimeClasspath = sourceSets.main.get().runtimeClasspath
 val testRuntimeClasspath = sourceSets.test.get().runtimeClasspath
 val createClasspathManifest =
   tasks.register("createClasspathManifest") {
+    description = "Creates a classpath manifest for the plugin for tests"
     val mainClasspath = mainRuntimeClasspath
     val testClasspath = testRuntimeClasspath
     val outputDir =

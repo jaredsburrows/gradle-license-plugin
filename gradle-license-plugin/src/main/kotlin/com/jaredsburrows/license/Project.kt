@@ -122,10 +122,10 @@ internal fun Project.configureCommon(
 
   // Defer all resolution until the task inputs are queried at execution time; resolving during
   // task configuration triggers AGP's "resolved during configuration time" warning (#804).
-  val pomInput = lazy { buildPomInput(configurationNames) }
-  val rootCoordinatesProvider = provider { pomInput.value.rootCoordinates }
-  val coordinateToFileProvider = provider { pomInput.value.coordinateToFile }
-  val contentHashesProvider = provider { pomInput.value.contentHashes }
+  val pomInput by lazy { buildPomInput(configurationNames) }
+  val rootCoordinatesProvider = provider { pomInput.rootCoordinates }
+  val coordinateToFileProvider = provider { pomInput.coordinateToFile }
+  val contentHashesProvider = provider { pomInput.contentHashes }
 
   task.apply {
     outputDir =
