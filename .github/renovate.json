@@ -4,6 +4,12 @@
     "config:recommended"
   ],
   "semanticCommits": "disabled",
+  "configMigration": true,
+  "vulnerabilityAlerts": {
+    "automerge": true
+  },
+  "osvVulnerabilityAlerts": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
   "packageRules": [
     {
       "matchUpdateTypes": [

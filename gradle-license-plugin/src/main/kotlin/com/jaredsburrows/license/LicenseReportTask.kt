@@ -265,8 +265,11 @@ internal abstract class LicenseReportTask
 
       val root = if (thisArtifact.length <= otherArtifact.length) thisArtifact else otherArtifact
       val variant = if (root == thisArtifact) otherArtifact else thisArtifact
-      return variant.startsWith("$root-") && (variant.removePrefix("$root-") in PLATFORM_ARTIFACT_SUFFIXES ||
-        name.orEmpty() == other.name.orEmpty())
+      return variant.startsWith("$root-") &&
+        (
+          variant.removePrefix("$root-") in PLATFORM_ARTIFACT_SUFFIXES ||
+            name.orEmpty() == other.name.orEmpty()
+        )
     }
 
     /** Prefer the higher version; for equal versions prefer the shorter (root) artifact id. */
