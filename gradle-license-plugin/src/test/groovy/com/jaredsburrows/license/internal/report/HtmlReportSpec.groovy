@@ -5,6 +5,7 @@ import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static test.TestUtils.assertHtml
 
@@ -156,6 +157,88 @@ final class HtmlReportSpec extends Specification {
     then: 'the text is inlined rather than linked'
     actual.contains('Permission is hereby granted, free of charge')
     !actual.contains('<a href="https://spdx.org/licenses/MIT.html">')
+  }
+
+  private static def projectWith(License license) {
+    new Model(
+      name: 'name',
+      description: '',
+      licenses: [license],
+      url: '',
+      developers: [],
+      inceptionYear: '',
+      groupId: 'foo',
+      artifactId: 'bar',
+      version: '1.2.3',
+    )
+  }
+
+  @Unroll
+  def 'bundled license text is escaped, not swallowed as markup - #spdxId'() {
+    given: 'a license whose bundled text contains angle-bracketed placeholders'
+    def report = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true)
+
+    when:
+    def actual = report.toString()
+
+    then: 'the placeholder survives, escaped'
+    actual.contains(escaped)
+
+    and: 'it is not emitted raw, where a browser would parse it as a tag and drop it'
+    !actual.contains(raw)
+
+    where:
+    spdxId     | raw                | escaped
+    'GPL-3.0'  | '<year>'           | '&lt;year&gt;'
+    'GPL-3.0'  | '<name of author>' | '&lt;name of author&gt;'
+    'GPL-3.0'  | '<program>'        | '&lt;program&gt;'
+    'GPL-2.0'  | '<year>'           | '&lt;year&gt;'
+    'AGPL-3.0' | '<year>'           | '&lt;year&gt;'
+    'LGPL-2.1' | '<year>'           | '&lt;year&gt;'
+  }
+
+  def 'every bundled license text survives rendering intact'() {
+    expect: 'nothing between angle brackets is lost from any of the bundled texts'
+    LicenseHelper.INSTANCE.bundledFileNames().every { fileName ->
+      def text = LicenseHelper.INSTANCE.licenseText(fileName)
+      def spdxId = LicenseHelper.INSTANCE.allAliases().find { alias, file -> file == fileName }?.key
+      def html = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true).toString()
+      // Every angle-bracketed run in the source text must appear escaped in the output.
+      (text =~ /<[^>\n]{1,60}>/).collect { it }.every { fragment ->
+        html.contains(fragment.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+      }
+    }
+  }
+
+  @Unroll
+  def 'license metadata from a POM cannot inject markup - #description'() {
+    given: 'a dependency POM carrying markup in its license fields'
+    def report = new HtmlReport([projectWith(new License(name: name, url: url))], true)
+
+    when:
+    def actual = report.toString()
+
+    then: 'the markup is escaped rather than emitted as elements'
+    !actual.contains(mustNotContain)
+
+    where:
+    description            | name                        | url                          | mustNotContain
+    'a script tag in name' | '<script>alert(1)</script>' | 'http://website.tld/'        | '<script>'
+    'a script tag in url'  | 'Some license'              | 'http://x/<script>a()' + '</script>' | '<script>'
+    'an attribute break'   | 'Some license'              | 'http://x/" onmouseover="a()' | 'onmouseover="a()"'
+    'an img onerror'       | '<img src=x onerror=a()>'   | 'http://website.tld/'        | '<img src=x'
+  }
+
+  def 'an unknown license still renders its url as a working link'() {
+    given:
+    def report = new HtmlReport([projectWith(new License(name: 'Some license', url: 'http://website.tld/'))], true)
+
+    when:
+    def actual = report.toString()
+
+    then: 'escaping did not cost us the anchor'
+    actual.contains('<a href="http://website.tld/">http://website.tld/</a>')
+    actual.contains('Some license')
   }
 
   def 'showVersions leaves the version out when disabled'() {
