@@ -350,7 +350,7 @@ final class LicenseHelperSpec extends Specification {
     where:
     url                                                  || expected
     'https://www.eclipse.org/legal/epl-v10.html'         || 'epl-1.0.txt'
-    'http://www.opensource.org/licenses/cddl1.php'       || null
+    'http://www.opensource.org/licenses/cddl1.php'       || 'cddl-1.0.txt'
     'https://opensource.org/licenses/CDDL-1.0'           || 'cddl-1.0.txt'
     'https://opensource.org/licenses/ISC'                || 'isc.txt'
     'https://unlicense.org/'                             || 'unlicense.txt'
@@ -404,6 +404,128 @@ final class LicenseHelperSpec extends Specification {
     text.contains('GNU GENERAL PUBLIC LICENSE')
     text.contains('CLASSPATH EXCEPTION')
     text.contains('link this library with independent modules')
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Real-world POM spellings that used to miss, or worse, resolve to the wrong license.
+  // ---------------------------------------------------------------------------------------------
+
+  def 'BUG: an ambiguous url no longer overrides a name that names the BSD variant'() {
+    expect: 'hamcrest declares "New BSD License" with the retired OSI bsd-license.php url'
+    HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-3-clause.txt'
+
+    and: 'the same url with a 2-clause name still resolves to 2-clause'
+    HELPER.licenseFileName('BSD 2-Clause License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-2-clause.txt'
+
+    and: 'and on its own, with nothing more specific to go on, it keeps its historical answer'
+    HELPER.licenseFileName(null, 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-2-clause.txt'
+  }
+
+  @Unroll
+  def 'an unambiguous url still wins over a conflicting name - #url'() {
+    expect: 'only the urls listed as ambiguous defer to the name'
+    HELPER.licenseFileName('MIT License', url) == expected
+
+    where:
+    url                                              || expected
+    'http://www.apache.org/licenses/LICENSE-2.0.txt' || 'apache-2.0.txt'
+    'https://opensource.org/licenses/GPL-3.0'        || 'gpl-3.0.txt'
+  }
+
+  @Unroll
+  def 'BUG: the modern SPDX id #id resolves'() {
+    expect: 'SPDX deprecated the bare GNU ids in 2018; current tooling emits -only/-or-later'
+    HELPER.licenseFileName(id, null) == expected
+
+    where:
+    id                                          || expected
+    'GPL-2.0-only'                              || 'gpl-2.0.txt'
+    'GPL-2.0-or-later'                          || 'gpl-2.0.txt'
+    'GPL-3.0-only'                              || 'gpl-3.0.txt'
+    'GPL-3.0-or-later'                          || 'gpl-3.0.txt'
+    'LGPL-2.0-only'                             || 'lgpl-2.0.txt'
+    'LGPL-2.1-only'                             || 'lgpl-2.1.txt'
+    'LGPL-2.1-or-later'                         || 'lgpl-2.1.txt'
+    'LGPL-3.0-only'                             || 'lgpl-3.0.txt'
+    'AGPL-3.0-only'                             || 'agpl-3.0.txt'
+    'AGPL-3.0-or-later'                         || 'agpl-3.0.txt'
+    'GPL-2.0-only WITH Classpath-exception-2.0' || 'gpl-2.0-with-classpath-exception.txt'
+    'GPL-2.0 WITH Classpath-exception-2.0'      || 'gpl-2.0-with-classpath-exception.txt'
+  }
+
+  @Unroll
+  def 'BUG: the gnu.org retired-license url #url resolves'() {
+    expect: 'gnu.org serves every retired license under /old-licenses/'
+    HELPER.licenseFileName(null, url) == expected
+
+    where:
+    url                                                              || expected
+    'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html'        || 'lgpl-2.1.txt'
+    'http://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'      || 'lgpl-2.1.txt'
+    'https://www.gnu.org/licenses/old-licenses/gpl-2.0.html'         || 'gpl-2.0.txt'
+    'https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html'        || 'lgpl-2.0.txt'
+  }
+
+  @Unroll
+  def 'a query string, fragment or port does not defeat the url - #url'() {
+    expect:
+    HELPER.licenseFileName(null, url) == 'apache-2.0.txt'
+
+    where:
+    url << [
+      'https://www.apache.org/licenses/LICENSE-2.0.txt?raw=true',
+      'https://www.apache.org/licenses/LICENSE-2.0#section',
+      'https://www.apache.org/licenses/LICENSE-2.0.txt?a=b#c',
+      'https://www.apache.org:443/licenses/LICENSE-2.0.txt',
+      '//www.apache.org/licenses/LICENSE-2.0.txt',
+      'https://www.apache.org/licenses/LICENSE-2.0.txt.html',
+      'https://www.apache.org/licenses/LICENSE-2.0.html.txt',
+    ]
+  }
+
+  @Unroll
+  def 'unusual whitespace inside a name does not block a match - #description'() {
+    expect:
+    HELPER.licenseFileName(name, null) == 'apache-2.0.txt'
+
+    where:
+    description            | name
+    'a non-breaking space' | 'Apache License 2.0'
+    'a zero-width space'   | 'Apache\u200bLicense 2.0'
+    'a tab'                | 'Apache\tLicense 2.0'
+    'a newline'            | 'Apache\nLicense 2.0'
+    'padded'               | '  Apache License 2.0  '
+  }
+
+  @Unroll
+  def 'version separators are folded consistently - #name'() {
+    expect: 'the dashed and dotted spellings reach the same alias as the plain one'
+    HELPER.licenseFileName(name, null) == expected
+
+    where:
+    name                              || expected
+    'Eclipse Public License - v 1.0'  || 'epl-1.0.txt'
+    'Eclipse Public License v1.0'     || 'epl-1.0.txt'
+    'Eclipse Public License - v 2.0'  || 'epl-2.0.txt'
+    'Eclipse Public License v. 2.0'   || 'epl-2.0.txt'
+    'Eclipse Public License v2.0'     || 'epl-2.0.txt'
+    'Eclipse Public License - v. 2.0' || 'epl-2.0.txt'
+  }
+
+  @Unroll
+  def 'common BSD and Apache name spellings resolve - #name'() {
+    expect:
+    HELPER.licenseFileName(name, null) == expected
+
+    where:
+    name                     || expected
+    'New BSD License'        || 'bsd-3-clause.txt'
+    'Modified BSD License'   || 'bsd-3-clause.txt'
+    'Revised BSD License'    || 'bsd-3-clause.txt'
+    'Simplified BSD License' || 'bsd-2-clause.txt'
+    'FreeBSD License'        || 'bsd-2-clause.txt'
+    'Apache 2'               || 'apache-2.0.txt'
+    'Apache Software License 2' || 'apache-2.0.txt'
   }
 
   @Unroll
