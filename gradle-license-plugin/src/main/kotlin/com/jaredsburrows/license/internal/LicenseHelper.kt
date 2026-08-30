@@ -16,30 +16,81 @@ object LicenseHelper {
   /** Canonical SPDX identifier to the bundled license text file. */
   private val texts: Map<String, String> =
     linkedMapOf(
+      // BSD Zero Clause License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/0bsd.txt
       "0BSD" to "0bsd.txt",
+      // GNU Affero General Public License v3.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/agpl-3.0.txt
       "AGPL-3.0" to "agpl-3.0.txt",
+      // Apache License 1.1 - choosealicense does not carry it
+      // https://github.com/spdx/license-list-data/blob/main/text/Apache-1.1.txt
       "Apache-1.1" to "apache-1.1.txt",
+      // Apache License 2.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/apache-2.0.txt
       "Apache-2.0" to "apache-2.0.txt",
+      // BSD 2-Clause "Simplified" License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/bsd-2-clause.txt
       "BSD-2-Clause" to "bsd-2-clause.txt",
+      // BSD 3-Clause "New" or "Revised" License, also the text of the Eclipse Distribution License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/bsd-3-clause.txt
       "BSD-3-Clause" to "bsd-3-clause.txt",
+      // BSD 4-Clause "Original" or "Old" License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/bsd-4-clause.txt
       "BSD-4-Clause" to "bsd-4-clause.txt",
+      // Creative Commons Attribution 4.0 International
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/cc-by-4.0.txt
       "CC-BY-4.0" to "cc-by-4.0.txt",
+      // Creative Commons Attribution Share Alike 4.0 International
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/cc-by-sa-4.0.txt
       "CC-BY-SA-4.0" to "cc-by-sa-4.0.txt",
+      // Creative Commons Zero v1.0 Universal
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/cc0-1.0.txt
       "CC0-1.0" to "cc0-1.0.txt",
+      // Common Development and Distribution License 1.0 - choosealicense does not carry it
+      // https://github.com/spdx/license-list-data/blob/main/text/CDDL-1.0.txt
       "CDDL-1.0" to "cddl-1.0.txt",
+      // Common Development and Distribution License 1.1 - choosealicense does not carry it
+      // https://github.com/spdx/license-list-data/blob/main/text/CDDL-1.1.txt
       "CDDL-1.1" to "cddl-1.1.txt",
+      // Eclipse Public License 1.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/epl-1.0.txt
       "EPL-1.0" to "epl-1.0.txt",
+      // Eclipse Public License 2.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/epl-2.0.txt
       "EPL-2.0" to "epl-2.0.txt",
+      // GNU General Public License v2.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/gpl-2.0.txt
       "GPL-2.0" to "gpl-2.0.txt",
+      // GPL-2.0-only WITH Classpath-exception-2.0 is an SPDX expression rather than a license, so
+      // it has no text of its own: gpl-2.0.txt followed by the exception.
+      // https://github.com/spdx/license-list-data/blob/main/text/Classpath-exception-2.0.txt
       "GPL-2.0-with-classpath-exception" to "gpl-2.0-with-classpath-exception.txt",
+      // GNU General Public License v3.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/gpl-3.0.txt
       "GPL-3.0" to "gpl-3.0.txt",
+      // ISC License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/isc.txt
       "ISC" to "isc.txt",
+      // GNU Library General Public License v2.0 - choosealicense does not carry it
+      // https://github.com/spdx/license-list-data/blob/main/text/LGPL-2.0-only.txt
       "LGPL-2.0" to "lgpl-2.0.txt",
+      // GNU Lesser General Public License v2.1
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/lgpl-2.1.txt
       "LGPL-2.1" to "lgpl-2.1.txt",
+      // GNU Lesser General Public License v3.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/lgpl-3.0.txt
       "LGPL-3.0" to "lgpl-3.0.txt",
+      // MIT License
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/mit.txt
       "MIT" to "mit.txt",
+      // MIT No Attribution
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/mit-0.txt
       "MIT-0" to "mit-0.txt",
+      // Mozilla Public License 2.0
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/mpl-2.0.txt
       "MPL-2.0" to "mpl-2.0.txt",
+      // The Unlicense
+      // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/unlicense.txt
       "Unlicense" to "unlicense.txt",
     )
 
