@@ -155,25 +155,32 @@ class HtmlReport(
                   val preId = if (index == 0) anchorId else null
                   if (key.isNotEmpty() && LicenseHelper.isBundled(key)) {
                     // license from license map
+                    // Escaped, not unsafe{}: the GPL family carries literal placeholders such as
+                    // "<year>" and "<name of author>" that a browser would otherwise parse as tags
+                    // and drop, silently truncating the license (8 of the bundled texts are
+                    // affected).
                     licensePre(preId) {
-                      unsafe { +getLicenseText(key) }
+                      +getLicenseText(key)
                     }
                   } else {
                     // if not found in the map, just display the info from the POM.xml
+                    // These come from a dependency's POM, so they are rendered as elements rather
+                    // than concatenated into markup.
                     val currentLicenseName = license.name.trim()
                     val currentUrl = license.url.trim()
 
                     if (currentLicenseName.isNotEmpty() && currentUrl.isNotEmpty()) {
                       licensePre(preId) {
-                        unsafe { +"$currentLicenseName\n<a href=\"$currentUrl\">$currentUrl</a>" }
+                        +"$currentLicenseName\n"
+                        a(href = currentUrl) { +currentUrl }
                       }
                     } else if (currentUrl.isNotEmpty()) {
                       licensePre(preId) {
-                        unsafe { +"<a href=\"$currentUrl\">$currentUrl</a>" }
+                        a(href = currentUrl) { +currentUrl }
                       }
                     } else if (currentLicenseName.isNotEmpty()) {
                       licensePre(preId) {
-                        unsafe { +"$currentLicenseName\n" }
+                        +"$currentLicenseName\n"
                       }
                     } else {
                       licensePre(preId) {
