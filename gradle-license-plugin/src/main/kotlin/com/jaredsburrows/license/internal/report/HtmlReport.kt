@@ -45,7 +45,6 @@ class HtmlReport(
 
   override fun fullReport(): String {
     val projectsMap = hashMapOf<String, List<Model>>()
-    val licenseMap = LicenseHelper.licenseMap
 
     // Store packages by licenses: build a composite key of all the licenses, sorted in the (probably vain)
     // hope that there's more than one project with the same set of multiple licenses.
@@ -154,7 +153,7 @@ class HtmlReport(
 
                 sortedKeysAndLicenses.forEachIndexed { index, (key, license) ->
                   val preId = if (index == 0) anchorId else null
-                  if (key.isNotEmpty() && licenseMap.values.contains(key)) {
+                  if (key.isNotEmpty() && LicenseHelper.isBundled(key)) {
                     // license from license map
                     licensePre(preId) {
                       unsafe { +getLicenseText(key) }
