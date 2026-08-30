@@ -14,8 +14,7 @@ package com.jaredsburrows.license.internal
  */
 object LicenseHelper {
   /** Canonical SPDX identifier to the bundled license text file. */
-  private val texts: Map<String, String> =
-    linkedMapOf(
+  private val texts = linkedMapOf(
       // BSD Zero Clause License
       // https://github.com/github/choosealicense.com/blob/gh-pages/_licenses/0bsd.txt
       "0BSD" to "0bsd.txt",

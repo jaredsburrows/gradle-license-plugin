@@ -6,11 +6,6 @@ import spock.lang.Unroll
 final class LicenseHelperSpec extends Specification {
   private static final def HELPER = LicenseHelper.INSTANCE
 
-  // ---------------------------------------------------------------------------------------------
-  // Invariants. These tie the lookup tables to the files actually on the classpath, in both
-  // directions. The forward direction is what let cc0-1.0.txt ship for years unreachable.
-  // ---------------------------------------------------------------------------------------------
-
   def 'every bundled license file is reachable from at least one alias'() {
     given:
     def reachable = HELPER.allAliases().values().toSet()
@@ -43,10 +38,6 @@ final class LicenseHelperSpec extends Specification {
     aliases.size() > 0
     aliases.every { alias, fileName -> HELPER.isBundled(fileName) }
   }
-
-  // ---------------------------------------------------------------------------------------------
-  // Regression guards for the three bugs this change fixes. Each of these failed before.
-  // ---------------------------------------------------------------------------------------------
 
   def 'BUG: CC0 is bundled but was unreachable - it now resolves'() {
     expect:
@@ -89,10 +80,6 @@ final class LicenseHelperSpec extends Specification {
     where:
     id << ['Apache-2.0', 'apache-2.0', 'APACHE-2.0', 'ApAcHe-2.0', '  Apache-2.0  ']
   }
-
-  // ---------------------------------------------------------------------------------------------
-  // URL normalisation. One alias has to cover every spelling of the same URL.
-  // ---------------------------------------------------------------------------------------------
 
   @Unroll
   def 'url normalisation resolves #url'() {
@@ -155,10 +142,6 @@ final class LicenseHelperSpec extends Specification {
     'https://creativecommons.org/publicdomain/zero/1.0/'       || 'cc0-1.0.txt'
   }
 
-  // ---------------------------------------------------------------------------------------------
-  // Name normalisation.
-  // ---------------------------------------------------------------------------------------------
-
   @Unroll
   def 'name normalisation resolves #name'() {
     expect:
@@ -200,10 +183,6 @@ final class LicenseHelperSpec extends Specification {
     'Creative Commons Zero v1.0 Universal'      || 'cc0-1.0.txt'
   }
 
-  // ---------------------------------------------------------------------------------------------
-  // Normalisation must not over-reach. Distinct licenses must stay distinct.
-  // ---------------------------------------------------------------------------------------------
-
   @Unroll
   def 'distinct licenses do not collapse into each other - #a vs #b'() {
     expect:
@@ -236,10 +215,6 @@ final class LicenseHelperSpec extends Specification {
     'License'         | null
     'Apache'          | null
   }
-
-  // ---------------------------------------------------------------------------------------------
-  // licenseKey contract: bundled file name, else the raw url verbatim, else "".
-  // ---------------------------------------------------------------------------------------------
 
   @Unroll
   def 'licenseKey resolves #description'() {
@@ -278,10 +253,6 @@ final class LicenseHelperSpec extends Specification {
     'https://opensource.org/licenses/GPL-3.0'        || 'gpl-3.0.txt'
     'http://website.tld/'                            || 'mit.txt' // unknown url falls through to the name
   }
-
-  // ---------------------------------------------------------------------------------------------
-  // licenseText and isBundled.
-  // ---------------------------------------------------------------------------------------------
 
   def 'licenseText returns the bundled text of a known license'() {
     when:
@@ -322,10 +293,6 @@ final class LicenseHelperSpec extends Specification {
     ''                  || false
     'http://website.tld'|| false
   }
-
-  // ---------------------------------------------------------------------------------------------
-  // Licenses added on top of the original eleven.
-  // ---------------------------------------------------------------------------------------------
 
   @Unroll
   def 'the added license #id resolves by bare SPDX id'() {
