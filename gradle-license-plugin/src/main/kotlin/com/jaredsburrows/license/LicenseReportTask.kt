@@ -510,8 +510,6 @@ internal abstract class LicenseReportTask
 
     private fun Model.pomUrl(): String = url.orEmpty().trim()
 
-    private fun Model.pomVersion(): String = version.orEmpty().trim()
-
     private fun Model.pomInceptionYear(): String = inceptionYear.orEmpty().trim()
 
     private fun Model.pomDevelopers(): List<Developer> =
