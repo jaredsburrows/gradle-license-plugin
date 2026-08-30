@@ -2146,4 +2146,36 @@ final class LicensePluginJavaSpec extends Specification {
     report.license_texts == [:]
     report.dependencies == []
   }
+
+  def 'licenseReport terminates on a POM that is its own parent'() {
+    given: 'a dependency whose POM names itself as its parent'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:selfparent:1.0.0'
+      }
+      """
+
+    when: 'the parent chain is walked'
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then: 'it stops at the repeat instead of recursing until the stack overflows'
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the dependency really was walked, so the test is not vacuous'
+    new File(reportFolder, 'licenseReport.json').text.contains('Self parent')
+  }
+
+
 }

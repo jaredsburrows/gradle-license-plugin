@@ -342,100 +342,84 @@ internal abstract class LicenseReportTask
       }
     }
 
-    private fun findVersion(
+    /**
+     * This POM and its ancestors, nearest first.
+     *
+     * Lazy, so a caller that only needs the nearest POM declaring some value does not pay to read
+     * the rest of the chain. Iterative rather than recursive, and guarded by a visited set and
+     * [MAX_PARENT_DEPTH]: a POM naming itself as its own parent, or a cycle between two POMs, would
+     * otherwise walk until the stack overflows.
+     */
+    private fun parentChain(
       mavenReader: MavenXpp3Reader,
       pomFile: File?,
       loggedMissingParentPomCoordinates: MutableSet<String>,
-    ): String {
-      if (pomFile.isNullOrEmpty()) {
-        return ""
-      }
-      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
-
-      // If the POM is missing a name, do not record it
-      val name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
-      if (name.isEmpty()) {
-        logger.warn("POM file is missing a name: $pomFile")
-        return ""
-      }
-
-      val version = model.pomVersion()
-      if (version.isNotEmpty()) {
-        return version.trim()
-      }
-
-      if (model.parent.artifactId
-          .orEmpty()
-          .trim()
-          .isNotEmpty()
-      ) {
-        val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
-        if (parentPomFile != null) {
-          return findVersion(
-            mavenReader,
-            parentPomFile,
-            loggedMissingParentPomCoordinates,
-          )
+    ): Sequence<Pair<File, Model>> =
+      sequence {
+        val visited = hashSetOf<String>()
+        var current = pomFile
+        var depth = 0
+        while (depth++ < MAX_PARENT_DEPTH) {
+          val file = current ?: break
+          if (file.isNullOrEmpty() || !visited.add(file.absolutePath)) {
+            break
+          }
+          val model = readModel(mavenReader, file) ?: break
+          yield(file to model)
+          current = getParentPomFile(model, loggedMissingParentPomCoordinates)
         }
       }
-      return ""
-    }
 
     private fun findLicenses(
       mavenReader: MavenXpp3Reader,
       pomFile: File?,
       loggedMissingParentPomCoordinates: MutableSet<String>,
     ): List<License> {
-      if (pomFile.isNullOrEmpty()) {
-        return emptyList()
-      }
-      val model = pomFile?.let { readModel(mavenReader, it) } ?: return emptyList()
+      // Pre-20.0.0 support library POMs declare no license at all; they are all Apache 2.0. The
+      // flag is set as the chain is walked, matching the recursive version, which applied the
+      // fallback at whichever level declared the support group id.
+      var isSupportLibrary = false
 
-      // If the POM is missing a name, do not record it
-      val name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
-      if (name.isEmpty()) {
-        logger.warn("POM file is missing a name: $pomFile")
-        return emptyList()
-      }
-
-      // License information found
-      return model.licenses
-        .orEmpty()
-        .map { license ->
-          License().apply {
-            this.name = license.name.orEmpty().trim()
-            this.url = license.url.orEmpty().trim()
-          }
-        }.filter {
-          it.name.isNotEmpty() || it.url.isUrlValid()
-        }.ifEmpty {
-          logger.info("Project, $name, has no license in POM file.")
-          val parentLicenses =
-            model.parent?.artifactId.orEmpty().trim().takeIf { it.isNotEmpty() }?.let {
-              val parentPomFile = getParentPomFile(model, loggedMissingParentPomCoordinates)
-              if (parentPomFile != null) {
-                findLicenses(
-                  mavenReader,
-                  parentPomFile,
-                  loggedMissingParentPomCoordinates,
-                )
-              } else {
-                emptyList()
-              }
-            } ?: emptyList()
-
-          // Pre-20.0.0 support library POMs declare no license at all; they are all Apache 2.0.
-          if (parentLicenses.isEmpty() && ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
-            listOf(
-              License().apply {
-                this.name = APACHE_LICENSE_NAME
-                url = APACHE_LICENSE_URL
-              },
-            )
-          } else {
-            parentLicenses
-          }
+      for ((file, model) in parentChain(mavenReader, pomFile, loggedMissingParentPomCoordinates)) {
+        // If the POM is missing a name, do not record it
+        val name = model.pomName(mavenReader, file, loggedMissingParentPomCoordinates)
+        if (name.isEmpty()) {
+          logger.warn("POM file is missing a name: $file")
+          break
         }
+
+        // License information found
+        val licenses =
+          model.licenses
+            .orEmpty()
+            .map { license ->
+              License().apply {
+                this.name = license.name.orEmpty().trim()
+                this.url = license.url.orEmpty().trim()
+              }
+            }.filter {
+              it.name.isNotEmpty() || it.url.isUrlValid()
+            }
+        if (licenses.isNotEmpty()) {
+          return licenses
+        }
+
+        logger.info("Project, $name, has no license in POM file.")
+        if (ANDROID_SUPPORT_GROUP_ID == model.groupId.orEmpty().trim()) {
+          isSupportLibrary = true
+        }
+      }
+
+      return if (isSupportLibrary) {
+        listOf(
+          License().apply {
+            name = APACHE_LICENSE_NAME
+            url = APACHE_LICENSE_URL
+          },
+        )
+      } else {
+        emptyList()
+      }
     }
 
     private fun String.isUrlValid(): Boolean =
@@ -505,15 +489,27 @@ internal abstract class LicenseReportTask
       mavenReader: MavenXpp3Reader,
       loggedMissingParentPomCoordinates: MutableSet<String>,
     ): Map<String, String> {
-      val merged = linkedMapOf<String, String>()
-      // Parent properties first so this POM's own properties take precedence.
-      getParentPomFile(this, loggedMissingParentPomCoordinates)?.let { parentPomFile ->
-        readModel(mavenReader, parentPomFile)?.let { parentModel ->
-          merged.putAll(parentModel.collectProperties(mavenReader, loggedMissingParentPomCoordinates))
+      // Walk to the root of the chain first, guarded the same way as parentChain: this starts from
+      // a Model rather than a File, so it cannot reuse it directly.
+      val chain = mutableListOf(this)
+      val visited = hashSetOf<String>()
+      var current: Model = this
+      var depth = 0
+      while (depth++ < MAX_PARENT_DEPTH) {
+        val parentPomFile = getParentPomFile(current, loggedMissingParentPomCoordinates) ?: break
+        if (!visited.add(parentPomFile.absolutePath)) {
+          break
         }
+        current = readModel(mavenReader, parentPomFile) ?: break
+        chain += current
       }
-      properties.stringPropertyNames().forEach { key ->
-        merged[key] = properties.getProperty(key).orEmpty()
+
+      // Root-most first, so a nearer POM's properties take precedence.
+      val merged = linkedMapOf<String, String>()
+      chain.asReversed().forEach { model ->
+        model.properties.stringPropertyNames().forEach { key ->
+          merged[key] = model.properties.getProperty(key).orEmpty()
+        }
       }
       return merged
     }
@@ -605,35 +601,33 @@ internal abstract class LicenseReportTask
       return Triple(parts[0].trim(), parts[1].trim(), parts[2].trim())
     }
 
+    /** The group id of the nearest POM in the chain that states one, as Maven inherits it. */
     private fun resolveEffectiveGroupId(
       mavenReader: MavenXpp3Reader,
       pomFile: File?,
       loggedMissingParentPomCoordinates: MutableSet<String>,
-    ): String {
-      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
-      val groupId = model.groupId.orEmpty().trim()
-      if (groupId.isNotEmpty()) {
-        return groupId
-      }
+    ): String =
+      parentChain(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+        .firstNotNullOfOrNull { (_, model) ->
+          model.groupId
+            .orEmpty()
+            .trim()
+            .ifEmpty { null }
+        }.orEmpty()
 
-      val parentFile = getParentPomFile(model, loggedMissingParentPomCoordinates) ?: return ""
-      return resolveEffectiveGroupId(mavenReader, parentFile, loggedMissingParentPomCoordinates)
-    }
-
+    /** The version of the nearest POM in the chain that states one, as Maven inherits it. */
     private fun resolveEffectiveVersion(
       mavenReader: MavenXpp3Reader,
       pomFile: File?,
       loggedMissingParentPomCoordinates: MutableSet<String>,
-    ): String {
-      val model = pomFile?.let { readModel(mavenReader, it) } ?: return ""
-      val version = model.version.orEmpty().trim()
-      if (version.isNotEmpty()) {
-        return version
-      }
-
-      val parentFile = getParentPomFile(model, loggedMissingParentPomCoordinates) ?: return ""
-      return resolveEffectiveVersion(mavenReader, parentFile, loggedMissingParentPomCoordinates)
-    }
+    ): String =
+      parentChain(mavenReader, pomFile, loggedMissingParentPomCoordinates)
+        .firstNotNullOfOrNull { (_, model) ->
+          model.version
+            .orEmpty()
+            .trim()
+            .ifEmpty { null }
+        }.orEmpty()
 
     private fun File?.isNullOrEmpty(): Boolean = this?.length() == 0L
 
@@ -654,6 +648,11 @@ internal abstract class LicenseReportTask
       private const val APACHE_LICENSE_NAME = "The Apache Software License"
       private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
       private const val OPEN_SOURCE_LICENSES = "open_source_licenses"
+
+      // A parent chain is a handful deep in practice; the cap only stops a malformed POM
+      // (a self-parent or an A -> B -> A cycle) from walking forever.
+      const val MAX_PARENT_DEPTH = 100
+
       private const val MAX_EXCEPTION_MESSAGE_LENGTH = 200
     }
   }

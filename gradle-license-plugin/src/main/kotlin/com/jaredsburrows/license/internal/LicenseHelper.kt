@@ -28,7 +28,7 @@ object LicenseHelper {
   // The GNU licenses SPDX re-spelled with an explicit -only / -or-later suffix.
   private val GNU_FAMILY = Regex("(A|L)?GPL-[0-9.]+")
 
-  private val EXTENSION = Regex("\\.(txt|html?|php)$")
+  private val EXTENSION = Regex("(\\.(txt|html?|php))+$")
   private val LOCALE = Regex("\\.[a-z]{2}$")
   private val PORT = Regex("^([^/]+):\\d+")
 
@@ -326,12 +326,9 @@ object LicenseHelper {
     value = value.removePrefix("www.")
     value = value.replace(PORT, "$1")
     value = value.trimEnd('/')
-    // Repeated rather than an ordered list, so ".txt.html" folds the same way as ".html.txt".
-    while (true) {
-      val stripped = value.replace(EXTENSION, "")
-      if (stripped == value) break
-      value = stripped
-    }
+    // A repeated group in one pass, so ".txt.html" folds the same way as ".html.txt" without
+    // depending on the order a list of suffixes would impose, and without a loop.
+    value = value.replace(EXTENSION, "")
     // gnu.org serves its retired licenses as "lgpl-2.1.en.html"; drop the locale segment. Only
     // when there is a path, so a bare host such as "unlicense.org" keeps its ".org".
     if (value.contains('/')) {
