@@ -46,9 +46,11 @@ $dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer///PointingToD
 $dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer/ConsoleRenderer/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-console-renderer/-console-renderer.html
 $dokka.location:com.jaredsburrows.license.internal/ConsoleRenderer/asClickableFileUrl/#java.io.File/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-console-renderer/as-clickable-file-url.html
 $dokka.location:com.jaredsburrows.license.internal/LicenseHelper///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/index.html
+$dokka.location:com.jaredsburrows.license.internal/LicenseHelper/allAliases/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/all-aliases.html
+$dokka.location:com.jaredsburrows.license.internal/LicenseHelper/bundledFileNames/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/bundled-file-names.html
+$dokka.location:com.jaredsburrows.license.internal/LicenseHelper/isBundled/#kotlin.String/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/is-bundled.html
 $dokka.location:com.jaredsburrows.license.internal/LicenseHelper/licenseFileName/#kotlin.String?#kotlin.String?/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/license-file-name.html
 $dokka.location:com.jaredsburrows.license.internal/LicenseHelper/licenseKey/#kotlin.String?#kotlin.String?/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/license-key.html
-$dokka.location:com.jaredsburrows.license.internal/LicenseHelper/licenseMap/#/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/license-map.html
 $dokka.location:com.jaredsburrows.license.internal/LicenseHelper/licenseText/#kotlin.String/PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license.internal/-license-helper/license-text.html
 $dokka.location:com.jaredsburrows.license////PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/index.html
 $dokka.location:com.jaredsburrows.license/LicensePlugin///PointingToDeclaration/gradle-license-plugin/com.jaredsburrows.license/-license-plugin/index.html
