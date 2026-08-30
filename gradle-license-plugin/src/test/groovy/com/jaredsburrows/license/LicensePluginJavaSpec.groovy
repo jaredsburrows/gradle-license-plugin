@@ -2178,4 +2178,52 @@ final class LicensePluginJavaSpec extends Specification {
   }
 
 
+
+  def 'licenseReport renders a bundled license that is neither Apache nor MIT, in every format'() {
+    given: 'a dependency under EPL-1.0, one of the licenses added in #843'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      licenseReport {
+        generateCsvReport = true
+        generateTextReport = true
+        generateJsonFullReport = true
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:eplib:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the HTML inlines the full EPL text rather than only linking to it'
+    def html = new File(reportFolder, 'licenseReport.html').text
+    html.contains('Eclipse Public License - v 1.0')
+    html.contains('EPL library')
+
+    and: 'the full JSON carries it under its own key, not apache-2.0 or mit'
+    def full = new groovy.json.JsonSlurper().parseText(new File(reportFolder, 'licenseReport.full.json').text)
+    full.license_texts.keySet() == ['epl-1.0'] as Set
+    full.dependencies[0].licenses[0].license_key == 'epl-1.0'
+
+    and: 'the CSV and text reports name it too'
+    new File(reportFolder, 'licenseReport.csv').text.contains('Eclipse Public License 1.0')
+    new File(reportFolder, 'licenseReport.txt').text.contains('EPL library')
+  }
+
 }
