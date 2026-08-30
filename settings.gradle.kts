@@ -1,7 +1,4 @@
 pluginManagement {
-  // Build the plugin from this repository so the test apps always exercise the local sources.
-  includeBuild("..")
-
   repositories {
     gradlePluginPortal()
     google {
@@ -26,6 +23,7 @@ dependencyResolutionManagement {
   repositories {
     gradlePluginPortal()
     google {
+      // Google's repository only serves these groups, so nothing else is looked up there.
       content {
         includeGroupByRegex("com\\.android.*")
         includeGroupByRegex("com\\.google.*")
@@ -45,8 +43,6 @@ develocity {
   }
 }
 
-rootProject.name = "test-apps"
+rootProject.name = "gradle-license-plugin"
 
-include(":test-app-compose-html")
-include(":test-app-compose-json")
-include(":test-app-compose-fulljson")
+include(":gradle-license-plugin")

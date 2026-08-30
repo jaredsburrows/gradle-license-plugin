@@ -6,6 +6,18 @@ plugins {
   alias(libs.plugins.kotlin.compose) apply false
   // No version: the plugin comes from the build included in settings.gradle.kts.
   id("com.jaredsburrows.license") apply false
+  idea
+}
+
+tasks.withType<Wrapper>().configureEach {
+  distributionType = Wrapper.DistributionType.ALL
+}
+
+idea {
+  module {
+    isDownloadSources = true
+    isDownloadJavadoc = true
+  }
 }
 
 subprojects {
