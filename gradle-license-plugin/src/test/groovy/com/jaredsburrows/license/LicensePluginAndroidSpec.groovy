@@ -2580,12 +2580,22 @@ final class LicensePluginAndroidSpec extends Specification {
     testProjectDir.newFolder('feature')
     testProjectDir.newFile('feature/build.gradle') <<
       """
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
       apply plugin: 'com.android.dynamic-feature'
       apply plugin: 'com.jaredsburrows.license'
 
       android {
         compileSdk = $compileSdkVersion
         namespace 'com.example.feature'
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
       }
       """
 
@@ -2614,9 +2624,15 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when: 'the report task is run on the dynamic feature module'
     BuildResult result = gradleWithCommand(testProjectDir.root, ':feature:licenseDebugReport', '-s')
+    File featureJson =
+      new File(testProjectDir.root, 'feature/build/reports/licenses/licenseDebugReport.json')
 
     then: 'applying the plugin does not fail the build'
     result.task(':feature:licenseDebugReport').outcome == SUCCESS
+
+    and: 'the feature module reports its own dependencies'
+    featureJson.text.trim() != '[]'
+    featureJson.text.contains('com.android.support:design')
   }
 
   def 'licenseReport supports a kotlin multiplatform android library module'() {
@@ -2722,5 +2738,107 @@ final class LicensePluginAndroidSpec extends Specification {
 
     and: 'the android target is not also reported under its multiplatform target name'
     !new File(reportFolder, 'licenseAndroidReport.json').exists()
+  }
+
+  def 'licenseDebugReport for a standalone android library module'() {
+    given: 'a library module, not a library consumed by an app'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.library'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example.lib'
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseDebugReport.json')
+
+    then:
+    result.task(':licenseDebugReport').outcome == SUCCESS
+
+    and:
+    actualJson.text.trim() != '[]'
+    actualJson.text.contains('com.android.support:design')
+  }
+
+  def 'licenseDebugReport for an android test module'() {
+    given: 'a com.android.test module targeting an application module'
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'subproject'
+      """
+    testProjectDir.newFolder('subproject')
+    testProjectDir.newFile('subproject/build.gradle') <<
+      """
+      apply plugin: 'com.android.application'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example.target'
+
+        defaultConfig {
+          applicationId 'com.example.target'
+        }
+      }
+      """
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.test'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example.test'
+        targetProjectPath ':subproject'
+      }
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseDebugReport.json')
+
+    then:
+    result.task(':licenseDebugReport').outcome == SUCCESS
+
+    and:
+    actualJson.text.trim() != '[]'
+    actualJson.text.contains('com.android.support:design')
   }
 }

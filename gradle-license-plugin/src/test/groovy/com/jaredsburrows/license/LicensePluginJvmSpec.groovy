@@ -2465,4 +2465,35 @@ final class LicensePluginJvmSpec extends Specification {
     actualJson.text.trim() != '[]'
     actualJson.text.contains('com.android.support:design')
   }
+
+  def 'licenseReport for a project applying the plain java plugin'() {
+    given: 'a project applying java rather than java-library'
+    buildFile <<
+      """
+      plugins {
+        id 'java'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'com.google.firebase:firebase-core:10.0.1'
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the main source set resolves compileClasspath and runtimeClasspath'
+    actualJson.text.contains('com.google.firebase:firebase-core:10.0.1')
+  }
 }
