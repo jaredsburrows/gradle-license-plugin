@@ -59,13 +59,14 @@ jobs:
         if: github.repository == 'jaredsburrows/gradle-license-plugin' && github.ref == 'refs/heads/master'
         with:
           name: gradle-license-plugin-${{ github.workflow }}-${{ github.run_id }}
+          # The plugin is the :gradle-license-plugin subproject, so its outputs are under
+          # gradle-license-plugin/build. The root build/libs holds only the near-empty jar the root
+          # project produces from java-library, and root build/reports is configuration-cache
+          # diagnostics rather than anything worth keeping.
           path: |
-            build/libs
-            build/outputs
-            build/publications
-            build/distributions
-            build/reports
-            build/test-results
+            gradle-license-plugin/build/libs
+            gradle-license-plugin/build/reports
+            gradle-license-plugin/build/test-results
 
   test-apps:
     name: Test Apps
