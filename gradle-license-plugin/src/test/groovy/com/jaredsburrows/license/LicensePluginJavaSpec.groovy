@@ -2336,4 +2336,37 @@ final class LicensePluginJavaSpec extends Specification {
     entry.project == 'inheritchild'
   }
 
+
+  def 'licenseReport falls back to the developer id when the POM gives no name'() {
+    given: 'a dependency whose only developer entry has an id and no name'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:devid:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
+    def entry = json.find { it.dependency == 'group:devid:1.0.0' }
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the id is used rather than leaving the copyright line blank'
+    entry.developers == ['jsmith']
+  }
+
 }

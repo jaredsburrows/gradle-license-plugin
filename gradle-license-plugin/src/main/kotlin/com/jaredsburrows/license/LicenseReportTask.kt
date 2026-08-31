@@ -554,9 +554,15 @@ internal abstract class LicenseReportTask
         .orEmpty()
         .map { developer ->
           Developer().apply {
-            id = developer.name.orEmpty().trim()
+            // The report shows this as the copyright holder. <name> is what nearly every POM
+            // gives; <id> is the fallback so an id-only entry is attributed rather than blank.
+            id =
+              developer.name
+                .orEmpty()
+                .trim()
+                .ifEmpty { developer.id.orEmpty().trim() }
           }
-        }
+        }.filter { it.id.isNotEmpty() }
 
     /**
      * Parent POM resolution is performed outside the task; this only looks up the already-provided mapping.
