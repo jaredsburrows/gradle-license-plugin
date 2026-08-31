@@ -54,20 +54,26 @@ final class TestUtils {
     return jsonAdapter.fromJson(text)
   }
 
-  static BuildResult gradleWithCommand(File file, String... commands) {
+  /**
+   * A runner for the build in [file], differing only in whether the caller expects it to succeed.
+   *
+   * --configuration-cache is forced here: TestKit builds do not inherit the repository's
+   * gradle.properties, so the plugin's configuration cache compatibility went unverified and a
+   * build that breaks it still passed.
+   */
+  private static GradleRunner runner(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
-      .withArguments(commands)
+      .withArguments((commands.toList() + '--configuration-cache') as String[])
       .withPluginClasspath()
-      .build()
+  }
+
+  static BuildResult gradleWithCommand(File file, String... commands) {
+    return runner(file, commands).build()
   }
 
   static BuildResult gradleWithCommandWithFail(File file, String... commands) {
-    return GradleRunner.create()
-      .withProjectDir(file)
-      .withArguments(commands)
-      .withPluginClasspath()
-      .buildAndFail()
+    return runner(file, commands).buildAndFail()
   }
 
   static String getLicenseText(String fileName) {
