@@ -1,17 +1,20 @@
 package com.jaredsburrows.license.internal
 
+import groovy.transform.TypeChecked
 import spock.lang.Specification
 import spock.lang.Unroll
 
+@TypeChecked
 final class LicenseHelperSpec extends Specification {
   private static final LicenseHelper HELPER = LicenseHelper.INSTANCE
 
   def 'every bundled license file is reachable from at least one alias'() {
     given:
     Set<String> reachable = HELPER.allAliases().values().toSet()
+    Set<String> unreachable = HELPER.bundledFileNames().findAll { String fileName -> !reachable.contains(fileName) }
 
-    expect:
-    HELPER.bundledFileNames().every { fileName -> reachable.contains(fileName) }
+    expect: 'naming the unreachable files, rather than just failing'
+    unreachable == [] as Set
   }
 
   def 'every license text file on the classpath is a bundled license'() {
@@ -19,43 +22,62 @@ final class LicenseHelperSpec extends Specification {
     File dir = new File(getClass().getResource('/license').toURI())
     Set<String> onDisk = dir.listFiles().findAll { it.name.endsWith('.txt') }.collect { it.name }.toSet()
 
+    Set<String> bundled = HELPER.bundledFileNames()
+
     expect: 'no orphaned file, and no table entry without a file'
-    onDisk == HELPER.bundledFileNames()
+    onDisk == bundled
   }
 
   def 'every alias resolves to a file that exists and has text'() {
-    expect:
-    HELPER.allAliases().every { alias, fileName ->
-      HELPER.licenseText(fileName)?.trim()
+    given:
+    Collection<String> withoutText = HELPER.allAliases().values().findAll { String fileName ->
+      !HELPER.licenseText(fileName)?.trim()
     }
+
+    expect:
+    withoutText == []
   }
 
   def 'no alias is registered twice with a different result'() {
     given: 'allAliases merges the name and url tables'
     Map<String, String> aliases = HELPER.allAliases()
+    boolean anyAliases = !aliases.isEmpty()
+    Collection<String> notBundled = aliases.values().findAll { String fileName -> !HELPER.isBundled(fileName) }
 
     expect: 'the merge did not silently drop a colliding key'
-    aliases.size() > 0
-    aliases.every { alias, fileName -> HELPER.isBundled(fileName) }
+    anyAliases
+    notBundled == []
   }
 
   def 'BUG: CC0 is bundled but was unreachable - it now resolves'() {
+    given:
+    String byFullName = HELPER.licenseFileName('Creative Commons Zero v1.0 Universal', null)
+    String bySpdxId = HELPER.licenseFileName('CC0-1.0', null)
+    String byUrl = HELPER.licenseFileName(null, 'https://creativecommons.org/publicdomain/zero/1.0/')
+
     expect:
-    HELPER.licenseFileName('Creative Commons Zero v1.0 Universal', null) == 'cc0-1.0.txt'
-    HELPER.licenseFileName('CC0-1.0', null) == 'cc0-1.0.txt'
-    HELPER.licenseFileName(null, 'https://creativecommons.org/publicdomain/zero/1.0/') == 'cc0-1.0.txt'
+    byFullName == 'cc0-1.0.txt'
+    bySpdxId == 'cc0-1.0.txt'
+    byUrl == 'cc0-1.0.txt'
   }
 
   def 'BUG: a typo meant the plain http GPL-3.0 url matched nothing'() {
+    given:
+    String plainHttp = HELPER.licenseFileName(null, 'http://www.gnu.org/licenses/gpl-3.0.txt')
+    String https = HELPER.licenseFileName(null, 'https://www.gnu.org/licenses/gpl-3.0.txt')
+
     expect:
-    HELPER.licenseFileName(null, 'http://www.gnu.org/licenses/gpl-3.0.txt') == 'gpl-3.0.txt'
-    HELPER.licenseFileName(null, 'https://www.gnu.org/licenses/gpl-3.0.txt') == 'gpl-3.0.txt'
+    plainHttp == 'gpl-3.0.txt'
+    https == 'gpl-3.0.txt'
   }
 
   @Unroll
-  def 'BUG: the bare SPDX id #id was missing and now resolves'() {
+  def 'BUG: the bare SPDX id #id was missing and now resolves'(String id, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(id, null)
+
     expect:
-    HELPER.licenseFileName(id, null) == expected
+    actual == expected
 
     where:
     id             || expected
@@ -73,18 +95,24 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'a bare SPDX id resolves whatever its casing - #id'() {
+  def 'a bare SPDX id resolves whatever its casing - #id'(String id) {
+    given:
+    String actual = HELPER.licenseFileName(id, null)
+
     expect:
-    HELPER.licenseFileName(id, null) == 'apache-2.0.txt'
+    actual == 'apache-2.0.txt'
 
     where:
     id << ['Apache-2.0', 'apache-2.0', 'APACHE-2.0', 'ApAcHe-2.0', '  Apache-2.0  ']
   }
 
   @Unroll
-  def 'url normalisation resolves #url'() {
+  def 'url normalisation resolves #url'(String url) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == 'apache-2.0.txt'
+    actual == 'apache-2.0.txt'
 
     where:
     url << [
@@ -102,9 +130,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the spdx.org url family resolves - #url'() {
+  def 'the spdx.org url family resolves - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                        || expected
@@ -119,9 +150,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'known urls resolve for every bundled license - #url'() {
+  def 'known urls resolve for every bundled license - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                                        || expected
@@ -143,9 +177,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'name normalisation resolves #name'() {
+  def 'name normalisation resolves #name'(String name) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == 'apache-2.0.txt'
+    actual == 'apache-2.0.txt'
 
     where:
     name << [
@@ -163,9 +200,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'known names resolve for every bundled license - #name'() {
+  def 'known names resolve for every bundled license - #name'(String name, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == expected
+    actual == expected
 
     where:
     name                                        || expected
@@ -184,9 +224,13 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'distinct licenses do not collapse into each other - #a vs #b'() {
+  def 'distinct licenses do not collapse into each other - #a vs #b'(String a, String b) {
+    given:
+    String actual = HELPER.licenseFileName(a, null)
+    String other = HELPER.licenseFileName(b, null)
+
     expect:
-    HELPER.licenseFileName(a, null) != HELPER.licenseFileName(b, null)
+    actual != other
 
     where:
     a                                        | b
@@ -201,9 +245,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'an unrelated license is not matched - #name / #url'() {
+  def 'an unrelated license is not matched - #name / #url'(String name, String url) {
+    given:
+    String actual = HELPER.licenseFileName(name, url)
+
     expect:
-    HELPER.licenseFileName(name, url) == null
+    actual == null
 
     where:
     name              | url
@@ -217,9 +264,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'licenseKey resolves #description'() {
+  def 'licenseKey resolves #description'(String description, String name, String url, String expected) {
+    given:
+    String actual = HELPER.licenseKey(name, url)
+
     expect:
-    HELPER.licenseKey(name, url) == expected
+    actual == expected
 
     where:
     description                            | name              | url                                              || expected
@@ -237,15 +287,20 @@ final class LicenseHelperSpec extends Specification {
   }
 
   def 'licenseKey returns the raw url unchanged, not a normalised one'() {
+    given:
+    String actual = HELPER.licenseKey('Some license', 'HTTPS://WWW.Example.COM/LICENSE.txt/')
+
     expect: 'the fallback must not leak normalisation into the report'
-    HELPER.licenseKey('Some license', 'HTTPS://WWW.Example.COM/LICENSE.txt/') ==
-      'HTTPS://WWW.Example.COM/LICENSE.txt/'
+    actual == 'HTTPS://WWW.Example.COM/LICENSE.txt/'
   }
 
   @Unroll
-  def 'the url wins over a conflicting name - #url'() {
+  def 'the url wins over a conflicting name - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName('MIT License', url)
+
     expect:
-    HELPER.licenseFileName('MIT License', url) == expected
+    actual == expected
 
     where:
     url                                              || expected
@@ -257,31 +312,44 @@ final class LicenseHelperSpec extends Specification {
   def 'licenseText returns the bundled text of a known license'() {
     when:
     String text = HELPER.licenseText('apache-2.0.txt')
+    List<String> missing = ['Apache License', 'Version 2.0, January 2004'].findAll { String marker ->
+      !text?.contains(marker)
+    }
 
     then:
     text != null
-    text.contains('Apache License')
-    text.contains('Version 2.0, January 2004')
+
+    and: 'naming the marker that went missing, rather than just failing'
+    missing == []
   }
 
   def 'licenseText returns null when the plugin does not bundle the license'() {
+    given:
+    String actual = HELPER.licenseText('does-not-exist.txt')
+
     expect:
-    HELPER.licenseText('does-not-exist.txt') == null
+    actual == null
   }
 
   @Unroll
-  def 'licenseText is non-empty for every bundled license - #fileName'() {
+  def 'licenseText is non-empty for every bundled license - #fileName'(String fileName) {
+    given:
+    String text = HELPER.licenseText(fileName)?.trim()
+
     expect:
-    HELPER.licenseText(fileName)?.trim()
+    text
 
     where:
     fileName << LicenseHelper.INSTANCE.bundledFileNames()
   }
 
   @Unroll
-  def 'isBundled is true only for bundled file names - #fileName'() {
+  def 'isBundled is true only for bundled file names - #fileName'(String fileName, boolean expected) {
+    given:
+    boolean actual = HELPER.isBundled(fileName)
+
     expect:
-    HELPER.isBundled(fileName) == expected
+    actual == expected
 
     where:
     fileName            || expected
@@ -295,9 +363,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the added license #id resolves by bare SPDX id'() {
+  def 'the added license #id resolves by bare SPDX id'(String id, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(id, null)
+
     expect:
-    HELPER.licenseFileName(id, null) == expected
+    actual == expected
 
     where:
     id                                 || expected
@@ -318,9 +389,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the added license resolves by name - #name'() {
+  def 'the added license resolves by name - #name'(String name, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == expected
+    actual == expected
 
     where:
     name                                                     || expected
@@ -343,9 +417,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the added license resolves by url - #url'() {
+  def 'the added license resolves by url - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                                  || expected
@@ -365,9 +442,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the Eclipse Distribution License maps to the BSD 3-Clause text - #nameOrUrl'() {
+  def 'the Eclipse Distribution License maps to the BSD 3-Clause text - #nameOrUrl'(String nameOrUrl, String name, String url) {
+    given:
+    String actual = HELPER.licenseFileName(name, url)
+
     expect: 'EDL-1.0 is textually BSD-3-Clause, so it aliases rather than duplicating the file'
-    HELPER.licenseFileName(name, url) == 'bsd-3-clause.txt'
+    actual == 'bsd-3-clause.txt'
 
     where:
     nameOrUrl                   | name                              | url
@@ -378,9 +458,13 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the added licenses stay distinct from their neighbours - #a vs #b'() {
+  def 'the added licenses stay distinct from their neighbours - #a vs #b'(String a, String b) {
+    given:
+    String actual = HELPER.licenseFileName(a, null)
+    String other = HELPER.licenseFileName(b, null)
+
     expect:
-    HELPER.licenseFileName(a, null) != HELPER.licenseFileName(b, null)
+    actual != other
 
     where:
     a          | b
@@ -399,11 +483,14 @@ final class LicenseHelperSpec extends Specification {
   def 'the classpath exception text contains both the GPL and the exception'() {
     when:
     String text = HELPER.licenseText('gpl-2.0-with-classpath-exception.txt')
+    List<String> missing = [
+      'GNU GENERAL PUBLIC LICENSE',
+      'CLASSPATH EXCEPTION',
+      'link this library with independent modules',
+    ].findAll { String marker -> !text?.contains(marker) }
 
-    then:
-    text.contains('GNU GENERAL PUBLIC LICENSE')
-    text.contains('CLASSPATH EXCEPTION')
-    text.contains('link this library with independent modules')
+    then: 'naming the marker that went missing, rather than just failing'
+    missing == []
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -411,20 +498,28 @@ final class LicenseHelperSpec extends Specification {
   // ---------------------------------------------------------------------------------------------
 
   def 'BUG: an ambiguous url no longer overrides a name that names the BSD variant'() {
+    given:
+    String actual = HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php')
+    String twoClause = HELPER.licenseFileName('BSD 2-Clause License', 'http://www.opensource.org/licenses/bsd-license.php')
+    String urlAlone = HELPER.licenseFileName(null, 'http://www.opensource.org/licenses/bsd-license.php')
+
     expect: 'hamcrest declares "New BSD License" with the retired OSI bsd-license.php url'
-    HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-3-clause.txt'
+    actual == 'bsd-3-clause.txt'
 
     and: 'the same url with a 2-clause name still resolves to 2-clause'
-    HELPER.licenseFileName('BSD 2-Clause License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-2-clause.txt'
+    twoClause == 'bsd-2-clause.txt'
 
     and: 'on its own it names no variant, so no text is asserted - the report links it instead'
-    HELPER.licenseFileName(null, 'http://www.opensource.org/licenses/bsd-license.php') == null
+    urlAlone == null
   }
 
   @Unroll
-  def 'an unambiguous url still wins over a conflicting name - #url'() {
+  def 'an unambiguous url still wins over a conflicting name - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName('MIT License', url)
+
     expect: 'only the urls listed as ambiguous defer to the name'
-    HELPER.licenseFileName('MIT License', url) == expected
+    actual == expected
 
     where:
     url                                              || expected
@@ -433,9 +528,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'BUG: the modern SPDX id #id resolves'() {
+  def 'BUG: the modern SPDX id #id resolves'(String id, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(id, null)
+
     expect: 'SPDX deprecated the bare GNU ids in 2018; current tooling emits -only/-or-later'
-    HELPER.licenseFileName(id, null) == expected
+    actual == expected
 
     where:
     id                                          || expected
@@ -454,9 +552,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'BUG: the gnu.org retired-license url #url resolves'() {
+  def 'BUG: the gnu.org retired-license url #url resolves'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect: 'gnu.org serves every retired license under /old-licenses/'
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                                              || expected
@@ -467,9 +568,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'a query string, fragment or port does not defeat the url - #url'() {
+  def 'a query string, fragment or port does not defeat the url - #url'(String url) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == 'apache-2.0.txt'
+    actual == 'apache-2.0.txt'
 
     where:
     url << [
@@ -484,9 +588,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'unusual whitespace inside a name does not block a match - #description'() {
+  def 'unusual whitespace inside a name does not block a match - #description'(String description, String name) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == 'apache-2.0.txt'
+    actual == 'apache-2.0.txt'
 
     where:
     description            | name
@@ -498,9 +605,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'version separators are folded consistently - #name'() {
+  def 'version separators are folded consistently - #name'(String name, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect: 'the dashed and dotted spellings reach the same alias as the plain one'
-    HELPER.licenseFileName(name, null) == expected
+    actual == expected
 
     where:
     name                              || expected
@@ -513,9 +623,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'common BSD and Apache name spellings resolve - #name'() {
+  def 'common BSD and Apache name spellings resolve - #name'(String name, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == expected
+    actual == expected
 
     where:
     name                     || expected
@@ -529,9 +642,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'licenseFileName only resolves licenses the plugin bundles - #description'() {
+  def 'licenseFileName only resolves licenses the plugin bundles - #description'(String description, String name, String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, url)
+
     expect:
-    HELPER.licenseFileName(name, url) == expected
+    actual == expected
 
     where:
     description               | name              | url                                              || expected
@@ -546,43 +662,58 @@ final class LicenseHelperSpec extends Specification {
   // -------------------------------------------------------------------------------------------
 
   def 'BUG: an ambiguous url is not used as a fallback when the name says nothing'() {
+    given:
+    String actual = HELPER.licenseFileName('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php')
+    String key = HELPER.licenseKey('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php')
+    String named = HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php')
+
     expect: 'jline declares "The BSD License" against the retired OSI page but is BSD-3-Clause'
-    HELPER.licenseFileName('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == null
+    actual == null
 
     and: 'so the report links the page instead of asserting a variant'
-    HELPER.licenseKey('The BSD License', 'http://www.opensource.org/licenses/bsd-license.php') ==
-      'http://www.opensource.org/licenses/bsd-license.php'
+    key == 'http://www.opensource.org/licenses/bsd-license.php'
 
     and: 'a name that does state the variant still wins'
-    HELPER.licenseFileName('New BSD License', 'http://www.opensource.org/licenses/bsd-license.php') == 'bsd-3-clause.txt'
+    named == 'bsd-3-clause.txt'
   }
 
   def 'BUG: the glassfish CDDL+GPL page names two licenses, so the name decides'() {
     given: 'jaxb-api cites the same dual-license url for both of its license entries'
     String url = 'https://glassfish.java.net/public/CDDL+GPL_1_1.html'
+    String actual = HELPER.licenseFileName('GPL2 w/ CPE', url)
+    String cddl = HELPER.licenseFileName('CDDL 1.1', url)
+    String gplKey = HELPER.licenseKey('GPL2 w/ CPE', url)
+    String cddlKey = HELPER.licenseKey('CDDL 1.1', url)
 
     expect: 'the GPL arm is no longer swallowed and reported as CDDL'
-    HELPER.licenseFileName('GPL2 w/ CPE', url) == 'gpl-2.0-with-classpath-exception.txt'
+    actual == 'gpl-2.0-with-classpath-exception.txt'
 
     and: 'the CDDL arm still resolves'
-    HELPER.licenseFileName('CDDL 1.1', url) == 'cddl-1.1.txt'
+    cddl == 'cddl-1.1.txt'
 
     and: 'the two arms no longer collapse onto one key'
-    HELPER.licenseKey('GPL2 w/ CPE', url) != HELPER.licenseKey('CDDL 1.1', url)
+    gplKey != cddlKey
   }
 
   def 'BUG: the Common Public License is not the Eclipse Public License'() {
+    given:
+    String actual = HELPER.licenseFileName('Common Public License Version 1.0', 'http://www.opensource.org/licenses/cpl1.0.txt')
+    String byName = HELPER.licenseFileName('Common Public License 1.0', null)
+
     expect: 'junit 4.10 declares CPL-1.0, which the plugin does not bundle'
-    HELPER.licenseFileName('Common Public License Version 1.0', 'http://www.opensource.org/licenses/cpl1.0.txt') == null
+    actual == null
 
     and: 'it must not be labelled with the EPL text, which is a different license'
-    HELPER.licenseFileName('Common Public License 1.0', null) != 'epl-1.0.txt'
+    byName != 'epl-1.0.txt'
   }
 
   @Unroll
-  def 'a locale path segment does not defeat the url - #url'() {
+  def 'a locale path segment does not defeat the url - #url'(String url) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect: 'h2 cites the localised Mozilla url'
-    HELPER.licenseFileName(null, url) == 'mpl-2.0.txt'
+    actual == 'mpl-2.0.txt'
 
     where:
     url << [
@@ -593,9 +724,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'a space-separated SPDX id resolves like its hyphenated form - #name'() {
+  def 'a space-separated SPDX id resolves like its hyphenated form - #name'(String name, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(name, null)
+
     expect:
-    HELPER.licenseFileName(name, null) == expected
+    actual == expected
 
     where:
     name          || expected
@@ -609,13 +743,17 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'the bundled text really is #fileName, not another license'() {
+  def 'the bundled text really is #fileName, not another license'(String fileName, String mustContain, List<String> mustNotContain) {
     given: 'the phrase, together with what must be absent, identifies exactly one bundled license'
     String text = HELPER.licenseText(fileName)
+    boolean present = text.contains(mustContain)
+    List<String> wronglyPresent = mustNotContain.findAll { String marker -> text.contains(marker) }
 
     expect:
-    text.contains(mustContain)
-    mustNotContain.every { !text.contains(it) }
+    present
+
+    and: 'naming the phrase that should not be there, rather than just failing'
+    wronglyPresent == []
 
     where:
     fileName | mustContain | mustNotContain
@@ -676,16 +814,20 @@ final class LicenseHelperSpec extends Specification {
       'unlicense.txt',
     ] as Set
 
+    Set<String> bundled = HELPER.bundledFileNames()
+
     expect:
-    asserted == HELPER.bundledFileNames()
+    asserted == bundled
   }
 
   def 'no two bundled licenses have identical text'() {
     given: 'a copy-paste that duplicates a license would otherwise ship silently'
-    List<String> texts = HELPER.bundledFileNames().collect { HELPER.licenseText(it) }
+    List<String> texts = HELPER.bundledFileNames().collect { String fileName -> HELPER.licenseText(fileName) }
+    int distinct = texts.toSet().size()
+    int total = texts.size()
 
     expect:
-    texts.toSet().size() == texts.size()
+    distinct == total
   }
 
 
@@ -694,9 +836,12 @@ final class LicenseHelperSpec extends Specification {
   // ---------------------------------------------------------------------------------------------
 
   @Unroll
-  def 'BUG: OSI now serves the singular /license/ path - #url'() {
+  def 'BUG: OSI now serves the singular /license/ path - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect: 'both the current and the retired form resolve'
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                              || expected
@@ -712,9 +857,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'BUG: spdx.org is matched as a prefix, not anywhere in the url - #url'() {
+  def 'BUG: spdx.org is matched as a prefix, not anywhere in the url - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                                    || expected
@@ -726,9 +874,12 @@ final class LicenseHelperSpec extends Specification {
   }
 
   @Unroll
-  def 'BUG: only a real language code is stripped from a url - #url'() {
+  def 'BUG: only a real language code is stripped from a url - #url'(String url, String expected) {
+    given:
+    String actual = HELPER.licenseFileName(null, url)
+
     expect:
-    HELPER.licenseFileName(null, url) == expected
+    actual == expected
 
     where:
     url                                             || expected
