@@ -29,8 +29,11 @@ private fun Project.resolveParentPomFilesBreadthFirst(
     pomFilesToInspect.forEach { pomFile ->
       val model =
         try {
-          mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
-        } catch (_: Exception) {
+          ReaderFactory.newXmlReader(pomFile).use { reader -> mavenReader.read(reader, false) }
+        } catch (e: Exception) {
+          // Previously swallowed in silence, so a descriptor exhaustion or a corrupt POM looked
+          // exactly like a dependency that simply declares no parent.
+          logger.warn("Failed to read POM file '$pomFile' while resolving parents: ${e.message}")
           return@forEach
         }
 

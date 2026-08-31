@@ -585,7 +585,10 @@ internal abstract class LicenseReportTask
       pomFile: File,
     ): Model? =
       try {
-        mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
+        // use{}: the reader owns the file handle, and a report over a large graph parses thousands
+        // of POMs. Leaked handles exhaust the descriptor limit, and the failure then arrives here
+        // as an exception and is reported as "no license" rather than as the resource problem.
+        ReaderFactory.newXmlReader(pomFile).use { reader -> mavenReader.read(reader, false) }
       } catch (e: Exception) {
         logger.warn("Failed to read POM file '$pomFile': ${e.shortMessage()}")
         null
