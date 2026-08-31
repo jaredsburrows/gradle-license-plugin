@@ -1,18 +1,32 @@
 package com.jaredsburrows.license.internal
 
 /**
- * Map License name and URL to license text file.
+ * Map License name and URL to license text file, matched after normalisation so one alias covers
+ * every spelling of the same thing (scheme, casing, www, trailing slash, extension, punctuation).
  *
- * Based on "popular and widely-used or with strong communities" found here:
- * https://opensource.org/licenses/category.
- * License text from: https://github.com/github/choosealicense.com/blob/gh-pages/_licenses.
- *
- * Names and URLs are matched after normalisation, so a single alias covers every spelling of the
- * same thing: `http` and `https`, a leading `www.`, a trailing slash, a `.txt`/`.html`/`.php`
- * suffix, any casing, and surrounding whitespace all collapse to one key. That is why the tables
- * below list each name or URL only once even though POMs spell them many ways.
+ * Based on https://opensource.org/licenses/category; text from choosealicense and the SPDX list.
  */
 object LicenseHelper {
+  // Deliberately not "." - it separates the parts of a version number ("2.0").
+  private val PUNCTUATION = Regex("[\",'()]")
+
+  // \s misses the non-breaking and zero-width spaces that turn up in POMs copied from a web page.
+  private val WHITESPACE = Regex("[\\s\\u00a0\\u200b\\ufeff]+")
+
+  // "License - v 1.0" and "License 1.0" must reach the same key.
+  private val SEPARATOR = Regex("\\s+-\\s+")
+
+  // "Version 2.0", "v2.0", "v 2.0" and "v. 2.0" all mean "2.0".
+  private val VERSION_PREFIX = Regex("\\b(version\\s+|v\\.?\\s*(?=\\d))")
+
+  // The GNU licenses SPDX re-spelled with an explicit -only / -or-later suffix.
+  private val GNU_FAMILY = Regex("(A|L)?GPL-[0-9.]+")
+
+  private val EXTENSION = Regex("(\\.(txt|html?|php))+$")
+  private val LOCALE = Regex("\\.[a-z]{2}$")
+  private val LOCALE_SEGMENT = Regex("^([^/]+)/[a-z]{2}(-[a-z]{2})?/")
+  private val PORT = Regex("^([^/]+):\\d+")
+
   /** Canonical SPDX identifier to the bundled license text file. */
   private val texts =
     linkedMapOf(
@@ -102,12 +116,20 @@ object LicenseHelper {
       "apache license 2.0" to "Apache-2.0",
       "apache software license 2.0" to "Apache-2.0",
       "apache software license" to "Apache-2.0",
+      "apache 2" to "Apache-2.0",
+      "apache license" to "Apache-2.0",
+      "apache software license 2" to "Apache-2.0",
       // BSD 2-Clause "Simplified" License
       "bsd 2-clause simplified license" to "BSD-2-Clause",
       "bsd 2-clause license" to "BSD-2-Clause",
+      "simplified bsd license" to "BSD-2-Clause",
+      "freebsd license" to "BSD-2-Clause",
       // BSD 3-Clause "New" or "Revised" License
       "bsd 3-clause new or revised license" to "BSD-3-Clause",
       "bsd 3-clause license" to "BSD-3-Clause",
+      "new bsd license" to "BSD-3-Clause",
+      "modified bsd license" to "BSD-3-Clause",
+      "revised bsd license" to "BSD-3-Clause",
       // Creative Commons Zero v1.0 Universal
       "creative commons zero 1.0 universal" to "CC0-1.0",
       "cc0 1.0 universal" to "CC0-1.0",
@@ -152,12 +174,9 @@ object LicenseHelper {
       "cddl 1.1" to "CDDL-1.1",
       // Eclipse Distribution License 1.0 is the BSD 3-Clause text
       "eclipse distribution license 1.0" to "BSD-3-Clause",
-      "eclipse distribution license - v 1.0" to "BSD-3-Clause",
       "edl 1.0" to "BSD-3-Clause",
       // Eclipse Public License 1.0
       "eclipse public license 1.0" to "EPL-1.0",
-      "eclipse public license - v 1.0" to "EPL-1.0",
-      "common public license 1.0" to "EPL-1.0",
       // GNU General Public License v2.0 with the Classpath exception
       "gnu general public license 2.0 w/classpath exception" to "GPL-2.0-with-classpath-exception",
       "gnu general public license 2.0 with the classpath exception" to "GPL-2.0-with-classpath-exception",
@@ -182,7 +201,8 @@ object LicenseHelper {
       "opensource.org/licenses/apache-2.0" to "Apache-2.0",
       // BSD 2-Clause "Simplified" License
       "opensource.org/licenses/bsd-2-clause" to "BSD-2-Clause",
-      "opensource.org/licenses/bsd-license" to "BSD-2-Clause",
+      // opensource.org/licenses/bsd-license.php is deliberately absent: the retired OSI page is
+      // cited for both the 2- and 3-clause licenses, so only a name can say which (jline, #846).
       // BSD 3-Clause "New" or "Revised" License
       "opensource.org/licenses/bsd-3-clause" to "BSD-3-Clause",
       // Creative Commons Zero v1.0 Universal
@@ -194,12 +214,14 @@ object LicenseHelper {
       "opensource.org/licenses/epl-2.0" to "EPL-2.0",
       // GNU General Public License v2.0
       "gnu.org/licenses/gpl-2.0" to "GPL-2.0",
+      "gnu.org/licenses/old-licenses/gpl-2.0" to "GPL-2.0",
       "opensource.org/licenses/gpl-2.0" to "GPL-2.0",
       // GNU General Public License v3.0
       "gnu.org/licenses/gpl-3.0" to "GPL-3.0",
       "opensource.org/licenses/gpl-3.0" to "GPL-3.0",
       // GNU Lesser General Public License v2.1
       "gnu.org/licenses/lgpl-2.1" to "LGPL-2.1",
+      "gnu.org/licenses/old-licenses/lgpl-2.1" to "LGPL-2.1",
       "opensource.org/licenses/lgpl-2.1" to "LGPL-2.1",
       // GNU Lesser General Public License v3.0
       "gnu.org/licenses/lgpl-3.0" to "LGPL-3.0",
@@ -227,9 +249,10 @@ object LicenseHelper {
       "creativecommons.org/licenses/by-sa/4.0" to "CC-BY-SA-4.0",
       // Common Development and Distribution License 1.0
       "opensource.org/licenses/cddl-1.0" to "CDDL-1.0",
-      "glassfish.dev.java.net/public/cddlv1.0" to "CDDL-1.0",
+      "opensource.org/licenses/cddl1" to "CDDL-1.0",
       // Common Development and Distribution License 1.1
-      "glassfish.java.net/public/cddl+gpl_1_1" to "CDDL-1.1",
+      // glassfish CDDL+GPL is deliberately absent: one page covering two licenses, and both arms
+      // of jaxb-api cite it, so aliasing it would swallow the GPL arm.
       "oracle.com/technetwork/licenses/cddl-1.1" to "CDDL-1.1",
       // Eclipse Distribution License 1.0 is the BSD 3-Clause text
       "eclipse.org/org/documents/edl-v10" to "BSD-3-Clause",
@@ -244,6 +267,7 @@ object LicenseHelper {
       "opensource.org/licenses/isc" to "ISC",
       // GNU Lesser General Public License v2.0
       "gnu.org/licenses/lgpl-2.0" to "LGPL-2.0",
+      "gnu.org/licenses/old-licenses/lgpl-2.0" to "LGPL-2.0",
       "opensource.org/licenses/lgpl-2.0" to "LGPL-2.0",
       // MIT No Attribution
       "opensource.org/licenses/mit-0" to "MIT-0",
@@ -252,56 +276,85 @@ object LicenseHelper {
       "opensource.org/licenses/unlicense" to "Unlicense",
     )
 
-  /** SPDX identifiers, lower cased, for case-insensitive lookup of a bare identifier. */
-  private val spdxIds: Map<String, String> = texts.keys.associateBy { it.lowercase() }
-
   /**
-   * Strip everything that varies between spellings of the same URL: the scheme, a leading "www.",
-   * a trailing slash and a file extension. `https://www.Apache.org/licenses/LICENSE-2.0.txt` and
-   * `http://apache.org/licenses/LICENSE-2.0` both become `apache.org/licenses/license-2.0`.
+   * SPDX identifiers, lower cased. SPDX deprecated the bare GNU ids in 2018, so the "-only" and
+   * "-or-later" spellings current tooling emits map to the same text.
    */
-  private fun normalizeUrl(url: String): String {
-    var value = url.trim().lowercase()
-    value = value.substringAfter("://", value)
-    value = value.removePrefix("www.")
-    value = value.trimEnd('/')
-    for (extension in listOf(".txt", ".html", ".htm", ".php")) {
-      value = value.removeSuffix(extension)
+  private val spdxIds: Map<String, String> =
+    buildMap {
+      texts.keys.forEach { id ->
+        put(id.lowercase(), id)
+        if (GNU_FAMILY.matches(id)) {
+          put("$id-only".lowercase(), id)
+          put("$id-or-later".lowercase(), id)
+        }
+      }
+      // "GPL-2.0-only WITH Classpath-exception-2.0" is the modern spelling of the deprecated
+      // GPL-2.0-with-classpath-exception identifier.
+      listOf("gpl-2.0", "gpl-2.0-only", "gpl-2.0-or-later")
+        .forEach { put("$it with classpath-exception-2.0", "GPL-2.0-with-classpath-exception") }
     }
+
+  /** Strip everything that varies between spellings: scheme, www, port, query, slash, extension. */
+  private fun normalizeUrl(url: String): String {
+    var value = url.trim().lowercase().replace(WHITESPACE, "")
+    value = value.substringAfter("://", value)
+    // Protocol-relative "//host/path".
+    value = value.removePrefix("//")
+    // A fragment or query string never identifies the license.
+    value = value.substringBefore('#').substringBefore('?')
+    value = value.removePrefix("www.")
+    value = value.replace(PORT, "$1")
+    value = value.trimEnd('/')
+    // A repeated group in one pass, so ".txt.html" folds the same way as ".html.txt" without
+    // depending on the order a list of suffixes would impose, and without a loop.
+    value = value.replace(EXTENSION, "")
+    // gnu.org serves its retired licenses as "lgpl-2.1.en.html"; drop the locale segment. Only
+    // when there is a path, so a bare host such as "unlicense.org" keeps its ".org".
+    if (value.contains('/')) {
+      value = value.replace(LOCALE, "")
+    }
+    // mozilla.org/en-US/MPL/2.0 - the locale can be a path segment rather than a suffix.
+    value = value.replace(LOCALE_SEGMENT, "$1/")
     return value.trimEnd('/')
   }
 
-  /**
-   * Reduce a license name to its distinguishing words: lower case, punctuation removed, runs of
-   * whitespace collapsed, a leading "the" dropped and "version 2.0"/"v2.0" folded to "2.0".
-   * `The Apache Software License, Version 2.0` becomes `apache software license 2.0`.
-   */
+  /** Reduce a name to its distinguishing words: "The Apache Software License, Version 2.0" -> "apache software license 2.0". */
   private fun normalizeName(name: String): String {
     var value = name.trim().lowercase()
     value = value.replace(PUNCTUATION, " ")
     value = value.replace(WHITESPACE, " ").trim()
     value = value.removePrefix("the ")
+    value = value.replace(SEPARATOR, " ")
     value = value.replace(VERSION_PREFIX, "")
     return value.replace(WHITESPACE, " ").trim()
   }
 
-  /** The canonical SPDX identifier for [name]/[url], or null when it is not one we bundle. */
+  /** The SPDX identifier a URL names, or null. */
+  private fun spdxIdFromUrl(url: String): String? {
+    val normalized = normalizeUrl(url)
+    // https://spdx.org/licenses/MIT.html names the identifier directly.
+    val fromSpdxUrl = normalized.substringAfter("spdx.org/licenses/", "")
+    return spdxIds[fromSpdxUrl] ?: urlAliases[normalized]
+  }
+
+  /** The SPDX identifier a name states, or null. */
+  private fun spdxIdFromName(name: String): String? {
+    val plain = name.trim().lowercase().replace(WHITESPACE, " ")
+    // "MPL 2.0" names the same license as "MPL-2.0"; POMs spell it both ways.
+    return spdxIds[plain] ?: spdxIds[plain.replace(' ', '-')] ?: nameAliases[normalizeName(name)]
+  }
+
+  /**
+   * The SPDX id for [name]/[url], or null. URL first, since it is the more precise signal. A URL
+   * that names more than one license is simply not aliased, so the name decides (hamcrest, #846).
+   */
   private fun spdxId(
     name: String?,
     url: String?,
   ): String? {
-    if (!url.isNullOrBlank()) {
-      val normalized = normalizeUrl(url)
-      // https://spdx.org/licenses/MIT.html names the identifier directly.
-      val fromSpdxUrl = normalized.substringAfter("spdx.org/licenses/", "")
-      spdxIds[fromSpdxUrl]?.let { return it }
-      urlAliases[normalized]?.let { return it }
-    }
-    if (!name.isNullOrBlank()) {
-      spdxIds[name.trim().lowercase()]?.let { return it }
-      nameAliases[normalizeName(name)]?.let { return it }
-    }
-    return null
+    url?.takeIf { it.isNotBlank() }?.let { spdxIdFromUrl(it) }?.let { return it }
+    return name?.takeIf { it.isNotBlank() }?.let { spdxIdFromName(it) }
   }
 
   /**
@@ -333,9 +386,4 @@ object LicenseHelper {
 
   /** Every alias, name and URL alike, paired with the file it must resolve to. Used by tests. */
   fun allAliases(): Map<String, String> = (nameAliases + urlAliases).mapValues { (_, id) -> texts.getValue(id) }
-
-  // Deliberately not "." - it separates the parts of a version number ("2.0").
-  private val PUNCTUATION = Regex("[\",'()]")
-  private val WHITESPACE = Regex("\\s+")
-  private val VERSION_PREFIX = Regex("\\b(version\\s+|v(?=\\d))")
 }

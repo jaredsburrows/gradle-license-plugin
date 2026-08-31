@@ -15,7 +15,7 @@ import java.security.MessageDigest
 /** Returns true if plugin exists in project. */
 internal fun Project.hasPlugin(list: List<String>): Boolean = list.any { plugins.hasPlugin(it) }
 
-private fun Project.includeParentPomFilesRecursively(
+private fun Project.resolveParentPomFilesBreadthFirst(
   mavenReader: MavenXpp3Reader,
   rootPomFiles: List<File>,
   coordinateToFile: MutableMap<String, String>,
@@ -223,7 +223,7 @@ private fun Project.buildPomInput(configurationNames: List<String>): PomInput {
 
   val mavenReader = MavenXpp3Reader()
 
-  includeParentPomFilesRecursively(
+  resolveParentPomFilesBreadthFirst(
     mavenReader = mavenReader,
     rootPomFiles = rootPomFiles,
     coordinateToFile = coordinateToFile,

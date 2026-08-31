@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake dependency for testing - a POM that names itself as its own parent -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Parent Information - deliberately itself, which used to recurse forever -->
+  <parent>
+    <groupId>group</groupId>
+    <artifactId>selfparent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <!-- The Basics -->
+  <groupId>group</groupId>
+  <artifactId>selfparent</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <!-- More Project Information -->
+  <name>Self parent</name>
+  <description>Fake dependency whose parent is itself</description>
+</project>
