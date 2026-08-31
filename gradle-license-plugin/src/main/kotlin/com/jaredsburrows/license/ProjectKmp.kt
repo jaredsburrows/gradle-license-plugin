@@ -3,6 +3,7 @@ package com.jaredsburrows.license
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 /** Returns true if a JetBrains Kotlin Multiplatform project. */
 internal fun Project.isKmpProject(): Boolean = hasPlugin(listOf("org.jetbrains.kotlin.multiplatform"))
@@ -19,11 +20,25 @@ internal fun Project.isKmpProject(): Boolean = hasPlugin(listOf("org.jetbrains.k
  * that is not multiplatform.
  */
 internal fun Project.configureKmpProject() {
+  // Declared inside the function, not at file level. A file-level `val` is initialized in this
+  // file's facade class, which also carries [isKmpProject] -- so every project, multiplatform or
+  // not, would resolve KotlinPlatformType on the way to asking whether it is multiplatform, and
+  // fail with NoClassDefFoundError wherever the Kotlin Gradle Plugin is absent. It is compileOnly.
+  //
+  // Targets deliberately left alone, matched by platform type rather than by target name so a
+  // rename cannot silently turn the filter off:
+  //
+  // - common is the metadata target, which resolves no dependencies of its own.
+  // - androidJvm belongs to [configureAndroidProject]. An android target only exists when an
+  //   Android plugin is applied, and that path reports it per variant and wires up the asset
+  //   directories, which this one cannot. Both resolve the same configurations, so registering
+  //   here as well would produce a second task with identical output under a different name.
+  val skippedPlatformTypes = setOf(KotlinPlatformType.common, KotlinPlatformType.androidJvm)
+
   extensions
     .getByType(KotlinMultiplatformExtension::class.java)
     .targets
-    // The common target resolves no runtime dependencies of its own.
-    .filterNot { it.name == METADATA_TARGET }
+    .filterNot { it.platformType in skippedPlatformTypes }
     .forEach { target ->
       val name = target.name.replaceFirstChar { it.uppercase() }
 
@@ -44,5 +59,3 @@ internal fun Project.configureKmpProject() {
       }
     }
 }
-
-private const val METADATA_TARGET = "metadata"
