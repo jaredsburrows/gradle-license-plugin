@@ -1,30 +1,37 @@
 package test
 
 import com.jaredsburrows.license.internal.report.HtmlReport
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import groovy.transform.CompileStatic
 import javax.xml.parsers.DocumentBuilderFactory
 import org.apache.commons.csv.CSVFormat
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.builder.Input
 import org.xmlunit.util.DocumentBuilderFactoryConfigurer
 
+@CompileStatic
 final class TestUtils {
   private TestUtils() {
     //noinspection GroovyAccessibility
     throw new AssertionError('No instances')
   }
 
-  static def assertCsv(String expected, String actual) {
-    def left = CSVFormat.DEFAULT.parse(new StringReader(actual)).records.collect { it.toString() }
-    def right = CSVFormat.DEFAULT.parse(new StringReader(expected)).records.collect { it.toString() }
-    return left == right
+  static boolean assertCsv(String expected, String actual) {
+    return csvRows(expected) == csvRows(actual)
   }
 
-  static def assertHtml(String expected, String actual) {
-    def left = htmlToXml(expected)
-    def right = htmlToXml(actual)
+  /** The parsed rows, so a spec can compare two values rather than assert on a boolean. */
+  static List<String> csvRows(String text) {
+    return CSVFormat.DEFAULT.parse(new StringReader(text)).records.collect { it.toString() }
+  }
+
+  static boolean assertHtml(String expected, String actual) {
+    String left = htmlToXml(expected)
+    String right = htmlToXml(actual)
     return !DiffBuilder.compare(Input.fromString(right).build())
       .withTest(Input.fromString(left).build())
       // XMLUnit 2.12.0+ disallows DOCTYPE declarations by default, but the generated HTML reports start with one
@@ -35,13 +42,19 @@ final class TestUtils {
       .differences
   }
 
-  static def assertJson(String expected, String actual) {
-    def moshi = new Moshi.Builder().build()
-    def jsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, Map.class, String.class, Object.class))
-    return jsonAdapter.fromJson(expected) == jsonAdapter.fromJson(actual)
+  static boolean assertJson(String expected, String actual) {
+    return jsonOf(expected) == jsonOf(actual)
   }
 
-  static def gradleWithCommand(File file, String... commands) {
+  /** The parsed JSON, so a spec can compare two values rather than assert on a boolean. */
+  static List<Map<String, Object>> jsonOf(String text) {
+    Moshi moshi = new Moshi.Builder().build()
+    JsonAdapter<List<Map<String, Object>>> jsonAdapter =
+      moshi.adapter(Types.newParameterizedType(List, Map, String, Object))
+    return jsonAdapter.fromJson(text)
+  }
+
+  static BuildResult gradleWithCommand(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
       .withArguments(commands)
@@ -49,7 +62,7 @@ final class TestUtils {
       .build()
   }
 
-  static def gradleWithCommandWithFail(File file, String... commands) {
+  static BuildResult gradleWithCommandWithFail(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
       .withArguments(commands)
@@ -57,20 +70,21 @@ final class TestUtils {
       .buildAndFail()
   }
 
-  static def getLicenseText(String fileName) {
+  static String getLicenseText(String fileName) {
     return HtmlReport.getLicenseText(fileName)
   }
 
-  private static def htmlToXml(String text) {
+  private static String htmlToXml(String text) {
     // Convert HTML into legal-enough XML that we can use the XML comparison
     // utility to compare two HTML strings. This is only just what we need for
     // this exact case, so update as needed.
-    text = text.replaceAll('<br>', '<br/>')
-    text = text.replaceAll('<hr>', '<hr/>')
-    text = text.replaceAll('&copy;', '(c)')
-    text = text.replaceAll('<meta http-equiv="content-type" content="text/html; charset=utf-8">', '<meta http-equiv="content-type" content="text/html; charset=utf-8" />')
+    String result = text
+    result = result.replaceAll('<br>', '<br/>')
+    result = result.replaceAll('<hr>', '<hr/>')
+    result = result.replaceAll('&copy;', '(c)')
+    result = result.replaceAll('<meta http-equiv="content-type" content="text/html; charset=utf-8">', '<meta http-equiv="content-type" content="text/html; charset=utf-8" />')
     // Unicode code points being transformed strangely - normalize
-    text = text.replaceAll('Karol Wr.*niak', 'Karol WrXXniak')
-    return text
+    result = result.replaceAll('Karol Wr.*niak', 'Karol WrXXniak')
+    return result
   }
 }

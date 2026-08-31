@@ -4,11 +4,11 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 final class LicenseHelperSpec extends Specification {
-  private static final def HELPER = LicenseHelper.INSTANCE
+  private static final LicenseHelper HELPER = LicenseHelper.INSTANCE
 
   def 'every bundled license file is reachable from at least one alias'() {
     given:
-    def reachable = HELPER.allAliases().values().toSet()
+    Set<String> reachable = HELPER.allAliases().values().toSet()
 
     expect:
     HELPER.bundledFileNames().every { fileName -> reachable.contains(fileName) }
@@ -16,8 +16,8 @@ final class LicenseHelperSpec extends Specification {
 
   def 'every license text file on the classpath is a bundled license'() {
     given: 'the resource directory the plugin ships'
-    def dir = new File(getClass().getResource('/license').toURI())
-    def onDisk = dir.listFiles().findAll { it.name.endsWith('.txt') }.collect { it.name }.toSet()
+    File dir = new File(getClass().getResource('/license').toURI())
+    Set<String> onDisk = dir.listFiles().findAll { it.name.endsWith('.txt') }.collect { it.name }.toSet()
 
     expect: 'no orphaned file, and no table entry without a file'
     onDisk == HELPER.bundledFileNames()
@@ -32,7 +32,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'no alias is registered twice with a different result'() {
     given: 'allAliases merges the name and url tables'
-    def aliases = HELPER.allAliases()
+    Map<String, String> aliases = HELPER.allAliases()
 
     expect: 'the merge did not silently drop a colliding key'
     aliases.size() > 0
@@ -256,7 +256,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'licenseText returns the bundled text of a known license'() {
     when:
-    def text = HELPER.licenseText('apache-2.0.txt')
+    String text = HELPER.licenseText('apache-2.0.txt')
 
     then:
     text != null
@@ -398,7 +398,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'the classpath exception text contains both the GPL and the exception'() {
     when:
-    def text = HELPER.licenseText('gpl-2.0-with-classpath-exception.txt')
+    String text = HELPER.licenseText('gpl-2.0-with-classpath-exception.txt')
 
     then:
     text.contains('GNU GENERAL PUBLIC LICENSE')
@@ -559,7 +559,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'BUG: the glassfish CDDL+GPL page names two licenses, so the name decides'() {
     given: 'jaxb-api cites the same dual-license url for both of its license entries'
-    def url = 'https://glassfish.java.net/public/CDDL+GPL_1_1.html'
+    String url = 'https://glassfish.java.net/public/CDDL+GPL_1_1.html'
 
     expect: 'the GPL arm is no longer swallowed and reported as CDDL'
     HELPER.licenseFileName('GPL2 w/ CPE', url) == 'gpl-2.0-with-classpath-exception.txt'
@@ -611,7 +611,7 @@ final class LicenseHelperSpec extends Specification {
   @Unroll
   def 'the bundled text really is #fileName, not another license'() {
     given: 'the phrase, together with what must be absent, identifies exactly one bundled license'
-    def text = HELPER.licenseText(fileName)
+    String text = HELPER.licenseText(fileName)
 
     expect:
     text.contains(mustContain)
@@ -648,7 +648,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'the identity table covers every bundled license'() {
     given: 'so a license added without an identity assertion fails here'
-    def asserted = [
+    Set<String> asserted = [
       '0bsd.txt',
       'agpl-3.0.txt',
       'apache-1.1.txt',
@@ -682,7 +682,7 @@ final class LicenseHelperSpec extends Specification {
 
   def 'no two bundled licenses have identical text'() {
     given: 'a copy-paste that duplicates a license would otherwise ship silently'
-    def texts = HELPER.bundledFileNames().collect { HELPER.licenseText(it) }
+    List<String> texts = HELPER.bundledFileNames().collect { HELPER.licenseText(it) }
 
     expect:
     texts.toSet().size() == texts.size()
