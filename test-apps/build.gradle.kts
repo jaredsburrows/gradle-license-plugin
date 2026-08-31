@@ -6,6 +6,7 @@ plugins {
   alias(libs.plugins.kotlin.compose) apply false
   // No version: the plugin comes from the build included in settings.gradle.kts.
   id("com.jaredsburrows.license") apply false
+  alias(libs.plugins.ktlint)
   idea
 }
 
@@ -21,6 +22,9 @@ idea {
 }
 
 subprojects {
+  // ktlint hooks itself into check, so "-p test-apps build" lints without a workflow change.
+  apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
   tasks.withType<Test>().configureEach {
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL

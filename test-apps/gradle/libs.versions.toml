@@ -11,6 +11,7 @@ targetCompatibility = "17"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "14.2.0" }
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version = "1.13.0" }

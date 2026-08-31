@@ -7,12 +7,21 @@ plugins {
 
 android {
   namespace = "com.jaredsburrows.license.testapp.html"
-  compileSdk = libs.versions.targetSdk.get().toInt()
+  compileSdk =
+    libs.versions.targetSdk
+      .get()
+      .toInt()
 
   defaultConfig {
     applicationId = "com.jaredsburrows.license.testapp.html"
-    minSdk = libs.versions.minSdk.get().toInt()
-    targetSdk = libs.versions.targetSdk.get().toInt()
+    minSdk =
+      libs.versions.minSdk
+        .get()
+        .toInt()
+    targetSdk =
+      libs.versions.targetSdk
+        .get()
+        .toInt()
     versionCode = 1
     versionName = "1.0"
   }
