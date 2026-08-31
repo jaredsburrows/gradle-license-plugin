@@ -2629,6 +2629,12 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       }
 
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
       apply plugin: 'org.jetbrains.kotlin.multiplatform'
       apply plugin: 'com.android.kotlin.multiplatform.library'
       apply plugin: 'com.jaredsburrows.license'
@@ -2638,17 +2644,28 @@ final class LicensePluginAndroidSpec extends Specification {
           namespace = 'com.example.kmp'
           compileSdk = $compileSdkVersion
         }
+
+        sourceSets {
+          androidMain {
+            dependencies {
+              implementation 'com.android.support:design:26.1.0'
+            }
+          }
+        }
       }
       """
 
-    when: 'the plugin is applied'
-    BuildResult result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
+    when: 'the report task registered for the android target is run'
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseAndroidMainReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseAndroidMainReport.json')
 
     then: 'it does not fail with the unsupported-project error'
     !result.output.contains('requires Java, Kotlin or Android Gradle based plugins')
+    result.task(':licenseAndroidMainReport').outcome == SUCCESS
 
-    and: 'a report task is registered for the android target'
-    result.output.contains('licenseAndroidMainReport')
+    and: 'the component is named androidMain but its configurations are not, so the report is populated'
+    actualJson.text.trim() != '[]'
+    actualJson.text.contains('com.android.support:design')
   }
 
 }

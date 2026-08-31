@@ -115,12 +115,19 @@ private fun Project.configureComponent(component: Component) {
     }
 
   tasks.register("license${name}Report", LicenseReportTask::class.java) {
-    // Apply common task configuration first
+    // Apply common task configuration first.
+    //
+    // Ask the component for its configuration names rather than assembling them from the component
+    // name. The two coincide for the standard variants -- "debug" resolves debugCompileClasspath --
+    // but not for an AGP-KMP library, whose component is named "androidMain" while its
+    // configurations are androidCompileClasspath / androidRuntimeClasspath. The assembled names
+    // matched nothing there, and a name that matches nothing is skipped rather than failing, so
+    // licenseAndroidMainReport quietly wrote an empty report.
     configureCommon(
       it,
       listOf(
-        "${component.name}CompileClasspath",
-        "${component.name}RuntimeClasspath",
+        component.compileConfiguration.name,
+        component.runtimeConfiguration.name,
       ),
     )
 
