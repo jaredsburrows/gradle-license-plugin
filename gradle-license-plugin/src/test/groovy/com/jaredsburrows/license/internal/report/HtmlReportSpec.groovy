@@ -12,12 +12,12 @@ import static test.TestUtils.assertHtml
 final class HtmlReportSpec extends Specification {
   def 'no open source html'() {
     given:
-    def projects = []
-    def report = new HtmlReport(projects, true)
+    List<Model> projects = []
+    HtmlReport report = new HtmlReport(projects, true)
 
     when:
-    def actual = report.toString()
-    def expected =
+    String actual = report.toString()
+    String expected =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -38,13 +38,13 @@ final class HtmlReportSpec extends Specification {
 
   def 'open source html'() {
     given:
-    def developer = new Developer(id: 'name')
-    def developers = [developer, developer]
-    def license = new License(
+    Developer developer = new Developer(id: 'name')
+    List<Developer> developers = [developer, developer]
+    License license = new License(
       name: 'name',
       url: 'url'
     )
-    def project = new Model(
+    Model project = new Model(
       name: 'name',
       description: 'description',
       licenses: [license],
@@ -55,7 +55,7 @@ final class HtmlReportSpec extends Specification {
       artifactId: 'bar',
       version: '1.2.3',
     )
-    def missingLicensesProject = new Model(
+    Model missingLicensesProject = new Model(
       name: 'name',
       description: '',
       licenses: [],
@@ -66,12 +66,12 @@ final class HtmlReportSpec extends Specification {
       artifactId: 'bar',
       version: '1.2.3',
     )
-    def projects = [project, project, missingLicensesProject]
-    def sut = new HtmlReport(projects, true)
+    List<Model> projects = [project, project, missingLicensesProject]
+    HtmlReport sut = new HtmlReport(projects, true)
 
     when:
-    def actual = sut.toString()
-    def expected =
+    String actual = sut.toString()
+    String expected =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -139,7 +139,7 @@ final class HtmlReportSpec extends Specification {
 
   def 'a bundled license is rendered as its full text'() {
     given: 'a license the plugin bundles, matched by name because the url is not in the map'
-    def project = new Model(
+    Model project = new Model(
       name: 'name',
       description: 'description',
       licenses: [new License(name: 'The MIT License', url: 'https://spdx.org/licenses/MIT.html')],
@@ -152,14 +152,14 @@ final class HtmlReportSpec extends Specification {
     )
 
     when:
-    def actual = new HtmlReport([project], false).toString()
+    String actual = new HtmlReport([project], false).toString()
 
     then: 'the text is inlined rather than linked'
     actual.contains('Permission is hereby granted, free of charge')
     !actual.contains('<a href="https://spdx.org/licenses/MIT.html">')
   }
 
-  private static def projectWith(License license) {
+  private static Model projectWith(License license) {
     new Model(
       name: 'name',
       description: '',
@@ -176,10 +176,10 @@ final class HtmlReportSpec extends Specification {
   @Unroll
   def 'bundled license text is escaped, not swallowed as markup - #spdxId'() {
     given: 'a license whose bundled text contains angle-bracketed placeholders'
-    def report = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true)
+    HtmlReport report = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true)
 
     when:
-    def actual = report.toString()
+    String actual = report.toString()
 
     then: 'the placeholder survives, escaped'
     actual.contains(escaped)
@@ -200,9 +200,9 @@ final class HtmlReportSpec extends Specification {
   def 'every bundled license text survives rendering intact'() {
     expect: 'nothing between angle brackets is lost from any of the bundled texts'
     LicenseHelper.INSTANCE.bundledFileNames().every { fileName ->
-      def text = LicenseHelper.INSTANCE.licenseText(fileName)
-      def spdxId = LicenseHelper.INSTANCE.allAliases().find { alias, file -> file == fileName }?.key
-      def html = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true).toString()
+      String text = LicenseHelper.INSTANCE.licenseText(fileName)
+      String spdxId = LicenseHelper.INSTANCE.allAliases().find { alias, file -> file == fileName }?.key
+      String html = new HtmlReport([projectWith(new License(name: spdxId, url: ''))], true).toString()
       // Every angle-bracketed run in the source text must appear escaped in the output.
       (text =~ /<[^>\n]{1,60}>/).collect { it }.every { fragment ->
         html.contains(fragment.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
@@ -213,10 +213,10 @@ final class HtmlReportSpec extends Specification {
   @Unroll
   def 'license metadata from a POM cannot inject markup - #description'() {
     given: 'a dependency POM carrying markup in its license fields'
-    def report = new HtmlReport([projectWith(new License(name: name, url: url))], true)
+    HtmlReport report = new HtmlReport([projectWith(new License(name: name, url: url))], true)
 
     when:
-    def actual = report.toString()
+    String actual = report.toString()
 
     then: 'the markup is escaped rather than emitted as elements'
     !actual.contains(mustNotContain)
@@ -231,10 +231,10 @@ final class HtmlReportSpec extends Specification {
 
   def 'an unknown license still renders its url as a working link'() {
     given:
-    def report = new HtmlReport([projectWith(new License(name: 'Some license', url: 'http://website.tld/'))], true)
+    HtmlReport report = new HtmlReport([projectWith(new License(name: 'Some license', url: 'http://website.tld/'))], true)
 
     when:
-    def actual = report.toString()
+    String actual = report.toString()
 
     then: 'escaping did not cost us the anchor'
     actual.contains('<a href="http://website.tld/">http://website.tld/</a>')
@@ -243,7 +243,7 @@ final class HtmlReportSpec extends Specification {
 
   def 'showVersions leaves the version out when disabled'() {
     given:
-    def project = new Model(
+    Model project = new Model(
       name: 'name',
       description: '',
       licenses: [],

@@ -10,12 +10,12 @@ import static test.TestUtils.assertJson
 final class JsonReportSpec extends Specification {
   def 'no open source json'() {
     given:
-    def projects = []
-    def sut = new JsonReport(projects)
+    List<Model> projects = []
+    JsonReport sut = new JsonReport(projects)
 
     when:
-    def actual = sut.toString()
-    def expected =
+    String actual = sut.toString()
+    String expected =
       """
       []
       """
@@ -26,8 +26,8 @@ final class JsonReportSpec extends Specification {
 
   def 'open source json - missing values'() {
     given:
-    def developer = new Developer(id: 'name')
-    def project1 = new Model(
+    Developer developer = new Developer(id: 'name')
+    Model project1 = new Model(
       name: 'name',
       description: '',
       licenses: [],
@@ -38,7 +38,7 @@ final class JsonReportSpec extends Specification {
       artifactId: 'bar',
       version: '1.2.3',
     )
-    def project2 = new Model(
+    Model project2 = new Model(
       name: 'name',
       description: '',
       licenses: [],
@@ -49,12 +49,12 @@ final class JsonReportSpec extends Specification {
       artifactId: 'bar',
       version: '1.2.3',
     )
-    def projects = [project1, project2]
-    def sut = new JsonReport(projects)
+    List<Model> projects = [project1, project2]
+    JsonReport sut = new JsonReport(projects)
 
     when:
-    def actual = sut.toString()
-    def expected =
+    String actual = sut.toString()
+    String expected =
       """
       [
         {
@@ -89,13 +89,13 @@ final class JsonReportSpec extends Specification {
 
   def 'open source json - all values'() {
     given:
-    def developer = new Developer(id: 'name')
-    def developers = [developer, developer]
-    def license = new License(
+    Developer developer = new Developer(id: 'name')
+    List<Developer> developers = [developer, developer]
+    License license = new License(
       name: 'name',
       url: 'url'
     )
-    def project = new Model(
+    Model project = new Model(
       name: 'name',
       description: 'description',
       licenses: [license],
@@ -106,12 +106,12 @@ final class JsonReportSpec extends Specification {
       artifactId: 'bar',
       version: '1.2.3',
     )
-    def projects = [project, project]
-    def sut = new JsonReport(projects)
+    List<Model> projects = [project, project]
+    JsonReport sut = new JsonReport(projects)
 
     when:
-    def actual = sut.toString()
-    def expected =
+    String actual = sut.toString()
+    String expected =
       """
       [
         {

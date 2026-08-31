@@ -14,7 +14,7 @@ final class JsonFullReportSpec extends Specification {
 
   def 'the empty report still has both top level keys'() {
     when:
-    def report = new JsonFullReport([])
+    JsonFullReport report = new JsonFullReport([])
 
     then:
     report.name() == 'Full JSON'
@@ -24,14 +24,14 @@ final class JsonFullReportSpec extends Specification {
 
   def 'a license text is stored once no matter how many dependencies share it'() {
     given: 'three dependencies, two of them Apache'
-    def projects = [
+    List<Model> projects = [
       project('First', 'first', [license('The Apache Software License', APACHE_URL)]),
       project('Second', 'second', [license('Apache License 2.0', 'https://www.apache.org/licenses/LICENSE-2.0')]),
       project('Third', 'third', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html')]),
     ]
 
     when:
-    def report = new JsonSlurper().parseText(new JsonFullReport(projects).toString())
+    Map<String, Object> report = (Map<String, Object>) new JsonSlurper().parseText(new JsonFullReport(projects).toString())
 
     then: 'differently spelled Apache licenses coalesce onto one text'
     report.license_texts.keySet() == ['apache-2.0', 'mit'] as Set
@@ -47,10 +47,10 @@ final class JsonFullReportSpec extends Specification {
 
   def 'the POM name and url are kept even when the license is not bundled'() {
     given:
-    def projects = [project('Unknown', 'unknown', [license('Some license', 'http://website.tld/')])]
+    List<Model> projects = [project('Unknown', 'unknown', [license('Some license', 'http://website.tld/')])]
 
     when:
-    def report = new JsonSlurper().parseText(new JsonFullReport(projects).toString())
+    Map<String, Object> report = (Map<String, Object>) new JsonSlurper().parseText(new JsonFullReport(projects).toString())
 
     then:
     report.license_texts.isEmpty()
@@ -62,12 +62,12 @@ final class JsonFullReportSpec extends Specification {
 
   def 'a dependency with several licenses references each of them'() {
     given:
-    def projects = [
+    List<Model> projects = [
       project('Dual', 'dual', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html'), license('The Apache Software License', APACHE_URL)]),
     ]
 
     when:
-    def report = new JsonSlurper().parseText(new JsonFullReport(projects).toString())
+    Map<String, Object> report = (Map<String, Object>) new JsonSlurper().parseText(new JsonFullReport(projects).toString())
 
     then:
     report.license_texts.keySet() == ['apache-2.0', 'mit'] as Set
@@ -76,15 +76,15 @@ final class JsonFullReportSpec extends Specification {
 
   def 'the dependency entries carry everything the JSON report carries'() {
     given:
-    def model = project('Full', 'full', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html')])
+    Model model = project('Full', 'full', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html')])
     model.description = 'A description'
     model.url = 'https://github.com/user/repo'
     model.inceptionYear = '2017'
     model.developers = [new Developer().tap { it.id = 'A Developer' }]
 
     when:
-    def report = new JsonSlurper().parseText(new JsonFullReport([model]).toString())
-    def dependency = report.dependencies[0]
+    Map<String, Object> report = (Map<String, Object>) new JsonSlurper().parseText(new JsonFullReport([model]).toString())
+    Map<String, Object> dependency = report.dependencies[0]
 
     then:
     dependency.project == 'Full'
@@ -98,10 +98,10 @@ final class JsonFullReportSpec extends Specification {
 
   def 'missing values are serialized as null rather than dropped'() {
     given:
-    def projects = [project('Sparse', 'sparse', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html')])]
+    List<Model> projects = [project('Sparse', 'sparse', [license(MIT_NAME, 'https://spdx.org/licenses/MIT.html')])]
 
     when:
-    def json = new JsonFullReport(projects).toString()
+    String json = new JsonFullReport(projects).toString()
 
     then: 'consumers can rely on the keys being present, as in the JSON report'
     json.contains('"description":null')
@@ -134,10 +134,10 @@ final class JsonFullReportSpec extends Specification {
   @Unroll
   def 'every bundled license reaches the full report under its own key - #spdxId'() {
     given: 'the key is the bundled file name without its extension'
-    def projects = [project('P', 'p', [license(spdxId, '')])]
+    List<Model> projects = [project('P', 'p', [license(spdxId, '')])]
 
     when:
-    def report = new JsonSlurper().parseText(new JsonFullReport(projects).toString())
+    Map<String, Object> report = (Map<String, Object>) new JsonSlurper().parseText(new JsonFullReport(projects).toString())
 
     then: 'the dependency points at the key, and the text is carried under it'
     report.dependencies[0].licenses[0].license_key == expectedKey
