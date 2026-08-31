@@ -23,9 +23,20 @@ object LicenseHelper {
   private val GNU_FAMILY = Regex("(A|L)?GPL-[0-9.]+")
 
   private val EXTENSION = Regex("(\\.(txt|html?|php))+$")
-  private val LOCALE = Regex("\\.[a-z]{2}$")
+
+  // Only actual language codes, the ones gnu.org serves. A bare "[a-z]{2}" also swallowed
+  // suffixes like ".rb" and ".py", which made opensource.org/licenses/MIT.rb resolve to MIT.
+  private val LOCALE =
+    Regex(
+      "\\.(ar|bg|ca|cs|de|el|en|eo|es|fa|fr|he|hr|id|it|ja|ko|ml|nb|nl|pl|pt|ro|ru|sk|sq|sr|ta|tr|uk|zh)$",
+    )
   private val LOCALE_SEGMENT = Regex("^([^/]+)/[a-z]{2}(-[a-z]{2})?/")
   private val PORT = Regex("^([^/]+):\\d+")
+  private val OSI_VERSION = Regex("-(\\d+)-(\\d+)$")
+
+  private const val SPDX_URL_PREFIX = "spdx.org/licenses/"
+  private const val OSI_LICENSE_PREFIX = "opensource.org/license/"
+  private const val OSI_LICENSES_PREFIX = "opensource.org/licenses/"
 
   /** Canonical SPDX identifier to the bundled license text file. */
   private val texts =
@@ -316,6 +327,11 @@ object LicenseHelper {
     }
     // mozilla.org/en-US/MPL/2.0 - the locale can be a path segment rather than a suffix.
     value = value.replace(LOCALE_SEGMENT, "$1/")
+    // OSI now serves /license/<slug>, hyphenating the version: /license/apache-2-0. Fold it onto
+    // the retired /licenses/<spdx-id> form so one alias covers both.
+    if (value.startsWith(OSI_LICENSE_PREFIX)) {
+      value = OSI_LICENSES_PREFIX + value.removePrefix(OSI_LICENSE_PREFIX).replace(OSI_VERSION, "-$1.$2")
+    }
     return value.trimEnd('/')
   }
 
@@ -333,9 +349,10 @@ object LicenseHelper {
   /** The SPDX identifier a URL names, or null. */
   private fun spdxIdFromUrl(url: String): String? {
     val normalized = normalizeUrl(url)
-    // https://spdx.org/licenses/MIT.html names the identifier directly.
-    val fromSpdxUrl = normalized.substringAfter("spdx.org/licenses/", "")
-    return spdxIds[fromSpdxUrl] ?: urlAliases[normalized]
+    // https://spdx.org/licenses/MIT.html names the identifier directly. Anchored to the start:
+    // substringAfter also matched any URL merely containing the path, wherever it appeared.
+    val fromSpdxUrl = normalized.removePrefix(SPDX_URL_PREFIX).takeIf { it != normalized }
+    return fromSpdxUrl?.let { spdxIds[it] } ?: urlAliases[normalized]
   }
 
   /** The SPDX identifier a name states, or null. */

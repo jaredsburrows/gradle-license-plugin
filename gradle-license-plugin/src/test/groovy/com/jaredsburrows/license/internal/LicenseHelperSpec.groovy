@@ -688,4 +688,55 @@ final class LicenseHelperSpec extends Specification {
     texts.toSet().size() == texts.size()
   }
 
+
+  // ---------------------------------------------------------------------------------------------
+  // URL matching: OSI's current path, spdx.org anchoring, and locale stripping.
+  // ---------------------------------------------------------------------------------------------
+
+  @Unroll
+  def 'BUG: OSI now serves the singular /license/ path - #url'() {
+    expect: 'both the current and the retired form resolve'
+    HELPER.licenseFileName(null, url) == expected
+
+    where:
+    url                                              || expected
+    'https://opensource.org/license/mit'             || 'mit.txt'
+    'https://opensource.org/license/apache-2-0'      || 'apache-2.0.txt'
+    'https://opensource.org/license/bsd-3-clause'    || 'bsd-3-clause.txt'
+    'https://opensource.org/license/gpl-2-0'         || 'gpl-2.0.txt'
+    'https://opensource.org/license/mpl-2-0'         || 'mpl-2.0.txt'
+    'https://opensource.org/license/epl-2-0'         || 'epl-2.0.txt'
+    'https://opensource.org/licenses/MIT'            || 'mit.txt'
+    'https://opensource.org/licenses/Apache-2.0'     || 'apache-2.0.txt'
+    'https://opensource.org/licenses/BSD-3-Clause'   || 'bsd-3-clause.txt'
+  }
+
+  @Unroll
+  def 'BUG: spdx.org is matched as a prefix, not anywhere in the url - #url'() {
+    expect:
+    HELPER.licenseFileName(null, url) == expected
+
+    where:
+    url                                                    || expected
+    'https://spdx.org/licenses/MIT.html'                   || 'mit.txt'
+    'https://spdx.org/licenses/MIT'                        || 'mit.txt'
+    'https://example.com/spdx.org/licenses/MIT'            || null
+    'https://evil.example.com/mirror/spdx.org/licenses/MIT'|| null
+    'https://notspdx.org/licenses/MIT'                     || null
+  }
+
+  @Unroll
+  def 'BUG: only a real language code is stripped from a url - #url'() {
+    expect:
+    HELPER.licenseFileName(null, url) == expected
+
+    where:
+    url                                             || expected
+    'https://www.gnu.org/licenses/gpl-3.0.de'       || 'gpl-3.0.txt'
+    'http://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html' || 'lgpl-2.1.txt'
+    'https://opensource.org/licenses/MIT.rb'        || null
+    'https://opensource.org/licenses/MIT.py'        || null
+    'https://opensource.org/licenses/MIT.gz'        || null
+  }
+
 }
