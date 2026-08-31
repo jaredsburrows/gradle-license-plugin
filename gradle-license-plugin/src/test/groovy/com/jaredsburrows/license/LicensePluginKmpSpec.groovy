@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import groovy.json.JsonSlurper
+import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -20,7 +21,7 @@ final class LicensePluginKmpSpec extends Specification {
     // withPluginClasspath() exposes only the plugin's own runtime classpath, so a test that needs
     // the Kotlin Gradle Plugin reads the full test runtime classpath instead, as the Android spec
     // does for AGP.
-    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
+    URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
     if (pluginClasspathResource == null) {
       throw new IllegalStateException(
         'Did not find plugin classpath resource, run `testClasses` build task.')
@@ -68,8 +69,8 @@ final class LicensePluginKmpSpec extends Specification {
       """
 
     when: 'the per-target report task is run'
-    def result = gradleWithCommand(testProjectDir.root, 'licenseJvmReport', '-s')
-    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseJvmReport.json').text)
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseJvmReport', '-s')
+    Object json = new JsonSlurper().parseText(new File(reportFolder, 'licenseJvmReport.json').text)
 
     then: 'applying the plugin no longer fails the build'
     result.task(':licenseJvmReport').outcome == SUCCESS

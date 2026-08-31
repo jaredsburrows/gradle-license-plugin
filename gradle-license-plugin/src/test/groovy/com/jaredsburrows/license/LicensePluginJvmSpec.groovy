@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import groovy.json.JsonSlurper
+import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
@@ -39,10 +40,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -56,12 +57,12 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       []
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -98,10 +99,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -126,8 +127,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -142,7 +143,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -184,10 +185,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -220,8 +221,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -256,7 +257,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -295,10 +296,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -331,8 +332,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -367,7 +368,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -404,10 +405,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -421,12 +422,12 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       []
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -463,10 +464,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -494,8 +495,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -517,7 +518,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -554,10 +555,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -589,8 +590,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -616,7 +617,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -654,10 +655,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -697,8 +698,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -735,7 +736,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -774,9 +775,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -841,10 +842,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -883,8 +884,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -929,7 +930,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -982,10 +983,10 @@ final class LicensePluginJvmSpec extends Specification {
       }
       """
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1018,8 +1019,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1054,7 +1055,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -1072,7 +1073,7 @@ final class LicensePluginJvmSpec extends Specification {
 
   def 'licenseReport with project dependencies - deep dependency graph'() {
     given:
-    def depth = 18
+    int depth = 18
 
     testProjectDir.newFile('settings.gradle') <<
       """
@@ -1172,10 +1173,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1208,8 +1209,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1244,7 +1245,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -1297,10 +1298,10 @@ final class LicensePluginJvmSpec extends Specification {
       }
       """
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualCsv = new File(reportFolder, 'licenseReport.csv')
-    def actualHtml = new File(reportFolder, 'licenseReport.html')
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualCsv = new File(reportFolder, 'licenseReport.csv')
+    File actualHtml = new File(reportFolder, 'licenseReport.html')
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1333,8 +1334,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1369,7 +1370,7 @@ final class LicensePluginJvmSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, 'licenseReport.txt')
+    File actualText = new File(reportFolder, 'licenseReport.txt')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -1407,7 +1408,7 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -1436,9 +1437,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "licenseReport", '-s')
-    def actualHtml = new File(reportFolder, "licenseReport.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "licenseReport", '-s')
+    String actualHtml = new File(reportFolder, "licenseReport.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1467,8 +1468,8 @@ final class LicensePluginJvmSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "licenseReport.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "licenseReport.json").text
+    String expectedJson =
       """
       [
         {
@@ -1525,9 +1526,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1574,9 +1575,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1618,9 +1619,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1663,9 +1664,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1712,9 +1713,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1773,7 +1774,7 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then: 'the report is generated without resolving any configuration during configuration'
     result.task(':licenseReport').outcome == SUCCESS
@@ -1783,8 +1784,8 @@ final class LicensePluginJvmSpec extends Specification {
   @Issue("jaredsburrows/gradle-license-plugin/issues/804")
   def 'licenseReport re-runs when a POM changes in place'() {
     given: 'a dependency in a file-based repository inside the test project'
-    def repoDir = testProjectDir.newFolder('repo', 'group', 'local', '1.0.0')
-    def pomFile = new File(repoDir, 'local-1.0.0.pom')
+    File repoDir = testProjectDir.newFolder('repo', 'group', 'local', '1.0.0')
+    File pomFile = new File(repoDir, 'local-1.0.0.pom')
     pomFile.text = """<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
@@ -1820,21 +1821,21 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when: 'the report is generated'
-    def first = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult first = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     first.task(':licenseReport').outcome == SUCCESS
     new File(reportFolder, 'licenseReport.json').text.contains('License A')
 
     when: 'nothing changes'
-    def second = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult second = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     second.task(':licenseReport').outcome == UP_TO_DATE
 
     when: 'the POM content changes at the same path'
     pomFile.text = pomFile.text.replace('License A', 'License B')
-    def third = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult third = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then: 'the task is not up-to-date and regenerates the report'
     third.task(':licenseReport').outcome == SUCCESS
@@ -1870,9 +1871,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -1955,8 +1956,8 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
 
     then: 'only the exact artifact is ignored, not its -suffix sibling'
     result.task(':licenseReport').outcome == SUCCESS
@@ -1993,10 +1994,10 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when: 'the report task runs as part of the build task graph, not directly'
-    def result = gradleWithCommand(testProjectDir.root, 'build', '-s')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def bundledJson = new File(testProjectDir.root, 'build/resources/main/public/oss/licenseReport.json')
-    def expectedJson =
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'build', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    File bundledJson = new File(testProjectDir.root, 'build/resources/main/public/oss/licenseReport.json')
+    String expectedJson =
       """
       [
         {
@@ -2048,8 +2049,8 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2085,12 +2086,12 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
-    def actualJson = new File(reportFolder, 'licenseReport.json')
-    def report = new JsonSlurper().parseText(actualJsonFull.text)
-    def known = report.dependencies.find { it.dependency == 'pl.droidsonroids.gif:android-gif-drawable:1.2.3' }
-    def unknown = report.dependencies.find { it.dependency == 'group:name:1.0.0' }
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+    Object report = new JsonSlurper().parseText(actualJsonFull.text)
+    Object known = report.dependencies.find { it.dependency == 'pl.droidsonroids.gif:android-gif-drawable:1.2.3' }
+    Object unknown = report.dependencies.find { it.dependency == 'group:name:1.0.0' }
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2136,9 +2137,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
-    def report = new JsonSlurper().parseText(actualJsonFull.text)
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJsonFull = new File(reportFolder, 'licenseReport.full.json')
+    Object report = new JsonSlurper().parseText(actualJsonFull.text)
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2168,7 +2169,7 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when: 'the parent chain is walked'
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then: 'it stops at the repeat instead of recursing until the stack overflows'
     result.task(':licenseReport').outcome == SUCCESS
@@ -2206,18 +2207,18 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
 
     and: 'the HTML inlines the full EPL text rather than only linking to it'
-    def html = new File(reportFolder, 'licenseReport.html').text
+    String html = new File(reportFolder, 'licenseReport.html').text
     html.contains('Eclipse Public License - v 1.0')
     html.contains('EPL library')
 
     and: 'the full JSON carries it under its own key, not apache-2.0 or mit'
-    def full = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.full.json').text)
+    Object full = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.full.json').text)
     full.license_texts.keySet() == ['epl-1.0'] as Set
     full.dependencies[0].licenses[0].license_key == 'epl-1.0'
 
@@ -2249,8 +2250,8 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def json = new File(reportFolder, 'licenseReport.json').text
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    String json = new File(reportFolder, 'licenseReport.json').text
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2283,8 +2284,8 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def json = new File(reportFolder, 'licenseReport.json').text
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    String json = new File(reportFolder, 'licenseReport.json').text
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2318,9 +2319,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
-    def entry = json.find { it.dependency == 'group:inheritchild:1.0.0' }
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    Object json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
+    Object entry = json.find { it.dependency == 'group:inheritchild:1.0.0' }
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2358,9 +2359,9 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
-    def entry = json.find { it.dependency == 'group:devid:1.0.0' }
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    Object json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
+    Object entry = json.find { it.dependency == 'group:devid:1.0.0' }
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -2374,7 +2375,7 @@ final class LicensePluginJvmSpec extends Specification {
 
   def 'the plugin works without the Kotlin Gradle Plugin or AGP on the buildscript classpath'() {
     given: 'the plugin classpath with every Kotlin and Android Gradle plugin jar removed'
-    def withoutOptionalPlugins = getClass().classLoader.getResource('plugin-classpath.txt')
+    String withoutOptionalPlugins = getClass().classLoader.getResource('plugin-classpath.txt')
       .readLines()
       .findAll { !(it.contains('kotlin-gradle-plugin') || it.contains('com.android.tools')) }
       .collect { "'${new File(it).absolutePath.replace('\\', '\\\\')}'" }
@@ -2403,7 +2404,7 @@ final class LicensePluginJvmSpec extends Specification {
       """
 
     when: 'a plain Java consumer runs the report'
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then: 'compileOnly AGP and KGP types are never loaded, so nothing fails to resolve'
     result.task(':licenseReport').outcome == SUCCESS

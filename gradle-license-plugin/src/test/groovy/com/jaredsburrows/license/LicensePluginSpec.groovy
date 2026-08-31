@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -18,7 +19,7 @@ final class LicensePluginSpec extends Specification {
   private File buildFile
 
   def 'setup'() {
-    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
+    URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
     if (pluginClasspathResource == null) {
       throw new IllegalStateException(
         'Did not find plugin classpath resource, run `testClasses` build task.')
@@ -52,7 +53,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -77,7 +78,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
@@ -94,7 +95,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -110,7 +111,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
@@ -128,7 +129,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
@@ -165,7 +166,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
@@ -251,7 +252,7 @@ final class LicensePluginSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
 
     then:
     result.task(':licenseDebugReport').outcome == SUCCESS
