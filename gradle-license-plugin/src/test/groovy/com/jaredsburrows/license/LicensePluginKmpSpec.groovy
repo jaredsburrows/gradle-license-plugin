@@ -128,4 +128,86 @@ final class LicensePluginKmpSpec extends Specification {
     attributesCoroutines
   }
 
+  def 'licenseReport resolves a js target'() {
+    given: 'a multiplatform project with a Kotlin/JS target'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.jaredsburrows.license'
+
+      repositories {
+        mavenCentral()
+      }
+
+      kotlin {
+        js {
+          nodejs()
+        }
+        sourceSets {
+          commonMain {
+            dependencies {
+              implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0'
+            }
+          }
+        }
+      }
+      """
+
+    when: 'the per-target report runs'
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseJsReport', '-s')
+    TaskOutcome outcome = result.task(':licenseJsReport').outcome
+    String reportText = new File(reportFolder, 'licenseJsReport.json').text.trim()
+    boolean attributesCoroutines = reportText.contains('org.jetbrains.kotlinx:kotlinx-coroutines-core')
+
+    then:
+    outcome == SUCCESS
+
+    and: 'the task named in configureKmpProject\'s own documentation is populated'
+    reportText != '[]'
+    attributesCoroutines
+  }
+
+  def 'licenseReport registers a report for every target except metadata'() {
+    given: 'a multiplatform project with targets on two different platform types'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.jaredsburrows.license'
+
+      repositories {
+        mavenCentral()
+      }
+
+      kotlin {
+        jvm()
+        linuxX64()
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
+    String output = result.output
+    boolean registersJvm = output.contains('licenseJvmReport')
+    boolean registersLinuxX64 = output.contains('licenseLinuxX64Report')
+    boolean registersMetadata = output.contains('licenseMetadataReport')
+
+    then: 'every target that resolves dependencies of its own gets one'
+    registersJvm
+    registersLinuxX64
+
+    and: 'the metadata target, which does not, is skipped'
+    !registersMetadata
+  }
 }
