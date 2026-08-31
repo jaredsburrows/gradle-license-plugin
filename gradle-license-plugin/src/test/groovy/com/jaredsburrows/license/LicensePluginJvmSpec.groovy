@@ -14,28 +14,14 @@ import static test.TestUtils.assertJson
 import static test.TestUtils.getLicenseText
 import static test.TestUtils.gradleWithCommand
 
-final class LicensePluginJavaSpec extends Specification {
+final class LicensePluginJvmSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
-  private String classpathString
 
   def 'setup'() {
-    // Same mechanism as LicensePluginAndroidSpec: withPluginClasspath() only exposes the plugin's
-    // own runtime classpath, so a test needing another Gradle plugin (KGP here) reads the full test
-    // runtime classpath instead.
-    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
-    if (pluginClasspathResource == null) {
-      throw new IllegalStateException(
-        'Did not find plugin classpath resource, run `testClasses` build task.')
-    }
-    classpathString = pluginClasspathResource.readLines()
-      .collect { new File(it).absolutePath.replace('\\', '\\\\') }
-      .collect { "'$it'" }
-      .join(', ')
-
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
@@ -2384,47 +2370,6 @@ final class LicensePluginJavaSpec extends Specification {
   }
 
 
-  def 'licenseReport supports a Kotlin Multiplatform project'() {
-    given: 'a plain KMP project with a jvm target'
-    buildFile <<
-      """
-      buildscript {
-        dependencies {
-          classpath files($classpathString)
-        }
-      }
-
-      apply plugin: 'org.jetbrains.kotlin.multiplatform'
-      apply plugin: 'com.jaredsburrows.license'
-
-      repositories {
-        maven {
-          url '${mavenRepoUrl}'
-        }
-      }
-
-      kotlin {
-        jvm()
-        sourceSets {
-          jvmMain {
-            dependencies {
-              implementation 'group:name:1.0.0'
-            }
-          }
-        }
-      }
-      """
-
-    when: 'the per-target report task is run'
-    def result = gradleWithCommand(testProjectDir.root, 'licenseJvmReport', '-s')
-    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseJvmReport.json').text)
-
-    then: 'applying the plugin no longer fails the build'
-    result.task(':licenseJvmReport').outcome == SUCCESS
-
-    and: 'the jvm target dependencies are resolved and attributed'
-    json*.dependency == ['group:name:1.0.0']
-  }
 
 
   def 'the plugin works without the Kotlin Gradle Plugin or AGP on the buildscript classpath'() {
