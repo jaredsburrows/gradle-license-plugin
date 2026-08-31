@@ -21,9 +21,12 @@ final class TestUtils {
   }
 
   static boolean assertCsv(String expected, String actual) {
-    List<String> left = CSVFormat.DEFAULT.parse(new StringReader(actual)).records.collect { it.toString() }
-    List<String> right = CSVFormat.DEFAULT.parse(new StringReader(expected)).records.collect { it.toString() }
-    return left == right
+    return csvRows(expected) == csvRows(actual)
+  }
+
+  /** The parsed rows, so a spec can compare two values rather than assert on a boolean. */
+  static List<String> csvRows(String text) {
+    return CSVFormat.DEFAULT.parse(new StringReader(text)).records.collect { it.toString() }
   }
 
   static boolean assertHtml(String expected, String actual) {
@@ -40,10 +43,15 @@ final class TestUtils {
   }
 
   static boolean assertJson(String expected, String actual) {
+    return jsonOf(expected) == jsonOf(actual)
+  }
+
+  /** The parsed JSON, so a spec can compare two values rather than assert on a boolean. */
+  static List<Map<String, Object>> jsonOf(String text) {
     Moshi moshi = new Moshi.Builder().build()
     JsonAdapter<List<Map<String, Object>>> jsonAdapter =
       moshi.adapter(Types.newParameterizedType(List, Map, String, Object))
-    return jsonAdapter.fromJson(expected) == jsonAdapter.fromJson(actual)
+    return jsonAdapter.fromJson(text)
   }
 
   static BuildResult gradleWithCommand(File file, String... commands) {

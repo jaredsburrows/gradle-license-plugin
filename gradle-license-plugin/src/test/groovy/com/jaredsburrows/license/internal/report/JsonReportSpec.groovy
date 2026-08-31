@@ -3,10 +3,12 @@ package com.jaredsburrows.license.internal.report
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
+import groovy.transform.TypeChecked
 import spock.lang.Specification
 
-import static test.TestUtils.assertJson
+import static test.TestUtils.jsonOf
 
+@TypeChecked
 final class JsonReportSpec extends Specification {
   def 'no open source json'() {
     given:
@@ -14,14 +16,14 @@ final class JsonReportSpec extends Specification {
     JsonReport sut = new JsonReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
+    List<Map<String, Object>> actual = jsonOf(sut.toString())
+    List<Map<String, Object>> expected = jsonOf(
       """
       []
-      """
+      """)
 
     then:
-    assertJson(expected, actual)
+    expected == actual
   }
 
   def 'open source json - missing values'() {
@@ -53,8 +55,8 @@ final class JsonReportSpec extends Specification {
     JsonReport sut = new JsonReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
+    List<Map<String, Object>> actual = jsonOf(sut.toString())
+    List<Map<String, Object>> expected = jsonOf(
       """
       [
         {
@@ -81,10 +83,10 @@ final class JsonReportSpec extends Specification {
           "dependency": "foo:bar:1.2.3"
         }
       ]
-      """
+      """)
 
     then:
-    assertJson(expected, actual)
+    expected == actual
   }
 
   def 'open source json - all values'() {
@@ -110,8 +112,8 @@ final class JsonReportSpec extends Specification {
     JsonReport sut = new JsonReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
+    List<Map<String, Object>> actual = jsonOf(sut.toString())
+    List<Map<String, Object>> expected = jsonOf(
       """
       [
         {
@@ -151,9 +153,9 @@ final class JsonReportSpec extends Specification {
           "dependency": "foo:bar:1.2.3"
         }
       ]
-      """
+      """)
 
     then:
-    assertJson(expected, actual)
+    expected == actual
   }
 }

@@ -1,24 +1,29 @@
 package com.jaredsburrows.license.internal.report
 
+import groovy.transform.TypeChecked
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import spock.lang.Specification
 
-import static test.TestUtils.assertCsv
+import static test.TestUtils.csvRows
 
+@TypeChecked
 final class CsvReportSpec extends Specification {
+  private static final String HEADER =
+    'project,description,version,developers,url,year,licenses,license urls,dependency'
+
   def 'no open source csv'() {
     given:
     List<Model> projects = []
     CsvReport sut = new CsvReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected = ""
+    List<String> actual = csvRows(sut.toString())
+    List<String> expected = csvRows('')
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 
   def 'open source csv - missing values'() {
@@ -50,14 +55,14 @@ final class CsvReportSpec extends Specification {
     CsvReport sut = new CsvReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
-      "project,description,version,developers,url,year,licenses,license urls,dependency\n" +
-        "name,,1.2.3,,,,,,foo:bar:1.2.3\n" +
-        "name,,1.2.3,\"name,name\",,,,,foo:bar:1.2.3"
+    List<String> actual = csvRows(sut.toString())
+    List<String> expected = csvRows(
+      HEADER + '\n' +
+        'name,,1.2.3,,,,,,foo:bar:1.2.3\n' +
+        'name,,1.2.3,"name,name",,,,,foo:bar:1.2.3')
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 
   def 'open source csv - all values'() {
@@ -83,20 +88,20 @@ final class CsvReportSpec extends Specification {
     CsvReport sut = new CsvReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
-      "project,description,version,developers,url,year,licenses,license urls,dependency\n" +
-        "name,description,1.2.3,\"name,name\",url,year,name,url,foo:bar:1.2.3\n" +
-        "name,description,1.2.3,\"name,name\",url,year,name,url,foo:bar:1.2.3"
+    List<String> actual = csvRows(sut.toString())
+    List<String> expected = csvRows(
+      HEADER + '\n' +
+        'name,description,1.2.3,"name,name",url,year,name,url,foo:bar:1.2.3\n' +
+        'name,description,1.2.3,"name,name",url,year,name,url,foo:bar:1.2.3')
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 
   def 'open source csv - escape characters'() {
     given:
     Developer developerA = new Developer(id: 'Joe')
-    Developer developerB = new Developer(id: '5\" Above Ground')
+    Developer developerB = new Developer(id: '5" Above Ground')
     List<Developer> developers = [developerA, developerB]
     License license = new License(
       name: 'Apache, 2.0',
@@ -117,12 +122,12 @@ final class CsvReportSpec extends Specification {
     CsvReport sut = new CsvReport(projects)
 
     when:
-    String actual = sut.toString()
-    String expected =
-      "project,description,version,developers,url,year,licenses,license urls,dependency\n" +
-        "\"Joe\'s project\",\"Copyright \"\"Joe\"\" 2023\n\nAll right reserved\\to me\",1.2.3,\"Joe,5\"\" Above Ground\",url,year,\"Apache, 2.0\",url,foo:bar:1.2.3"
+    List<String> actual = csvRows(sut.toString())
+    List<String> expected = csvRows(
+      HEADER + '\n' +
+        '"Joe\'s project","Copyright ""Joe"" 2023\n\nAll right reserved\\to me",1.2.3,"Joe,5"" Above Ground",url,year,"Apache, 2.0",url,foo:bar:1.2.3')
 
     then:
-    assertCsv(expected, actual)
+    expected == actual
   }
 }
