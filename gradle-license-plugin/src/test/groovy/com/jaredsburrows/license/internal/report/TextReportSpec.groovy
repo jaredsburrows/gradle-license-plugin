@@ -3,8 +3,10 @@ package com.jaredsburrows.license.internal.report
 import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
+import groovy.transform.TypeChecked
 import spock.lang.Specification
 
+@TypeChecked
 final class TextReportSpec extends Specification {
   def 'no open source text'() {
     given:
