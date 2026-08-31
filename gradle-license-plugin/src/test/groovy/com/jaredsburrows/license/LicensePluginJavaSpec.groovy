@@ -2261,6 +2261,42 @@ final class LicensePluginJavaSpec extends Specification {
   }
 
 
+  def 'licenseReport does not attribute a BOM, which ships no code'() {
+    given: 'a platform dependency alongside a real library it constrains'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation platform('group:bom:1.0.0')
+        implementation 'group:name:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def json = new File(reportFolder, 'licenseReport.json').text
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the library it constrains is attributed'
+    json.contains('group:name:1.0.0')
+
+    and: 'the BOM itself is not - it carries no code to attribute'
+    !json.contains('group:bom:1.0.0')
+  }
+
+
   def 'licenseReport inherits url, description, inception year and developers from a parent POM'() {
     given: 'a dependency whose POM declares none of them and relies on its parent'
     buildFile <<

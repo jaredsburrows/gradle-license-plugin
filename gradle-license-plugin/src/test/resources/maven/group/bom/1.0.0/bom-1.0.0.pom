@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fake BOM for testing - ships no code, so it must not be attributed in a report -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>group</groupId>
+  <artifactId>bom</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>Fake BOM</name>
+  <description>Fake platform that only constrains versions</description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>group</groupId>
+        <artifactId>name</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
