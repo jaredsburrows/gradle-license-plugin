@@ -22,9 +22,6 @@ idea {
 }
 
 subprojects {
-  // ktlint hooks itself into check, so "-p test-apps build" lints without a workflow change.
-  apply(plugin = "org.jlleitschuh.gradle.ktlint")
-
   tasks.withType<Test>().configureEach {
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL

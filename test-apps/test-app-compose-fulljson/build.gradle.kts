@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.ktlint)
   // No version: the plugin comes from the build included in settings.gradle.kts.
   id("com.jaredsburrows.license")
 }
