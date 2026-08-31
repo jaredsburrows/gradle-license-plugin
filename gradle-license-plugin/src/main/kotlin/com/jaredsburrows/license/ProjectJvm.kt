@@ -2,8 +2,8 @@ package com.jaredsburrows.license
 
 import org.gradle.api.Project
 
-/** Returns true if Java Gradle project. */
-internal fun Project.isJavaProject(): Boolean =
+/** Returns true if a plain JVM Gradle project: Java, or Kotlin targeting the JVM. */
+internal fun Project.isJvmProject(): Boolean =
   hasPlugin(
     listOf(
       // JavaPlugin
@@ -13,8 +13,8 @@ internal fun Project.isJavaProject(): Boolean =
     ),
   )
 
-/** Configure for Java projects. */
-internal fun Project.configureJavaProject() {
+/** Configure for JVM projects, which produce a single artifact and so a single report. */
+internal fun Project.configureJvmProject() {
   tasks.register("licenseReport", LicenseReportTask::class.java) {
     // Apply common task configuration first
     configureCommon(it, listOf("compileClasspath", "runtimeClasspath"))
