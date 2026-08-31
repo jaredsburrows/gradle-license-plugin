@@ -2,6 +2,7 @@ package com.jaredsburrows.license
 
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 
 /** Returns true if a JetBrains Kotlin Multiplatform project. */
 internal fun Project.isKmpProject(): Boolean = hasPlugin(listOf("org.jetbrains.kotlin.multiplatform"))
@@ -27,11 +28,17 @@ internal fun Project.configureKmpProject() {
       val name = target.name.replaceFirstChar { it.uppercase() }
 
       tasks.register("license${name}Report", LicenseReportTask::class.java) {
+        // Ask the target for its configuration names rather than assembling them from the target
+        // name: only the JVM-like targets are "<target>CompileClasspath". A native target compiles
+        // against "<target>CompileKlibraries" and has no runtime configuration at all, so building
+        // the names by hand asked for configurations that do not exist and reported nothing.
+        val main = target.compilations.getByName(KotlinCompilation.MAIN_COMPILATION_NAME)
+
         configureCommon(
           it,
-          listOf(
-            "${target.name}CompileClasspath",
-            "${target.name}RuntimeClasspath",
+          listOfNotNull(
+            main.compileDependencyConfigurationName,
+            main.runtimeDependencyConfigurationName,
           ),
         )
       }

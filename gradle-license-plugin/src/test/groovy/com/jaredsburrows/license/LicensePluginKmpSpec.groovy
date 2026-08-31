@@ -84,4 +84,48 @@ final class LicensePluginKmpSpec extends Specification {
     and: 'the jvm target dependencies are resolved and attributed'
     dependencies == ['group:name:1.0.0']
   }
+
+  def 'licenseReport resolves a native target, whose configurations are not named like the JVM ones'() {
+    given: 'a multiplatform project with a Kotlin/Native target'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.jaredsburrows.license'
+
+      repositories {
+        mavenCentral()
+      }
+
+      kotlin {
+        linuxX64()
+        sourceSets {
+          commonMain {
+            dependencies {
+              implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0'
+            }
+          }
+        }
+      }
+      """
+
+    when: 'the per-target report runs'
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseLinuxX64Report', '-s')
+    TaskOutcome outcome = result.task(':licenseLinuxX64Report').outcome
+    String reportText = new File(reportFolder, 'licenseLinuxX64Report.json').text.trim()
+    boolean attributesCoroutines = reportText.contains('org.jetbrains.kotlinx:kotlinx-coroutines-core')
+
+    then:
+    outcome == SUCCESS
+
+    and: 'the native target resolves linuxX64CompileKlibraries, not a jvm-style name, so it is not empty'
+    reportText != '[]'
+    attributesCoroutines
+  }
+
 }
