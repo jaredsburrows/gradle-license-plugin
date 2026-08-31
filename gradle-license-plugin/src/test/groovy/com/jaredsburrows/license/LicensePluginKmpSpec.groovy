@@ -172,4 +172,42 @@ final class LicensePluginKmpSpec extends Specification {
     reportText != '[]'
     attributesCoroutines
   }
+
+  def 'licenseReport registers a report for every target except metadata'() {
+    given: 'a multiplatform project with targets on two different platform types'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.jaredsburrows.license'
+
+      repositories {
+        mavenCentral()
+      }
+
+      kotlin {
+        jvm()
+        linuxX64()
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
+    String output = result.output
+    boolean registersJvm = output.contains('licenseJvmReport')
+    boolean registersLinuxX64 = output.contains('licenseLinuxX64Report')
+    boolean registersMetadata = output.contains('licenseMetadataReport')
+
+    then: 'every target that resolves dependencies of its own gets one'
+    registersJvm
+    registersLinuxX64
+
+    and: 'the metadata target, which does not, is skipped'
+    !registersMetadata
+  }
 }
