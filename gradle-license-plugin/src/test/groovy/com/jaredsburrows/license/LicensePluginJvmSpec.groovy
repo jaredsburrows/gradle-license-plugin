@@ -21,8 +21,21 @@ final class LicensePluginJvmSpec extends Specification {
   private String mavenRepoUrl
   private File buildFile
   private String reportFolder
+  private String classpathString
 
   def 'setup'() {
+    // withPluginClasspath() exposes only the plugin's own runtime classpath, so a test that needs
+    // the Kotlin Gradle Plugin reads the full test runtime classpath instead, as the KMP spec does.
+    URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
+    if (pluginClasspathResource == null) {
+      throw new IllegalStateException(
+        'Did not find plugin classpath resource, run `testClasses` build task.')
+    }
+    classpathString = pluginClasspathResource.readLines()
+      .collect { new File(it).absolutePath.replace('\\', '\\\\') }
+      .collect { "'$it'" }
+      .join(', ')
+
     mavenRepoUrl = getClass().getResource('/maven').toURI()
     buildFile = testProjectDir.newFile('build.gradle')
     // In case we're on Windows, fix the \s in the string containing the name
@@ -2417,4 +2430,39 @@ final class LicensePluginJvmSpec extends Specification {
     new File(reportFolder, 'licenseReport.json').text.contains('group:name:1.0.0')
   }
 
+  def 'licenseReport for a Kotlin JVM project'() {
+    given: 'a project applying only the Kotlin JVM plugin, which brings the java plugin with it'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.jvm'
+      apply plugin: 'com.jaredsburrows.license'
+
+      dependencies {
+        implementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseReport.json')
+
+    then: 'the main source set resolves compileClasspath and runtimeClasspath'
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and:
+    actualJson.text.trim() != '[]'
+    actualJson.text.contains('com.android.support:design')
+  }
 }
