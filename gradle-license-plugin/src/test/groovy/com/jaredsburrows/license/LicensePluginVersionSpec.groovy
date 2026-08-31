@@ -1,9 +1,11 @@
 package com.jaredsburrows.license
 
 import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import groovy.transform.TypeChecked
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -13,6 +15,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 // https://developer.android.com/studio/releases/gradle-plugin
 // https://docs.gradle.org/current/userguide/compatibility.html#plugin-compatibility
 // https://gradle.org/releases/
+@TypeChecked
 final class LicensePluginVersionSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -46,7 +49,7 @@ final class LicensePluginVersionSpec extends Specification {
   }
 
   @Unroll
-  def 'licenseReport using with gradle #gradleVersion'() {
+  def 'licenseReport using with gradle #gradleVersion'(String gradleVersion) {
     given:
     buildFile <<
       """
@@ -63,13 +66,18 @@ final class LicensePluginVersionSpec extends Specification {
       .withArguments('licenseReport', '-s')
       .withPluginClasspath()
       .build()
+    TaskOutcome outcome = result.task(':licenseReport').outcome
+    String wroteCsv = result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
+    String wroteHtml = result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
+    String wroteJson = result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
+    String wroteText = result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
 
     then:
-    result.task(':licenseReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseReport.txt.")
+    outcome == SUCCESS
+    wroteCsv
+    wroteHtml
+    wroteJson
+    wroteText
 
     where:
     gradleVersion << [
@@ -118,13 +126,18 @@ final class LicensePluginVersionSpec extends Specification {
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
       .build()
+    TaskOutcome outcome = result.task(':licenseDebugReport').outcome
+    String wroteCsv = result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
+    String wroteHtml = result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
+    String wroteJson = result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
+    String wroteText = result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
 
     then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
-    result.output.find("Wrote CSV report to .*${reportFolder}/licenseDebugReport.csv.")
-    result.output.find("Wrote HTML report to .*${reportFolder}/licenseDebugReport.html.")
-    result.output.find("Wrote JSON report to .*${reportFolder}/licenseDebugReport.json.")
-    result.output.find("Wrote Text report to .*${reportFolder}/licenseDebugReport.txt.")
+    outcome == SUCCESS
+    wroteCsv
+    wroteHtml
+    wroteJson
+    wroteText
 
     where:
     // AGP 8+ paired with each AGP version's minimum-compatible Gradle (all run on JDK 17).

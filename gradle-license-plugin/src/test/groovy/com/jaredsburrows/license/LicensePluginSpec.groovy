@@ -1,8 +1,10 @@
 package com.jaredsburrows.license
 
 import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import groovy.transform.TypeChecked
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,6 +12,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static test.TestUtils.gradleWithCommand
 import static test.TestUtils.gradleWithCommandWithFail
 
+@TypeChecked
 final class LicensePluginSpec extends Specification {
   @Rule
   public final TemporaryFolder testProjectDir = new TemporaryFolder()
@@ -54,9 +57,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    TaskOutcome outcome = result.task(':licenseReport').outcome
 
     then:
-    result.task(':licenseReport').outcome == SUCCESS
+    outcome == SUCCESS
   }
 
   def 'apply plugin with buildscript dsl and no other plugins'() {
@@ -79,9 +83,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    boolean requiresSupportedPlugin = result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
+    requiresSupportedPlugin
   }
 
   def 'apply plugin with plugins dsl'() {
@@ -96,9 +101,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    TaskOutcome outcome = result.task(':licenseReport').outcome
 
     then:
-    result.task(':licenseReport').outcome == SUCCESS
+    outcome == SUCCESS
   }
 
   def 'apply plugin with plugins dsl and no other plugins'() {
@@ -112,9 +118,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    boolean requiresSupportedPlugin = result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
+    requiresSupportedPlugin
   }
 
   @Unroll
@@ -130,9 +137,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommandWithFail(testProjectDir.root, 'licenseReport', '-s')
+    boolean requiresSupportedPlugin = result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
 
     then:
-    result.output.contains("'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.")
+    requiresSupportedPlugin
 
     where:
     // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
@@ -167,9 +175,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    TaskOutcome outcome = result.task(':licenseReport').outcome
 
     then:
-    result.task(':licenseReport').outcome == SUCCESS
+    outcome == SUCCESS
 
     where:
     // https://github.com/gradle/gradle/find/master, search for "gradle-plugins"
@@ -253,9 +262,10 @@ final class LicensePluginSpec extends Specification {
 
     when:
     BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    TaskOutcome outcome = result.task(':licenseDebugReport').outcome
 
     then:
-    result.task(':licenseDebugReport').outcome == SUCCESS
+    outcome == SUCCESS
 
     where:
     androidPlugin << [
