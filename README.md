@@ -37,7 +37,7 @@ Also, for Android projects the license HTML file will be copied to `<project>/sr
 
 ```kotlin
 plugins {
-  id('com.jaredsburrows.license') version '0.9.9'
+  id("com.jaredsburrows.license") version "0.9.9"
 }
 ```
 </details>
@@ -46,7 +46,7 @@ plugins {
   <summary>with buildscript { }</summary>
   
 
-```groovy
+```kotlin
 buildscript {
   repositories {
     mavenCentral()
@@ -54,12 +54,12 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.9'
+    classpath("com.jaredsburrows:gradle-license-plugin:0.9.9")
   }
 }
 
-apply plugin: 'com.android.application' // or 'java-library'
-apply plugin: 'com.jaredsburrows.license'
+apply(plugin = "com.android.application") // or "java-library"
+apply(plugin = "com.jaredsburrows.license")
 ```
 </details>
 
@@ -73,7 +73,7 @@ and [here](https://central.sonatype.com/artifact/com.jaredsburrows/gradle-licens
 
 ```kotlin
 plugins {
-  id('com.jaredsburrows.license') version '0.9.9-SNAPSHOT'
+  id("com.jaredsburrows.license") version "0.9.91-SNAPSHOT"
 }
 ```
 </details>
@@ -81,20 +81,20 @@ plugins {
 <details>
   <summary>with buildscript { }</summary>
 
-```groovy
+```kotlin
 buildscript {
   repositories {
-    maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
     google() // For Android projects
   }
 
   dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.9.91-SNAPSHOT'
+    classpath("com.jaredsburrows:gradle-license-plugin:0.9.91-SNAPSHOT")
   }
 }
 
-apply plugin: 'com.android.application' // or 'java-library'
-apply plugin: 'com.jaredsburrows.license'
+apply(plugin = "com.android.application") // or "java-library"
+apply(plugin = "com.jaredsburrows.license")
 ```
 </details>
 
@@ -109,11 +109,11 @@ Generates a HTML report of the all open source licenses. (eg. `licenseDebugRepor
 
 Example `build.gradle`:
 
-```groovy
+```kotlin
 dependencies {
-  implementation 'com.android.support:design:26.1.0'
-  implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
-  implementation 'wsdl4j:wsdl4j:1.5.1' // Very old library with no license info available
+  implementation("com.android.support:design:26.1.0")
+  implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.3")
+  implementation("wsdl4j:wsdl4j:1.5.1") // Very old library with no license info available
 }
 ```
 
@@ -297,8 +297,8 @@ The plugin can be configured to ignore licenses for certain artifact patterns. T
 
 To override the defaults, add the `licenseReport` configuration closure to the build script.
 
-```groovy
-apply plugin: "com.jaredsburrows.license"
+```kotlin
+apply(plugin = "com.jaredsburrows.license")
 
 licenseReport {
   // Generate reports
@@ -317,7 +317,7 @@ licenseReport {
   useVariantSpecificAssetDirs = false
   
   // Ignore licenses for certain artifact patterns
-  ignoredPatterns = []
+  ignoredPatterns = setOf()
   
   // Show versions in the report - default is false
   showVersions = true
@@ -345,13 +345,13 @@ matches along segment boundaries: ignoring `com.some.group:some.name` does not i
 `com.some.group:some.name-extra`. Both `:` and `.` count as boundaries, so a pattern may also cover
 dot-separated pieces of a group or version - `1.2` still ignores version `1.2.3`.
 
-```groovy
-apply plugin: "com.jaredsburrows.license"
+```kotlin
+apply(plugin = "com.jaredsburrows.license")
 
 licenseReport {
-  ignoredPatterns = ["com.some.group"] // Ignores all artifacts of the given group
-  ignoredPatterns = ["com.some.group:some.name"] // Ignores the given artifact regardless of version
-  ignoredPatterns = ["com.some.group:some.name:1.2.3"] // Ignores the given artifact with the given version
+  ignoredPatterns = setOf("com.some.group") // Ignores all artifacts of the given group
+  ignoredPatterns = setOf("com.some.group:some.name") // Ignores the given artifact regardless of version
+  ignoredPatterns = setOf("com.some.group:some.name:1.2.3") // Ignores the given artifact with the given version
 }
 ```
 
