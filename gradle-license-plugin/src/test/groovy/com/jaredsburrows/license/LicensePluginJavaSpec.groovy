@@ -2426,4 +2426,47 @@ final class LicensePluginJavaSpec extends Specification {
     json*.dependency == ['group:name:1.0.0']
   }
 
+
+  def 'the plugin works without the Kotlin Gradle Plugin or AGP on the buildscript classpath'() {
+    given: 'the plugin classpath with every Kotlin and Android Gradle plugin jar removed'
+    def withoutOptionalPlugins = getClass().classLoader.getResource('plugin-classpath.txt')
+      .readLines()
+      .findAll { !(it.contains('kotlin-gradle-plugin') || it.contains('com.android.tools')) }
+      .collect { "'${new File(it).absolutePath.replace('\\', '\\\\')}'" }
+      .join(', ')
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($withoutOptionalPlugins)
+        }
+      }
+
+      apply plugin: 'java-library'
+      apply plugin: 'com.jaredsburrows.license'
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:name:1.0.0'
+      }
+      """
+
+    when: 'a plain Java consumer runs the report'
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+
+    then: 'compileOnly AGP and KGP types are never loaded, so nothing fails to resolve'
+    result.task(':licenseReport').outcome == SUCCESS
+    !result.output.contains('NoClassDefFoundError')
+    !result.output.contains('ClassNotFoundException')
+
+    and: 'the report is still produced'
+    new File(reportFolder, 'licenseReport.json').text.contains('group:name:1.0.0')
+  }
+
 }
