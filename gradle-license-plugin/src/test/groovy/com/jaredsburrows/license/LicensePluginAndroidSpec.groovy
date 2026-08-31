@@ -2462,4 +2462,109 @@ final class LicensePluginAndroidSpec extends Specification {
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
   }
+
+  def 'a deleted asset copy is regenerated instead of the task staying up-to-date'() {
+    given: 'an android project that copies its report into the assets'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+      """
+
+    when: 'the report is generated once'
+    def first = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    def openSourceHtml = new File(mainAssetsFolder, 'open_source_licenses.html')
+
+    then:
+    first.task(':licenseDebugReport').outcome == SUCCESS
+    openSourceHtml.exists()
+
+    when: 'the packaged copy is deleted and the build re-run'
+    openSourceHtml.delete()
+    def second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+
+    then: 'the task re-runs rather than reporting UP-TO-DATE'
+    second.task(':licenseDebugReport').outcome == SUCCESS
+
+    and: 'so the app does not ship without its licenses'
+    openSourceHtml.exists()
+    !openSourceHtml.text.isEmpty()
+  }
+
+
+  def 'every declared asset copy is actually produced, for all five formats'() {
+    given: 'all five reports generated and copied'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdkVersion $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      licenseReport {
+        generateCsvReport = true
+        generateHtmlReport = true
+        generateJsonReport = true
+        generateJsonFullReport = true
+        generateTextReport = true
+        copyCsvReportToAssets = true
+        copyHtmlReportToAssets = true
+        copyJsonReportToAssets = true
+        copyJsonFullReportToAssets = true
+        copyTextReportToAssets = true
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+
+    then:
+    result.task(':licenseDebugReport').outcome == SUCCESS
+
+    and: 'the extensions declared as task outputs match the ones actually written'
+    ['csv', 'html', 'json', 'full.json', 'txt'].every { extension ->
+      new File(mainAssetsFolder, "open_source_licenses.${extension}").exists()
+    }
+
+    when: 'each one is deleted in turn, the task re-runs and restores it'
+    ['csv', 'html', 'json', 'full.json', 'txt'].each { extension ->
+      new File(mainAssetsFolder, "open_source_licenses.${extension}").delete()
+    }
+    def second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+
+    then:
+    second.task(':licenseDebugReport').outcome == SUCCESS
+    ['csv', 'html', 'json', 'full.json', 'txt'].every { extension ->
+      new File(mainAssetsFolder, "open_source_licenses.${extension}").exists()
+    }
+  }
+
 }
