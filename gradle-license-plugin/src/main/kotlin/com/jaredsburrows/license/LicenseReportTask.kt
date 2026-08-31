@@ -17,9 +17,9 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 import java.io.File
@@ -60,11 +60,14 @@ internal abstract class LicenseReportTask
     lateinit var outputDir: File
 
     /**
-     * The copies written into the asset directories. They sit outside [outputDir], so undeclared
-     * Gradle sees nothing missing when one is deleted: the task stays UP-TO-DATE and the app ships
-     * with no licenses file.
+     * The copies written into the asset directories.
+     *
+     * Deliberately not @OutputFiles. These land in src/<variant>/assets, which AGP treats as a
+     * source directory, so declaring them makes every AGP task that reads assets - lint model
+     * generation among them - fail validation for using an output of this task without declaring a
+     * dependency. An upToDateWhen check in init gets the re-run without claiming the location.
      */
-    @get:OutputFiles
+    @get:Internal
     val copiedReportFiles: List<File>
       get() {
         if (variantName.isNullOrEmpty()) {
@@ -128,6 +131,10 @@ internal abstract class LicenseReportTask
       // From DefaultTask
       description = "Outputs licenses report for $name."
       group = "Reporting"
+
+      // The asset copies are not declared outputs, so deleting one leaves Gradle seeing nothing
+      // missing. Without this the task stays UP-TO-DATE and the app ships with no licenses file.
+      outputs.upToDateWhen { copiedReportFiles.all { file -> file.exists() } }
     }
 
     @TaskAction
