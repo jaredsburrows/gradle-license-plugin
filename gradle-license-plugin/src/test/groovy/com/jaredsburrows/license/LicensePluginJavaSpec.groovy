@@ -2260,4 +2260,44 @@ final class LicensePluginJavaSpec extends Specification {
     json.contains('group:ktxlib-ktx:1.0.0')
   }
 
+
+  def 'licenseReport inherits url, description, inception year and developers from a parent POM'() {
+    given: 'a dependency whose POM declares none of them and relies on its parent'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:inheritchild:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def json = new groovy.json.JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
+    def entry = json.find { it.dependency == 'group:inheritchild:1.0.0' }
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+    entry != null
+
+    and: 'Maven inherits these four, so the report shows the parent values instead of blanks'
+    entry.description == 'Inherited description'
+    entry.url == 'https://github.com/user/inherited'
+    entry.year == '2011'
+    entry.developers == ['Inherited Developer']
+
+    and: 'name is NOT inherited in Maven, so it still falls back to the artifact id'
+    entry.project == 'inheritchild'
+  }
+
 }

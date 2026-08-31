@@ -231,17 +231,23 @@ internal abstract class LicenseReportTask
             licenses = mutableListOf()
           }
 
+          // Maven inherits description, url, inceptionYear and developers from the parent, the
+          // way licenses already were. Materialised once rather than walked per field, so a
+          // dependency with a parent is not re-parsed four times.
+          val chain = parentChain(mavenReader, pomFile, loggedMissingParentPomCoordinates).toList()
+
           val project =
             Model().apply {
               this.groupId = groupId
               this.artifactId = artifactId
               this.version = version
+              // name is deliberately not inherited: Maven does not inherit it either.
               this.name = model.pomName(mavenReader, pomFile, loggedMissingParentPomCoordinates)
-              this.description = model.pomDescription()
-              this.url = model.pomUrl()
-              this.inceptionYear = model.pomInceptionYear()
+              this.description = chain.inherited { it.description }
+              this.url = chain.inherited { it.url }
+              this.inceptionYear = chain.inherited { it.inceptionYear }
               this.licenses = licenses
-              this.developers = model.pomDevelopers()
+              this.developers = chain.inheritedDevelopers()
             }
 
           projects += project
@@ -538,18 +544,19 @@ internal abstract class LicenseReportTask
         }.toMap()
     }
 
-    private fun Model.pomDescription(): String = description.orEmpty().trim()
+    /** The value from the nearest POM in the chain that states it, as Maven inherits it. */
+    private fun List<Pair<File, Model>>.inherited(field: (Model) -> String?): String =
+      firstNotNullOfOrNull { (_, model) -> field(model).orEmpty().trim().ifEmpty { null } }.orEmpty()
 
-    private fun Model.pomUrl(): String = url.orEmpty().trim()
-
-    private fun Model.pomInceptionYear(): String = inceptionYear.orEmpty().trim()
-
-    private fun Model.pomDevelopers(): List<Developer> =
-      developers.orEmpty().map { developer ->
-        Developer().apply {
-          id = developer.name.orEmpty().trim()
+    /** Developers from the nearest POM in the chain that declares any. */
+    private fun List<Pair<File, Model>>.inheritedDevelopers(): List<Developer> =
+      firstNotNullOfOrNull { (_, model) -> model.developers?.takeIf { it.isNotEmpty() } }
+        .orEmpty()
+        .map { developer ->
+          Developer().apply {
+            id = developer.name.orEmpty().trim()
+          }
         }
-      }
 
     /**
      * Parent POM resolution is performed outside the task; this only looks up the already-provided mapping.
