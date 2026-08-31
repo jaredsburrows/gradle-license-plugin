@@ -2217,7 +2217,7 @@ final class LicensePluginJavaSpec extends Specification {
     html.contains('EPL library')
 
     and: 'the full JSON carries it under its own key, not apache-2.0 or mit'
-    def full = new groovy.json.JsonSlurper().parseText(new File(reportFolder, 'licenseReport.full.json').text)
+    def full = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.full.json').text)
     full.license_texts.keySet() == ['epl-1.0'] as Set
     full.dependencies[0].licenses[0].license_key == 'epl-1.0'
 
@@ -2283,7 +2283,7 @@ final class LicensePluginJavaSpec extends Specification {
 
     when:
     def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
-    def json = new groovy.json.JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
+    def json = new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text)
     def entry = json.find { it.dependency == 'group:inheritchild:1.0.0' }
 
     then:
