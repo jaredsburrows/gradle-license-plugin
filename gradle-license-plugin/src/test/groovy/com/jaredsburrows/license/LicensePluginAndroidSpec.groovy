@@ -2841,4 +2841,58 @@ final class LicensePluginAndroidSpec extends Specification {
     actualJson.text.trim() != '[]'
     actualJson.text.contains('com.android.support:design')
   }
+
+  def 'licenseReport registers a report for the nested unit test and android test components'() {
+    given: 'an app whose test source sets carry dependencies the main one does not'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      dependencies {
+        implementation 'com.android.support:appcompat-v7:26.1.0'
+        testImplementation 'com.google.firebase:firebase-core:10.0.1'
+        androidTestImplementation 'com.android.support:design:26.1.0'
+      }
+      """
+
+    when: 'the reports for the nested components are run'
+    BuildResult result = gradleWithCommand(
+      testProjectDir.root, 'licenseDebugUnitTestReport', 'licenseDebugAndroidTestReport', '-s')
+    File unitTestJson = new File(reportFolder, 'licenseDebugUnitTestReport.json')
+    File androidTestJson = new File(reportFolder, 'licenseDebugAndroidTestReport.json')
+
+    then: 'Variant.nestedComponents still yields them, incubating though it is'
+    result.task(':licenseDebugUnitTestReport').outcome == SUCCESS
+    result.task(':licenseDebugAndroidTestReport').outcome == SUCCESS
+
+    and: 'each reports the dependencies of its own source set'
+    unitTestJson.text.contains('com.google.firebase:firebase-core')
+    androidTestJson.text.contains('com.android.support:design')
+
+    and: 'and the main dependency they both inherit'
+    unitTestJson.text.contains('com.android.support:appcompat-v7')
+    androidTestJson.text.contains('com.android.support:appcompat-v7')
+  }
 }
