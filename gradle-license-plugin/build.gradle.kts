@@ -58,6 +58,7 @@ val createClasspathManifest =
 dependencies {
   compileOnly(gradleApi())
   compileOnly(libs.android.plugin)
+  compileOnly(libs.kotlin.gradle.plugin)
 
   implementation(platform(libs.kotlin.bom))
   implementation(libs.kotlin.stdlib)

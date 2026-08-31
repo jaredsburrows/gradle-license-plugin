@@ -19,7 +19,10 @@ class LicensePlugin : Plugin<Project> {
     project.afterEvaluate {
       if (!project.isAndroidProject()) {
         when {
-          project.isJavaProject() -> project.configureJavaProject()
+          // Multiplatform first: it also applies a Kotlin plugin, but has per-target classpaths
+          // rather than the single compileClasspath/runtimeClasspath a JVM project has.
+          project.isKmpProject() -> project.configureKmpProject()
+          project.isJvmProject() -> project.configureJvmProject()
           else -> throw UnsupportedOperationException(
             "'com.jaredsburrows.license' requires Java, Kotlin or Android Gradle based plugins.",
           )
