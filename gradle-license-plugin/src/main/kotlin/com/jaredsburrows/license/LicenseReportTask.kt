@@ -19,6 +19,7 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 import java.io.File
@@ -57,6 +58,30 @@ internal abstract class LicenseReportTask
 
     @get:OutputDirectory
     lateinit var outputDir: File
+
+    /**
+     * The copies written into the asset directories. They sit outside [outputDir], so undeclared
+     * Gradle sees nothing missing when one is deleted: the task stays UP-TO-DATE and the app ships
+     * with no licenses file.
+     */
+    @get:OutputFiles
+    val copiedReportFiles: List<File>
+      get() {
+        if (variantName.isNullOrEmpty()) {
+          return emptyList()
+        }
+        val extensions =
+          buildList {
+            if (generateCsvReport && copyCsvReportToAssets) add("csv")
+            if (generateHtmlReport && copyHtmlReportToAssets) add("html")
+            if (generateJsonReport && copyJsonReportToAssets) add("json")
+            if (generateJsonFullReport && copyJsonFullReportToAssets) add("full.json")
+            if (generateTextReport && copyTextReportToAssets) add("txt")
+          }
+        return assetDirs.flatMap { directory ->
+          extensions.map { File(directory, "$OPEN_SOURCE_LICENSES.$it") }
+        }
+      }
 
     @Input
     var generateCsvReport = false
