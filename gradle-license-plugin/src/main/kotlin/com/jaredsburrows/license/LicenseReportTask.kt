@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import com.jaredsburrows.license.internal.ConsoleRenderer
+import com.jaredsburrows.license.internal.readPom
 import com.jaredsburrows.license.internal.report.CsvReport
 import com.jaredsburrows.license.internal.report.HtmlReport
 import com.jaredsburrows.license.internal.report.JsonFullReport
@@ -11,7 +12,6 @@ import org.apache.maven.model.Developer
 import org.apache.maven.model.License
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
-import org.codehaus.plexus.util.ReaderFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -585,10 +585,7 @@ internal abstract class LicenseReportTask
       pomFile: File,
     ): Model? =
       try {
-        // use{}: the reader owns the file handle, and a report over a large graph parses thousands
-        // of POMs. Leaked handles exhaust the descriptor limit, and the failure then arrives here
-        // as an exception and is reported as "no license" rather than as the resource problem.
-        ReaderFactory.newXmlReader(pomFile).use { reader -> mavenReader.read(reader, false) }
+        mavenReader.readPom(pomFile)
       } catch (e: Exception) {
         logger.warn("Failed to read POM file '$pomFile': ${e.shortMessage()}")
         null
