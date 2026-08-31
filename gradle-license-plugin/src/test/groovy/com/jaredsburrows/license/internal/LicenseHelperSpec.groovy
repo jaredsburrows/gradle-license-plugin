@@ -41,11 +41,11 @@ final class LicenseHelperSpec extends Specification {
   def 'no alias is registered twice with a different result'() {
     given: 'allAliases merges the name and url tables'
     Map<String, String> aliases = HELPER.allAliases()
-    boolean anyAliases = !aliases.isEmpty()
+    int aliasCount = aliases.size()
     Collection<String> notBundled = aliases.values().findAll { String fileName -> !HELPER.isBundled(fileName) }
 
     expect: 'the merge did not silently drop a colliding key'
-    anyAliases
+    aliasCount != 0
     notBundled == []
   }
 
