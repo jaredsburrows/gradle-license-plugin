@@ -1,7 +1,7 @@
 package com.jaredsburrows.license
 
+import com.jaredsburrows.license.internal.readPom
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
-import org.codehaus.plexus.util.ReaderFactory
 import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
@@ -29,8 +29,11 @@ private fun Project.resolveParentPomFilesBreadthFirst(
     pomFilesToInspect.forEach { pomFile ->
       val model =
         try {
-          mavenReader.read(ReaderFactory.newXmlReader(pomFile), false)
-        } catch (_: Exception) {
+          mavenReader.readPom(pomFile)
+        } catch (e: Exception) {
+          // Previously swallowed in silence, so a descriptor exhaustion or a corrupt POM looked
+          // exactly like a dependency that simply declares no parent.
+          logger.warn("Failed to read POM file '$pomFile' while resolving parents: ${e.message}")
           return@forEach
         }
 
