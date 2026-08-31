@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.dokka) apply false
-  alias(libs.plugins.ktlint) apply false
+  alias(libs.plugins.ktlint)
   alias(libs.plugins.maven.publish) apply false
   alias(libs.plugins.plugin.publish) apply false
   alias(libs.plugins.versions)
@@ -41,10 +41,16 @@ subprojects {
   }
 
   tasks.withType<Jar>().configureEach {
-    val dateFile = layout.buildDirectory.file("jar-manifest-date.txt").get().asFile
+    val dateFile =
+      layout.buildDirectory
+        .file("jar-manifest-date.txt")
+        .get()
+        .asFile
     if (!dateFile.exists()) {
-      val date = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
-        .format(ZonedDateTime.now())
+      val date =
+        DateTimeFormatter
+          .ofPattern("EEE MMM dd HH:mm:ss zzz yyyy")
+          .format(ZonedDateTime.now())
       dateFile.parentFile.mkdirs()
       dateFile.writeText(date.trim())
     }
