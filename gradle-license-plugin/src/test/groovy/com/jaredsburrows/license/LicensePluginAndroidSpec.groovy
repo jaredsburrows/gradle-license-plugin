@@ -1,6 +1,7 @@
 package com.jaredsburrows.license
 
 import groovy.json.JsonSlurper
+import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Issue
@@ -26,7 +27,7 @@ final class LicensePluginAndroidSpec extends Specification {
   private String mainAssetsFolder
 
   def 'setup'() {
-    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
+    URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
     if (pluginClasspathResource == null) {
       throw new IllegalStateException(
         'Did not find plugin classpath resource, run `testClasses` build task.')
@@ -70,11 +71,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -88,12 +89,12 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       []
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -151,11 +152,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -188,8 +189,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -224,7 +225,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -247,7 +248,7 @@ final class LicensePluginAndroidSpec extends Specification {
   @Unroll
   def 'not UP-TO-DATE when dependencies change'() {
     given:
-    def originalBuildFile = """
+    String originalBuildFile = """
       buildscript {
         dependencies {
           classpath files($classpathString)
@@ -276,7 +277,7 @@ final class LicensePluginAndroidSpec extends Specification {
         implementation 'com.android.support:appcompat-v7:26.1.0'
       }
       """
-    def modifiedBuildFile = """
+    String modifiedBuildFile = """
       buildscript {
         dependencies {
           classpath files($classpathString)
@@ -310,9 +311,9 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when:
     buildFile << originalBuildFile
-    def result1 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    BuildResult result1 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     buildFile << modifiedBuildFile
-    def result2 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    BuildResult result2 = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
 
     then:
     result1.task(":${taskName}").outcome == SUCCESS
@@ -365,11 +366,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -402,8 +403,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -438,7 +439,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -515,11 +516,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -562,8 +563,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -628,7 +629,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -696,7 +697,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseFlavor1Flavor3DebugReport',
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseFlavor1Flavor3DebugReport',
       'licenseFlavor1Flavor3ReleaseReport', 'licenseFlavor2Flavor4DebugReport',
       'licenseFlavor2Flavor4ReleaseReport', '-s')
 
@@ -745,11 +746,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -785,8 +786,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -823,8 +824,8 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
-    def expectedText =
+    File actualText = new File(reportFolder, "${taskName}.txt")
+    String expectedText =
       """
       Notice for packages
 
@@ -890,11 +891,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -918,8 +919,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -936,7 +937,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1008,11 +1009,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1049,8 +1050,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -1087,7 +1088,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1164,11 +1165,11 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1208,8 +1209,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def expectedJson =
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    String expectedJson =
       """
       [
         {
@@ -1246,7 +1247,7 @@ final class LicensePluginAndroidSpec extends Specification {
         }
       ]
       """
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1309,12 +1310,12 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1387,12 +1388,12 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualCsv = new File(reportFolder, "${taskName}.csv")
-    def actualHtml = new File(reportFolder, "${taskName}.html")
-    def openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
-    def actualJson = new File(reportFolder, "${taskName}.json")
-    def actualText = new File(reportFolder, "${taskName}.txt")
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualCsv = new File(reportFolder, "${taskName}.csv")
+    File actualHtml = new File(reportFolder, "${taskName}.html")
+    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File actualJson = new File(reportFolder, "${taskName}.json")
+    File actualText = new File(reportFolder, "${taskName}.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1482,15 +1483,15 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def variantName = taskName.replaceFirst(/^license/, '')
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String variantName = taskName.replaceFirst(/^license/, '')
       .replaceFirst(/Report$/, '')
       .uncapitalize()
-    def variantAssetFolder = "${srcFolder}/${variantName}/assets"
-    def copiedCsv = new File(variantAssetFolder, "open_source_licenses.csv")
-    def copiedHtml = new File(variantAssetFolder, "open_source_licenses.html")
-    def copiedJson = new File(variantAssetFolder, "open_source_licenses.json")
-    def copiedText = new File(variantAssetFolder, "open_source_licenses.txt")
+    String variantAssetFolder = "${srcFolder}/${variantName}/assets"
+    File copiedCsv = new File(variantAssetFolder, "open_source_licenses.csv")
+    File copiedHtml = new File(variantAssetFolder, "open_source_licenses.html")
+    File copiedJson = new File(variantAssetFolder, "open_source_licenses.json")
+    File copiedText = new File(variantAssetFolder, "open_source_licenses.txt")
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -1547,9 +1548,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1573,8 +1574,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -1641,9 +1642,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1656,8 +1657,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       []
       """
@@ -1708,9 +1709,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1734,8 +1735,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -1802,9 +1803,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1817,8 +1818,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       []
       """
@@ -1870,9 +1871,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1896,8 +1897,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -1966,9 +1967,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -1992,8 +1993,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -2060,9 +2061,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -2086,8 +2087,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -2151,9 +2152,9 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualHtml = new File(reportFolder, "${taskName}.html").text
-    def expectedHtml =
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    String actualHtml = new File(reportFolder, "${taskName}.html").text
+    String expectedHtml =
       """
       <!DOCTYPE html>
       <html lang="en">
@@ -2182,8 +2183,8 @@ final class LicensePluginAndroidSpec extends Specification {
         </body>
       </html>
       """
-    def actualJson = new File(reportFolder, "${taskName}.json").text
-    def expectedJson =
+    String actualJson = new File(reportFolder, "${taskName}.json").text
+    String expectedJson =
       """
       [
         {
@@ -2257,8 +2258,8 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseDebugReport.json')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseDebugReport.json')
 
     then: 'declared and parent-inherited licenses win; only the bare POM falls back to Apache'
     result.task(':licenseDebugReport').outcome == SUCCESS
@@ -2334,8 +2335,8 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
-    def actualJson = new File(reportFolder, 'licenseDebugReport.json')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    File actualJson = new File(reportFolder, 'licenseDebugReport.json')
 
     then: 'configuration does not crash and the report includes both modules dependencies'
     result.task(':licenseDebugReport').outcome == SUCCESS
@@ -2392,7 +2393,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
 
     then: 'the report is generated without resolving any configuration during configuration'
     result.task(":${taskName}").outcome == SUCCESS
@@ -2443,10 +2444,10 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
-    def actualJsonFull = new File(reportFolder, "${taskName}.full.json")
-    def openSourceJsonFull = new File(mainAssetsFolder, 'open_source_licenses.full.json')
-    def report = new JsonSlurper().parseText(openSourceJsonFull.text)
+    BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
+    File actualJsonFull = new File(reportFolder, "${taskName}.full.json")
+    File openSourceJsonFull = new File(mainAssetsFolder, 'open_source_licenses.full.json')
+    Object report = new JsonSlurper().parseText(openSourceJsonFull.text)
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
@@ -2487,8 +2488,8 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when: 'the report is generated once'
-    def first = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
-    def openSourceHtml = new File(mainAssetsFolder, 'open_source_licenses.html')
+    BuildResult first = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    File openSourceHtml = new File(mainAssetsFolder, 'open_source_licenses.html')
 
     then:
     first.task(':licenseDebugReport').outcome == SUCCESS
@@ -2496,7 +2497,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when: 'the packaged copy is deleted and the build re-run'
     openSourceHtml.delete()
-    def second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    BuildResult second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
 
     then: 'the task re-runs rather than reporting UP-TO-DATE'
     second.task(':licenseDebugReport').outcome == SUCCESS
@@ -2544,7 +2545,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when:
-    def result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
 
     then:
     result.task(':licenseDebugReport').outcome == SUCCESS
@@ -2558,7 +2559,7 @@ final class LicensePluginAndroidSpec extends Specification {
     ['csv', 'html', 'json', 'full.json', 'txt'].each { extension ->
       new File(mainAssetsFolder, "open_source_licenses.${extension}").delete()
     }
-    def second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
+    BuildResult second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
 
     then:
     second.task(':licenseDebugReport').outcome == SUCCESS
@@ -2610,7 +2611,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when: 'the report task is run on the dynamic feature module'
-    def result = gradleWithCommand(testProjectDir.root, ':feature:licenseDebugReport', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, ':feature:licenseDebugReport', '-s')
 
     then: 'applying the plugin does not fail the build'
     result.task(':feature:licenseDebugReport').outcome == SUCCESS
@@ -2639,7 +2640,7 @@ final class LicensePluginAndroidSpec extends Specification {
       """
 
     when: 'the plugin is applied'
-    def result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
 
     then: 'it does not fail with the unsupported-project error'
     !result.output.contains('requires Java, Kotlin or Android Gradle based plugins')

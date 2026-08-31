@@ -1,5 +1,6 @@
 package com.jaredsburrows.license
 
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -23,7 +24,7 @@ final class LicensePluginVersionSpec extends Specification {
   private String reportFolder
 
   def 'setup'() {
-    def pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
+    URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
     if (pluginClasspathResource == null) {
       throw new IllegalStateException(
         'Did not find plugin classpath resource, run `testClasses` build task.')
@@ -34,7 +35,7 @@ final class LicensePluginVersionSpec extends Specification {
       .collect { it.absolutePath.replace('\\', '\\\\') } // escape backslashes in Windows paths
       .collect { "'$it'" }
       .join(", ")
-    def mainClasspathResource = getClass().classLoader.getResource('plugin-classpath-main.txt')
+    URL mainClasspathResource = getClass().classLoader.getResource('plugin-classpath-main.txt')
     mainClasspathString = mainClasspathResource.readLines().collect { new File(it) }
       .collect { it.absolutePath.replace('\\', '\\\\') }
       .collect { "'$it'" }
@@ -56,7 +57,7 @@ final class LicensePluginVersionSpec extends Specification {
       """
 
     when:
-    def result = GradleRunner.create()
+    BuildResult result = GradleRunner.create()
       .withGradleVersion(gradleVersion)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseReport', '-s')
@@ -112,7 +113,7 @@ final class LicensePluginVersionSpec extends Specification {
     """
 
     when:
-    def result = GradleRunner.create()
+    BuildResult result = GradleRunner.create()
       .withGradleVersion(gradleVersion as String)
       .withProjectDir(testProjectDir.root)
       .withArguments('licenseDebugReport', '-s')
