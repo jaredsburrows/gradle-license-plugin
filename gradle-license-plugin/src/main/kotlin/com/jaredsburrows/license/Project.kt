@@ -6,11 +6,28 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.security.MessageDigest
+
+/**
+ * A BOM or platform ships no code, so it must not be attributed. Every variant Gradle selected for
+ * one is categorised platform or enforced-platform.
+ *
+ * Deliberately not a `packaging == "pom"` check: that is not the same question. kotlinx-coroutines-core,
+ * kotlinx-serialization-core, kotlin-stdlib-common 2.x and com.android.tools.build:aapt2 all declare
+ * pom packaging while carrying code, so filtering on it drops real libraries from the report.
+ */
+private fun ResolvedComponentResult.isPlatform(): Boolean =
+  variants.isNotEmpty() &&
+    variants.all { variant ->
+      val key = variant.attributes.keySet().firstOrNull { it.name == "org.gradle.category" }
+      val category = key?.let { variant.attributes.getAttribute(it)?.toString() }
+      category == "platform" || category == "enforced-platform"
+    }
 
 /** Returns true if plugin exists in project. */
 internal fun Project.hasPlugin(list: List<String>): Boolean = list.any { plugins.hasPlugin(it) }
@@ -190,6 +207,7 @@ private fun Project.buildPomInput(configurationNames: List<String>): PomInput {
         .incoming
         .resolutionResult
         .allComponents
+        .filterNot { it.isPlatform() }
         .map { it.id }
         .filterIsInstance<ModuleComponentIdentifier>()
         .forEach { componentIdentifiers += it }
