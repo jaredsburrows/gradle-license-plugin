@@ -2352,6 +2352,8 @@ final class LicensePluginAndroidSpec extends Specification {
     given: 'a build that flags configuration-time resolution the same way AGP does'
     buildFile <<
       """
+      import java.util.concurrent.atomic.AtomicBoolean
+
       buildscript {
         dependencies {
           classpath files($classpathString)
@@ -2381,7 +2383,7 @@ final class LicensePluginAndroidSpec extends Specification {
       }
 
       // Mirror AGP's DependencyResolutionChecks: flag configurations resolved before the task graph is ready.
-      def configurationPhase = new java.util.concurrent.atomic.AtomicBoolean(true)
+      AtomicBoolean configurationPhase = new AtomicBoolean(true)
       gradle.taskGraph.whenReady { configurationPhase.set(false) }
       configurations.configureEach { conf ->
         conf.incoming.beforeResolve {
