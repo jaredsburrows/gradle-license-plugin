@@ -2668,4 +2668,59 @@ final class LicensePluginAndroidSpec extends Specification {
     actualJson.text.contains('com.android.support:design')
   }
 
+  def 'licenseReport registers a report for every target of a multiplatform module with an android target'() {
+    given: 'a multiplatform module applying an android plugin alongside jvm and native targets'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        mavenCentral()
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.android.kotlin.multiplatform.library'
+      apply plugin: 'com.jaredsburrows.license'
+
+      kotlin {
+        androidLibrary {
+          namespace = 'com.example.kmp'
+          compileSdk = $compileSdkVersion
+        }
+        jvm()
+        linuxX64()
+
+        sourceSets {
+          commonMain {
+            dependencies {
+              implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0'
+            }
+          }
+        }
+      }
+      """
+
+    when: 'the reports for the non-android targets are run'
+    BuildResult result = gradleWithCommand(
+      testProjectDir.root, 'licenseJvmReport', 'licenseLinuxX64Report', 'licenseAndroidMainReport', '-s')
+
+    then: 'the android plugin no longer suppresses the multiplatform wiring'
+    result.task(':licenseJvmReport').outcome == SUCCESS
+    result.task(':licenseLinuxX64Report').outcome == SUCCESS
+
+    and: 'the android target keeps the report registered by the android path'
+    result.task(':licenseAndroidMainReport').outcome == SUCCESS
+
+    and: 'each is populated'
+    new File(reportFolder, 'licenseJvmReport.json').text.contains('kotlinx-coroutines-core')
+    new File(reportFolder, 'licenseLinuxX64Report.json').text.contains('kotlinx-coroutines-core')
+    new File(reportFolder, 'licenseAndroidMainReport.json').text.contains('kotlinx-coroutines-core')
+
+    and: 'the android target is not also reported under its multiplatform target name'
+    !new File(reportFolder, 'licenseAndroidReport.json').exists()
+  }
 }
