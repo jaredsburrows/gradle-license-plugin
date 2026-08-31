@@ -94,3 +94,9 @@ hs_err_pid*
 ### Gradle License Plugin ###
 # Reports the plugin copies into the test app assets while building
 test-apps/*/src/*/assets/open_source_licenses.*
+
+### Tooling ###
+# Claude Code keeps session state and scratch worktrees here
+.claude/
+# Kotlin compiler session directory
+.kotlin/
