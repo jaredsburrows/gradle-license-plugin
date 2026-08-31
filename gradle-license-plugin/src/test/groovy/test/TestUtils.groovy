@@ -54,10 +54,19 @@ final class TestUtils {
     return jsonAdapter.fromJson(text)
   }
 
+  /**
+   * TestKit builds do not inherit the repository's gradle.properties, so the plugin's
+   * configuration cache compatibility went unverified: a build that breaks it still passed. Forcing
+   * the flag here means every functional test asserts it.
+   */
+  private static String[] withConfigurationCache(String... commands) {
+    return (commands.toList() + '--configuration-cache') as String[]
+  }
+
   static BuildResult gradleWithCommand(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
-      .withArguments(commands)
+      .withArguments(withConfigurationCache(commands))
       .withPluginClasspath()
       .build()
   }
@@ -65,7 +74,7 @@ final class TestUtils {
   static BuildResult gradleWithCommandWithFail(File file, String... commands) {
     return GradleRunner.create()
       .withProjectDir(file)
-      .withArguments(commands)
+      .withArguments(withConfigurationCache(commands))
       .withPluginClasspath()
       .buildAndFail()
   }
