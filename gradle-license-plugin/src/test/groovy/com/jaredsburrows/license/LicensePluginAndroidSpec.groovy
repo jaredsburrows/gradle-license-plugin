@@ -2567,4 +2567,85 @@ final class LicensePluginAndroidSpec extends Specification {
     }
   }
 
+
+  def 'licenseDebugReport supports a dynamic feature module'() {
+    given: 'an app with a dynamic feature module, both applying the plugin'
+    testProjectDir.newFile('settings.gradle') <<
+      """
+      include 'feature'
+      """
+    testProjectDir.newFolder('feature')
+    testProjectDir.newFile('feature/build.gradle') <<
+      """
+      apply plugin: 'com.android.dynamic-feature'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example.feature'
+      }
+      """
+
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+
+        dynamicFeatures = [':feature']
+      }
+      """
+
+    when: 'the report task is run on the dynamic feature module'
+    def result = gradleWithCommand(testProjectDir.root, ':feature:licenseDebugReport', '-s')
+
+    then: 'applying the plugin does not fail the build'
+    result.task(':feature:licenseDebugReport').outcome == SUCCESS
+  }
+
+  def 'licenseReport supports a kotlin multiplatform android library module'() {
+    given: 'a module using AGP\'s KMP android library plugin'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      apply plugin: 'org.jetbrains.kotlin.multiplatform'
+      apply plugin: 'com.android.kotlin.multiplatform.library'
+      apply plugin: 'com.jaredsburrows.license'
+
+      kotlin {
+        androidLibrary {
+          namespace = 'com.example.kmp'
+          compileSdk = $compileSdkVersion
+        }
+      }
+      """
+
+    when: 'the plugin is applied'
+    def result = gradleWithCommand(testProjectDir.root, 'tasks', '--all', '-s')
+
+    then: 'it does not fail with the unsupported-project error'
+    !result.output.contains('requires Java, Kotlin or Android Gradle based plugins')
+
+    and: 'a report task is registered for the android target'
+    result.output.contains('licenseAndroidMainReport')
+  }
+
 }

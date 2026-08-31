@@ -2,6 +2,8 @@ package com.jaredsburrows.license
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.Component
+import com.android.build.api.variant.DynamicFeatureAndroidComponentsExtension
+import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.api.variant.TestAndroidComponentsExtension
 import com.android.build.api.variant.Variant
@@ -21,6 +23,10 @@ internal fun Project.isAndroidProject(): Boolean =
       "com.android.library",
       // TestPlugin
       "com.android.test",
+      // DynamicFeaturePlugin
+      "com.android.dynamic-feature",
+      // KotlinMultiplatformAndroidPlugin
+      "com.android.kotlin.multiplatform.library",
     ),
   )
 
@@ -37,6 +43,8 @@ internal fun Project.isAndroidProject(): Boolean =
  * AppPlugin - "android", "com.android.application"
  * LibraryPlugin - "android-library", "com.android.library"
  * TestPlugin - "com.android.test"
+ * DynamicFeaturePlugin - "com.android.dynamic-feature"
+ * KotlinMultiplatformAndroidPlugin - "com.android.kotlin.multiplatform.library"
  */
 internal fun Project.configureAndroidProject() {
   // A project applies exactly one Android module plugin, but a single applied plugin can match
@@ -55,6 +63,8 @@ internal fun Project.configureAndroidProject() {
   plugins.withId("com.android.library") { once { configureLibraryVariants() } }
   plugins.withId("android-library") { once { configureLibraryVariants() } }
   plugins.withId("com.android.test") { once { configureTestVariants() } }
+  plugins.withId("com.android.dynamic-feature") { once { configureDynamicFeatureVariants() } }
+  plugins.withId("com.android.kotlin.multiplatform.library") { once { configureKotlinMultiplatformVariants() } }
 }
 
 private fun Project.configureApplicationVariants() =
@@ -70,6 +80,16 @@ private fun Project.configureLibraryVariants() =
 private fun Project.configureTestVariants() =
   extensions
     .getByType(TestAndroidComponentsExtension::class.java)
+    .run { onVariants(selector().all()) { configureVariant(it) } }
+
+private fun Project.configureDynamicFeatureVariants() =
+  extensions
+    .getByType(DynamicFeatureAndroidComponentsExtension::class.java)
+    .run { onVariants(selector().all()) { configureVariant(it) } }
+
+private fun Project.configureKotlinMultiplatformVariants() =
+  extensions
+    .getByType(KotlinMultiplatformAndroidComponentsExtension::class.java)
     .run { onVariants(selector().all()) { configureVariant(it) } }
 
 /**
