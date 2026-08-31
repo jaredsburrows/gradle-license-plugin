@@ -2226,4 +2226,38 @@ final class LicensePluginJavaSpec extends Specification {
     new File(reportFolder, 'licenseReport.txt').text.contains('EPL library')
   }
 
+
+  def 'licenseReport keeps a -ktx sibling that merely shares a display name'() {
+    given: 'two separately published libraries whose POMs happen to declare the same <name>'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      dependencies {
+        implementation 'group:ktxlib:1.0.0'
+        implementation 'group:ktxlib-ktx:1.0.0'
+      }
+      """
+
+    when:
+    def result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    def json = new File(reportFolder, 'licenseReport.json').text
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'both are attributed - dropping one loses a shipped library from the report'
+    json.contains('group:ktxlib:1.0.0')
+    json.contains('group:ktxlib-ktx:1.0.0')
+  }
+
 }

@@ -297,11 +297,11 @@ internal abstract class LicenseReportTask
 
       val root = if (thisArtifact.length <= otherArtifact.length) thisArtifact else otherArtifact
       val variant = if (root == thisArtifact) otherArtifact else thisArtifact
-      return variant.startsWith("$root-") &&
-        (
-          variant.removePrefix("$root-") in PLATFORM_ARTIFACT_SUFFIXES ||
-            name.orEmpty() == other.name.orEmpty()
-        )
+      if (!variant.startsWith("$root-")) return false
+
+      val suffix = variant.removePrefix("$root-")
+      return suffix in PLATFORM_ARTIFACT_SUFFIXES ||
+        (suffix in SHARED_PLATFORM_ARTIFACT_SUFFIXES && name.orEmpty() == other.name.orEmpty())
     }
 
     /** Prefer the higher version; for equal versions prefer the shorter (root) artifact id. */
@@ -665,7 +665,36 @@ internal abstract class LicenseReportTask
     private companion object {
       // Kotlin Multiplatform platform-artifact suffixes safe to treat as the same library.
       // "-android" is excluded: distinct products use it (dagger / dagger-android).
-      private val PLATFORM_ARTIFACT_SUFFIXES = setOf("jvm")
+      // Kotlin Multiplatform target names no separate product is published under, so
+      // "<root>-<target>" is always the same library built for one target.
+      private val PLATFORM_ARTIFACT_SUFFIXES =
+        setOf(
+          "jvm",
+          "js",
+          "wasm-js",
+          "wasm-wasi",
+          "linuxx64",
+          "linuxarm64",
+          "macosx64",
+          "macosarm64",
+          "mingwx64",
+          "iosx64",
+          "iosarm64",
+          "iossimulatorarm64",
+          "tvosx64",
+          "tvosarm64",
+          "tvossimulatorarm64",
+          "watchosx64",
+          "watchosarm32",
+          "watchosarm64",
+          "watchosdevicearm64",
+          "watchossimulatorarm64",
+        )
+
+      // Target names that separate products also use, so these collapse only when the display
+      // names agree too. Without this gate every "-suffix" sibling could collapse on a shared
+      // name alone, which is how androidx.test:core-ktx vanished behind androidx.test:core.
+      private val SHARED_PLATFORM_ARTIFACT_SUFFIXES = setOf("android", "desktop", "native")
       private const val ANDROID_SUPPORT_GROUP_ID = "com.android.support"
       private const val APACHE_LICENSE_NAME = "The Apache Software License"
       private const val APACHE_LICENSE_URL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
