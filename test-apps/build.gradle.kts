@@ -6,6 +6,7 @@ plugins {
   alias(libs.plugins.kotlin.compose) apply false
   // No version: the plugin comes from the build included in settings.gradle.kts.
   id("com.jaredsburrows.license") apply false
+  alias(libs.plugins.ktlint)
   idea
 }
 

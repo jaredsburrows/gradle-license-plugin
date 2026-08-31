@@ -3,9 +3,9 @@ package com.jaredsburrows.license.testapp.html
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import org.junit.runner.RunWith
 
 /**
  * The HTML report is displayed as-is, so the only thing to verify is that `licenseDebugReport`

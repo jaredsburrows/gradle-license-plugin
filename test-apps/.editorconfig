@@ -1,0 +1,6 @@
+# Inherits the repository root .editorconfig; only the Compose-specific rule lives here.
+
+[*.kt]
+# Composables that emit UI are PascalCase by convention, which ktlint's function-naming rule
+# otherwise rejects and cannot auto-correct.
+ktlint_function_naming_ignore_when_annotated_with = Composable

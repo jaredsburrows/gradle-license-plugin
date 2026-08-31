@@ -50,5 +50,4 @@ private fun JSONObject.stringOrNull(key: String): String? = if (isNull(key)) nul
 private fun <T> JSONArray?.mapObjects(transform: (JSONObject) -> T): List<T> =
   if (this == null) emptyList() else (0 until length()).map { transform(getJSONObject(it)) }
 
-private fun JSONArray?.toStringList(): List<String> =
-  if (this == null) emptyList() else (0 until length()).map { getString(it) }
+private fun JSONArray?.toStringList(): List<String> = if (this == null) emptyList() else (0 until length()).map { getString(it) }
