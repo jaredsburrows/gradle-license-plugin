@@ -2498,8 +2498,8 @@ final class LicensePluginJvmSpec extends Specification {
   }
 
   @Issue("jaredsburrows/gradle-license-plugin/issues/878")
-  def 'licenseReport resolves real parent POMs shared by many versions of one module'() {
-    given: 'the dependency set from issue 878, whose parents are commons-parent and guava-parent at six versions between them'
+  def 'licenseReport resolves commons-parent at the six versions from issue 878'() {
+    given: 'the Apache Commons set, pinned so their parents are commons-parent 39, 48, 72, 78 and 92'
     buildFile <<
       """
       plugins {
@@ -2512,12 +2512,11 @@ final class LicensePluginJvmSpec extends Specification {
       }
 
       dependencies {
-        implementation 'com.google.guava:guava:33.4.8-jre'
-        implementation 'commons-io:commons-io:2.18.0'
-        implementation 'org.apache.commons:commons-collections4:4.4'
-        implementation 'org.apache.commons:commons-compress:1.27.1'
-        implementation 'org.apache.commons:commons-lang3:3.18.0'
-        implementation 'org.apache.commons:commons-math3:3.6.1'
+        implementation 'commons-io:commons-io:2.18.0'              // commons-parent:78
+        implementation 'org.apache.commons:commons-collections4:4.4'  // commons-parent:48
+        implementation 'org.apache.commons:commons-compress:1.27.1'   // commons-parent:72
+        implementation 'org.apache.commons:commons-lang3:3.20.0'      // commons-parent:92
+        implementation 'org.apache.commons:commons-math3:3.6.1'       // commons-parent:39
       }
       """
 
@@ -2525,24 +2524,63 @@ final class LicensePluginJvmSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
     List<Map> json =
       new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text) as List<Map>
-    List<String> withoutLicense =
+    List<String> unlicensed =
       json.findAll { !it.licenses }.collect { it.dependency as String }.sort()
 
     then:
     result.task(':licenseReport').outcome == SUCCESS
 
-    and: 'no parent POM is lost to conflict resolution between versions of the same module'
+    and: 'no version of commons-parent is lost to conflict resolution'
     result.output.findAll(/Parent POM .* not found/) == []
-
-    and: 'so nothing is left unattributed'
     result.output.findAll(/Dependency '.*' does not have a license\./) == []
-    withoutLicense == []
 
-    and: 'the artifacts named in the issue are attributed'
-    ['com.google.guava:failureaccess', 'com.google.guava:listenablefuture',
-     'commons-io:commons-io', 'org.apache.commons:commons-collections4',
+    and: 'every artifact named in the issue is attributed'
+    unlicensed == []
+    ['commons-io:commons-io', 'org.apache.commons:commons-collections4',
      'org.apache.commons:commons-compress', 'org.apache.commons:commons-lang3',
      'org.apache.commons:commons-math3'].every { String coordinate ->
+      json.any { (it.dependency as String).startsWith(coordinate + ':') && it.licenses }
+    }
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/878")
+  def 'licenseReport resolves guava-parent at both versions from issue 878'() {
+    given: 'guava alongside the two artifacts whose parent is guava-parent:26.0-android'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        mavenCentral()
+      }
+
+      dependencies {
+        implementation 'com.google.guava:guava:33.4.8-jre'         // guava-parent:33.4.8-jre
+        implementation 'com.google.guava:failureaccess:1.0.2'      // guava-parent:26.0-android
+        implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava' // guava-parent:26.0-android
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    List<Map> json =
+      new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text) as List<Map>
+    List<String> unlicensed =
+      json.findAll { !it.licenses }.collect { it.dependency as String }.sort()
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'the older guava-parent is not dropped in favour of the one guava itself uses'
+    result.output.findAll(/Parent POM .* not found/) == []
+    result.output.findAll(/Dependency '.*' does not have a license\./) == []
+
+    and: 'both artifacts named in the issue are attributed'
+    unlicensed == []
+    ['com.google.guava:failureaccess', 'com.google.guava:listenablefuture'].every { String coordinate ->
       json.any { (it.dependency as String).startsWith(coordinate + ':') && it.licenses }
     }
   }
