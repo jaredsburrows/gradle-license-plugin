@@ -80,7 +80,7 @@ and [here](https://central.sonatype.com/artifact/com.jaredsburrows/gradle-licens
 
 ```kotlin
 plugins {
-  id("com.jaredsburrows.license") version "0.9.92-SNAPSHOT"
+  id("com.jaredsburrows.license") version "0.10.0-SNAPSHOT"
 }
 ```
 
@@ -97,7 +97,7 @@ buildscript {
   }
 
   dependencies {
-    classpath("com.jaredsburrows:gradle-license-plugin:0.9.92-SNAPSHOT")
+    classpath("com.jaredsburrows:gradle-license-plugin:0.10.0-SNAPSHOT")
   }
 }
 
@@ -392,7 +392,7 @@ AAR is unchanged - still `assets/open_source_licenses.<ext>`.
 
 Setting it to `false` sends every variant's report to `src/main/assets` instead. That is a single shared file, so
 whichever report task runs last wins and a build can ship another variant's licenses
-([#226](https://github.com/jaredsburrows/gradle-license-plugin/issues/226)). It was the default before `0.9.92`; only
+([#226](https://github.com/jaredsburrows/gradle-license-plugin/issues/226)). It was the default before `0.10.0`; only
 set it if you have one variant, or you are relying on the old path and accept that risk.
 
 The `ignoredPatterns` allows for ignoring artifact patterns. A pattern can cover whole segments of the
