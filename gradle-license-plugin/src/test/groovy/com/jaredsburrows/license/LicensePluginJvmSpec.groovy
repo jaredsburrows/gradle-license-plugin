@@ -2496,4 +2496,54 @@ final class LicensePluginJvmSpec extends Specification {
     and: 'the main source set resolves compileClasspath and runtimeClasspath'
     actualJson.text.contains('com.google.firebase:firebase-core:10.0.1')
   }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/878")
+  def 'licenseReport resolves real parent POMs shared by many versions of one module'() {
+    given: 'the dependency set from issue 878, whose parents are commons-parent and guava-parent at six versions between them'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        mavenCentral()
+      }
+
+      dependencies {
+        implementation 'com.google.guava:guava:33.4.8-jre'
+        implementation 'commons-io:commons-io:2.18.0'
+        implementation 'org.apache.commons:commons-collections4:4.4'
+        implementation 'org.apache.commons:commons-compress:1.27.1'
+        implementation 'org.apache.commons:commons-lang3:3.18.0'
+        implementation 'org.apache.commons:commons-math3:3.6.1'
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    List<Map> json =
+      new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text) as List<Map>
+    List<String> withoutLicense =
+      json.findAll { !it.licenses }.collect { it.dependency as String }.sort()
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'no parent POM is lost to conflict resolution between versions of the same module'
+    result.output.findAll(/Parent POM .* not found/) == []
+
+    and: 'so nothing is left unattributed'
+    result.output.findAll(/Dependency '.*' does not have a license\./) == []
+    withoutLicense == []
+
+    and: 'the artifacts named in the issue are attributed'
+    ['com.google.guava:failureaccess', 'com.google.guava:listenablefuture',
+     'commons-io:commons-io', 'org.apache.commons:commons-collections4',
+     'org.apache.commons:commons-compress', 'org.apache.commons:commons-lang3',
+     'org.apache.commons:commons-math3'].every { String coordinate ->
+      json.any { (it.dependency as String).startsWith(coordinate + ':') && it.licenses }
+    }
+  }
 }

@@ -6,6 +6,7 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import groovy.transform.TypeChecked
+import spock.lang.Issue
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -147,6 +148,63 @@ final class LicensePluginVersionSpec extends Specification {
       ['8.13.0', '8.13'],
       ['9.0.0', '9.1.0'],
       ['9.2.1', '9.5.1'],
+    ]
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/724")
+  @Unroll
+  def 'licenseReport resolves shared parent POMs on gradle #gradleVersion'(String gradleVersion) {
+    given: 'the dependency set from issue 878, on the Gradle versions issue 724 is about'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        mavenCentral()
+      }
+
+      dependencies {
+        implementation 'com.google.guava:guava:33.4.8-jre'
+        implementation 'commons-io:commons-io:2.18.0'
+        implementation 'org.apache.commons:commons-collections4:4.4'
+        implementation 'org.apache.commons:commons-compress:1.27.1'
+        implementation 'org.apache.commons:commons-lang3:3.18.0'
+        implementation 'org.apache.commons:commons-math3:3.6.1'
+      }
+      """
+
+    when:
+    BuildResult result = GradleRunner.create()
+      .withGradleVersion(gradleVersion)
+      .withProjectDir(testProjectDir.root)
+      .withArguments('licenseReport', '-s')
+      .withPluginClasspath()
+      .build()
+    TaskOutcome outcome = result.task(':licenseReport').outcome
+    List<String> droppedParents = result.output.findAll(/Parent POM .* not found/)
+    List<String> unattributed = result.output.findAll(/Dependency '.*' does not have a license\./)
+    String reportText = new File(reportFolder, 'licenseReport.json').text
+    boolean attributesCommonsMath = reportText.contains('commons-math3')
+    boolean attributesFailureaccess = reportText.contains('failureaccess')
+
+    then: 'the plugin runs at all, which is what 724 was about'
+    outcome == SUCCESS
+
+    and: 'and resolves every parent POM, which is what 800 was about'
+    droppedParents == []
+    unattributed == []
+
+    and:
+    attributesCommonsMath
+    attributesFailureaccess
+
+    where:
+    gradleVersion << [
+      '9.0.0',
+      '9.7.1',
     ]
   }
 }
