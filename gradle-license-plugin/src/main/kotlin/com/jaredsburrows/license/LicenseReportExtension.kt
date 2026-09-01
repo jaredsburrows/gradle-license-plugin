@@ -49,7 +49,7 @@ open class LicenseReportExtension {
    * Whether when copying reports to the Android assets directory, it uses the variant-specific
    * asset directory instead of main. Defaults to false.
    */
-  var useVariantSpecificAssetDirs = false
+  var useVariantSpecificAssetDirs = true
 
   /**
    * Whether the Text report should be copied to the Android assets directory. Ignored if the
