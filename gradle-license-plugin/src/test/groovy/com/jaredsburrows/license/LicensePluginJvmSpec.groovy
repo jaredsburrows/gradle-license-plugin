@@ -2496,4 +2496,50 @@ final class LicensePluginJvmSpec extends Specification {
     and: 'the main source set resolves compileClasspath and runtimeClasspath'
     actualJson.text.contains('com.google.firebase:firebase-core:10.0.1')
   }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/878")
+  def 'licenseReport resolves commons-parent at the six versions from issue 878'() {
+    given: 'the Apache Commons set, pinned so their parents are commons-parent 39, 48, 72, 78 and 92'
+    buildFile <<
+      """
+      plugins {
+        id 'java-library'
+        id 'com.jaredsburrows.license'
+      }
+
+      repositories {
+        mavenCentral()
+      }
+
+      dependencies {
+        implementation 'commons-io:commons-io:2.18.0'              // commons-parent:78
+        implementation 'org.apache.commons:commons-collections4:4.4'  // commons-parent:48
+        implementation 'org.apache.commons:commons-compress:1.27.1'   // commons-parent:72
+        implementation 'org.apache.commons:commons-lang3:3.20.0'      // commons-parent:92
+        implementation 'org.apache.commons:commons-math3:3.6.1'       // commons-parent:39
+      }
+      """
+
+    when:
+    BuildResult result = gradleWithCommand(testProjectDir.root, 'licenseReport', '-s')
+    List<Map> json =
+      new JsonSlurper().parseText(new File(reportFolder, 'licenseReport.json').text) as List<Map>
+    List<String> unlicensed =
+      json.findAll { !it.licenses }.collect { it.dependency as String }.sort()
+
+    then:
+    result.task(':licenseReport').outcome == SUCCESS
+
+    and: 'no version of commons-parent is lost to conflict resolution'
+    result.output.findAll(/Parent POM .* not found/) == []
+    result.output.findAll(/Dependency '.*' does not have a license\./) == []
+
+    and: 'every artifact named in the issue is attributed'
+    unlicensed == []
+    ['commons-io:commons-io', 'org.apache.commons:commons-collections4',
+     'org.apache.commons:commons-compress', 'org.apache.commons:commons-lang3',
+     'org.apache.commons:commons-math3'].every { String coordinate ->
+      json.any { (it.dependency as String).startsWith(coordinate + ':') && it.licenses }
+    }
+  }
 }
