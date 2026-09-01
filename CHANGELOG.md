@@ -1,5 +1,34 @@
 # Change Log
 
+## Version 0.9.91 *(2026-08-31)*
+ * [#875](https://github.com/jaredsburrows/gradle-license-plugin/pull/875) Assert report content for every supported plugin type and component
+ * [#874](https://github.com/jaredsburrows/gradle-license-plugin/pull/874) Run the multiplatform wiring for a module that is also Android
+ * [#873](https://github.com/jaredsburrows/gradle-license-plugin/pull/873) Ask the main source set for its configuration names
+ * [#872](https://github.com/jaredsburrows/gradle-license-plugin/pull/872) Ask the Android component for its configuration names
+ * [#871](https://github.com/jaredsburrows/gradle-license-plugin/pull/871) Ask the Kotlin target for its configuration names
+ * [#861](https://github.com/jaredsburrows/gradle-license-plugin/pull/861) Match OSI's current path, anchor spdx.org, and only strip real locales
+ * [#865](https://github.com/jaredsburrows/gradle-license-plugin/pull/856) Support Kotlin Multiplatform projects, and rename ProjectJava to ProjectJvm
+ * [#855](https://github.com/jaredsburrows/gradle-license-plugin/pull/855) Fall back to the developer id, and drop entries that name nobody
+ * [#854](https://github.com/jaredsburrows/gradle-license-plugin/pull/854) Inherit url, description, inception year and developers from the parent POM
+ * [#853](https://github.com/jaredsburrows/gradle-license-plugin/pull/853) Stop attributing BOMs and platforms in the report
+ * [#852](https://github.com/jaredsburrows/gradle-license-plugin/pull/852) Support dynamic feature and Kotlin Multiplatform android library modules
+ * [#851](https://github.com/jaredsburrows/gradle-license-plugin/pull/851) Keep a -ktx sibling that merely shares a display name
+ * [#850](https://github.com/jaredsburrows/gradle-license-plugin/pull/850) Close the POM reader, and stop swallowing parse failures in silence
+ * [#849](https://github.com/jaredsburrows/gradle-license-plugin/pull/849) Regenerate a deleted asset copy instead of staying up-to-date
+ * [#848](https://github.com/jaredsburrows/gradle-license-plugin/pull/848) Assert what the bundled licenses are, and that they reach every report
+ * [#846](https://github.com/jaredsburrows/gradle-license-plugin/pull/846) Fix license resolution, and walk parent POMs iteratively
+ * [#844](https://github.com/jaredsburrows/gradle-license-plugin/pull/844) Bundle fourteen more license texts
+ * [#843](https://github.com/jaredsburrows/gradle-license-plugin/pull/843) Match licenses by normalized name and URL, and bundle fourteen more
+ * [#837](https://github.com/jaredsburrows/gradle-license-plugin/pull/837) Add full JSON license report and Jetpack Compose test apps
+ * [#821](https://github.com/jaredsburrows/gradle-license-plugin/pull/821) Anchor license links to the top of the license text
+ * [#820](https://github.com/jaredsburrows/gradle-license-plugin/pull/820) Match ignoredPatterns along coordinate segment boundaries
+ * [#819](https://github.com/jaredsburrows/gradle-license-plugin/pull/819) Prefer declared support library licenses over the Apache default
+ * [#818](https://github.com/jaredsburrows/gradle-license-plugin/pull/818) Collapse a library resolved at different versions across classpaths
+ * [#817](https://github.com/jaredsburrows/gradle-license-plugin/pull/817) Add regression test for licenseReport running as a task dependency
+ * [#816](https://github.com/jaredsburrows/gradle-license-plugin/pull/816) Add regression test for library subproject crash under AGP 9
+ * [#815](https://github.com/jaredsburrows/gradle-license-plugin/pull/815) Resolve parent POMs of the same module at different versions
+ * [#814](https://github.com/jaredsburrows/gradle-license-plugin/pull/814) Defer dependency resolution out of the configuration phase
+
 ## Version 0.9.9 *(2026-06-16)*
  * [#791](https://github.com/jaredsburrows/gradle-license-plugin/pull/791) AGP 9+ support
 
