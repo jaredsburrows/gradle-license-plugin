@@ -24,7 +24,6 @@ final class LicensePluginAndroidSpec extends Specification {
   private File buildFile
   private String reportFolder
   private String srcFolder
-  private String mainAssetsFolder
 
   def 'setup'() {
     URL pluginClasspathResource = getClass().classLoader.getResource('plugin-classpath.txt')
@@ -43,7 +42,15 @@ final class LicensePluginAndroidSpec extends Specification {
     // In case we're on Windows, fix the \s in the string containing the name
     reportFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/build/reports/licenses"
     srcFolder = "${testProjectDir.root.path.replaceAll('\\\\', '/')}/src"
-    mainAssetsFolder = "${srcFolder}/main/assets"
+  }
+
+  /**
+   * The assets directory a report task copies into. Every variant now gets its own, so this is
+   * derived from the task name - licenseFlavor1DebugReport writes into src/flavor1Debug/assets.
+   */
+  private String assetsFolderFor(String taskName) {
+    String variant = taskName - ~/^license/ - ~/Report$/
+    return "${srcFolder}/${variant[0].toLowerCase()}${variant.substring(1)}/assets"
   }
 
   @Unroll
@@ -74,7 +81,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -155,7 +162,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -369,7 +376,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -519,7 +526,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -749,7 +756,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -894,7 +901,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -1012,7 +1019,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -1168,7 +1175,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     String expectedHtml =
       """
       <!DOCTYPE html>
@@ -1313,7 +1320,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     File actualJson = new File(reportFolder, "${taskName}.json")
     File actualText = new File(reportFolder, "${taskName}.txt")
 
@@ -1329,15 +1336,15 @@ final class LicensePluginAndroidSpec extends Specification {
     actualText.exists()
     if (copyEnabled) {
       openSourceHtml.exists()
-      result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
-      result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
-      result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
-      result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
+      result.output.find("Copied CSV report to .*${assetsFolderFor(taskName)}/open_source_licenses.csv.")
+      result.output.find("Copied HTML report to .*${assetsFolderFor(taskName)}/open_source_licenses.html.")
+      result.output.find("Copied JSON report to .*${assetsFolderFor(taskName)}/open_source_licenses.json.")
+      result.output.find("Copied Text report to .*${assetsFolderFor(taskName)}/open_source_licenses.txt.")
     } else {
-      !result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
-      !result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
-      !result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
-      !result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
+      !result.output.find("Copied CSV report to .*${assetsFolderFor(taskName)}/open_source_licenses.csv.")
+      !result.output.find("Copied HTML report to .*${assetsFolderFor(taskName)}/open_source_licenses.html.")
+      !result.output.find("Copied JSON report to .*${assetsFolderFor(taskName)}/open_source_licenses.json.")
+      !result.output.find("Copied Text report to .*${assetsFolderFor(taskName)}/open_source_licenses.txt.")
     }
 
     where:
@@ -1391,7 +1398,7 @@ final class LicensePluginAndroidSpec extends Specification {
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualCsv = new File(reportFolder, "${taskName}.csv")
     File actualHtml = new File(reportFolder, "${taskName}.html")
-    File openSourceHtml = new File(mainAssetsFolder, "open_source_licenses.html")
+    File openSourceHtml = new File(assetsFolderFor(taskName), "open_source_licenses.html")
     File actualJson = new File(reportFolder, "${taskName}.json")
     File actualText = new File(reportFolder, "${taskName}.txt")
 
@@ -1406,10 +1413,10 @@ final class LicensePluginAndroidSpec extends Specification {
     !actualJson.exists()
     !result.output.find("Wrote Text report to .*${reportFolder}/${taskName}.txt.")
     !actualText.exists()
-    !result.output.find("Copied CSV report to .*${mainAssetsFolder}/open_source_licenses.csv.")
-    !result.output.find("Copied HTML report to .*${mainAssetsFolder}/open_source_licenses.html.")
-    !result.output.find("Copied JSON report to .*${mainAssetsFolder}/open_source_licenses.json.")
-    !result.output.find("Copied Text report to .*${mainAssetsFolder}/open_source_licenses.txt.")
+    !result.output.find("Copied CSV report to .*${assetsFolderFor(taskName)}/open_source_licenses.csv.")
+    !result.output.find("Copied HTML report to .*${assetsFolderFor(taskName)}/open_source_licenses.html.")
+    !result.output.find("Copied JSON report to .*${assetsFolderFor(taskName)}/open_source_licenses.json.")
+    !result.output.find("Copied Text report to .*${assetsFolderFor(taskName)}/open_source_licenses.txt.")
 
     where:
     taskName << ['licenseDebugReport', 'licenseReleaseReport']
@@ -2448,14 +2455,14 @@ final class LicensePluginAndroidSpec extends Specification {
     when:
     BuildResult result = gradleWithCommand(testProjectDir.root, "${taskName}", '-s')
     File actualJsonFull = new File(reportFolder, "${taskName}.full.json")
-    File openSourceJsonFull = new File(mainAssetsFolder, 'open_source_licenses.full.json')
+    File openSourceJsonFull = new File(assetsFolderFor(taskName), 'open_source_licenses.full.json')
     Object report = new JsonSlurper().parseText(openSourceJsonFull.text)
 
     then:
     result.task(":${taskName}").outcome == SUCCESS
     result.output.find("Wrote Full JSON report to .*${reportFolder}/${taskName}.full.json.")
     actualJsonFull.exists()
-    result.output.find("Copied Full JSON report to .*${mainAssetsFolder}/open_source_licenses.full.json.")
+    result.output.find("Copied Full JSON report to .*${assetsFolderFor(taskName)}/open_source_licenses.full.json.")
     openSourceJsonFull.exists()
     // The asset is a copy of the generated report and it carries the license text
     openSourceJsonFull.text == actualJsonFull.text
@@ -2491,7 +2498,7 @@ final class LicensePluginAndroidSpec extends Specification {
 
     when: 'the report is generated once'
     BuildResult first = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
-    File openSourceHtml = new File(mainAssetsFolder, 'open_source_licenses.html')
+    File openSourceHtml = new File(assetsFolderFor('licenseDebugReport'), 'open_source_licenses.html')
 
     then:
     first.task(':licenseDebugReport').outcome == SUCCESS
@@ -2554,19 +2561,19 @@ final class LicensePluginAndroidSpec extends Specification {
 
     and: 'the extensions declared as task outputs match the ones actually written'
     ['csv', 'html', 'json', 'full.json', 'txt'].every { extension ->
-      new File(mainAssetsFolder, "open_source_licenses.${extension}").exists()
+      new File(assetsFolderFor('licenseDebugReport'), "open_source_licenses.${extension}").exists()
     }
 
     when: 'each one is deleted in turn, the task re-runs and restores it'
     ['csv', 'html', 'json', 'full.json', 'txt'].each { extension ->
-      new File(mainAssetsFolder, "open_source_licenses.${extension}").delete()
+      new File(assetsFolderFor('licenseDebugReport'), "open_source_licenses.${extension}").delete()
     }
     BuildResult second = gradleWithCommand(testProjectDir.root, 'licenseDebugReport', '-s')
 
     then:
     second.task(':licenseDebugReport').outcome == SUCCESS
     ['csv', 'html', 'json', 'full.json', 'txt'].every { extension ->
-      new File(mainAssetsFolder, "open_source_licenses.${extension}").exists()
+      new File(assetsFolderFor('licenseDebugReport'), "open_source_licenses.${extension}").exists()
     }
   }
 
@@ -2894,5 +2901,65 @@ final class LicensePluginAndroidSpec extends Specification {
     and: 'and the main dependency they both inherit'
     unitTestJson.text.contains('com.android.support:appcompat-v7')
     androidTestJson.text.contains('com.android.support:appcompat-v7')
+  }
+
+  @Issue("jaredsburrows/gradle-license-plugin/issues/226")
+  def 'licenseReport keeps one variant from overwriting another variants asset copy'() {
+    given: 'two variants whose dependencies genuinely differ'
+    buildFile <<
+      """
+      buildscript {
+        dependencies {
+          classpath files($classpathString)
+        }
+      }
+
+      repositories {
+        maven {
+          url '${mavenRepoUrl}'
+        }
+      }
+
+      apply plugin: 'com.android.application'
+      apply plugin: 'com.jaredsburrows.license'
+
+      android {
+        compileSdk = $compileSdkVersion
+        namespace 'com.example'
+
+        defaultConfig {
+          applicationId 'com.example'
+        }
+      }
+
+      licenseReport {
+        copyJsonReportToAssets = true
+      }
+
+      dependencies {
+        debugImplementation 'com.android.support:design:26.1.0'
+        releaseImplementation 'com.google.firebase:firebase-core:10.0.1'
+      }
+      """
+
+    when: 'both variants report in the same build'
+    BuildResult result =
+      gradleWithCommand(testProjectDir.root, 'licenseDebugReport', 'licenseReleaseReport', '-s')
+    String debugCopy =
+      new File(assetsFolderFor('licenseDebugReport'), 'open_source_licenses.json').text
+    String releaseCopy =
+      new File(assetsFolderFor('licenseReleaseReport'), 'open_source_licenses.json').text
+
+    then:
+    result.task(':licenseDebugReport').outcome == SUCCESS
+    result.task(':licenseReleaseReport').outcome == SUCCESS
+
+    and: 'each variant shipped its own dependencies, not whichever task happened to run last'
+    debugCopy.contains('com.android.support:design')
+    !debugCopy.contains('com.google.firebase:firebase-core')
+
+    and:
+    releaseCopy.contains('com.google.firebase:firebase-core')
+    !releaseCopy.contains('com.android.support:design')
   }
 }

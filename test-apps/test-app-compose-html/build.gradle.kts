@@ -52,8 +52,6 @@ licenseReport {
   generateJsonFullReport = false
   generateTextReport = false
 
-  useVariantSpecificAssetDirs = true
-
   copyHtmlReportToAssets = true
 }
 

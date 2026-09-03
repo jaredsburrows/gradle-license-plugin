@@ -43,8 +43,10 @@ final class LicenseReportExtensionSpec extends Specification {
     !copyJsonReportToAssets
     !copyTextReportToAssets
 
+    and: 'each variant copies into its own asset directory, so they cannot overwrite each other'
+    useVariantSpecificAssetDirs
+
     and:
-    !useVariantSpecificAssetDirs
     !showVersions
     noIgnoredPatterns
   }
