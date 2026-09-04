@@ -140,7 +140,9 @@ object LicenseHelper {
       "bsd 3-clause license" to "BSD-3-Clause",
       "new bsd license" to "BSD-3-Clause",
       "modified bsd license" to "BSD-3-Clause",
+      "modified bsd" to "BSD-3-Clause",
       "revised bsd license" to "BSD-3-Clause",
+      "revised bsd" to "BSD-3-Clause",
       // Creative Commons Zero v1.0 Universal
       "creative commons zero 1.0 universal" to "CC0-1.0",
       "cc0 1.0 universal" to "CC0-1.0",
