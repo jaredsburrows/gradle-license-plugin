@@ -15,7 +15,7 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "14.2.0" }
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version = "1.13.0" }
-compose-bom = { module = "androidx.compose:compose-bom", version = "2026.08.00" }
+compose-bom = { module = "androidx.compose:compose-bom", version = "2026.09.00" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 core-ktx = { module = "androidx.core:core-ktx", version = "1.19.0" }
