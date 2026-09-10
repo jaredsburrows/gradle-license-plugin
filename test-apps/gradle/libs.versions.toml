@@ -27,4 +27,4 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 junit = { module = "junit:junit", version = "4.13.2" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-robolectric = { module = "org.robolectric:robolectric", version = "4.17-beta-4" }
+robolectric = { module = "org.robolectric:robolectric", version = "4.17" }
