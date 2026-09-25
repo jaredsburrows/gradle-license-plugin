@@ -154,49 +154,29 @@ design,null,26.1.0,null,null,null,The Apache Software License,http://www.apache.
 <details>
   <summary>HTML Example (license descriptions are minimized):</summary>
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <style>body {
-    font-family: sans-serif
-  }
-
-  pre {
-    background-color: #eeeeee;
-    padding: 1em;
-    white-space: pre-wrap;
-    word-break: break-word;
-    display: inline-block
-  }</style>
-  <title>Open source licenses</title>
-</head>
-<body>
-<h3>Notice for packages:</h3>
-<ul>
-  <li><a href="#1934118923">design</a>
-    <dl>
-      <dt>Copyright &copy; 20xx The original author or authors</dt>
-      <dd></dd>
-    </dl>
-  </li>
-</ul>
-<pre id="1934118923">apache-2.0.txt here</pre>
-<br>
-<hr>
-<ul>
-  <li><a href="#1783810846">Android GIF Drawable Library</a>
-    <dl>
-      <dt>Copyright &copy; 20xx Karol WrXXtniak</dt>
-      <dd></dd>
-    </dl>
-  </li>
-</ul>
-<pre id="1783810846">apache-2.0.txt here</pre>
-<br>
-<hr>
-</body>
+```<html>
+  <head>
+    <style>body { font-family: sans-serif; }</style>
+  </head>
+  <body>
+    <h1>Notice for packages</h1>
+    <ul>
+      <li>
+        <a href="#1934115023">Retrofit (2.9.0)</a>
+        <dl>
+          <dt>Copyright &copy; 2013 Square, Inc.</dt>
+          <dd>
+            <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">
+              Apache License 2.0
+            </a>
+          </dd>
+        </dl>
+      </li>
+    </ul>
+    <!-- license text anchors follow -->
+    <a name="1934115023"></a>
+    <pre>apache-2.0.txt here</pre>
+  </body>
 </html>
 ```
 
