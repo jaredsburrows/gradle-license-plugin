@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew ktlintCheck build -s --continue
 
       - name: Publish Plugin Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2.24.0
+        uses: EnricoMi/publish-unit-test-result-action@v2.25.0
         if: always()
         with:
           check_name: Test Plugin Results
@@ -111,7 +111,7 @@ jobs:
           test -s test-apps/test-app-compose-fulljson/src/release/assets/open_source_licenses.full.json
 
       - name: Publish Test Apps Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2.24.0
+        uses: EnricoMi/publish-unit-test-result-action@v2.25.0
         if: always()
         with:
           check_name: Test App Results
