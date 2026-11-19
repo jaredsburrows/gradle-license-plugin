@@ -9,7 +9,9 @@
     "automerge": true
   },
   "osvVulnerabilityAlerts": true,
-  "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
+  "dependencyDashboard": {
+    "osvVulnerabilitySummary": "unresolved"
+  },
   "packageRules": [
     {
       "matchUpdateTypes": [
